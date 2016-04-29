@@ -35,9 +35,11 @@
 #include <iostream>
 #include "base/Vector3D.h"
 #include "TGeoVolume.h"
+
 //#include "Singleton.h"
 
 #ifdef USE_EVE
+#include "TEveGeoShape.h"
 #include "Eve/EveVisualizer.h"
 typedef EveVisualizer TrackingVisualizer;
 //typedef Singleton::instance()->GetEveVisualizer() TrackingVisualizer;
@@ -73,6 +75,10 @@ private:
 
   //DATA tree //should be kept some where else
   Tree *t;
+
+#ifdef USE_EVE
+  TEveGeoShape *fScintEveGeoShape;
+#endif
 
 
 
@@ -126,6 +132,8 @@ public:
   void Draw();
   TGeoVolume* GetScintillatorTGeoVolume(){return fScintTGeoVolume;}
   TGeoBBox* GetScintShape();
+  void CreateScintillatorEveGeoShape();
+  TEveGeoShape* GetScintillatorEveGeoShape(){return fScintEveGeoShape;}
 
   double GetLength(){return fLength;}
   double GetBreadth(){return fBreadth;}

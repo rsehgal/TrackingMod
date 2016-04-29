@@ -23,14 +23,14 @@
 namespace Tracking{
 
 class VisualizationHelper{
-  TApplication *fApp;
+  //TApplication *fApp;
 #ifndef USE_EVE
   Tracking::Visualizer v;
 #endif
 
 public:
   VisualizationHelper(){
-    fApp = new TApplication("Test", NULL, NULL);
+    //fApp = new TApplication("Test", NULL, NULL);
 #ifdef USE_EVE
     TEveManager::Create();
 //#else
@@ -68,7 +68,7 @@ public:
 #else
     v.Show();
 #endif
-    fApp->Run();
+    //fApp->Run();
   }
 
 

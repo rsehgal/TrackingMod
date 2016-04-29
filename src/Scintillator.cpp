@@ -63,6 +63,7 @@ Scintillator::Scintillator(int moduleId):fLength(1.5),fBreadth(50.),fHeight(0.5)
 }
 
 Scintillator::Scintillator(int moduleId,bool forRpc):fLength(3.),fBreadth(100.),fHeight(1.0), fScintHit(false) ,fModuleId(moduleId) {
+
   if(!forRpc){ // Scintillator plane
     fLength = 18.;
     fBreadth = 180.;
@@ -81,6 +82,11 @@ Scintillator::Scintillator(int moduleId,bool forRpc):fLength(3.),fBreadth(100.),
   std::stringstream ss;
   ss << "Module" << fModuleId <<"_LE_CH" << fScintId;
   fBName = ss.str();
+
+  fScintEveGeoShape = new TEveGeoShape(fBName.c_str());
+  fScintEveGeoShape->SetShape(GetScintShape());
+  fScintEveGeoShape->SetMainColor(kGreen);
+  fScintEveGeoShape->SetMainTransparency(50);
   //t = new Tree("6133.root","BSC_DATA_TREE");
 
   //Commenting Histogram for the time being
@@ -543,7 +549,8 @@ void ScintillatorPlane::CreateEvePlane(double dZ){
      m.SetDx(-fLength/2.+i*fScintillatorPlane[i]->GetLength());
      m.SetDz(dZ);
      int channelId = fScintillatorPlane[i]->GetChannelId();
-     fEve.AddEveShape(fScintillatorPlane[i]->GetName(), fScintillatorPlane[i]->GetScintShape(),3, m );
+     fEve.AddEveShape(fScintillatorPlane[i]->GetScintillatorEveGeoShape(),m);
+     //fEve.AddEveShape(fScintillatorPlane[i]->GetName(), fScintillatorPlane[i]->GetScintShape(),3, m );
 /*
      if(fScintillatorPlane[i]->GetScintHit())
        fEve.AddEveShape(fScintillatorPlane[i]->GetName(), fScintillatorPlane[i]->GetScintShape(),2, m );

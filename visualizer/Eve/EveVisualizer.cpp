@@ -49,6 +49,13 @@ void EveVisualizer::AddEveShape(std::string shapeName,TGeoBBox *shape, int color
 
 }
 
+void EveVisualizer::AddEveShape(TEveGeoShape *eveShape, TGeoHMatrix &mat){
+
+  eveShape->SetTransMatrix(mat);
+  Singleton::instance()->AddElement(eveShape);
+
+}
+
 void EveVisualizer::Show(){
   // TEveManager::Create();
   /*TGeoHMatrix mat;
