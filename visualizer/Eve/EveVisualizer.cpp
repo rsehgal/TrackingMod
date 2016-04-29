@@ -67,7 +67,20 @@ void EveVisualizer::Show(){
   //gEve->AddGlobalElement(fEveGeomList);
   gEve->AddGlobalElement(Singleton::instance()->GetList());
   gEve->DoRedraw3D();
+  /*TTimer timer(1000); // every second
+  timer.SetCommand("gEve->DoRedraw3D();");
+  timer.TurnOn();*/
+  //UpdateScene();
   //fApp->Run();
 }
+
+
+void EveVisualizer::UpdateScene(){
+  //TTimer timer(1000); // every second
+  //timer.SetCommand("gEve->DoRedraw3D();");
+  //timer.TurnOn();
+}
+
+
 
 }//end of Tracking namespace

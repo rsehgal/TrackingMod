@@ -16,6 +16,7 @@
 #ifdef USE_EVE
  #include "TEveManager.h"
  #include "Eve/EveVisualizer.h"
+#include <TThread.h>
 #else
  #include "TGeo/Visualizer.h"
 #endif
@@ -496,6 +497,34 @@ void ScintillatorPlane::InitializeScintillatorPlane(){
 }
 
 #ifdef USE_EVE
+void ScintillatorPlane::RunThread(){
+  //TThread *t1 = new TThread("t1", &ScintillatorPlane::handle, (void*) 1);
+   // t1->Run();
+  TThread* mythread= new TThread("My Thread",
+           (void(*) (void *))&ScintillatorPlane::handle,
+           (void*) this);
+  mythread->Run();
+}
+
+void* ScintillatorPlane::handle(void *ptr){
+  while(true){
+      sleep(1);
+      Reset();
+  //evNo++;
+  //std::cout<< "Ev No : "<< evNo << std::endl;
+  std::cout<<"Plane Name : " << GetName() << " :: PlaneSize : "<< GetNumOfScintillators() << std::endl;
+  int stripNum = rand() % GetNumOfScintillators();
+  std::cout<<"Strip Num : "<<stripNum << std::endl;
+  GetScintillatorPlane()[stripNum]->GetScintillatorEveGeoShape()->SetMainColor(2);
+    }
+}
+
+void ScintillatorPlane::Reset(){
+  for(int i = 0 ; i < GetNumOfScintillators() ; i++ ){
+      GetScintillatorPlane()[i]->GetScintillatorEveGeoShape()->SetMainColor(3);
+    }
+}
+
 void ScintillatorPlane::CreateEvePlane(){
 // TEveManager::Create();
  TGeoBBox *box = fScintillatorPlane[0]->GetScintShape();

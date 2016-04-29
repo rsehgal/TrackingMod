@@ -232,6 +232,9 @@ public:
   #ifdef USE_EVE
   void CreateEvePlane();
   void CreateEvePlane(double dZ);
+  void *handle(void *ptr);
+  void Reset();
+  void RunThread();
   //void CreateEvePlane(double dZ,bool forRpc){}
   void Show(){fEve.Show();}
   //void Show(){Singleton::instance()->GetEveVisualizer()->ShowEve();}

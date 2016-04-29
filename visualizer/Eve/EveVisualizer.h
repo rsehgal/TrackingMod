@@ -34,6 +34,7 @@ public:
   void AddEveShape(std::string shapeName,TGeoBBox *shape, int color, TGeoHMatrix &mat);
   void AddEveShape(TEveGeoShape *eveShape, TGeoHMatrix &mat);
   static void Show();
+  static void UpdateScene();
 
 };
 
