@@ -132,8 +132,10 @@ public:
   void Draw();
   TGeoVolume* GetScintillatorTGeoVolume(){return fScintTGeoVolume;}
   TGeoBBox* GetScintShape();
+  #ifdef USE_EVE
   void CreateScintillatorEveGeoShape();
   TEveGeoShape* GetScintillatorEveGeoShape(){return fScintEveGeoShape;}
+  #endif
 
   double GetLength(){return fLength;}
   double GetBreadth(){return fBreadth;}

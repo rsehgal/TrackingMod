@@ -47,6 +47,7 @@ endif(CCACHE_FOUND)
 option(VISUALIZATION "Enable or Disable Visualization" ON)
 option(OPENGL "Use OpenGL for Visualization" OFF)
 option(EVE "Use Eve for Visualization" OFF)
+option(UNITTEST "Enable various Unit tests" ON)
 
 if(VISUALIZATION)
 add_definitions(-DSHOW_VISUALIZATION)

@@ -1,6 +1,16 @@
-set(TEST_EXECUTABLES
+if(EVE)
+set(TEST_EXECUTABLES ${TEST_EXECUTABLES}
 ${CMAKE_SOURCE_DIR}/test/TestVisualization.cpp
+#${CMAKE_SOURCE_DIR}/test/ShowerDetectionTest.cpp
+
 )
+endif(EVE)
+
+if(UNITTEST)
+set(TEST_EXECUTABLES ${TEST_EXECUTABLES}
+${CMAKE_SOURCE_DIR}/test/ShowerDetectionTest.cpp
+)
+endif(UNITTEST)
 
 macro(build_executables EXECUTABLES)
   foreach(EXECUTABLE ${EXECUTABLES})

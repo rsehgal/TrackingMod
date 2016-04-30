@@ -26,7 +26,7 @@ EveVisualizer::EveVisualizer(){
 }
 
 void EveVisualizer::AddEveShape(std::string shapeName,TGeoBBox *shape, TGeoHMatrix &mat){
-
+if(gEve){
   fEveShape = new TEveGeoShape(shapeName.c_str());
   fEveShape->SetShape(shape);
   fEveShape->SetMainColor(kGreen);
@@ -34,11 +34,13 @@ void EveVisualizer::AddEveShape(std::string shapeName,TGeoBBox *shape, TGeoHMatr
   fEveShape->SetTransMatrix(mat);
   //fEveGeomList->AddElement(fEveShape);
   Singleton::instance()->AddElement(fEveShape);
+}
   
 }
 
 void EveVisualizer::AddEveShape(std::string shapeName,TGeoBBox *shape, int color, TGeoHMatrix &mat){
 
+if(gEve){
   fEveShape = new TEveGeoShape(shapeName.c_str());
   fEveShape->SetShape(shape);
   fEveShape->SetMainColor(color);
@@ -46,13 +48,15 @@ void EveVisualizer::AddEveShape(std::string shapeName,TGeoBBox *shape, int color
   fEveShape->SetTransMatrix(mat);
   //fEveGeomList->AddElement(fEveShape);
   Singleton::instance()->AddElement(fEveShape);
-
+ }
 }
 
 void EveVisualizer::AddEveShape(TEveGeoShape *eveShape, TGeoHMatrix &mat){
 
+  if(gEve){
   eveShape->SetTransMatrix(mat);
   Singleton::instance()->AddElement(eveShape);
+}
 
 }
 
@@ -65,8 +69,10 @@ void EveVisualizer::Show(){
 
 
   //gEve->AddGlobalElement(fEveGeomList);
+  if(gEve){
   gEve->AddGlobalElement(Singleton::instance()->GetList());
   gEve->DoRedraw3D();
+}
   /*TTimer timer(1000); // every second
   timer.SetCommand("gEve->DoRedraw3D();");
   timer.TurnOn();*/

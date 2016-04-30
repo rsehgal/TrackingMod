@@ -84,10 +84,14 @@ Scintillator::Scintillator(int moduleId,bool forRpc):fLength(3.),fBreadth(100.),
   ss << "Module" << fModuleId <<"_LE_CH" << fScintId;
   fBName = ss.str();
 
+  #ifdef USE_EVE
+  if(gEve){
   fScintEveGeoShape = new TEveGeoShape(fBName.c_str());
   fScintEveGeoShape->SetShape(GetScintShape());
   fScintEveGeoShape->SetMainColor(kGreen);
   fScintEveGeoShape->SetMainTransparency(50);
+  }
+  #endif
   //t = new Tree("6133.root","BSC_DATA_TREE");
 
   //Commenting Histogram for the time being
