@@ -35,6 +35,7 @@
 #include <iostream>
 #include "base/Vector3D.h"
 #include "TGeoVolume.h"
+#include "Component.h"
 
 //#include "Singleton.h"
 
@@ -54,7 +55,8 @@ class TGeoBBox;
 
 namespace Tracking{
 
-class Scintillator{
+//class Scintillator : public Component{
+  class Scintillator{
 private:
   //Dimension of Scintillator, not required for the time being
   //May be required in future
@@ -144,6 +146,7 @@ public:
 };//end of Scintillator class
 
 
+//class ScintillatorPlane : public Component{
 class ScintillatorPlane{
 private:
   int fScintTotal;
@@ -196,7 +199,8 @@ public:
   TRACKING_INLINE
   std::string GetName(){return fPlaneName;}
 
-  TRACKING_INLINE
+  //std::vector<Scintillator*> GetScintillatorPlane() override{return fScintillatorPlane;}
+  //std::vector<Scintillator*> GetScintillatorPlane() {return static_cast<std::vector<Scintillator*>>(fScintillatorPlane);}
   std::vector<Scintillator*> GetScintillatorPlane(){return fScintillatorPlane;}
 
   void Print();

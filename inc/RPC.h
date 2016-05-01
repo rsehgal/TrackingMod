@@ -25,7 +25,7 @@
 #define RpcStrip Scintillator
 
 namespace Tracking {
-class RPC{
+class RPC : public Component{
 private:
 	std::vector<Gap*> gap;
 	FEB feb[3]; //0->(0-31) ; 1->(32-63) ; 2->(64-95)

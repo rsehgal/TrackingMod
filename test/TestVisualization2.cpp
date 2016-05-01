@@ -9,6 +9,7 @@
 #include "TSystem.h"
 #include "TTimer.h"
 #include "TThread.h"
+#include "SetupManager.h"
 //#include <time.h>
 
 
@@ -27,15 +28,28 @@ int main(){
   RPC *rpc6 = new RPC(7, 32, "FirstRpc", 75.);
   Target *t = new Target();
 
+  //For Visualization
   v.Register(s1);
   v.Register(s2);
-  v.Register(rpc1);
-  v.Register(rpc2);
-  v.Register(rpc3);
-  v.Register(rpc4);
-  v.Register(rpc5);
-  v.Register(rpc6);
+  // v.Register(rpc1);
+  // v.Register(rpc2);
+  // v.Register(rpc3);
+  // v.Register(rpc4);
+  // v.Register(rpc5);
+  // v.Register(rpc6);
   v.Register(t);
+
+
+  //For Update
+  SetupManager s;
+  s.RegisterScintillatorPlane(s1);
+  s.RegisterScintillatorPlane(s2);
+  // s.RegisterRpc(rpc1);
+  // s.RegisterRpc(rpc2);
+  // s.RegisterRpc(rpc3);
+  // s.RegisterRpc(rpc4);
+  // s.RegisterRpc(rpc5);
+  // s.RegisterRpc(rpc6);
   //v.Show();
   int evNo=0;
 /*
@@ -47,7 +61,7 @@ int main(){
   }
 */
 
-  s1->RunThread();
+  s.RunThread();
 /*  s2->RunThread();
   rpc1->GetRpc()->RunThread();
   rpc2->GetRpc()->RunThread();
@@ -58,7 +72,7 @@ int main(){
 */  v.Show();
 
 
-  TTimer timer(1000); // every second
+  TTimer timer(20); // every second
   //timer.SetCommand("gEve->Redraw3D(kTRUE);");
   timer.SetCommand("gEve->DoRedraw3D();");
   timer.TurnOn();

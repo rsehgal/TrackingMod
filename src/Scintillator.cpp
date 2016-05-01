@@ -511,15 +511,25 @@ void ScintillatorPlane::RunThread(){
 }
 
 void* ScintillatorPlane::handle(void *ptr){
+  int evNo=0;
+  Tree t("6133.root","BSC_DATA_TREE");
   while(true){
-      sleep(1);
+      sleep(2);
       Reset();
   //evNo++;
   //std::cout<< "Ev No : "<< evNo << std::endl;
   std::cout<<"Plane Name : " << GetName() << " :: PlaneSize : "<< GetNumOfScintillators() << std::endl;
-  int stripNum = rand() % GetNumOfScintillators();
-  std::cout<<"Strip Num : "<<stripNum << std::endl;
-  GetScintillatorPlane()[stripNum]->GetScintillatorEveGeoShape()->SetMainColor(2);
+  //int stripNum = rand() % GetNumOfScintillators();
+  //std::cout<<"Strip Num : "<<stripNum << std::endl;
+  for(int i = 0 ; i < GetNumOfScintillators() ; i++){
+  GetScintillatorPlane()[i]->DetectAndSetHit<false>(t,evNo); 
+  bool hit =  GetScintillatorPlane()[i]->GetScintHit();
+  std::cout<< " EvNo: " << evNo <<"  :: Strip No : " << i <<"  :: HIT : " << hit <<  std::endl;
+
+  if(hit)
+    GetScintillatorPlane()[i]->GetScintillatorEveGeoShape()->SetMainColor(2);
+  }
+  evNo++;
     }
 }
 
