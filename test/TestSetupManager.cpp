@@ -31,11 +31,11 @@ int main(){
   s.RegisterScintillatorPlane(s1);
   s.RegisterScintillatorPlane(s2);
   s.RegisterRpc(rpc1);
-  s.RegisterRpc(rpc2);
-  s.RegisterRpc(rpc3);
-  s.RegisterRpc(rpc4);
-  s.RegisterRpc(rpc5);
-  s.RegisterRpc(rpc6);
+  // s.RegisterRpc(rpc2);
+  // s.RegisterRpc(rpc3);
+  // s.RegisterRpc(rpc4);
+  // s.RegisterRpc(rpc5);
+  // s.RegisterRpc(rpc6);
 
   // s.Register<ScintillatorPlane,false>(s1);
   // s.Register<ScintillatorPlane,false>(s2);
@@ -49,5 +49,6 @@ int main(){
   //s.GetComponentsName();
   //std::cout<<"SetupManager Size  : "<< s.GetSize() << std::endl;
   s.GetComponentsName();
+  s.PrintStrips();
 
 }

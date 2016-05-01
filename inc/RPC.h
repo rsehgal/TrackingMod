@@ -25,7 +25,7 @@
 #define RpcStrip Scintillator
 
 namespace Tracking {
-class RPC : public Component{
+class RPC {
 private:
 	std::vector<Gap*> gap;
 	FEB feb[3]; //0->(0-31) ; 1->(32-63) ; 2->(64-95)
@@ -140,6 +140,8 @@ public:
 
 	}
 
+    int GetNumOfScintillators(){rpc->GetNumOfScintillators();}
+    std::vector<Scintillator*> GetScintillatorPlane(){return rpc->GetScintillatorPlane();}
 	int GetEventCount(){return fEventCount;}
 	void GetHitMap(){rpc->GetHitMap();}
 	int GetHitCount(){return rpc->GetShowerCount();}

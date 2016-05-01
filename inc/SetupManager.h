@@ -51,16 +51,24 @@
             }
         }
 
+        void PrintStrips(){
+            for(int i = 0 ; i < fRpcVector.size() ; i++){
+                fRpcVector[i]->PrintStrips();
+            }
+            std::cout<<"Num of Strip in Rpc : " << fRpcVector[0]->GetRpc()->GetNumOfScintillators() << std::endl;
+        }
+
 
 
         //-------------------------------------------------
 
         void *handle(void *ptr){
             int evNo=0;
-            Tree t("6133.root","BSC_DATA_TREE");
+            Tree t("6147.root","BSC_DATA_TREE");
             while(true){
-                sleep(1);
+                sleep(2);
                 for(int j = 0 ; j < fScintVector.size() ; j++){
+
                     Reset(j);
                     std::cout<<"Plane Name : " << fScintVector[j]->GetName() << " :: PlaneSize : "<< fScintVector[j]->GetNumOfScintillators() << std::endl;
                     for(int i = 0 ; i < fScintVector[j]->GetNumOfScintillators() ; i++){
@@ -70,6 +78,23 @@
 
                     if(hit)
                         fScintVector[j]->GetScintillatorPlane()[i]->GetScintillatorEveGeoShape()->SetMainColor(2);
+                    }
+             
+                }
+
+                for(int j = 0 ; j < fRpcVector.size() ; j++){
+                    ResetRpc(j);
+                    std::cout<<"Plane Name : " << fRpcVector[j]->GetName() << " :: PlaneSize : "<< fRpcVector[j]->GetRpc()->GetNumOfScintillators() << std::endl;
+                    for(int i = 0 ; i < fRpcVector[j]->GetRpc()->GetNumOfScintillators() ; i++){
+                    //fRpcVector[j]->GetScintillatorPlane()[i]->DetectAndSetHit<true>(t,evNo); 
+                    fRpcVector[j]->GetRpc()->GetScintillatorPlane()[i]->DetectAndSetHit<true>(t,evNo); 
+                    //bool hit =  fRpcVector[j]->GetScintillatorPlane()[i]->GetScintHit();
+                    bool hit =  fRpcVector[j]->GetRpc()->GetScintillatorPlane()[i]->GetScintHit();
+                    std::cout<< " EvNo: " << evNo <<"  :: Strip No : " << i <<"  :: HIT : " << hit <<  std::endl;
+
+                    if(hit)
+                        //fRpcVector[j]->GetScintillatorPlane()[i]->GetScintillatorEveGeoShape()->SetMainColor(2);
+                        fRpcVector[j]->GetRpc()->GetScintillatorPlane()[i]->GetScintillatorEveGeoShape()->SetMainColor(2);
                     }
              
                 }
@@ -84,6 +109,15 @@
                 }
             
         }
+
+        void ResetRpc(int j){
+            
+                for(int i = 0 ; i < fRpcVector[j]->GetRpc()->GetNumOfScintillators() ; i++ ){
+                    fRpcVector[j]->GetRpc()->GetScintillatorPlane()[i]->GetScintillatorEveGeoShape()->SetMainColor(3);
+                }
+            
+        }
+
 
         void RunThread(){
   
