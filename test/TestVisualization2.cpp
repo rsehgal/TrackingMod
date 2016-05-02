@@ -20,7 +20,7 @@ int main(){
   Tracking::VisualizationHelper v;
   ScintillatorPlane *s1 = new ScintillatorPlane(2,8,-105.,false,"TopPlane");
   ScintillatorPlane *s2 = new ScintillatorPlane(2,8,105.,false,"BottomPlane");
-  //RPC *rpc1 = new RPC(2,96,"FirstRpc",-75.);
+//  RPC *rpc1 = new RPC(2,96,"FirstRpc",-75.);
 //  RPC *rpc2 = new RPC(3,96,"SecondRpc",-45.);
 //  RPC *rpc3 = new RPC(4,96,"ThirdRpc",-15.);
   // RPC *rpc4 = new RPC(5, 32, "ThirdRpc", 15.);
@@ -68,7 +68,8 @@ int main(){
   }
 */
 
-  s.RunThread();
+  s.RunCmsThread();
+  //s.RunThread();
 /*  s2->RunThread();
   rpc1->GetRpc()->RunThread();
   rpc2->GetRpc()->RunThread();
