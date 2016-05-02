@@ -481,6 +481,19 @@ ScintillatorPlane::ScintillatorPlane(int moduleId, int numOfScintillators, doubl
 
     }
 
+ScintillatorPlane::ScintillatorPlane(int moduleId, int numOfScintillators, double zPos, bool forRpc,
+    double planeLength, double planeBreadth,bool forCms, std::string planeName):
+        fNumOfScintillators(numOfScintillators),
+        fScintTotal(0),
+        fPlaneName(planeName),
+        fLength(planeLength),
+        fBreadth(planeBreadth){
+
+      InitializeScintillatorPlane();
+      CreatePlaneOfScintillators(moduleId,zPos,forRpc,forCms);
+
+    }
+
 void ScintillatorPlane::CreatePlaneOfScintillators(){
   for(int i = 0 ; i< fNumOfScintillators ; i++){
     fScintillatorPlane.push_back(new Scintillator());
@@ -536,6 +549,26 @@ void ScintillatorPlane::CreatePlaneOfScintillators(int moduleId){
   CreateEvePlane(zPos);
   #endif
 }
+
+  void ScintillatorPlane::CreatePlaneOfScintillators(int moduleId,double zPos, bool forRpc, bool forCms){
+      Scintillator::SetStartingStripNum(-1);
+    for(int i = 0 ; i< fNumOfScintillators ; i++){
+        //fScintillatorPlane.push_back(new Scintillator(moduleId));
+        //fScintillatorPlane.push_back(new Scintillator(moduleId,forRpc));
+        fScintillatorPlane.push_back(new Scintillator(moduleId,forRpc,fLength/fNumOfScintillators,fBreadth));
+      }
+
+    #ifndef USE_EVE
+    //CreatePlaneTGeoVolume();
+    CreatePlaneTGeoVolume(zPos);
+    #else
+    //CreateEvePlane(zPos,forRpc);
+    if(forCms)
+      CreateEvePlane(zPos,forCms);
+    else
+    CreateEvePlane(zPos);
+    #endif
+  }
 
 
 
@@ -670,6 +703,30 @@ void ScintillatorPlane::CreateEvePlane(double dZ){
 */
      //Singleton::instance()->GetEveVisualizer()->AddEveShape(fScintillatorPlane[i]->GetName(), box,3, m );
   //fEve.AddEveShape(fScintillatorPlane[i]->GetName(), box, m );
+ }
+ std::cout<<"=================================================================================" << std::endl;
+}
+
+//void ScintillatorPlane::CreateEvePlane(double dZ, bool forRpc){
+void ScintillatorPlane::CreateEvePlane(double dZ, bool forCmsRpc){
+ //TEveManager::Create();
+ //TGeoBBox *box = fScintillatorPlane[0]->GetScintShape();
+ TGeoHMatrix m;
+ Double_t trans[3] = { 0., 0., 0. };
+ m.SetTranslation(trans);
+
+ for(int i=0; i < fScintillatorPlane.size(); i++){
+     m.SetDx(-fLength/2.+i*fScintillatorPlane[i]->GetLength());
+     if(forCmsRpc)
+     {
+       if(fPlaneName.compare("A")==0)
+         m.SetDy(-fBreadth);
+       if(fPlaneName.compare("C")==0)
+         m.SetDy(fBreadth);
+     }
+     m.SetDz(dZ);
+     int channelId = fScintillatorPlane[i]->GetChannelId();
+     fEve.AddEveShape(fScintillatorPlane[i]->GetScintillatorEveGeoShape(),m);
  }
  std::cout<<"=================================================================================" << std::endl;
 }

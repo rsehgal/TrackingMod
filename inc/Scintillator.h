@@ -170,6 +170,7 @@ public:
   ScintillatorPlane(int moduleId, int numOfScintillators, double zPos, std::string planeName="Test-ScintillatorPlane");
   ScintillatorPlane(int moduleId, int numOfScintillators, double zPos, bool forRpc, std::string planeName="Test-ScintillatorPlane");
   ScintillatorPlane(int moduleId, int numOfScintillators, double zPos, bool forRpc, double scintPlaneLength, double scintPlaneBreadth, std::string planeName="Test-ScintillatorPlane");
+  ScintillatorPlane(int moduleId, int numOfScintillators, double zPos, bool forRpc, double scintPlaneLength, double scintPlaneBreadth,bool forCms, std::string planeName="Test-ScintillatorPlane");
 
   ~ScintillatorPlane(){}
 
@@ -179,6 +180,7 @@ public:
 
   void CreatePlaneOfScintillators(int moduleId,double zPos);
   void CreatePlaneOfScintillators(int moduleId,double zPos,bool forRpc);
+  void CreatePlaneOfScintillators(int moduleId,double zPos,bool forRpc,bool forCms);
   void ReadScintMapFileAndCreatePlane();
 
   TRACKING_INLINE
@@ -240,6 +242,7 @@ public:
   #ifdef USE_EVE
   void CreateEvePlane();
   void CreateEvePlane(double dZ);
+  void CreateEvePlane(double dZ, bool forCmsRpc);
   void *handle(void *ptr);
   void Reset();
   void RunThread();

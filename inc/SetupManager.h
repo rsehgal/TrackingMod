@@ -12,6 +12,7 @@
 #include <vector>
 #include "Scintillator.h"
 #include "RPC.h"
+#include "CmsRpc.h"
 #include "TThread.h"
 
  namespace Tracking{
@@ -21,6 +22,7 @@
     private:
         std::vector<ScintillatorPlane*> fScintVector;
         std::vector<RPC*> fRpcVector;
+        std::vector<CmsRpc*> fCmsRpcVector;
     public:
         SetupManager(){}
 
@@ -39,6 +41,10 @@
         void RegisterRpc(RPC *rpc){
             fRpcVector.push_back(rpc);
         }
+
+        void RegisterRpc(CmsRpc *rpc){
+                    fCmsRpcVector.push_back(rpc);
+                }
 
         //int GetSize(){return fComponents.size();}
 
@@ -95,24 +101,37 @@
               std::cout << std::endl;
             }
 
-            for (int j = 0; j < fRpcVector.size(); j++) {
-              ResetRpc(j);
-              std::cout << std::endl
-                        << "Plane Name : " << fRpcVector[j]->GetName()
-                        << " :: PlaneSize : " << fRpcVector[j]->GetRpc()->GetNumOfScintillators() << std::endl;
-              for (int i = 0; i < fRpcVector[j]->GetRpc()->GetNumOfScintillators(); i++) {
-                // fRpcVector[j]->GetScintillatorPlane()[i]->DetectAndSetHit<true>(t,evNo);
-                fRpcVector[j]->GetRpc()->GetScintillatorPlane()[i]->DetectAndSetHit<true>(t, evNo);
-                // bool hit =  fRpcVector[j]->GetScintillatorPlane()[i]->GetScintHit();
-                bool hit = fRpcVector[j]->GetRpc()->GetScintillatorPlane()[i]->GetScintHit();
-                // std::cout<< " EvNo: " << evNo <<"  :: Strip No : " << i <<"  :: HIT : " << hit <<  std::endl;
-
+            for (int j = 0; j < fCmsRpcVector.size(); j++) {
+              ResetCmsRpc(j);
+//              std::cout << std::endl
+//                        << "Plane Name : " << fCmsRpcVector[j]->GetName()
+//                        << " :: PlaneSize : " << fCmsRpcVector[j]->GetRpc()->GetNumOfScintillators() << std::endl;
+              for (int i = 0; i < fCmsRpcVector[j]->GetEtaA()->GetNumOfScintillators(); i++) {
+                fCmsRpcVector[j]->GetEtaA()->GetScintillatorPlane()[i]->DetectAndSetHit<true>(t, evNo);
+                bool hit = fCmsRpcVector[j]->GetEtaA()->GetScintillatorPlane()[i]->GetScintHit();
                 if (hit) {
-                  // fRpcVector[j]->GetScintillatorPlane()[i]->GetScintillatorEveGeoShape()->SetMainColor(2);
                   std::cout << hit << "  ,  ";
-                  fRpcVector[j]->GetRpc()->GetScintillatorPlane()[i]->GetScintillatorEveGeoShape()->SetMainColor(2);
+                  fCmsRpcVector[j]->GetEtaA()->GetScintillatorPlane()[i]->GetScintillatorEveGeoShape()->SetMainColor(2);
                 }
               }
+
+              for (int i = 0; i < fCmsRpcVector[j]->GetEtaB()->GetNumOfScintillators(); i++) {
+                              fCmsRpcVector[j]->GetEtaB()->GetScintillatorPlane()[i]->DetectAndSetHit<true>(t, evNo);
+                              bool hit = fCmsRpcVector[j]->GetEtaB()->GetScintillatorPlane()[i]->GetScintHit();
+                              if (hit) {
+                                std::cout << hit << "  ,  ";
+                                fCmsRpcVector[j]->GetEtaB()->GetScintillatorPlane()[i]->GetScintillatorEveGeoShape()->SetMainColor(2);
+                              }
+                            }
+
+              for (int i = 0; i < fCmsRpcVector[j]->GetEtaC()->GetNumOfScintillators(); i++) {
+                              fCmsRpcVector[j]->GetEtaC()->GetScintillatorPlane()[i]->DetectAndSetHit<true>(t, evNo);
+                              bool hit = fCmsRpcVector[j]->GetEtaC()->GetScintillatorPlane()[i]->GetScintHit();
+                              if (hit) {
+                                std::cout << hit << "  ,  ";
+                                fCmsRpcVector[j]->GetEtaC()->GetScintillatorPlane()[i]->GetScintillatorEveGeoShape()->SetMainColor(2);
+                              }
+                            }
             }
             evNo++;
           }
@@ -133,6 +152,21 @@
                 }
             
         }
+        void ResetCmsRpc(int j){
+
+                        for(int i = 0 ; i < fCmsRpcVector[j]->GetEtaA()->GetNumOfScintillators() ; i++ ){
+                            fCmsRpcVector[j]->GetEtaA()->GetScintillatorPlane()[i]->GetScintillatorEveGeoShape()->SetMainColor(3);
+                        }
+
+                        for(int i = 0 ; i < fCmsRpcVector[j]->GetEtaB()->GetNumOfScintillators() ; i++ ){
+                                                    fCmsRpcVector[j]->GetEtaB()->GetScintillatorPlane()[i]->GetScintillatorEveGeoShape()->SetMainColor(3);
+                                                }
+
+                        for(int i = 0 ; i < fCmsRpcVector[j]->GetEtaC()->GetNumOfScintillators() ; i++ ){
+                                                    fCmsRpcVector[j]->GetEtaC()->GetScintillatorPlane()[i]->GetScintillatorEveGeoShape()->SetMainColor(3);
+                                                }
+
+                }
 
 
         void RunThread(){

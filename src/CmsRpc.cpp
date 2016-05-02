@@ -36,9 +36,16 @@ CmsRpc::CmsRpc(int moduleId, std::string rpcName,double zPos, int startId ):
 void CmsRpc::Initialize(int startId,double zPos){
   Scintillator::SetStartingId(startId);
   // Scintillator::SetStartingId(fModuleId,fNumOfchannels,zPos,true,len, brd, fName);
-  fEtaA = new ScintillatorPlane(fModuleId, fNumOfChannelsA, zPos, true, 60, 53, fName);
-  fEtaB = new ScintillatorPlane(fModuleId, fNumOfChannelsB, zPos, true, 70, 53, fName);
-  fEtaC = new ScintillatorPlane(fModuleId, fNumOfChannelsC, zPos, true, 80, 53, fName);
+
+//  fEtaA = new ScintillatorPlane(fModuleId, fNumOfChannelsA, zPos, true, 60, 53, true,"A");
+//  fEtaB = new ScintillatorPlane(fModuleId, fNumOfChannelsB, zPos, true, 70, 53, true,"B");
+//  fEtaC = new ScintillatorPlane(fModuleId, fNumOfChannelsC, zPos, true, 80, 53, true,"C");
+
+  //For the time being setting all eta section to be of equal width 80,
+  //but in reality it should be like above
+  fEtaA = new ScintillatorPlane(fModuleId, fNumOfChannelsA, zPos, true, 80, 53, true,"A");
+    fEtaB = new ScintillatorPlane(fModuleId, fNumOfChannelsB, zPos, true, 80, 53, true,"B");
+    fEtaC = new ScintillatorPlane(fModuleId, fNumOfChannelsC, zPos, true, 80, 53, true,"C");
 }
 
 void CmsRpc::PrintStrips(){

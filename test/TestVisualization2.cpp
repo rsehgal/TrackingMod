@@ -29,11 +29,15 @@ int main(){
   Target *t = new Target();
 
   CmsRpc *rpc1 = new CmsRpc(2,"FirstCmsRpc",-75.);
+  CmsRpc *rpc2 = new CmsRpc(3,"SecondRpc",-45.);
+  CmsRpc *rpc3 = new CmsRpc(4,"ThirdRpc",-15.);
 
   //For Visualization
   v.Register(s1);
   v.Register(s2);
   v.Register(rpc1);
+  v.Register(rpc2);
+  v.Register(rpc3);
 //  v.Register(rpc1);
 //  v.Register(rpc2);
 //  v.Register(rpc3);
@@ -47,9 +51,9 @@ int main(){
   SetupManager s;
   s.RegisterScintillatorPlane(s1);
   s.RegisterScintillatorPlane(s2);
-//  s.RegisterRpc(rpc1);
-//  s.RegisterRpc(rpc2);
-//  s.RegisterRpc(rpc3);
+  s.RegisterRpc(rpc1);
+  s.RegisterRpc(rpc2);
+  s.RegisterRpc(rpc3);
   // s.RegisterRpc(rpc4);
   // s.RegisterRpc(rpc5);
   // s.RegisterRpc(rpc6);
@@ -64,7 +68,7 @@ int main(){
   }
 */
 
-  //s.RunThread();
+  s.RunThread();
 /*  s2->RunThread();
   rpc1->GetRpc()->RunThread();
   rpc2->GetRpc()->RunThread();
