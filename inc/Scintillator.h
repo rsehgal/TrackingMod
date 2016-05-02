@@ -89,6 +89,7 @@ public:
   Scintillator();//:fLength(0),fBreadth(0),fHeight(0), fScintHit(false) {}
   Scintillator(int moduleId);
   Scintillator(int moduleId,bool forRpc);
+  Scintillator(int moduleId,bool forRpc,double length, double breadth);
   Scintillator(double length, double breadth, double height=1);// :
     //fLength(length), fBreadth(breadth), fHeight(height), fScintHit(false) {}
   ~Scintillator();
@@ -168,6 +169,7 @@ public:
   ScintillatorPlane(int moduleId, int numOfScintillators, std::string planeName="Test-ScintillatorPlane");
   ScintillatorPlane(int moduleId, int numOfScintillators, double zPos, std::string planeName="Test-ScintillatorPlane");
   ScintillatorPlane(int moduleId, int numOfScintillators, double zPos, bool forRpc, std::string planeName="Test-ScintillatorPlane");
+  ScintillatorPlane(int moduleId, int numOfScintillators, double zPos, bool forRpc, double scintPlaneLength, double scintPlaneBreadth, std::string planeName="Test-ScintillatorPlane");
 
   ~ScintillatorPlane(){}
 

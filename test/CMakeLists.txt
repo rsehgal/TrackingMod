@@ -11,6 +11,7 @@ if(UNITTEST)
 set(TEST_EXECUTABLES ${TEST_EXECUTABLES}
 ${CMAKE_SOURCE_DIR}/test/ShowerDetectionTest.cpp
 ${CMAKE_SOURCE_DIR}/test/TestSetupManager.cpp
+${CMAKE_SOURCE_DIR}/test/TestCmsRpc.cpp
 )
 endif(UNITTEST)
 

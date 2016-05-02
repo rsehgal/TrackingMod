@@ -19,6 +19,7 @@
 #include "Scintillator.h"
 #include "RPC.h"
 #include "Target.h"
+#include "CmsRpc.h"
 
 namespace Tracking{
 
@@ -50,6 +51,13 @@ public:
 #ifdef USE_EVE
 #else
     v.AddVolume(rpc->GetRpc()->GetPlaneTGeoVolume());
+#endif
+  }
+
+  void Register(CmsRpc *rpc){
+#ifdef USE_EVE
+#else
+    //v.AddVolume(rpc->GetRpc()->GetPlaneTGeoVolume());
 #endif
   }
 

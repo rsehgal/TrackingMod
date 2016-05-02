@@ -102,6 +102,47 @@ Scintillator::Scintillator(int moduleId,bool forRpc):fLength(3.),fBreadth(100.),
 
 }
 
+Scintillator::Scintillator(int moduleId,bool forRpc, double length, double breadth):
+    fLength(length),fBreadth(breadth),fHeight(1.0), fScintHit(false) ,fModuleId(moduleId) {
+
+/*  if(!forRpc){ // Scintillator plane
+    fLength = 18.;
+    fBreadth = 180.;
+  }*/
+
+  fId++;
+  fScintId = fId;
+
+  //Just a test, manually setting some hit strips
+  //if(fScintId==35 || fScintId==38 || fScintId==42)
+  //  fScintHit = true;
+
+
+  sStripNum++;
+  fStripNum = sStripNum;
+  std::stringstream ss;
+  ss << "Module" << fModuleId <<"_LE_CH" << fScintId;
+  fBName = ss.str();
+
+  #ifdef USE_EVE
+  if(gEve){
+  fScintEveGeoShape = new TEveGeoShape(fBName.c_str());
+  fScintEveGeoShape->SetShape(GetScintShape());
+  fScintEveGeoShape->SetMainColor(kGreen);
+  fScintEveGeoShape->SetMainTransparency(50);
+  }
+  #endif
+  //t = new Tree("6133.root","BSC_DATA_TREE");
+
+  //Commenting Histogram for the time being
+  //h = new TH1F("h",fBName.c_str(),100,20000,21000);
+  #ifndef USE_EVE
+    CreateScintillatorTGeoVolume();
+  #endif
+
+}
+
+
 Scintillator::Scintillator(double length, double breadth, double height) :
     fLength(length), fBreadth(breadth), fHeight(height), fScintHit(false), fModuleId(0) {
   fId++;
@@ -418,10 +459,27 @@ ScintillatorPlane::ScintillatorPlane(int moduleId, int numOfScintillators,double
     fLength(100.),
     fBreadth(100.){
 
+  if(!forRpc){
+    fLength=144.;
+    fBreadth = 180.;
+  }
   InitializeScintillatorPlane();
   CreatePlaneOfScintillators(moduleId,zPos,forRpc);
 
 }
+
+ScintillatorPlane::ScintillatorPlane(int moduleId, int numOfScintillators, double zPos, bool forRpc,
+    double planeLength, double planeBreadth, std::string planeName):
+        fNumOfScintillators(numOfScintillators),
+        fScintTotal(0),
+        fPlaneName(planeName),
+        fLength(planeLength),
+        fBreadth(planeBreadth){
+
+      InitializeScintillatorPlane();
+      CreatePlaneOfScintillators(moduleId,zPos,forRpc);
+
+    }
 
 void ScintillatorPlane::CreatePlaneOfScintillators(){
   for(int i = 0 ; i< fNumOfScintillators ; i++){
@@ -455,7 +513,7 @@ void ScintillatorPlane::CreatePlaneOfScintillators(int moduleId){
 
   void ScintillatorPlane::CreatePlaneOfScintillators(int moduleId,double zPos, bool forRpc){
     Scintillator::SetStartingStripNum(-1);
-    if(forRpc){
+ /*   if(forRpc){
       fLength = 100.;
       fBreadth = 100.;
     }
@@ -463,10 +521,11 @@ void ScintillatorPlane::CreatePlaneOfScintillators(int moduleId){
       fLength=144.;
       fBreadth = 180.;
     }
-
+*/
     for(int i = 0 ; i< fNumOfScintillators ; i++){
       //fScintillatorPlane.push_back(new Scintillator(moduleId));
-      fScintillatorPlane.push_back(new Scintillator(moduleId,forRpc));
+      //fScintillatorPlane.push_back(new Scintillator(moduleId,forRpc));
+      fScintillatorPlane.push_back(new Scintillator(moduleId,forRpc,fLength/fNumOfScintillators,fBreadth));
     }
 
   #ifndef USE_EVE
