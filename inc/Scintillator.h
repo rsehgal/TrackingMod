@@ -268,8 +268,8 @@ void Scintillator::DetectAndSetHit(Tree &t, int evNo){
   trig = trigMultiHit->at(0);
   ch = 0;
   ch = t.GetEntry(fBName,evNo);
-  std::cout<<"ChVal : "<< ch << std::endl;
-  std::cout<<"ChSize : " << ch->size() << std::endl;
+  //std::cout<<"ChVal : "<< ch << std::endl;
+  //std::cout<<"ChSize : " << ch->size() << std::endl;
   if(ch->size()){
   long scintillator = 0;
   scintillator = ch->at(0);
@@ -279,7 +279,7 @@ void Scintillator::DetectAndSetHit(Tree &t, int evNo){
     if(ForRpc){
       //std::cout<<"BranchName : "<<fBName<<std::endl;
       long rpcData = scintillator;
-      std::cout<< "Rpc Data : "<<rpcData<<std::endl;
+      //std::cout<< "Rpc Data : "<<rpcData<<std::endl;
       if( rpcData >= 19450 && rpcData <= 20550
           //&& (fScintId < 64)
           ) fScintHit = true;

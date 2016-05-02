@@ -72,7 +72,7 @@ int main(){
 */  v.Show();
 
 
-  TTimer timer(20); // every second
+  TTimer timer(20); // every 20 millisecond
   //timer.SetCommand("gEve->Redraw3D(kTRUE);");
   timer.SetCommand("gEve->DoRedraw3D();");
   timer.TurnOn();
