@@ -95,4 +95,4 @@ file(COPY ${CFG_FILES} DESTINATION ${PROJECT_SOURCE_DIR}/build)
 
 #add_subdirectory(TreeExercise)
 add_subdirectory(test)
-
+add_subdirectory(TemplatizedInterface)
