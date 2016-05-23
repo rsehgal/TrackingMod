@@ -11,21 +11,94 @@
 //#include "Component.h"
 #include <vector>
 #include "Scintillator.h"
-#include "RPC.h"
+//#include "RPC.h"
 #include "CmsRpc.h"
+#include "GlassRpc.h"
+#include "TriggeringPlane.h"
 #include "TThread.h"
+#include "Properties.h"
+#include <TEveGeoShape.h>
+#include <TGeoBBox.h>
+#include <TGeoMatrix.h>
+#include <cstdlib>
+#include <ctime>
+#include "Eve/Singleton.h"
 
- namespace Tracking{
+typedef Tomography::Properties Detector;
+
+ namespace Tomography{
 
     
     class SetupManager{
+      int count;
+      TEveGeoShape *fEveShape;
     private:
-        std::vector<ScintillatorPlane*> fScintVector;
-        std::vector<RPC*> fRpcVector;
-        std::vector<CmsRpc*> fCmsRpcVector;
+        std::vector<Detector*> fTriggeringPlaneVector;
+        std::vector<Detector*> fCmsRpcVector;
+        std::vector<Detector*> fGlassRpcVector;
     public:
-        SetupManager(){}
+        SetupManager(){count=0;}
+        void Register(Detector *det){
+          if(det->GetDetectorType().compare("CMS") == 0)
+            fCmsRpcVector.push_back(det);
 
+          if(det->GetDetectorType().compare("GLASS") == 0)
+            fGlassRpcVector.push_back(det);
+
+          if(det->GetDetectorType().compare("TRG") == 0)
+            fTriggeringPlaneVector.push_back(det);
+
+        }
+
+        void *handle(void *ptr) {
+
+          TGeoHMatrix m;
+          Double_t trans[3] = {0., 0., 0.};
+          m.SetTranslation(trans);
+          m.SetDx(rand()%50);
+          m.SetDy(rand()%50);
+          m.SetDz(75);
+/*          TGeoBBox *shape = new TGeoBBox("hittedPixel",100/64., 100/64., 1);
+          fEveShape = new TEveGeoShape("HittedPixel");
+          fEveShape->SetShape(shape);
+          fEveShape->SetMainColor(2);
+          fEveShape->SetMainTransparency(50);*/
+          //TGeoBBox *shape ;
+          while(true){
+            sleep(2);
+            count++;
+
+            TGeoBBox *shape ;
+          if(count%2){
+             shape = new TGeoBBox("hittedPixel",100/64., 100/64., 1);
+                      fEveShape = new TEveGeoShape("HittedPixel");
+                       fEveShape->SetShape(shape);
+                       fEveShape->SetMainColor(2);
+                       fEveShape->SetMainTransparency(50);
+            m.SetDx(rand() % 50);
+            m.SetDy(rand() % 50);
+            //Add some element
+            if(gEve){
+              //TGeoBBox *shape = new TGeoBBox("hittedPixel",fLength/2., fBreadth/2., fHeight/2.);
+              fEveShape->SetTransMatrix(m);
+              Tracking::Singleton::instance()->AddElement(fEveShape);
+             }
+          }
+          else{
+            //Delete some element
+            Tracking::Singleton::instance()->RemoveElement(fEveShape);
+          }
+          //delete shape;
+          //delete fEveShape;
+        }
+        }
+
+        void RunThread() {
+          TThread *mythread = new TThread("My Thread", (void (*)(void *)) & SetupManager::handle, (void *)this);
+          mythread->Run();
+        }
+
+/*
         template<typename Type,bool ForRpc>
         void Register(Type *component){
             if(ForRpc)
@@ -48,6 +121,7 @@
 
         //int GetSize(){return fComponents.size();}
 
+
         void GetComponentsName(){
             for(int i = 0 ; i < fScintVector.size() ; i++){
                 std::cout<<" Name : " << fScintVector[i]->GetName() << std::endl;
@@ -63,6 +137,7 @@
             }
             std::cout<<"Num of Strip in Rpc : " << fRpcVector[0]->GetRpc()->GetNumOfScintillators() << std::endl;
         }
+
 
 
 
@@ -238,6 +313,8 @@
                    (void*) this);
                 mythread->Run();
                 }
+
+  */
 
     };
 

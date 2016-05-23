@@ -50,6 +50,7 @@ public:
   void AddVolume( TGeoVolume *rootVolume, Vector3D<Precision> p);
   void AddVolume( TGeoShape *shape, Vector3D<Precision> p);
   TGeoVolume* CreateTGeoVolume(TGeoShape *shape);
+  TGeoVolume* CreateTGeoVolume(std::string name,TGeoShape *shape);
 
 };
 

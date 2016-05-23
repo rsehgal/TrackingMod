@@ -23,6 +23,7 @@ Properties::Properties(std::string name,std::vector<int> channelsInDim){
   fName = name;
   fChannelsInDim = channelsInDim;
   fDim = fChannelsInDim.size();
+  fNumOfPlanes = fDim;
   fTotalNumOfChannels = 0;
   for (int i = 0; i < fDim; i++) {
     fTotalNumOfChannels += fChannelsInDim[i];

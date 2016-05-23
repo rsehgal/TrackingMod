@@ -1,0 +1,101 @@
+/*
+ * VisualizationHelper.h
+ *
+ *  Created on: Apr 28, 2016
+ *      Author: rsehgal
+ */
+
+#ifndef TEMPLATIZEDINTERFACE_INC_VISUALIZATIONHELPER_H_
+#define TEMPLATIZEDINTERFACE_INC_VISUALIZATIONHELPER_H_
+
+
+#ifdef USE_EVE
+#include "Eve/EveVisualizer.h"
+#include "TEveManager.h"
+#include "TEveGeoShape.h"
+#include <TGeoMatrix.h>
+typedef Tracking::EveVisualizer TomographyVisualizer;
+#else
+#include "TGeo/Visualizer.h"
+typedef Tracking::Visualizer TomographyVisualizer;
+#endif
+
+#include "base/Vector3D.h"
+#include <TGeoBBox.h>
+#include "TApplication.h"
+#include "GlassRpc.h"
+#include "Properties.h"
+
+typedef Tomography::Properties Detector;
+namespace Tomography{
+
+
+class VisualizationHelper{
+
+TomographyVisualizer fVis;
+
+public:
+  VisualizationHelper(){
+#ifdef USE_EVE
+    TEveManager::Create();
+#endif
+
+  }
+
+  void Register(Detector *det){
+  //void Register(GlassRpc *obj){
+#ifdef USE_EVE
+    //TGeoBBox *box = fScintillatorPlane[0]->GetScintShape();
+     TGeoHMatrix m;
+     Double_t trans[3] = { 0., 0., 0. };
+     m.SetTranslation(trans);
+     Tracking::Vector3D<double> placedLocation(0.,0.,0.);
+     int numOfPlanes = det->GetNumOfPlanes();
+        std::cout<<"Num Of Planes : " << numOfPlanes << std::endl;
+        for(int i= 0 ; i<numOfPlanes; i++){
+          std::cout<<"---------------------------------------------------------------"<<std::endl;
+          int numOfChannels = det->GetScintillatorPlaneVector()[i]->GetScintVector().size();
+          for(int j = 0 ; j < numOfChannels ; j++){
+            TGeoBBox *box = det->GetScintillatorPlaneVector()[i]->GetScintVector()[j]->GetScintShape();
+            placedLocation = det->GetScintillatorPlaneVector()[i]->GetScintVector()[j]->GetPlacedLocation();
+            m.SetDx(placedLocation.x());
+            m.SetDy(placedLocation.y());
+            m.SetDz(placedLocation.z());
+            fVis.AddEveShape(det->GetScintillatorPlaneVector()[i]->GetScintVector()[j]->GetName(),box,m);
+
+          }
+        }
+
+/*
+        for(int i=0; i < fScintillatorPlane.size(); i++){
+       //std::cout<<" X trans : "<< (-fLength/2.+i*1.6) << std::endl;
+       m.SetDx(-fLength/2.+i*1.6);
+      fEve.AddEveShape(fScintillatorPlane[i]->GetName(), box, m );
+      // Singleton::instance()->GetEveVisualizer()->AddEveShape(fScintillatorPlane[i]->GetName(), box, m );
+     }
+*/
+#else
+/*
+  for(int i=0 ; i < obj->GetPlaneVector().size() ; i++){
+   v.AddVolume(obj->GetPlaneVector()[i]->GetTGeoVolume());
+  }
+*/
+#endif
+  }
+
+  void Show(){
+#ifdef USE_EVE
+    Tracking::EveVisualizer::Show();
+#else
+    fVis.Show();
+#endif
+  }
+
+
+};
+
+}// end of Tomography namespace
+
+
+
+#endif /* INC_VISUALIZATIONHELPER_H_ */

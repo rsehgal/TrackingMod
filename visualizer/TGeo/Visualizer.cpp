@@ -112,4 +112,8 @@ TGeoVolume* Visualizer::CreateTGeoVolume(TGeoShape *shape){
   return (new TGeoVolume("SHAPE", shape, Vacuum));
 }
 
+TGeoVolume* Visualizer::CreateTGeoVolume(std::string name,TGeoShape *shape){
+  return (new TGeoVolume(name.c_str(), shape, Vacuum));
+}
+
 } //end of Tracking namespace

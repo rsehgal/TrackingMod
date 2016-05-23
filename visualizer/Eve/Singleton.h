@@ -51,6 +51,10 @@ class Singleton
       fEveGeomList->AddElement(eveShape);
     }
 
+    void RemoveElement(TEveGeoShape *eveShape) {
+      fEveGeomList->RemoveElement(eveShape);
+    }
+
     TEveElementList* GetList(){return fEveGeomList;}
 
     //EveVisualizer* GetEveVisualizer(){return fEve;}

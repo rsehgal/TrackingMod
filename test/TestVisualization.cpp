@@ -16,7 +16,7 @@ int main(){
   TApplication *fApp = new TApplication("Test", NULL, NULL);
   //TEveManager::Create();
 
-  Tracking::VisualizationHelper v;
+  Tracking::VisualizationHelper<int> v;
   ScintillatorPlane *s1 = new ScintillatorPlane(2,8,-105.,false,"TopPlane");
   ScintillatorPlane *s2 = new ScintillatorPlane(2,8,105.,false,"BottomPlane");
   RPC *rpc1 = new RPC(2,32,"FirstRpc",-75.);
