@@ -24,6 +24,7 @@
 #include <ctime>
 #include "Eve/Singleton.h"
 #include "Coordinates.h"
+#include "HittedPixel.h"
 
 typedef Tomography::Properties Detector;
 
@@ -59,53 +60,45 @@ typedef Tomography::Properties Detector;
           m.SetDx(rand()%50);
           m.SetDy(rand()%50);
           m.SetDz(75);
-/*          TGeoBBox *shape = new TGeoBBox("hittedPixel",100/64., 100/64., 1);
-          fEveShape = new TEveGeoShape("HittedPixel");
-          fEveShape->SetShape(shape);
-          fEveShape->SetMainColor(2);
-          fEveShape->SetMainTransparency(50);*/
-          //TGeoBBox *shape ;
 
           Coordinates c;
           double* temp;
-
-
+          std::vector<HittedPixel*> hittedPixelVector;
           while(true){
             sleep(2);
 
-            c.CoGenerator(3, 30);
+            c.CoGenerator(4, 30);
             c.SetStrips();
             c.SetStripCoordinates();
-            temp = c.GetStripCoordinate(2);
-            std::cout << *temp << " " << *(temp + 1) << " " << *(temp + 2) << std::endl;
+            //temp = c.GetStripCoordinate(3);
+            //std::cout << *temp << " " << *(temp + 1) << " " << *(temp + 2) << std::endl;
 
             count++;
 
             TGeoBBox *shape ;
-          if(count%2){
-             shape = new TGeoBBox("hittedPixel",100/64., 100/64., 1);
-                      fEveShape = new TEveGeoShape("HittedPixel");
-                       fEveShape->SetShape(shape);
-                       fEveShape->SetMainColor(2);
-                       fEveShape->SetMainTransparency(50);
-            //m.SetDx(rand() % 50);
-            //m.SetDy(rand() % 50);
+
+            std::cout<<"Size : "<< hittedPixelVector.size() << std::endl;
+            if(hittedPixelVector.size()){
+              //std::cout<<"Entered Here"<< std::endl;
+              for(int i = 0 ; i < hittedPixelVector.size() ; i++){
+                Tracking::Singleton::instance()->RemoveElement(hittedPixelVector[i]->GetEveGeoShape());
+              }
+            }
+
+            hittedPixelVector.clear();
+            for(int detNo = 0 ; detNo < fGlassRpcVector.size() ; detNo++){
+              temp = c.GetStripCoordinate(detNo+1);
+              std::cout << *temp << " " << *(temp + 1) << " " << *(temp + 2) << std::endl;
             m.SetDx(*temp);
             m.SetDy(*(temp + 1));
+            m.SetDz(*(temp + 2));
 
             //Add some element
             if(gEve){
-              //TGeoBBox *shape = new TGeoBBox("hittedPixel",fLength/2., fBreadth/2., fHeight/2.);
-              fEveShape->SetTransMatrix(m);
-              Tracking::Singleton::instance()->AddElement(fEveShape);
+              hittedPixelVector.push_back(new HittedPixel(m));
+              Tracking::Singleton::instance()->AddElement(hittedPixelVector[detNo]->GetEveGeoShape());
              }
-          }
-          else{
-            //Delete some element
-            Tracking::Singleton::instance()->RemoveElement(fEveShape);
-          }
-          //delete shape;
-          //delete fEveShape;
+            }
         }
         }
 

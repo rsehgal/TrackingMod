@@ -38,18 +38,25 @@ int main(){
   channelVector.push_back(32);
 
   //Properties *rpc1 = new GlassRpc("FirstRpc",channelVector);
-  Detector *rpc1 = new CmsRpc(3,"FirstGlassRpc", -75,-1);
+  //Detector *rpc1 = new CmsRpc(3,"FirstGlassRpc", -75,-1);
   //Detector *rpc2 = new GlassRpc(3,"FirstGlassRpc", 105,-1);
-  std::cout<<"Name : "<< rpc1->GetName() << std::endl;
-  std::cout<<"Total Num of Channels : "<< rpc1->GetTotalNumOfChannels() << std::endl;
-  Print(rpc1);
+  //std::cout<<"Name : "<< rpc1->GetName() << std::endl;
+  //std::cout<<"Total Num of Channels : "<< rpc1->GetTotalNumOfChannels() << std::endl;
+  //Print(rpc1);
 
   //v.Register(rpc1);
 
   std::cout<<"===========================================================================" << std::endl;
-  Detector *rpc2 = new GlassRpc(3,"SecondGlassRpc", 75,63);
+  Detector *rpc1 = new GlassRpc(3,"SecondGlassRpc", 90,-1);
+  Detector *rpc2 = new GlassRpc(3,"SecondGlassRpc", 60,-1);
+  Detector *rpc3 = new GlassRpc(3,"SecondGlassRpc", 30,63);
+  Detector *rpc4 = new GlassRpc(4,"SecondGlassRpc", 0,-1);
+
   Print(rpc2);
+  v.Register(rpc1);
   v.Register(rpc2);
+  v.Register(rpc3);
+  v.Register(rpc4);
 
   Detector *topPlane = new TriggeringPlane(2,"TopPlane", -105,-1);
   Detector *bottomPlane = new TriggeringPlane(2,"BottomPlane", 105,7);
@@ -64,6 +71,9 @@ int main(){
 
   Tomography::SetupManager s;
   s.Register(rpc1);
+  s.Register(rpc2);
+  s.Register(rpc3);
+  s.Register(rpc4);
   s.RunThread();
 
   v.Show();
