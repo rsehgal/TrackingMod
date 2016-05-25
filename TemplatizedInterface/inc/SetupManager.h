@@ -23,6 +23,7 @@
 #include <cstdlib>
 #include <ctime>
 #include "Eve/Singleton.h"
+#include "Coordinates.h"
 
 typedef Tomography::Properties Detector;
 
@@ -64,8 +65,20 @@ typedef Tomography::Properties Detector;
           fEveShape->SetMainColor(2);
           fEveShape->SetMainTransparency(50);*/
           //TGeoBBox *shape ;
+
+          Coordinates c;
+          double* temp;
+
+
           while(true){
             sleep(2);
+
+            c.CoGenerator(3, 30);
+            c.SetStrips();
+            c.SetStripCoordinates();
+            temp = c.GetStripCoordinate(2);
+            std::cout << *temp << " " << *(temp + 1) << " " << *(temp + 2) << std::endl;
+
             count++;
 
             TGeoBBox *shape ;
@@ -75,8 +88,11 @@ typedef Tomography::Properties Detector;
                        fEveShape->SetShape(shape);
                        fEveShape->SetMainColor(2);
                        fEveShape->SetMainTransparency(50);
-            m.SetDx(rand() % 50);
-            m.SetDy(rand() % 50);
+            //m.SetDx(rand() % 50);
+            //m.SetDy(rand() % 50);
+            m.SetDx(*temp);
+            m.SetDy(*(temp + 1));
+
             //Add some element
             if(gEve){
               //TGeoBBox *shape = new TGeoBBox("hittedPixel",fLength/2., fBreadth/2., fHeight/2.);
