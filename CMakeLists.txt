@@ -74,9 +74,9 @@ find_package(ROOT REQUIRED)
 include_directories(AFTER SYSTEM ${ROOT_INCLUDE_DIR})
 #find_package(Geant4 REQUIRED)
 
-include_directories(${PROJECT_SOURCE_DIR})
+#include_directories(${PROJECT_SOURCE_DIR})
 #include_directories(${PROJECT_SOURCE_DIR}/inc)
-include_directories(${PROJECT_SOURCE_DIR}/visualizer)
+#include_directories(${PROJECT_SOURCE_DIR}/visualizer)
 
 #file(GLOB headers ${PROJECT_SOURCE_DIR}/inc/*.h)
 #file(GLOB sources ${PROJECT_SOURCE_DIR}/src/*.cpp)
@@ -95,5 +95,70 @@ file(COPY ${CFG_FILES} DESTINATION ${PROJECT_SOURCE_DIR}/build)
 
 #add_subdirectory(TreeExercise)
 #add_subdirectory(test)
-add_subdirectory(TemplatizedInterface)
-add_subdirectory(CoordinateGenerator)
+#add_subdirectory(TemplatizedInterface)
+#add_subdirectory(CoordinateGenerator)
+
+#COLLECTING ALL INCLUDE DIRECTORIES
+set(INCLUDES ${INCLUDES}
+${CMAKE_SOURCE_DIR}/CoordinateGenerator/inc
+${CMAKE_SOURCE_DIR}/TemplatizedInterface/inc
+${PROJECT_SOURCE_DIR}/visualizer
+${CMAKE_SOURCE_DIR}/inc
+${PROJECT_SOURCE_DIR}
+)
+macro(include_dirs INCLUDES)
+  foreach(INCLUDE ${INCLUDES})
+    include_directories(${INCLUDE})
+  endforeach()
+endmacro()
+
+#COLLECTING ALL HEADER FILES
+macro(collect_headers INCLUDES)
+  foreach(INCLUDE ${INCLUDES})
+    file(GLOB headers ${headers} ${INCLUDE}/*.h)
+  endforeach()
+endmacro()
+
+#COLLECTING ALL SOURCE FILES
+set(SOURCES ${SOURCES}
+${CMAKE_SOURCE_DIR}/CoordinateGenerator/src
+${CMAKE_SOURCE_DIR}/TemplatizedInterface/src
+${CMAKE_SOURCE_DIR}/src
+)
+
+macro(collect_sources SOURCES)
+  foreach(SOURCE ${SOURCES})
+    file(GLOB sources ${sources} ${SOURCE}/*.cpp)
+  endforeach()
+endmacro()
+
+
+SET(TESTSDIR ${TESTSDIR}
+${CMAKE_SOURCE_DIR}/CoordinateGenerator/test
+${CMAKE_SOURCE_DIR}/TemplatizedInterface/test
+#${CMAKE_SOURCE_DIR}/test
+)
+#COLLECTING ALL TEST FILES
+macro(collect_tests TESTS)
+  foreach(TEST ${TESTS})
+    file(GLOB tests ${tests} ${TEST}/*.cpp)
+  endforeach()
+endmacro()
+
+macro(build_executables EXECUTABLES)
+  foreach(EXECUTABLE ${EXECUTABLES})
+    get_filename_component(TARGET_NAME ${EXECUTABLE} NAME_WE)
+    add_executable(${TARGET_NAME} ${EXECUTABLE} ${sources} ${headers})
+  if(EVE)
+    target_link_libraries(${TARGET_NAME} ${ROOT_LIBRARIES} Geom Eve)
+  else()
+    target_link_libraries(${TARGET_NAME} ${ROOT_LIBRARIES} Geom)
+  endif(EVE)
+  endforeach()
+endmacro()
+
+include_dirs("${INCLUDES}")
+collect_headers("${INCLUDES}")
+collect_sources("${SOURCES}")
+collect_tests("${TESTSDIR}")
+build_executables("${tests}")
