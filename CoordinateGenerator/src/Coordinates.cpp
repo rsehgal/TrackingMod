@@ -17,17 +17,17 @@
 	    //	strip[i].resize(2);
 	}
 
-	void Coordinates::CoGenerator(int N1, int M1)
+	void Coordinates::CoGenerator(int N1, std::vector <Detector*> det)
 	{
 		N = N1;
-		M = M1;
+	//	M = M1;
 		
 	 	InitializeVectors();
 		
 		for(int i = 0 ; i < N ; i++)
 		{
 			//coordinate[i][2] = (double)((N-1-i)*M);
-			coordinate[i].SetZ((double)((N-1-i)*M));
+			coordinate[i].SetZ(det[i]->GetZPos());
 		}
 		srand(time(NULL));
 		//coordinate[0][0] = GenRandom(-50, 50);
@@ -45,7 +45,7 @@
 			//temp = ( (i+1) * (double)M - coordinate[0][2] ) / ( coordinate[0][2] - coordinate[N-1][2]);
 			//coordinate[N-i-2][0] = (coordinate[0][0] - coordinate[N-1][0]) * temp + coordinate[0][0];
 			//coordinate[N-i-2][1] = (coordinate[0][1] - coordinate[N-1][1]) * temp + coordinate[0][1];
-			temp = ( (i+1) * (double)M - coordinate[0].z() ) / ( coordinate[0].z() - coordinate[N-1].z());
+			temp = ( coordinate[N-i-2].z()- coordinate[0].z() ) / ( coordinate[0].z() - coordinate[N-1].z());
 			coordinate[N-i-2].SetX((coordinate[0].x() - coordinate[N-1].x()) * temp + coordinate[0].x());
 			coordinate[N-i-2].SetY((coordinate[0].y() - coordinate[N-1].y()) * temp + coordinate[0].y());
 		}		

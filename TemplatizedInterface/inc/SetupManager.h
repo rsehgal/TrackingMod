@@ -23,7 +23,7 @@
 #include <cstdlib>
 #include <ctime>
 #include "Eve/Singleton.h"
-#include "Coordinates.h"
+//#include "Coordinates.h"
 #include "HittedPixel.h"
 
 typedef Tomography::Properties Detector;
@@ -60,7 +60,7 @@ typedef Tomography::Properties Detector;
           if(detType.compare("TRG")==0)
             return fTriggeringPlaneVector;
         }
-
+/*
 #ifdef USE_EVE
         void *handle(void *ptr) {
 
@@ -117,6 +117,7 @@ typedef Tomography::Properties Detector;
           mythread->Run();
         }
 #endif
+*/
 /*
         template<typename Type,bool ForRpc>
         void Register(Type *component){
