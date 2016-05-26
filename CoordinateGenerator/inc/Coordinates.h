@@ -3,24 +3,29 @@
 
 #include <iostream>
 #include <vector>
+#include "base/Vector3D.h"
+using namespace Tracking;
 using std::vector;
 class Coordinates{
 private:
 	int N;          						// Number of Detectors
 	int M;
 	double temp;		
-	vector<vector <double>> coordinate;	
-	vector<vector <double>> stripcoord;    //generated coordinates from midpoints of 2-D grid of each detectors
-	vector<vector <double>> strip;	
+	vector<Vector3D <double>> coordinate;
+	vector<Vector3D <double>> stripcoord;
+	vector<Vector3D <double>> strip;
+	//vector<vector <double>> coordinate;
+	//vector<vector <double>> stripcoord;    //generated coordinates from midpoints of 2-D grid of each detectors
+	//vector<vector <double>> strip;
 
 public:
 	void InitializeVectors();
 	void CoGenerator(int N, int M);
-	double* GetCoordinate(int detector);     //Enter value between 0 < detector < total detectors
+	Vector3D<double> GetCoordinate(int detector);     //Enter value between 0 < detector < total detectors
 	void SetStripCoordinates();
-	double* GetStripCoordinate(int detector);
+	Vector3D<double> GetStripCoordinate(int detector);
 	void SetStrips();
-	double* GetStrip(int detector);
+	Vector3D<double> GetStrip(int detector);
 	double GenRandom(double min, double max);
 	void Print();
 

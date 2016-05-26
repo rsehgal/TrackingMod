@@ -1,7 +1,8 @@
+message(STATUS ${headers} )
 set(TEST_EXECUTABLES
 ${CMAKE_CURRENT_SOURCE_DIR}/Testing.cpp
 ${CMAKE_CURRENT_SOURCE_DIR}/TestCoordinates.cpp
-${CMAKE_CURRENT_SOURCE_DIR}/DetectorInfo.cpp
+
 )
 
 macro(build_executables EXECUTABLES)
