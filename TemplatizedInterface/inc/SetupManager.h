@@ -52,6 +52,16 @@ typedef Tomography::Properties Detector;
 
         }
 
+        std::vector<Detector*> GetDetectorVector(std::string detType){
+          if(detType.compare("CMS")==0)
+            return fCmsRpcVector;
+          if(detType.compare("GLASS")==0)
+            return fGlassRpcVector;
+          if(detType.compare("TRG")==0)
+            return fTriggeringPlaneVector;
+        }
+
+#ifdef USE_EVE
         void *handle(void *ptr) {
 
           TGeoHMatrix m;
@@ -106,7 +116,7 @@ typedef Tomography::Properties Detector;
           TThread *mythread = new TThread("My Thread", (void (*)(void *)) & SetupManager::handle, (void *)this);
           mythread->Run();
         }
-
+#endif
 /*
         template<typename Type,bool ForRpc>
         void Register(Type *component){
