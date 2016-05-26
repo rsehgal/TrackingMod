@@ -74,6 +74,7 @@ public:
   int GetNumOfChannelsInDimension(int dim){return fChannelsInDim[dim];}
   int GetNumOfPlanes(){return fNumOfPlanes;}
   std::vector<ScintillatorPlane*> GetScintillatorPlaneVector(){return fScintillatorPlaneVector;}
+  ScintillatorPlane* GetPlane(int planeNo){return fScintillatorPlaneVector[planeNo];}
   std::string GetDetectorType(){return fDetectorType;}
   void InsertPlane(ScintillatorPlane *plane){
     fScintillatorPlaneVector.push_back(plane);

@@ -67,7 +67,7 @@ typedef Tomography::Properties Detector;
           while(true){
             sleep(2);
 
-            c.CoGenerator(4, 30);
+            c.CoGenerator(2, 30);
             c.SetStrips();
             c.SetStripCoordinates();
             //temp = c.GetStripCoordinate(3);

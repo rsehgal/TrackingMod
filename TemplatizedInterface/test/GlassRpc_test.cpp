@@ -53,8 +53,8 @@ int main(){
   Detector *rpc4 = new GlassRpc(4,"SecondGlassRpc", 0,-1);
 
   Print(rpc2);
-  v.Register(rpc1);
-  v.Register(rpc2);
+  //v.Register(rpc1);
+  //v.Register(rpc2);
   v.Register(rpc3);
   v.Register(rpc4);
 
@@ -70,8 +70,8 @@ int main(){
 
 
   Tomography::SetupManager s;
-  s.Register(rpc1);
-  s.Register(rpc2);
+  //s.Register(rpc1);
+  //s.Register(rpc2);
   s.Register(rpc3);
   s.Register(rpc4);
   s.RunThread();
