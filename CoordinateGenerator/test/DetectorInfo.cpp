@@ -17,6 +17,7 @@ int main(){
 
   for(int i = 0 ; i < rpc1->GetNumOfPlanes() ; i++){
     std::cout<<"Num of Strips in plane : " << i << " : " << rpc1->GetPlane(i)->GetNumOfScintillators() << std::endl;
+    std::cout<<"Dimension of plane : " << i << " : " << rpc1->GetPlane(i)->GetLength() << "," << rpc1->GetPlane(i)->GetBreadth() << std::endl;
   }
 
   return 0;

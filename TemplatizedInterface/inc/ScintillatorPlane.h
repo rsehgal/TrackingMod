@@ -68,6 +68,9 @@ public:
   int GetTotalScintillatorFired(){return fScintTotal;}
   int GetNumOfScintillators(){return fNumOfScintillators;}
   std::vector<Scintillator*> GetScintVector(){return fScintVector;}
+  double GetLength(){return fLength;}
+  double GetBreadth(){return fBreadth;}
+  double GetHeight(){return fHeight;}
 };
 
 } /* namespace Tomography */
