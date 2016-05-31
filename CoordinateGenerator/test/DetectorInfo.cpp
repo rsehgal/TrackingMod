@@ -4,13 +4,13 @@
 //#include "VisualizationHelper.h"
 typedef Tomography::Properties Detector;
 
-#undef USE_EVE
+//#undef USE_EVE
 #include "SetupManager.h"
 
 int main(){
 
   //Tomography::VisualizationHelper v;
-  Tomography::SetupManager s;
+  //Tomography::SetupManager s;
   //TEveManager::Create();
   Detector *rpc1 = new Tomography::GlassRpc(3,"FirstGlassRpc", 90,-1);
   Detector *rpc2 = new Tomography::GlassRpc(3,"SecondGlassRpc", 90,-1);
@@ -25,6 +25,7 @@ int main(){
   }
 
   std::cout<<"-------------------------------------" << std::endl;
+/*
   s.Register(rpc1);
   s.Register(rpc2);
   s.Register(rpc3);
@@ -33,6 +34,6 @@ int main(){
   for(int i=0 ; i < detVector.size() ; i++){
     std::cout<<"Detector : " << i << " : " << detVector[i]->GetName() <<std::endl;
   }
-
+*/
   return 0;
 }

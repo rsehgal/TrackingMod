@@ -10,7 +10,9 @@
 
 #include "base/Global.h"
 #include "base/Vector3D.h"
+#ifdef SHOW_VISUALIZATION
 #include "TGeoVolume.h"
+#endif
 /*
 #ifndef USE_EVE
 #include "TGeo/Visualizer.h"
@@ -41,7 +43,9 @@ class Scintillator {
   Tracking::Vector3D<double> fPlacedLocation;
 
   //Variable to store TGeoVolume
+#ifdef SHOW_VISUALIZATION
   TGeoVolume *fTGeoVolume;
+#endif
 
 public:
   Scintillator();
@@ -66,9 +70,11 @@ public:
   double Area(){return fLength*fBreadth;}
   double Volume(){return fLength*fBreadth*fHeight;}
   Tracking::Vector3D<double> GetPlacedLocation(){return fPlacedLocation;}
+#ifdef SHOW_VISUALIZATION
   TGeoVolume* GetTGeoVolume(){return fTGeoVolume;}
-  std::string GetName(){return fName;}
   TGeoBBox* GetScintShape();
+#endif
+  std::string GetName(){return fName;}
 
 /*
 #ifndef USE_EVE

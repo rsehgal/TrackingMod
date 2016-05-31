@@ -44,10 +44,11 @@ if(CCACHE_FOUND)
   set_property(GLOBAL PROPERTY RULE_LAUNCH_LINK ccache)
 endif(CCACHE_FOUND)
 
-option(VISUALIZATION "Enable or Disable Visualization" ON)
+option(VISUALIZATION "Enable or Disable Visualization" OFF)
 option(OPENGL "Use OpenGL for Visualization" OFF)
 option(EVE "Use Eve for Visualization" OFF)
 option(UNITTEST "Enable various Unit tests" ON)
+option(ROOT "Enable ROOT" OFF)
 
 if(VISUALIZATION)
 add_definitions(-DSHOW_VISUALIZATION)
@@ -69,9 +70,12 @@ endif()
 endif() 
 
 
-
+if(ROOT)
+add_definitions(-DUSE_ROOT)
 find_package(ROOT REQUIRED)
 include_directories(AFTER SYSTEM ${ROOT_INCLUDE_DIR})
+endif(ROOT)
+
 #find_package(Geant4 REQUIRED)
 
 #include_directories(${PROJECT_SOURCE_DIR})
@@ -102,10 +106,15 @@ file(COPY ${CFG_FILES} DESTINATION ${PROJECT_SOURCE_DIR}/build)
 set(INCLUDES ${INCLUDES}
 ${CMAKE_SOURCE_DIR}/CoordinateGenerator/inc
 ${CMAKE_SOURCE_DIR}/TemplatizedInterface/inc
-${PROJECT_SOURCE_DIR}/visualizer
+#${PROJECT_SOURCE_DIR}/visualizer
 ${CMAKE_SOURCE_DIR}/inc
-${PROJECT_SOURCE_DIR}
+${CMAKE_SOURCE_DIR}
 )
+
+if(VISUALIZATION)
+set(INCLUDES ${INCLUDES} ${CMAKE_SOURCE_DIR}/visualizer)
+endif(VISUALIZATION)
+
 macro(include_dirs INCLUDES)
   foreach(INCLUDE ${INCLUDES})
     include_directories(${INCLUDE})
@@ -149,16 +158,22 @@ macro(build_executables EXECUTABLES)
   foreach(EXECUTABLE ${EXECUTABLES})
     get_filename_component(TARGET_NAME ${EXECUTABLE} NAME_WE)
     add_executable(${TARGET_NAME} ${EXECUTABLE} ${sources} ${headers})
-  if(EVE)
-    target_link_libraries(${TARGET_NAME} ${ROOT_LIBRARIES} Geom Eve)
-  else()
-    target_link_libraries(${TARGET_NAME} ${ROOT_LIBRARIES} Geom)
-  endif(EVE)
+#  if(EVE)
+#    target_link_libraries(${TARGET_NAME} ${ROOT_LIBRARIES} Geom Eve)
+#  else()
+#    target_link_libraries(${TARGET_NAME} ${ROOT_LIBRARIES} Geom)
+#  endif(EVE)
   endforeach()
 endmacro()
 
+message(STATUS ${headers})
 include_dirs("${INCLUDES}")
 collect_headers("${INCLUDES}")
 collect_sources("${SOURCES}")
 collect_tests("${TESTSDIR}")
 build_executables("${tests}")
+
+message(STATUS ${headers})
+message(STATUS "====================================================")
+message(STATUS ${tests})
+message(STATUS "====================================================")

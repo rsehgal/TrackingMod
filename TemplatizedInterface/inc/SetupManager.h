@@ -15,8 +15,9 @@
 #include "CmsRpc.h"
 #include "GlassRpc.h"
 #include "TriggeringPlane.h"
-#include "TThread.h"
 #include "Properties.h"
+/*
+#include "TThread.h"
 #include <TEveGeoShape.h>
 #include <TGeoBBox.h>
 #include <TGeoMatrix.h>
@@ -25,21 +26,23 @@
 #include "Eve/Singleton.h"
 #include "Coordinates.h"
 #include "HittedPixel.h"
-
+*/
 typedef Tomography::Properties Detector;
 
  namespace Tomography{
 
     
     class SetupManager{
+      static SetupManager *s_instance;
       int count;
-      TEveGeoShape *fEveShape;
+      //TEveGeoShape *fEveShape;
     private:
         std::vector<Detector*> fTriggeringPlaneVector;
         std::vector<Detector*> fCmsRpcVector;
         std::vector<Detector*> fGlassRpcVector;
-    public:
         SetupManager(){count=0;}
+    public:
+        //SetupManager(){count=0;}
         void Register(Detector *det){
           if(det->GetDetectorType().compare("CMS") == 0)
             fCmsRpcVector.push_back(det);
@@ -61,6 +64,8 @@ typedef Tomography::Properties Detector;
             return fTriggeringPlaneVector;
         }
 
+        static SetupManager *instance();
+/*
 #ifdef USE_EVE
         void *handle(void *ptr) {
 
@@ -117,6 +122,7 @@ typedef Tomography::Properties Detector;
           mythread->Run();
         }
 #endif
+*/
 /*
         template<typename Type,bool ForRpc>
         void Register(Type *component){
@@ -337,6 +343,12 @@ typedef Tomography::Properties Detector;
 
     };
 
+SetupManager *SetupManager::s_instance = 0;
+SetupManager* SetupManager::instance() {
+        if (!s_instance)
+          s_instance = new SetupManager;
+        return s_instance;
+    }
 }//end of Tracking namespace
 
 #endif
