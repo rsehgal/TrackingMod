@@ -25,6 +25,14 @@ int main(){
   }
 
   std::cout<<"-------------------------------------" << std::endl;
+  Tomography::SetupManager::instance()->Register(rpc1);
+  Tomography::SetupManager::instance()->Register(rpc2);
+  Tomography::SetupManager::instance()->Register(rpc3);
+  int detVectorSize = Tomography::SetupManager::instance()->GetDetectorVector("GLASS").size();
+  std::cout<<"Detector vector length : " << Tomography::SetupManager::instance()->GetDetectorVector("GLASS").size() << std::endl;
+  for(int i=0 ; i<detVectorSize ; i++){
+    std::cout<<"Name of " << i << " Detector : " << Tomography::SetupManager::instance()->GetDetectorVector("GLASS")[i]->GetName() << std::endl;
+  }
 /*
   s.Register(rpc1);
   s.Register(rpc2);
