@@ -24,7 +24,7 @@
 #include <cstdlib>
 #include <ctime>
 #include "Eve/Singleton.h"
-#include "Coordinates.h"
+//#include "Coordinates.h"
 #include "HittedPixel.h"
 */
 typedef Tomography::Properties Detector;

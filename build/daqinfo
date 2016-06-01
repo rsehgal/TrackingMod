@@ -1,0 +1,21 @@
+Environment:  22.100000 42.000000 1009.000000
+
+Eta_partition:  C Trigger_layer DOUBLE
+Information from cosmic stand [gap] [uA] [Vset] [Vmon] [station]
+Stack ID:  55
+
+RE4-2-NPD-1_tn 0.00 8000    0 1
+RE4-2-NPD-1_tw 0.00 8000    3 1
+RE4-2-NPD-1_b 1.92 8000 8153 1
+FEBs:  200 200 200 200 200 200 200 200 200 200 200 200
+
+Glass-RPC-G10_tn 0.00 8000    3 2
+Glass-RPC-G10_tw 0.00 8000    4 2
+Glass-RPC-G10_b 0.06 8000 8154 2
+FEBs:  215 215 215 217 217 217 215 215 215 220 215 217
+
+RE4-2-NPD-2_tn 0.00 8000    2 3
+RE4-2-NPD-2_tw 0.00 8000    2 3
+RE4-2-NPD-2_b 3.26 8000 8153 3
+FEBs:  217 220 220 217 215 215 220 220 215 220 220 217
+
