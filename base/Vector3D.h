@@ -99,7 +99,7 @@ public:
 	    return (*this).Dot(*this);
 	  }
 	TRACKING_INLINE
-	Type Mag() const {
+	Type Mag()  {
 	    return std::sqrt(Mag2());
 	  }
 	TRACKING_INLINE

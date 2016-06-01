@@ -1,5 +1,5 @@
-//#ifndef ThisClass
-//#define ThisClass
+#ifndef ThisClass
+#define ThisClass
 
 #include <iostream>
 #include <vector>
@@ -9,28 +9,38 @@
 typedef Tomography::Properties Detector;
 using namespace Tracking;
 //using std::vector;
+namespace Tomography{
 class Coordinates{
 private:
 	int N;          						// Number of Detectors
 	int M;
+	int signal = 0;
 	double temp;		
-	std::vector<Vector3D <double>> coordinate;
-	std::vector<Vector3D <double>> stripcoord;
-	std::vector<Vector3D <double>> strip;
+	Vector3D<double> InitialPoint;
+	std::vector<Tracking::Vector3D <double>> coordinate;
+	std::vector<Tracking::Vector3D <double>> stripcoord;
+	std::vector<Tracking::Vector3D <double>> strip;
 	//vector<vector <double>> coordinate;
 	//vector<vector <double>> stripcoord;    //generated coordinates from midpoints of 2-D grid of each detectors
 	//vector<vector <double>> strip;
 
 public:
+	Coordinates();
+	//~Coordinates();
+	Coordinates(Vector3D<double> init);
+	//~Coordinates(Vector3D<double> init);
 	void InitializeVectors();
 	void CoGenerator(int N, std::vector <Detector*> det);
-	Vector3D<double> GetCoordinate(int detector);     //Enter value between 0 < detector < total detectors
+	Tracking::Vector3D<double> GetCoordinate(int detector);     //Enter value between 0 < detector < total detectors
 	void SetStripCoordinates();
-	Vector3D<double> GetStripCoordinate(int detector);
+	Tracking::Vector3D<double> GetStripCoordinate(int detector);
 	void SetStrips();
-	Vector3D<double> GetStrip(int detector);
+	Tracking::Vector3D<double> GetStrip(int detector);
 	double GenRandom(double min, double max);
+	Vector3D<double> GetInitialPoint();
+	Vector3D<double> GetSpecificCoordinate(double zpos);
 	void Print();
 
 };
-//#endif
+} //end of Tomography namespace
+#endif

@@ -23,7 +23,7 @@
 #include <cstdlib>
 #include <ctime>
 #include "Eve/Singleton.h"
-//#include "Coordinates.h"
+#include "Coordinates.h"
 #include "HittedPixel.h"
 
 typedef Tomography::Properties Detector;
@@ -38,6 +38,7 @@ typedef Tomography::Properties Detector;
         std::vector<Detector*> fTriggeringPlaneVector;
         std::vector<Detector*> fCmsRpcVector;
         std::vector<Detector*> fGlassRpcVector;
+       // std::vector<Detector*> detVector = GetDetectorVector("GLASS");
     public:
         SetupManager(){count=0;}
         void Register(Detector *det){
@@ -72,12 +73,12 @@ typedef Tomography::Properties Detector;
           m.SetDz(75);
 
           Coordinates c;
-          double* temp;
-          std::vector<HittedPixel*> hittedPixelVector;
+          Tracking::Vect3D<double> temp;
+          std::vector<HittedPixel*> hitteordPixelVector;
           while(true){
             sleep(2);
 
-            c.CoGenerator(2, 30);
+            c.CoGenerator(fGlassRpcVector.size(), fGlassRpcVector);
             c.SetStrips();
             c.SetStripCoordinates();
             //temp = c.GetStripCoordinate(3);
@@ -98,10 +99,10 @@ typedef Tomography::Properties Detector;
             hittedPixelVector.clear();
             for(int detNo = 0 ; detNo < fGlassRpcVector.size() ; detNo++){
               temp = c.GetStripCoordinate(detNo+1);
-              std::cout << *temp << " " << *(temp + 1) << " " << *(temp + 2) << std::endl;
-            m.SetDx(*temp);
-            m.SetDy(*(temp + 1));
-            m.SetDz(*(temp + 2));
+              temp.Print();
+            m.SetDx(temp.x());
+            m.SetDy(temp.y());
+            m.SetDz(temp.z());
 
             //Add some element
             if(gEve){
@@ -117,7 +118,7 @@ typedef Tomography::Properties Detector;
           mythread->Run();
         }
 #endif
-*/
+
 /*
         template<typename Type,bool ForRpc>
         void Register(Type *component){
