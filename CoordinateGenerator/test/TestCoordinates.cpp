@@ -1,7 +1,10 @@
 #include <iostream>
 #include "Coordinates.h"
+#include "SetupManager.h"
 int main()
 {
+    
+/*
 	Coordinates c;
 	double* temp;
 	int N = 5;
@@ -22,5 +25,7 @@ int main()
 		
 	}
       }
+*/
+
 	return 0;
 }
