@@ -32,9 +32,12 @@ namespace Tomography{
 	    //	strip[i].resize(2);
 	}
 
-	void Coordinates::CoGenerator(int N1, std::vector <Detector*> det)
+	void Coordinates::CoGenerator(std::vector <Detector*> det,int N1)
 	{
-		N = N1;
+		if(N1==0)
+			N = det.size();
+		else
+		    N = N1;
 	//	M = M1;
 		
 	 	InitializeVectors();
@@ -70,6 +73,57 @@ namespace Tomography{
 			coordinate[N-i-2].SetY((InitialPoint.y() - coordinate[N-1].y()) * temp + InitialPoint.y());
 		}		
 	}
+
+	void Coordinates::CoGenerator(int flag = 0)
+	{
+
+		std::vector<Detector*> det;
+		if(flag==0)
+		{
+			det = Tomography::SetupManager::instance()->GetUpperLayerDetectorVector("GLASS");  //Need to pass value of 'fDetectorType'
+			N = det.size();
+		}	
+		else
+		   {
+		   	det = Tomography::SetupManager::instance()->GetLowerLayerDetectorVector("GLASS");	//Need to pass value of 'fDetectorType'
+			N = det.size();
+		   } 
+	//	M = M1;
+		
+	 	InitializeVectors();
+		
+		for(int i = 0 ; i < N ; i++)
+		{
+			//coordinate[i][2] = (double)((N-1-i)*M);
+			coordinate[i].SetZ(det[i]->GetZPos());
+		}
+		srand(time(NULL));
+		//coordinate[0][0] = GenRandom(-50, 50);
+		//coordinate[0][1] = GenRandom(-50, 50);
+		//coordinate[N-1][0] = GenRandom(-50, 50);
+		//coordinate[N-1][1] = GenRandom(-50, 50);
+        if(signal == 0)
+        {
+			InitialPoint.SetX(GenRandom(-50,50));
+			InitialPoint.SetY(GenRandom(-50,50));
+			InitialPoint.SetZ(det[0]->GetZPos() + 30);
+        }
+		//coordinate[0].SetX(GenRandom(-50,50));
+		//coordinate[0].SetY(GenRandom(-50,50));
+		coordinate[N-1].SetX(GenRandom(-50,50));
+		coordinate[N-1].SetY(GenRandom(-50,50));
+
+		for(int i = 0 ; i < N - 1 ; i++)
+		{
+			//temp = ( (i+1) * (double)M - coordinate[0][2] ) / ( coordinate[0][2] - coordinate[N-1][2]);
+			//coordinate[N-i-2][0] = (coordinate[0][0] - coordinate[N-1][0]) * temp + coordinate[0][0];
+			//coordinate[N-i-2][1] = (coordinate[0][1] - coordinate[N-1][1]) * temp + coordinate[0][1];
+			temp = ( coordinate[N-i-2].z()- InitialPoint.z() ) / ( InitialPoint.z() - coordinate[N-1].z());
+			coordinate[N-i-2].SetX((InitialPoint.x() - coordinate[N-1].x()) * temp + InitialPoint.x());
+			coordinate[N-i-2].SetY((InitialPoint.y() - coordinate[N-1].y()) * temp + InitialPoint.y());
+		}		
+	}
+
 
 	double Coordinates::GenRandom(double min, double max)
 	{

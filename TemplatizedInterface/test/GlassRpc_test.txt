@@ -74,7 +74,7 @@ int main(){
   //s.Register(rpc2);
   s.Register(rpc3);
   s.Register(rpc4);
- // s.RunThread();
+  s.RunThread();
 
   v.Show();
 

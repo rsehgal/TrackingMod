@@ -7,7 +7,7 @@
 
 #ifndef TEMPLATIZEDINTERFACE_INC_VISUALIZATIONHELPER_H_
 #define TEMPLATIZEDINTERFACE_INC_VISUALIZATIONHELPER_H_
-
+#ifdef SHOW_VISUALIZATION
 
 #ifdef USE_EVE
 #include "Eve/EveVisualizer.h"
@@ -65,21 +65,7 @@ public:
 
           }
         }
-
-/*
-        for(int i=0; i < fScintillatorPlane.size(); i++){
-       //std::cout<<" X trans : "<< (-fLength/2.+i*1.6) << std::endl;
-       m.SetDx(-fLength/2.+i*1.6);
-      fEve.AddEveShape(fScintillatorPlane[i]->GetName(), box, m );
-      // Singleton::instance()->GetEveVisualizer()->AddEveShape(fScintillatorPlane[i]->GetName(), box, m );
-     }
-*/
 #else
-/*
-  for(int i=0 ; i < obj->GetPlaneVector().size() ; i++){
-   v.AddVolume(obj->GetPlaneVector()[i]->GetTGeoVolume());
-  }
-*/
 #endif
   }
 
@@ -97,5 +83,5 @@ public:
 }// end of Tomography namespace
 
 
-
+#endif /* for SHOW_VISUALIZATION */
 #endif /* INC_VISUALIZATIONHELPER_H_ */

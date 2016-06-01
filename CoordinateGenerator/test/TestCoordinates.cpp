@@ -3,8 +3,9 @@
 
 #include "Properties.h"
 typedef Tomography::Properties Detector;
-#undef USE_EVE
-#include "SetupManager.h"
+//#undef USE_EVE
+//#include "SetupManager.h"
+
 #include "LinesAngle.h"
 
 int main()
@@ -12,32 +13,45 @@ int main()
 	Vector3D<double> temp;
 	Tomography::Coordinates c1;
 
-	Tomography::SetupManager s1;
-	Tomography::SetupManager s2;
+	//Tomography::SetupManager s1;
+	//Tomography::SetupManager s2;
 	LinesAngle l;
 	int totalDetectors_s1;
 	int totalDetectors_s2;
 	double angle;
 
-//	Detector *d1 = new Detector("FirstDetector",std::vector<int> channelsInDim);
-//	Detector *d2 = new Detector("SecondDetector",std::vector<int> channelsInDim);
-//	Detector *d3 = new Detector("ThirdDetector",std::vector<int> channelsInDim);
-//	Detector *d4 = new Detector("FourthDetector",std::vector<int> channelsInDim);
 
-	Detector *rpc1 = new Tomography::GlassRpc(3,"FirstGlassRpc", 90,-1);
+	//Creating Detectors
+	  Detector *rpc1 = new Tomography::GlassRpc(3,"FirstGlassRpc", 90,-1);
 	  Detector *rpc2 = new Tomography::GlassRpc(3,"SecondGlassRpc", 60,-1);
 	  Detector *rpc3 = new Tomography::GlassRpc(3,"ThirdGlassRpc", 30,-1);
 	  Detector *rpc4 = new Tomography::GlassRpc(3,"FourthGlassRpc", 0,-1);
-
-	s1.Register(rpc1);
-	s1.Register(rpc2);
-	s1.Register(rpc3);
-	s1.Register(rpc4);
-
+	  Detector *rpc5 = new Tomography::GlassRpc(3,"FifthGlassRpc", -30,-1);
+	  Detector *rpc6 = new Tomography::GlassRpc(3,"SixthGlassRpc", -60,-1);
+	  Detector *rpc7 = new Tomography::GlassRpc(3,"SeventhGlassRpc", -90,-1);
+	  Detector *rpc8 = new Tomography::GlassRpc(3,"EighthGlassRpc", -120,-1);
 
 
-	std::vector<Detector*> detVector_s1 = s1.GetDetectorVector("GLASS");
-	totalDetectors_s1 = detVector_s1.size();
+	//Registering Detector with SetupManager
+	Tomography::SetupManager::instance()->Register(rpc1);
+	Tomography::SetupManager::instance()->Register(rpc2);
+	Tomography::SetupManager::instance()->Register(rpc3);
+	Tomography::SetupManager::instance()->Register(rpc4);
+	Tomography::SetupManager::instance()->Register(rpc5);
+	Tomography::SetupManager::instance()->Register(rpc6);
+	//Tomography::SetupManager::instance()->Register(rpc7);
+	//Tomography::SetupManager::instance()->Register(rpc8);
+
+
+
+	//std::vector<Detector*> detVector_s1 = s1.GetDetectorVector("GLASS");
+	//totalDetectors_s1 = detVector_s1.size();
+
+	std::vector<Detector*> detVector = Tomography::SetupManager::instance()->GetUpperLayerDetectorVector("GLASS");
+	totalDetectors_s1 = detVector.size();
+
+
+
 
 
 
@@ -49,10 +63,29 @@ int main()
 	std::cout<<"Detectors Above Object:"<<std::endl;
 	std::cout<<""<<std::endl;
 
-	c1.CoGenerator(totalDetectors_s1 , detVector_s1);
+	c1.CoGenerator(0);
 	c1.SetStrips();
 	c1.SetStripCoordinates();
 	c1.Print();
+
+	//Detector *rpc2 = new Tomography::GlassRpc(3,"SecondGlassRpc", 60,-1);
+	//Detector *rpc3 = new Tomography::GlassRpc(3,"ThirdGlassRpc", -60,-1);
+	//Detector *rpc4 = new Tomography::GlassRpc(3,"FourthGlassRpc", -90,-1);
+
+	
+/*
+	std::vector<Detector*> detVector = Tomography::SetupManager::instance()->GetDetectorVector("GLASS");
+	totalDetectors = detVector.size();
+
+	Vector3D<double> temp;
+	int N = totalDetectors;
+	//c.CoGenerator(totalDetectors , detVector);
+	c.CoGenerator(detVector);
+	c.SetStrips();
+	c.SetStripCoordinates();
+	c.Print();
+*/	
+
 	std::cout<<""<<std::endl;
 	std::cout<<"Printing MidPoint of all the strips where intersection happens:"<<std::endl;
 	std::cout<<""<<std::endl;
@@ -69,6 +102,7 @@ int main()
 	temp = c1.GetInitialPoint();
 	temp.Print();
       //}
+
 	//////////////////////////
 		std::cout<<""<<std::endl;
 		std::cout<<"Detectors Beneath Object:"<<std::endl;
@@ -78,20 +112,20 @@ int main()
 		temp = c1.GetSpecificCoordinate(-15.0);
 			Tomography::Coordinates c2(temp);
 
-			Detector *rpc5 = new Tomography::GlassRpc(3,"FirstGlassRpc", -30,-1);
-					  Detector *rpc6 = new Tomography::GlassRpc(3,"SecondGlassRpc", -60,-1);
-					  Detector *rpc7 = new Tomography::GlassRpc(3,"ThirdGlassRpc", -90,-1);
-					  Detector *rpc8 = new Tomography::GlassRpc(3,"FourthGlassRpc", -120,-1);
+					  //Detector *rpc5 = new Tomography::GlassRpc(3,"FirstGlassRpc", -30,-1);
+					  //Detector *rpc6 = new Tomography::GlassRpc(3,"SecondGlassRpc", -60,-1);
+					  //Detector *rpc7 = new Tomography::GlassRpc(3,"ThirdGlassRpc", -90,-1);
+					  //Detector *rpc8 = new Tomography::GlassRpc(3,"FourthGlassRpc", -120,-1);
 
-					s2.Register(rpc5);
-					s2.Register(rpc6);
-					s2.Register(rpc7);
-					s2.Register(rpc8);
+					//s2.Register(rpc5);
+					//s2.Register(rpc6);
+					//s2.Register(rpc7);
+					//s2.Register(rpc8);
 
-					std::vector<Detector*> detVector_s2 = s2.GetDetectorVector("GLASS");
-							totalDetectors_s2 = detVector_s2.size();
+					std::vector<Detector*> detVector2 = Tomography::SetupManager::instance()->GetLowerLayerDetectorVector("GLASS");
+							totalDetectors_s2 = detVector2.size();
 
-	c2.CoGenerator(totalDetectors_s2 , detVector_s2);
+	c2.CoGenerator(totalDetectors_s2);
 	c2.SetStrips();
 	c2.SetStripCoordinates();
 	c2.Print();
@@ -99,7 +133,7 @@ int main()
 	std::cout<<"Printing MidPoint of all the strips where intersection happens:"<<std::endl;
 	std::cout<<""<<std::endl;
 
-	for(int i = 0 ; i < totalDetectors_s2 ; i++)
+	for(int i = 0 ; i < totalDetectors_s2; i++)
 	{
 		temp = c2.GetStripCoordinate(i+1);
 		temp.Print();
@@ -118,6 +152,7 @@ int main()
 
 	angle = l.CalculateAngle(c1.GetCoordinate(1), c1.GetCoordinate(2), c2.GetCoordinate(1), c2.GetCoordinate(2));
 	std::cout<<angle<<std::endl;
+
 
 	return 0;
 }

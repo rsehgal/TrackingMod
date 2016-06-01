@@ -1,11 +1,12 @@
-#ifndef ThisClass
-#define ThisClass
+#ifndef COORDINATEGENERATOR_INC_COORDINATES_H
+#define COORDINATEGENERATOR_INC_COORDINATES_H
 
 #include <iostream>
 #include <vector>
-#include "TemplatizedInterface/inc/SetupManager.h"
+//#include "TemplatizedInterface/inc/SetupManager.h"
 #include "base/Vector3D.h"
 #include "Properties.h"
+#include "SetupManager.h"
 typedef Tomography::Properties Detector;
 using namespace Tracking;
 //using std::vector;
@@ -30,8 +31,11 @@ public:
 	Coordinates(Vector3D<double> init);
 	//~Coordinates(Vector3D<double> init);
 	void InitializeVectors();
-	void CoGenerator(int N, std::vector <Detector*> det);
-	Tracking::Vector3D<double> GetCoordinate(int detector);     //Enter value between 0 < detector < total detectors
+
+	void CoGenerator(std::vector <Detector*> det,int N1=0);
+	void CoGenerator(int flag);
+	Vector3D<double> GetCoordinate(int detector);     //Enter value between 0 < detector < total detectors
+
 	void SetStripCoordinates();
 	Tracking::Vector3D<double> GetStripCoordinate(int detector);
 	void SetStrips();

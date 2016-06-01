@@ -15,8 +15,9 @@
 #include "CmsRpc.h"
 #include "GlassRpc.h"
 #include "TriggeringPlane.h"
-#include "TThread.h"
 #include "Properties.h"
+/*
+#include "TThread.h"
 #include <TEveGeoShape.h>
 #include <TGeoBBox.h>
 #include <TGeoMatrix.h>
@@ -25,32 +26,82 @@
 #include "Eve/Singleton.h"
 #include "Coordinates.h"
 #include "HittedPixel.h"
-
+*/
 typedef Tomography::Properties Detector;
 
  namespace Tomography{
 
     
     class SetupManager{
+      static SetupManager *s_instance;
       int count;
-      TEveGeoShape *fEveShape;
+      //TEveGeoShape *fEveShape;
     private:
         std::vector<Detector*> fTriggeringPlaneVector;
         std::vector<Detector*> fCmsRpcVector;
         std::vector<Detector*> fGlassRpcVector;
-       // std::vector<Detector*> detVector = GetDetectorVector("GLASS");
+        int TriggeringPlaneLowerLayerStartsAt = 3;  //from 4th detector
+        int CmsRpcLowerLayerStartsAt = 3;
+        int GlassRpcLowerLayerStartsAt;
+        SetupManager(){count=0;GlassRpcLowerLayerStartsAt=0;}
     public:
-        SetupManager(){count=0;}
+        //SetupManager(){count=0;}
         void Register(Detector *det){
           if(det->GetDetectorType().compare("CMS") == 0)
             fCmsRpcVector.push_back(det);
 
-          if(det->GetDetectorType().compare("GLASS") == 0)
+          if(det->GetDetectorType().compare("GLASS") == 0){
             fGlassRpcVector.push_back(det);
+            GlassRpcLowerLayerStartsAt = fGlassRpcVector.size()/2;
+          }
 
           if(det->GetDetectorType().compare("TRG") == 0)
             fTriggeringPlaneVector.push_back(det);
 
+        }
+
+        std::vector <Detector*> GetUpperLayerDetectorVector(std::string detType)
+        {
+          std::vector<Detector*> temp;
+          
+          if(detType.compare("CMS")==0)
+          {
+              for(int i = 0 ; i < CmsRpcLowerLayerStartsAt ; i++)
+              temp.push_back(fCmsRpcVector[i]);
+          }
+          if(detType.compare("GLASS")==0)
+          {
+              for(int i = 0 ; i < GlassRpcLowerLayerStartsAt ; i++)
+              temp.push_back(fGlassRpcVector[i]);
+          }
+          if(detType.compare("TRG")==0)
+          {
+              for(int i = 0 ; i < TriggeringPlaneLowerLayerStartsAt ; i++)
+              temp.push_back(fTriggeringPlaneVector[i]);
+          }
+          return temp;
+        }
+
+        std::vector <Detector*> GetLowerLayerDetectorVector(std::string detType)
+        {
+          std::vector<Detector*> temp;
+          
+          if(detType.compare("CMS")==0)
+          {
+              for(int i = CmsRpcLowerLayerStartsAt ; i < fCmsRpcVector.size() ; i++)
+              temp.push_back(fCmsRpcVector[i]);
+          }
+          if(detType.compare("GLASS")==0)
+          {
+              for(int i = GlassRpcLowerLayerStartsAt ; i < fGlassRpcVector.size() ; i++)
+              temp.push_back(fGlassRpcVector[i]);
+          }
+          if(detType.compare("TRG")==0)
+          {
+              for(int i = TriggeringPlaneLowerLayerStartsAt ; i < fTriggeringPlaneVector.size() ; i++)
+              temp.push_back(fTriggeringPlaneVector[i]);
+          }
+          return temp;
         }
 
         std::vector<Detector*> GetDetectorVector(std::string detType){
@@ -61,6 +112,8 @@ typedef Tomography::Properties Detector;
           if(detType.compare("TRG")==0)
             return fTriggeringPlaneVector;
         }
+
+        static SetupManager *instance();
 /*
 #ifdef USE_EVE
         void *handle(void *ptr) {
@@ -339,6 +392,12 @@ typedef Tomography::Properties Detector;
 
     };
 
+/*SetupManager *SetupManager::s_instance = 0;
+SetupManager* SetupManager::instance() {
+        if (!s_instance)
+          s_instance = new SetupManager;
+        return s_instance;
+    }*/
 }//end of Tracking namespace
 
 #endif

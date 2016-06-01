@@ -6,9 +6,10 @@
  */
 
 #include "Scintillator.h"
-#include "TGeoBBox.h"
 #include <sstream>
-
+#ifdef SHOW_VISUALIZATION 
+#include "TGeoBBox.h"
+#endif
 namespace Tomography {
 
 
@@ -42,6 +43,7 @@ Scintillator::~Scintillator() {
   // TODO Auto-generated destructor stub
 }
 
+#ifdef SHOW_VISUALIZATION
 TGeoBBox* Scintillator::GetScintShape(){
     return new TGeoBBox(fName.c_str(),fLength/2., fBreadth/2., fHeight/2.);
   }
@@ -54,5 +56,6 @@ void Scintillator::CreateTGeoVolume(){
   fTGeoVolume->SetLineColor(kGreen);
 }
 
+#endif
 #endif
 } /* namespace Tomography */
