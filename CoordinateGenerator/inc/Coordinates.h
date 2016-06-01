@@ -23,7 +23,7 @@ private:
 
 public:
 	void InitializeVectors();
-	void CoGenerator(int N, std::vector <Detector*> det);
+	void CoGenerator(std::vector <Detector*> det, int N=0);
 	Vector3D<double> GetCoordinate(int detector);     //Enter value between 0 < detector < total detectors
 	void SetStripCoordinates();
 	Vector3D<double> GetStripCoordinate(int detector);

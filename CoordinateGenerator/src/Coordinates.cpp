@@ -17,9 +17,12 @@
 	    //	strip[i].resize(2);
 	}
 
-	void Coordinates::CoGenerator(int N1, std::vector <Detector*> det)
+	void Coordinates::CoGenerator(std::vector <Detector*> det,int N1)
 	{
-		N = N1;
+		if(N1==0)
+			N = det.size();
+		else
+		    N = N1;
 	//	M = M1;
 		
 	 	InitializeVectors();

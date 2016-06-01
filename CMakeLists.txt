@@ -74,6 +74,16 @@ if(ROOT)
 add_definitions(-DUSE_ROOT)
 find_package(ROOT REQUIRED)
 include_directories(AFTER SYSTEM ${ROOT_INCLUDE_DIR})
+set(EXTERNAL_LIBS ${EXTERNAL_LIBS}
+${ROOT_LIBRARIES}
+)
+
+if(EVE)
+set(EXTERNAL_LIBS ${EXTERNAL_LIBS}
+Eve Geom
+)
+endif(EVE)
+
 endif(ROOT)
 
 #find_package(Geant4 REQUIRED)
@@ -110,6 +120,8 @@ ${CMAKE_SOURCE_DIR}/TemplatizedInterface/inc
 ${CMAKE_SOURCE_DIR}/inc
 ${CMAKE_SOURCE_DIR}
 )
+
+
 
 if(VISUALIZATION)
 set(INCLUDES ${INCLUDES} ${CMAKE_SOURCE_DIR}/visualizer)
@@ -158,6 +170,7 @@ macro(build_executables EXECUTABLES)
   foreach(EXECUTABLE ${EXECUTABLES})
     get_filename_component(TARGET_NAME ${EXECUTABLE} NAME_WE)
     add_executable(${TARGET_NAME} ${EXECUTABLE} ${sources} ${headers})
+    target_link_libraries(${TARGET_NAME} ${EXTERNAL_LIBS})
 #  if(EVE)
 #    target_link_libraries(${TARGET_NAME} ${ROOT_LIBRARIES} Geom Eve)
 #  else()
