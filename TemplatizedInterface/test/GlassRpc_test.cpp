@@ -42,13 +42,18 @@ int main(){
   Detector *rpc1 = new GlassRpc(3,"SecondGlassRpc", 90,-1);
   Detector *rpc2 = new GlassRpc(3,"SecondGlassRpc", 60,-1);
   Detector *rpc3 = new GlassRpc(3,"SecondGlassRpc", 30,63);
-  Detector *rpc4 = new GlassRpc(4,"SecondGlassRpc", 0,-1);
+
+  Detector *rpc5 = new GlassRpc(4,"SecondGlassRpc", -30,-1);
+  Detector *rpc6 = new GlassRpc(4,"SecondGlassRpc", -60,-1);
+  Detector *rpc4 = new GlassRpc(4,"SecondGlassRpc", -90,-1);
 
   Print(rpc2);
   v.Register(rpc1);
   v.Register(rpc2);
   v.Register(rpc3);
   v.Register(rpc4);
+  v.Register(rpc5);
+  v.Register(rpc6);
 
   Detector *topPlane = new TriggeringPlane(2,"TopPlane", -105,-1);
   Detector *bottomPlane = new TriggeringPlane(2,"BottomPlane", 105,7);
@@ -66,6 +71,8 @@ int main(){
   Tomography::SetupManager::instance()->Register(rpc2);
   Tomography::SetupManager::instance()->Register(rpc3);
   Tomography::SetupManager::instance()->Register(rpc4);
+  Tomography::SetupManager::instance()->Register(rpc5);
+  Tomography::SetupManager::instance()->Register(rpc6);
   //Tomography::SetupManager::instance()->RunThread();
   Update u;
   u.RunThread();

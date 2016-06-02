@@ -16,6 +16,7 @@
 #include "Eve/Singleton.h"
 #include "VisualizationHelper.h"
 #include "TThread.h"
+#include "LinesAngle.h"
 
 namespace Tomography{
 
@@ -27,6 +28,7 @@ public:
 	void *handle(void *ptr) {
 
 	          TGeoHMatrix m;
+	          LinesAngle l;
 	          Double_t trans[3] = {0., 0., 0.};
 	          m.SetTranslation(trans);
 	          m.SetDx(rand()%50);
@@ -39,9 +41,17 @@ public:
 	          while(true){
 	            sleep(2);
 
-	            c.CoGenerator(Tomography::SetupManager::instance()->GetDetectorVector("GLASS"));
+	            //c.CoGenerator(Tomography::SetupManager::instance()->GetDetectorVector("GLASS"));
+	            c.CoGenerator(0);
 	            c.SetStrips();
 	            c.SetStripCoordinates();
+
+	            Vector3D<double>temp2 = c.GetSpecificCoordinate(10.);
+	            Coordinates c2(temp2);
+	            c2.CoGenerator(1);
+	            c2.SetStrips();
+	            c2.SetStripCoordinates();
+
 	            //count++;
 	            TGeoBBox *shape ;
 	            std::cout<<"Size : "<< hittedPixelVector.size() << std::endl;
@@ -52,7 +62,7 @@ public:
 	            }
 
 	            hittedPixelVector.clear();
-	            for(int detNo = 0 ; detNo < Tomography::SetupManager::instance()->GetDetectorVector("GLASS").size() ; detNo++){
+	            for(int detNo = 0 ; detNo < Tomography::SetupManager::instance()->GetLowerLayerStartIndex() ; detNo++){
 	              temp = c.GetStripCoordinate(detNo+1);
 	              temp.Print();
 	              m.SetDx(temp.x());
@@ -69,6 +79,30 @@ public:
 	              Tracking::Singleton::instance()->AddElement(hittedPixelVector[detNo]->GetEveGeoShape());
 	             }
 	            }
+
+	            for(int detNo = Tomography::SetupManager::instance()->GetLowerLayerStartIndex() ; detNo < Tomography::SetupManager::instance()->GetDetectorVector("GLASS").size() ; detNo++){
+	            //for(int detNo = 0 ; detNo < Tomography::SetupManager::instance()->GetLowerLayerStartIndex() ; detNo++){
+	            	              temp = c2.GetStripCoordinate(detNo-Tomography::SetupManager::instance()->GetLowerLayerStartIndex()+1);
+	            	              temp.Print();
+	            	              m.SetDx(temp.x());
+	            	              m.SetDy(temp.y());
+	            	              m.SetDz(temp.z());
+
+	            	            //m.SetDx(*temp);
+	            				//m.SetDy(*(temp + 1));
+	            				//m.SetDz(*(temp + 2));
+
+	            	            //Add some element
+	            	            if(gEve){
+	            	              hittedPixelVector.push_back(new HittedPixel(m));
+	            	              Tracking::Singleton::instance()->AddElement(hittedPixelVector[detNo]->GetEveGeoShape());
+	            	             }
+	            	            }
+
+	           std::cout<<"Angle : "<< l.CalculateAngle(c.GetCoordinate(1), c.GetCoordinate(2), c2.GetCoordinate(1), c2.GetCoordinate(2))
+	        		   << std::endl;
+
+
 	        }
 	        }
 
