@@ -10,18 +10,21 @@
 
 #include "TEveElement.h"
 #include "TEveGeoShape.h"
+#include <TEveStraightLineSet.h>
 //#include "Eve/EveVisualizer.h"
 namespace Tracking{
 class Singleton
 {
     int m_value;
     TEveElementList *fEveGeomList;
+    TEveStraightLineSet *fLineSet;
     //EveVisualizer *fEve;
     static Singleton *s_instance;
 
     Singleton(){
       m_value = 0;
       fEveGeomList = new TEveElementList("Geometry");
+      fLineSet = new TEveStraightLineSet();
       //fEve = new EveVisualizer();
     }
 
@@ -56,6 +59,25 @@ class Singleton
     }
 
     TEveElementList* GetList(){return fEveGeomList;}
+
+    void AddElement(TEveStraightLineSet *ls){
+    	fLineSet = ls;
+    	fEveGeomList->AddElement(fLineSet);
+    }
+
+    void RemoveElement(){ //TEveStraightLineSet *ls){
+        	//fLineSet = ls;
+        	fEveGeomList->RemoveElement(fLineSet);
+        }
+
+    void AddLineSet(TEveStraightLineSet *ls){
+        	fLineSet = ls;
+        	fEveGeomList->AddElement(fLineSet);
+        }
+
+    TEveStraightLineSet *GetLineSet(){
+    	return fLineSet;
+    }
 
     //EveVisualizer* GetEveVisualizer(){return fEve;}
 

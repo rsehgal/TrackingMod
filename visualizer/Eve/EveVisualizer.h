@@ -11,12 +11,14 @@
 #include <memory>
 #include <utility>
 #include "TGeoMatrix.h"
+#include "base/Vector3D.h"
 //#include "SingleTon.h"
 class TEveElementList;
 class TEveGeoShape;
 class TApplication;
 class TGeoBBox;
 class TGeoMatrix;
+class TEveStraightLineSet;
 
 
 
@@ -27,12 +29,15 @@ private:
   //TApplication *fApp;
   TEveElementList *fEveGeomList;
   TEveGeoShape *fEveShape;
+  TEveStraightLineSet *ls;
+
 
 public:
   EveVisualizer();
   void AddEveShape(std::string shapeName,TGeoBBox *shape, TGeoHMatrix &mat);
   void AddEveShape(std::string shapeName,TGeoBBox *shape, int color, TGeoHMatrix &mat);
   void AddEveShape(TEveGeoShape *eveShape, TGeoHMatrix &mat);
+  void AddLine(Vector3D<double>p1, Vector3D<double>p2);
   static void Show();
   static void UpdateScene();
 

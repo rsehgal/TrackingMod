@@ -17,6 +17,8 @@
 #include "VisualizationHelper.h"
 #include "TThread.h"
 #include "LinesAngle.h"
+#include "TEveStraightLineSet.h"
+#include "TRandom.h"
 
 namespace Tomography{
 
@@ -37,9 +39,10 @@ public:
 
 	          Coordinates c;
 	          Tracking::Vector3D<double> temp;
+	          //TEveStraightLineSet *ls = new TEveStraightLineSet();
 	          std::vector<HittedPixel*> hittedPixelVector;
 	          while(true){
-	            sleep(2);
+	            //sleep(2);
 
 	            //c.CoGenerator(Tomography::SetupManager::instance()->GetDetectorVector("GLASS"));
 	            c.CoGenerator(0);
@@ -59,7 +62,12 @@ public:
 	              for(int i = 0 ; i < hittedPixelVector.size() ; i++){
 	                Tracking::Singleton::instance()->RemoveElement(hittedPixelVector[i]->GetEveGeoShape());
 	              }
+	              //Tracking::Singleton::instance()->RemoveElement();
 	            }
+
+	            //if( Tracking::Singleton::instance()->GetLineSet())
+	            //  Tracking::Singleton::instance()->RemoveElement(ls); //Tracking::Singleton::instance()->GetLineSet());
+
 
 	            hittedPixelVector.clear();
 	            for(int detNo = 0 ; detNo < Tomography::SetupManager::instance()->GetLowerLayerStartIndex() ; detNo++){
@@ -96,11 +104,31 @@ public:
 	            	            if(gEve){
 	            	              hittedPixelVector.push_back(new HittedPixel(m));
 	            	              Tracking::Singleton::instance()->AddElement(hittedPixelVector[detNo]->GetEveGeoShape());
+
 	            	             }
 	            	            }
 
+
+	            std::cout<<"Pt : ";
+	            c.GetCoordinate(1).Print();
+	            TEveStraightLineSet *ls = new TEveStraightLineSet();
+	            ls->AddLine( c.GetCoordinate(1).x(),c.GetCoordinate(1).y(),c.GetCoordinate(1).z(),
+	            		     c.GetCoordinate(3).x(),c.GetCoordinate(3).y(),c.GetCoordinate(3).z());
+
+
+	           ls->AddLine( c2.GetCoordinate(1).x(),c2.GetCoordinate(1).y(),c2.GetCoordinate(1).z(),
+	              	         c2.GetCoordinate(2).x(),c2.GetCoordinate(2).y(),c2.GetCoordinate(2).z());
+
+
+	            ls->SetMarkerSize(1.5);
+	            ls->SetMarkerStyle(4);
+
+	            Tracking::Singleton::instance()->AddElement(ls);
+
 	           std::cout<<"Angle : "<< l.CalculateAngle(c.GetCoordinate(1), c.GetCoordinate(2), c2.GetCoordinate(1), c2.GetCoordinate(2))
 	        		   << std::endl;
+	           sleep(2);
+	           Tracking::Singleton::instance()->RemoveElement();
 
 
 	        }

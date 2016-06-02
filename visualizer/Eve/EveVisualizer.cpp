@@ -13,11 +13,23 @@
 #include "TGeoMatrix.h"
 #include "Eve/EveVisualizer.h"
 #include "Eve/Singleton.h"
+#include <TEveStraightLineSet.h>
 
 
 namespace Tracking {
 
 //TEveElementList* EveVisualizer::fEveGeomList = 0;
+
+void EveVisualizer::AddLine(Vector3D<double>p1, Vector3D<double>p2){
+  ls = new TEveStraightLineSet();
+  ls->AddLine( p1.x(),p1.y(),p1.z(),
+		       p2.x(),p2.y(),p2.z());
+  ls->SetMarkerSize(1.5);
+  ls->SetMarkerStyle(4);
+  Singleton::instance()->AddLineSet(ls);
+  //gEve->AddElement(ls);
+  //Singleton::instance()->AddElement(ls);
+}
 
 EveVisualizer::EveVisualizer(){
   //fApp = new TApplication("VecGeom Visualizer", NULL, NULL);
@@ -71,6 +83,7 @@ void EveVisualizer::Show(){
   //gEve->AddGlobalElement(fEveGeomList);
   if(gEve){
   gEve->AddGlobalElement(Singleton::instance()->GetList());
+  //gEve->AddGlobalElement(Singleton::instance()->GetLineSet());
   gEve->DoRedraw3D();
 }
   /*TTimer timer(1000); // every second
