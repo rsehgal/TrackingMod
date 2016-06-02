@@ -65,7 +65,7 @@ int main(){
   Tomography::SetupManager::instance()->Register(rpc2);
   Tomography::SetupManager::instance()->Register(rpc3);
   Tomography::SetupManager::instance()->Register(rpc4);
-  //s.RunThread();
+  Tomography::SetupManager::instance()->RunThread();
 
   v.Show();
 

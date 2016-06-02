@@ -16,6 +16,12 @@
 #include "GlassRpc.h"
 #include "TriggeringPlane.h"
 #include "Properties.h"
+#include "Coordinates.h"
+//#include "SetupManager.h"
+#include "Eve/Singleton.h"
+#include "HittedPixel.h"
+#include "VisualizationHelper.h"
+#include "TThread.h"
 /*
 #include "TThread.h"
 #include <TEveGeoShape.h>
@@ -40,7 +46,9 @@ typedef Tomography::Properties Detector;
         std::vector<Detector*> fTriggeringPlaneVector;
         std::vector<Detector*> fCmsRpcVector;
         std::vector<Detector*> fGlassRpcVector;
-        SetupManager(){count=0;}
+        SetupManager(){count=0;
+        //VisualizationHelper v;
+        }
     public:
         //SetupManager(){count=0;}
         void Register(Detector *det){
@@ -65,7 +73,7 @@ typedef Tomography::Properties Detector;
         }
 
         static SetupManager *instance();
-/*
+
 #ifdef USE_EVE
         void *handle(void *ptr) {
 
@@ -77,24 +85,18 @@ typedef Tomography::Properties Detector;
           m.SetDz(75);
 
           Coordinates c;
-          double* temp;
+          Tracking::Vector3D<double> temp;
           std::vector<HittedPixel*> hittedPixelVector;
           while(true){
             sleep(2);
 
-            c.CoGenerator(2, 30);
+            c.CoGenerator(GetDetectorVector("GLASS"));
             c.SetStrips();
             c.SetStripCoordinates();
-            //temp = c.GetStripCoordinate(3);
-            //std::cout << *temp << " " << *(temp + 1) << " " << *(temp + 2) << std::endl;
-
             count++;
-
             TGeoBBox *shape ;
-
             std::cout<<"Size : "<< hittedPixelVector.size() << std::endl;
             if(hittedPixelVector.size()){
-              //std::cout<<"Entered Here"<< std::endl;
               for(int i = 0 ; i < hittedPixelVector.size() ; i++){
                 Tracking::Singleton::instance()->RemoveElement(hittedPixelVector[i]->GetEveGeoShape());
               }
@@ -103,10 +105,14 @@ typedef Tomography::Properties Detector;
             hittedPixelVector.clear();
             for(int detNo = 0 ; detNo < fGlassRpcVector.size() ; detNo++){
               temp = c.GetStripCoordinate(detNo+1);
-              std::cout << *temp << " " << *(temp + 1) << " " << *(temp + 2) << std::endl;
-            m.SetDx(*temp);
-            m.SetDy(*(temp + 1));
-            m.SetDz(*(temp + 2));
+              temp.Print();
+              m.SetDx(temp.x());
+              m.SetDy(temp.y());
+              m.SetDz(temp.z());
+
+            //m.SetDx(*temp);
+			//m.SetDy(*(temp + 1));
+			//m.SetDz(*(temp + 2));
 
             //Add some element
             if(gEve){
@@ -122,7 +128,7 @@ typedef Tomography::Properties Detector;
           mythread->Run();
         }
 #endif
-*/
+
 /*
         template<typename Type,bool ForRpc>
         void Register(Type *component){

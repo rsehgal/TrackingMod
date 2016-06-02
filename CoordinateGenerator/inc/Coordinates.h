@@ -1,5 +1,5 @@
-//#ifndef ThisClass
-//#define ThisClass
+#ifndef COORDINATEGENERATOR_INC_COORDINATES_H
+#define COORDINATEGENERATOR_INC_COORDINATES_H
 
 #include <iostream>
 #include <vector>
@@ -33,4 +33,4 @@ public:
 	void Print();
 
 };
-//#endif
+#endif
