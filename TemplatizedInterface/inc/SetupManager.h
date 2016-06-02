@@ -73,7 +73,7 @@ typedef Tomography::Properties Detector;
         }
 
         static SetupManager *instance();
-
+/*
 #ifdef USE_EVE
         void *handle(void *ptr) {
 
@@ -128,7 +128,7 @@ typedef Tomography::Properties Detector;
           mythread->Run();
         }
 #endif
-
+*/
 /*
         template<typename Type,bool ForRpc>
         void Register(Type *component){

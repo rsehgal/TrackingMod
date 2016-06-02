@@ -13,6 +13,7 @@
 #include "VisualizationHelper.h"
 #include "SetupManager.h"
 #include <TApplication.h>
+#include "Update.h"
 typedef Tomography::Properties Detector;
 using namespace Tomography;
 
@@ -65,7 +66,9 @@ int main(){
   Tomography::SetupManager::instance()->Register(rpc2);
   Tomography::SetupManager::instance()->Register(rpc3);
   Tomography::SetupManager::instance()->Register(rpc4);
-  Tomography::SetupManager::instance()->RunThread();
+  //Tomography::SetupManager::instance()->RunThread();
+  Update u;
+  u.RunThread();
 
   v.Show();
 
