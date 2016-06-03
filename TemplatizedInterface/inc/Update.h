@@ -24,7 +24,7 @@ namespace Tomography {
 
 class Update {
 
-	TEveStraightLineSet *ls;
+  TEveStraightLineSet *ls;
 
 public:
   Update() {}
@@ -40,11 +40,9 @@ public:
 
     Coordinates c;
     Tracking::Vector3D<double> temp;
-    // TEveStraightLineSet *ls = new TEveStraightLineSet();
     std::vector<HittedPixel *> hittedPixelVector;
     while (true) {
-      // sleep(2);
-      // c.CoGenerator(Tomography::SetupManager::instance()->GetDetectorVector("GLASS"));
+
       c.CoGenerator(0);
       c.SetStrips();
       c.SetStripCoordinates();
@@ -55,7 +53,6 @@ public:
       c2.SetStrips();
       c2.SetStripCoordinates();
 
-      // count++;
       TGeoBBox *shape;
       std::cout << "Size : " << hittedPixelVector.size() << std::endl;
       if (hittedPixelVector.size()) {
@@ -65,7 +62,7 @@ public:
       }
 
       hittedPixelVector.clear();
-      //For top half detectors
+      // For top half detectors
       for (int detNo = 0; detNo < Tomography::SetupManager::instance()->GetLowerLayerStartIndex(); detNo++) {
         temp = c.GetStripCoordinate(detNo + 1);
         temp.Print();
@@ -79,10 +76,9 @@ public:
         }
       }
 
-      //For bottom half detectors
+      // For bottom half detectors
       for (int detNo = Tomography::SetupManager::instance()->GetLowerLayerStartIndex();
            detNo < Tomography::SetupManager::instance()->GetDetectorVector("GLASS").size(); detNo++) {
-        // for(int detNo = 0 ; detNo < Tomography::SetupManager::instance()->GetLowerLayerStartIndex() ; detNo++){
         temp = c2.GetStripCoordinate(detNo - Tomography::SetupManager::instance()->GetLowerLayerStartIndex() + 1);
         temp.Print();
         m.SetDx(temp.x());
@@ -100,18 +96,9 @@ public:
       c.GetCoordinate(1).Print();
 
       ls = new TEveStraightLineSet();
-
-      //ls->AddLine(c.GetCoordinate(1).x(), c.GetCoordinate(1).y(), c.GetCoordinate(1).z(), c.GetCoordinate(4).x(),
-        //          c.GetCoordinate(4).y(), c.GetCoordinate(4).z());
+      ls->SetLineColor(5);
       AddLine(c);
-      AddMarkers(c);
-
-
-
-      //ls->AddLine(c2.GetCoordinate(1).x(), c2.GetCoordinate(1).y(), c2.GetCoordinate(1).z(), c2.GetCoordinate(4).x(),
-        //          c2.GetCoordinate(4).y(), c2.GetCoordinate(4).z());
       AddLine(c2);
-      AddMarkers(c2);
 
       Tracking::Singleton::instance()->AddElement(ls);
 
@@ -123,16 +110,18 @@ public:
     }
   }
 
-  void AddLine(Coordinates c){
-	  int startDetIndex = 1;
-	  int lastDetIndex = c.GetLength();
-	  ls->AddLine(c.GetCoordinate(startDetIndex).x(), c.GetCoordinate(startDetIndex).y(), c.GetCoordinate(startDetIndex).z(),
-			      c.GetCoordinate(lastDetIndex).x(), c.GetCoordinate(lastDetIndex).y(), c.GetCoordinate(lastDetIndex).z());
+  void AddLine(Coordinates c) {
+    int startDetIndex = 1;
+    int lastDetIndex = c.GetLength();
+    ls->AddLine(c.GetCoordinate(startDetIndex).x(), c.GetCoordinate(startDetIndex).y(),
+                c.GetCoordinate(startDetIndex).z(), c.GetCoordinate(lastDetIndex).x(),
+                c.GetCoordinate(lastDetIndex).y(), c.GetCoordinate(lastDetIndex).z());
+    AddMarkers(c);
   }
 
   void AddMarkers(Coordinates c) {
     for (int i = 0; i < c.GetLength(); i++) {
-      ls->AddMarker(c.GetCoordinate(i+1).x(), c.GetCoordinate(i+1).y(), c.GetCoordinate(i+1).z());
+      ls->AddMarker(c.GetCoordinate(i + 1).x(), c.GetCoordinate(i + 1).y(), c.GetCoordinate(i + 1).z());
     }
 
     ls->SetMarkerSize(1.3);
@@ -147,4 +136,3 @@ public:
 }
 
 #endif
-
