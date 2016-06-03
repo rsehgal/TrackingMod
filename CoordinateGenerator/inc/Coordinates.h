@@ -21,6 +21,7 @@ private:
 	std::vector<Tracking::Vector3D <double>> coordinate;
 	std::vector<Tracking::Vector3D <double>> stripcoord;
 	std::vector<Tracking::Vector3D <double>> strip;
+	std::vector<Detector*> det;
 	//vector<vector <double>> coordinate;
 	//vector<vector <double>> stripcoord;    //generated coordinates from midpoints of 2-D grid of each detectors
 	//vector<vector <double>> strip;
@@ -43,6 +44,7 @@ public:
 	double GenRandom(double min, double max);
 	Vector3D<double> GetInitialPoint();
 	Vector3D<double> GetSpecificCoordinate(double zpos);
+	int GetLength(){return det.size();}
 	void Print();
 
 };

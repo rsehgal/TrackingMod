@@ -77,7 +77,7 @@ namespace Tomography{
 	void Coordinates::CoGenerator(int flag = 0)
 	{
 
-		std::vector<Detector*> det;
+		//std::vector<Detector*> det;
 		if(flag==0)
 		{
 			det = Tomography::SetupManager::instance()->GetUpperLayerDetectorVector("GLASS");  //Need to pass value of 'fDetectorType'

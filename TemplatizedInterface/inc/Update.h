@@ -24,6 +24,8 @@ namespace Tomography {
 
 class Update {
 
+	TEveStraightLineSet *ls;
+
 public:
   Update() {}
   void *handle(void *ptr) {
@@ -96,22 +98,20 @@ public:
 
       std::cout << "Pt : ";
       c.GetCoordinate(1).Print();
-      TEveStraightLineSet *ls = new TEveStraightLineSet();
-      ls->AddLine(c.GetCoordinate(1).x(), c.GetCoordinate(1).y(), c.GetCoordinate(1).z(), c.GetCoordinate(3).x(),
-                  c.GetCoordinate(3).y(), c.GetCoordinate(3).z());
 
-      ls->AddMarker(c.GetCoordinate(1).x(), c.GetCoordinate(1).y(), c.GetCoordinate(1).z());
-      ls->AddMarker(c.GetCoordinate(2).x(), c.GetCoordinate(2).y(), c.GetCoordinate(2).z());
-      ls->AddMarker(c.GetCoordinate(3).x(), c.GetCoordinate(3).y(), c.GetCoordinate(3).z());
+      ls = new TEveStraightLineSet();
 
-      ls->AddLine(c2.GetCoordinate(1).x(), c2.GetCoordinate(1).y(), c2.GetCoordinate(1).z(), c2.GetCoordinate(2).x(),
-                  c2.GetCoordinate(2).y(), c2.GetCoordinate(2).z());
-      ls->AddMarker(c2.GetCoordinate(1).x(), c2.GetCoordinate(1).y(), c2.GetCoordinate(1).z());
-      ls->AddMarker(c2.GetCoordinate(2).x(), c2.GetCoordinate(2).y(), c2.GetCoordinate(2).z());
-      ls->AddMarker(c2.GetCoordinate(3).x(), c2.GetCoordinate(3).y(), c2.GetCoordinate(3).z());
+      //ls->AddLine(c.GetCoordinate(1).x(), c.GetCoordinate(1).y(), c.GetCoordinate(1).z(), c.GetCoordinate(4).x(),
+        //          c.GetCoordinate(4).y(), c.GetCoordinate(4).z());
+      AddLine(c);
+      AddMarkers(c);
 
-      ls->SetMarkerSize(1.3);
-      ls->SetMarkerStyle(4);
+
+
+      //ls->AddLine(c2.GetCoordinate(1).x(), c2.GetCoordinate(1).y(), c2.GetCoordinate(1).z(), c2.GetCoordinate(4).x(),
+        //          c2.GetCoordinate(4).y(), c2.GetCoordinate(4).z());
+      AddLine(c2);
+      AddMarkers(c2);
 
       Tracking::Singleton::instance()->AddElement(ls);
 
@@ -121,6 +121,22 @@ public:
       sleep(2);
       Tracking::Singleton::instance()->RemoveElement();
     }
+  }
+
+  void AddLine(Coordinates c){
+	  int startDetIndex = 1;
+	  int lastDetIndex = c.GetLength();
+	  ls->AddLine(c.GetCoordinate(startDetIndex).x(), c.GetCoordinate(startDetIndex).y(), c.GetCoordinate(startDetIndex).z(),
+			      c.GetCoordinate(lastDetIndex).x(), c.GetCoordinate(lastDetIndex).y(), c.GetCoordinate(lastDetIndex).z());
+  }
+
+  void AddMarkers(Coordinates c) {
+    for (int i = 0; i < c.GetLength(); i++) {
+      ls->AddMarker(c.GetCoordinate(i+1).x(), c.GetCoordinate(i+1).y(), c.GetCoordinate(i+1).z());
+    }
+
+    ls->SetMarkerSize(1.3);
+    ls->SetMarkerStyle(4);
   }
 
   void RunThread() {
