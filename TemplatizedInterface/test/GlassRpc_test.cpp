@@ -39,24 +39,28 @@ int main(){
   channelVector.push_back(32);
 
   std::cout<<"===========================================================================" << std::endl;
+  Detector *rpc0 = new GlassRpc(3,"SecondGlassRpc", 120,-1);
   Detector *rpc1 = new GlassRpc(3,"SecondGlassRpc", 90,-1);
   Detector *rpc2 = new GlassRpc(3,"SecondGlassRpc", 60,-1);
   Detector *rpc3 = new GlassRpc(3,"SecondGlassRpc", 30,63);
 
-  Detector *rpc5 = new GlassRpc(4,"SecondGlassRpc", -30,-1);
-  Detector *rpc6 = new GlassRpc(4,"SecondGlassRpc", -60,-1);
-  Detector *rpc4 = new GlassRpc(4,"SecondGlassRpc", -90,-1);
+  Detector *rpc4 = new GlassRpc(4,"SecondGlassRpc", -30,-1);
+  Detector *rpc5 = new GlassRpc(4,"SecondGlassRpc", -60,-1);
+  Detector *rpc6 = new GlassRpc(4,"SecondGlassRpc", -90,-1);
+  Detector *rpc7 = new GlassRpc(4,"SecondGlassRpc", -120,-1);
 
   Print(rpc2);
+  v.Register(rpc0);
   v.Register(rpc1);
   v.Register(rpc2);
   v.Register(rpc3);
   v.Register(rpc4);
   v.Register(rpc5);
   v.Register(rpc6);
+  v.Register(rpc7);
 
-  Detector *topPlane = new TriggeringPlane(2,"TopPlane", -105,-1);
-  Detector *bottomPlane = new TriggeringPlane(2,"BottomPlane", 105,7);
+  Detector *topPlane = new TriggeringPlane(2,"TopPlane", -150,-1);
+  Detector *bottomPlane = new TriggeringPlane(2,"BottomPlane", 150,7);
 
   std::cout<<"This should be cms : " << rpc1->GetDetectorType() << std::endl;
   std::cout<<"This shoudl be glass " << rpc2->GetDetectorType() << std::endl;
@@ -67,12 +71,14 @@ int main(){
 
 
   //Tomography::SetupManager s;
+  Tomography::SetupManager::instance()->Register(rpc0);
   Tomography::SetupManager::instance()->Register(rpc1);
   Tomography::SetupManager::instance()->Register(rpc2);
   Tomography::SetupManager::instance()->Register(rpc3);
   Tomography::SetupManager::instance()->Register(rpc4);
   Tomography::SetupManager::instance()->Register(rpc5);
   Tomography::SetupManager::instance()->Register(rpc6);
+  Tomography::SetupManager::instance()->Register(rpc7);
   //Tomography::SetupManager::instance()->RunThread();
   Update u;
   u.RunThread();
