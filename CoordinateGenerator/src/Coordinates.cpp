@@ -305,8 +305,8 @@ namespace Tomography{
 		for(int i =  0 ; i < totalDetector ; i++)
 		{
 		
-			strip[i].SetX(floor( (coordinate[i].x()+ detectors[i]->GetPlane(0)->GetBreadth()/2)) / (detectors[i]->GetPlane(0)->GetBreadth() / detectors[i]->GetPlane(0)->GetNumOfScintillators()) );
-			strip[i].SetY(floor( (coordinate[i].y()+ detectors[i]->GetPlane(1)->GetLength()/2)) / (detectors[i]->GetPlane(1)->GetLength() / detectors[i]->GetPlane(1)->GetNumOfScintillators()) );
+			strip[i].SetX(floor( (coordinate[i].x()+ detectors[i]->GetPlane(0)->GetBreadth()/2) / (detectors[i]->GetPlane(0)->GetBreadth() / detectors[i]->GetPlane(0)->GetNumOfScintillators()) ));
+			strip[i].SetY(floor( (coordinate[i].y()+ detectors[i]->GetPlane(1)->GetLength()/2) / (detectors[i]->GetPlane(1)->GetLength() / detectors[i]->GetPlane(1)->GetNumOfScintillators()) ));
 			strip[i].SetZ(coordinate[i].z());
 
 		}

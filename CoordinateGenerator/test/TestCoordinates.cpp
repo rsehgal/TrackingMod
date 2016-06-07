@@ -111,7 +111,7 @@ int main()
 		std::cout<<""<<std::endl;
 	//////////////////////////
 
-		temp = c1.GetSpecificCoordinate(-15.0);
+		temp = c1.GetSpecificCoordinate(15.0);
 			Tomography::Coordinates c2(detVectorLower,temp);
 
 					  //Detector *rpc5 = new Tomography::GlassRpc(3,"FirstGlassRpc", -30,-1);
