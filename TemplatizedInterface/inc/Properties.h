@@ -18,6 +18,7 @@
 #include <vector>
 #include "Scintillator.h"
 #include "ScintillatorPlane.h"
+//#include "Tree.h"
 namespace Tomography {
 
 class Properties {
@@ -76,6 +77,7 @@ public:
   std::vector<ScintillatorPlane*> GetScintillatorPlaneVector(){return fScintillatorPlaneVector;}
   ScintillatorPlane* GetPlane(int planeNo){return fScintillatorPlaneVector[planeNo];}
   std::string GetDetectorType(){return fDetectorType;}
+  //void FetchInfo(Tracking::Tree t);
   void InsertPlane(ScintillatorPlane *plane){
     fScintillatorPlaneVector.push_back(plane);
     fTotalNumOfChannels += plane->GetNumOfScintillators();

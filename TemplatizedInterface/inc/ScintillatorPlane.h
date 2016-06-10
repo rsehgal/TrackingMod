@@ -11,6 +11,7 @@
 #include <vector>
 #include "Scintillator.h"
 #include "base/Vector3D.h"
+#include "Tree.h"
 
 namespace Tomography {
 class ScintillatorPlane {
@@ -23,6 +24,7 @@ class ScintillatorPlane {
   int fLength;
   int fBreadth;
   int fHeight;
+  std::vector<int> fFiredStrips;
 
 public:
   ScintillatorPlane();
@@ -67,12 +69,29 @@ public:
   std::string GetName(){return fName;}
   int GetTotalScintillatorFired(){return fScintTotal;}
   int GetNumOfScintillators(){return fNumOfScintillators;}
+  int DetectTotalScinitillatorFired();
   std::vector<Scintillator*> GetScintVector(){return fScintVector;}
   double GetLength(){return fLength;}
   double GetBreadth(){return fBreadth;}
   double GetHeight(){return fHeight;}
-};
+  //template<bool ForRpc>
+ // bool IsShowerEvent(Tracking::Tree &t, int evNo);
+  void SetFiredStrips(Tracking::Tree &t, int evNo);
+  std::vector<int> GetFiredStripsVector(){return fFiredStrips;}
 
+};
+/*
+//template<bool ForRpc>
+bool ScintillatorPlane::IsShowerEvent(Tree &t, int evNo){
+  fScintTotal = 0;
+  int scintPlaneSize = fScintVector.size();
+  for(int i = 0 ; i < scintPlaneSize ; i++){
+    fScintVector[i]->DetectAndSetHit<false>(t,evNo);
+  }
+  DetectTotalScintFired();
+  return (fScintTotal >= scint_multiplicity_max);
+}
+*/
 } /* namespace Tomography */
 
 #endif /* TEMPLATIZEDINTERFACE_INC_SCINTILLATORPLANE_H_ */

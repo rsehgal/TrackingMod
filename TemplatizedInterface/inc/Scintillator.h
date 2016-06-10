@@ -8,6 +8,7 @@
 #ifndef TEMPLATIZEDINTERFACE_INC_SCINTILLATOR_H_
 #define TEMPLATIZEDINTERFACE_INC_SCINTILLATOR_H_
 
+#include "Tree.h"
 #include "base/Global.h"
 #include "base/Vector3D.h"
 #ifdef SHOW_VISUALIZATION
@@ -76,6 +77,9 @@ public:
 #endif
   std::string GetName(){return fName;}
 
+  template <bool ForRpc>
+  void DetectAndSetHit(Tracking::Tree &t, int evNo);
+
 /*
 #ifndef USE_EVE
   void CreateTGeoVolume();
@@ -87,7 +91,41 @@ public:
 
 };
 
+template <bool ForRpc>
+void Scintillator::DetectAndSetHit(Tracking::Tree &t, int evNo) {
+  /*
+  *  For the time being hard coding the information related to
+  *  trigger module and channel.
+  *  triggerModule : 0 , triggerChannel : 31
+  *
+  *  ModuleVector variable "modVector" should be filled after reading the ROOT file
+  *
+  */
+  fScintHit = false;
+  Tracking::Channel *trigMultiHit = t.GetEntry("Module2_LE_CH31", evNo);
+  long trig = 0;
+  trig = trigMultiHit->at(0);
+  ch = 0;
+  ch = t.GetEntry(fName, evNo);
+  if (ch->size()) {
+    long scintillator = 0;
+    scintillator = ch->at(0);
 
+    if (scintillator > 0) {
+      if (ForRpc) {
+        long rpcData = scintillator;
+        if (rpcData >= 19450 && rpcData <= 20550)
+          fScintHit = true;
+
+      } else {
+        if (abs(trig - scintillator) < scintMax)
+          fScintHit = true;
+      }
+    }
+  }
+
+  // std::cout<<"fScintHit : "<< fScintHit <<std::endl;
+}
 
 } /* namespace Tomography */
 
