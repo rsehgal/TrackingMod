@@ -16,6 +16,7 @@ namespace Tomography {
 
 //Scintillator::Scintillator(){}
 int Scintillator::fId = -1;
+int Scintillator::fSno = -1;
 
 Scintillator::Scintillator(){}
 
@@ -23,6 +24,8 @@ Scintillator::Scintillator(int moduleId, double length, double breadth,double he
   fModuleId(moduleId),fLength(length), fBreadth(breadth),fHeight(height){
   fId++;
   fScintId = fId;
+  fSno++;
+  fStripNo = fSno;
   std::stringstream ss;
   ss << "Module" << fModuleId <<"_LE_CH" << fScintId;
   fName = ss.str();
@@ -34,6 +37,8 @@ Scintillator::Scintillator(int moduleId, double length, double breadth,double he
   fPlacedLocation = placedLocation;
   fId++;
   fScintId = fId;
+  fSno++;
+  fStripNo = fSno;
   std::stringstream ss;
   ss << "Module" << fModuleId <<"_LE_CH" << fScintId;
   fName = ss.str();

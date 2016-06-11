@@ -31,6 +31,7 @@ GlassRpc::GlassRpc(std::string name, std::vector<int> channelDimVector):
 GlassRpc::GlassRpc(int moduleId, std::string rpcName, double zPos, int startId) {
   SetDetectorType("GLASS");
   Scintillator::SetStartingId(startId);
+  Scintillator::SetStartingStripNum();
   int numOfPlanes = 2;
   SetNumOfPlanes(numOfPlanes);
   SetName(rpcName);

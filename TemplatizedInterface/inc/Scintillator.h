@@ -33,6 +33,10 @@ class Scintillator {
   bool fScintHit;
 
   Tracking::Channel *ch;// Data structure to hold data for the scintillator
+  
+  //Strip num always start from 0, ScintId can start from other number also
+  static int fSno;
+  int fStripNo;
 
 /*
 #ifndef USE_EVE
@@ -54,6 +58,8 @@ public:
   Scintillator(int moduleId, double length, double breadth,double height,Tracking::Vector3D<double> placedLocation);
   ~Scintillator();
   static void SetStartingId(int sId){fId = sId;}
+  static void SetStartingStripNum(){fSno = -1;}
+
   void SetLength(double length){fLength = length;}
   void SetBreadth(double breadth){fBreadth = breadth;}
   void SetHeight(double height){fHeight = height;}
@@ -76,7 +82,7 @@ public:
   TGeoBBox* GetScintShape();
 #endif
   std::string GetName(){return fName;}
-
+  int GetStripNum(){return fStripNo;}
   template <bool ForRpc>
   void DetectAndSetHit(Tracking::Tree &t, int evNo);
 
