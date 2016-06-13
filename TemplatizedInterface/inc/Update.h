@@ -113,18 +113,18 @@ public:
     m.SetDy(rand() % 50);
     m.SetDz(75);
 
-    Coordinates c;
+    Coordinates c(Tomography::SetupManager::instance()->GetUpperLayerDetectorVector("GLASS"));
     Tracking::Vector3D<double> temp;
     std::vector<HittedPixel *> hittedPixelVector;
     while (true) {
 
-      c.CoGenerator(0);
+      c.CoGenerator();
       c.SetStrips();
       c.SetStripCoordinates();
 
       Vector3D<double> temp2 = c.GetSpecificCoordinate(10.);
-      Coordinates c2(temp2);
-      c2.CoGenerator(1);
+      Coordinates c2(Tomography::SetupManager::instance()->GetLowerLayerDetectorVector("GLASS"),temp2);
+      c2.CoGenerator();
       c2.SetStrips();
       c2.SetStripCoordinates();
 
