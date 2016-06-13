@@ -89,7 +89,7 @@ public:
 	  }
   }
 
-  void GetFiredStripsVector(int planeNo){
+  std::vector<int> GetFiredStripsVector(int planeNo){
 	  fScintillatorPlaneVector[planeNo]->GetFiredStripsVector();
   }
 
