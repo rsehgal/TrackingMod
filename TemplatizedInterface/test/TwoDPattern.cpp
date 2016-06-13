@@ -41,19 +41,21 @@ void GenerateTimingHistogram() {
   TCanvas *c2 = new TCanvas("c2", "Timing-Info", 200, 10, 700, 500);
   c2->Divide(1, 1);
   c2->cd(1);
-  Tracking::Tree t("6742.root", "BSC_DATA_TREE");
-  int numOfEvents = t.GetNumOfEvents();
+  //Tracking::Tree t("6742.root", "BSC_DATA_TREE");
+  Tracking::Tree::instance()->ReadTree("6742.root", "BSC_DATA_TREE", 0);
+  Tracking::Tree *t = Tracking::Tree::instance()->GetTree();
+  int numOfEvents = t->GetNumOfEvents();
 
   // TH1F *hTrig = new TH1F("hTrig","TEST",100,20000,21000);
   TH2F *h2d = new TH2F("h2d", "Timing", nxbins, xlow, xhigh, nybins, ylow, yhigh);
   ScintillatorPlane *scintPlane = topPlane->GetPlane(0);
 
   for (int evNo = 0; evNo < numOfEvents; evNo++) {
-    trig = t.GetEntry("Module2_LE_CH31", evNo);
+    trig = t->GetEntry("Module2_LE_CH31", evNo);
     h2d->Fill(trig->at(0), 31);
     // for (int i = 0; i < fScintillatorPlane.size(); i++) {
     for (int i = 0; i < scintPlane->GetNumOfScintillators(); i++) {
-      ch = t.GetEntry(scintPlane->GetScintVector()[i]->GetName(), evNo);
+      ch = t->GetEntry(scintPlane->GetScintVector()[i]->GetName(), evNo);
       if (ch->size()) {
         for (int j = 0; j < ch->size(); j++) {
           h2d->Fill(ch->at(j), scintPlane->GetScintVector()[i]->GetScintId());
@@ -65,7 +67,7 @@ void GenerateTimingHistogram() {
   scintPlane = bottomPlane->GetPlane(0);
   for (int evNo = 0; evNo < numOfEvents; evNo++) {
     for (int i = 0; i < scintPlane->GetNumOfScintillators(); i++) {
-      ch = t.GetEntry(scintPlane->GetScintVector()[i]->GetName(), evNo);
+      ch = t->GetEntry(scintPlane->GetScintVector()[i]->GetName(), evNo);
 
       if (ch->size()) {
         for (int j = 0; j < ch->size(); j++) {
@@ -81,7 +83,7 @@ void GenerateTimingHistogram() {
     for (int plNum = 0; plNum < rpc->GetNumOfPlanes(); plNum++) {
       for (int i = 0; i < rpc->GetPlane(plNum)->GetNumOfScintillators(); i++) {
         // std::cout<<"Name : "<<scintPlane[i]->GetName()<<std::endl;
-        ch = t.GetEntry(rpc->GetPlane(plNum)->GetScintVector()[i]->GetName(), evNo);
+        ch = t->GetEntry(rpc->GetPlane(plNum)->GetScintVector()[i]->GetName(), evNo);
         if (ch->size()) {
           // std::cout<<"-- Data Found --"<<std::endl;
           for (int j = 0; j < ch->size(); j++) {

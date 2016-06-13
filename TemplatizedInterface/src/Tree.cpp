@@ -5,9 +5,17 @@
 
 namespace Tracking{
 
+Tree *Tree::s_instance = 0;
+Tree* Tree::instance() {
+        if (!s_instance)
+          s_instance = new Tree;
+        return s_instance;
+    }
+
 Tree::Tree(){
 	numOfEvents = 100;
 	rootFile = "test.root";
+	//sRootFile = rootFile;
 }
 
 Tree::Tree(std::string rootFl){
@@ -19,6 +27,22 @@ Tree::Tree(std::string rootFl){
   numOfEvents = t->GetEntries();
   //f->Close();
 
+}
+
+void Tree::ReadTree(std::string rootFl, std::string treeName, int rw){
+	rootFile = rootFl;
+	  fTreeName = treeName;
+	  //t = new TTree(treeName.c_str(),"A Tree with STL vectors");
+	  if (rw)
+	    f = TFile::Open(rootFile.c_str(), "RECREATE");
+	  else {
+	    f = TFile::Open(rootFile.c_str(), "READ");
+	    if (!f) {
+	      return;
+	    }
+	    f->GetObject(treeName.c_str(), t);
+	    numOfEvents = t->GetEntries();
+	  }
 }
 
 Tree::Tree(std::string rootFl, std::string treeName, int rw){
@@ -46,6 +70,7 @@ Tree::~Tree(){ f->Close(); }
 void Tree::TreeW(){
 
 	//TFile f(rootFile.c_str(),"RECREATE");
+	f = TFile::Open(rootFile.c_str(), "RECREATE");
 	Channel ch;
 	TTree t(fTreeName.c_str(),"A Tree with STL vectors");
     t.Branch("channel",&ch);

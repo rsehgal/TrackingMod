@@ -83,6 +83,16 @@ public:
     fTotalNumOfChannels += plane->GetNumOfScintillators();
   }
 
+  void SetFiredStripsVector(int evNo){
+	  for(int i=0; i < fNumOfPlanes ; i++){
+		  fScintillatorPlaneVector[i]->SetFiredStripsVector(evNo);
+	  }
+  }
+
+  std::vector<int> GetFiredStripsVector(int planeNo){
+	  fScintillatorPlaneVector[planeNo]->GetFiredStripsVector();
+  }
+
 };
 
 } /* namespace Tomography */

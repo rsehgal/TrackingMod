@@ -1,9 +1,3 @@
-/*
- * StripTest.cpp
- *
- *  Created on: Jun 6, 2016
- *      Author: rsehgal
- */
 
 #include "GlassRpc.h"
 #include "Properties.h"
@@ -53,13 +47,14 @@ void GenerateCoordinates(std::vector<int>xVec,std::vector<int>yVec){
 int main(){
 
 	Detector *rpc = new GlassRpc(2,"GlassRpc", 120,31);
-	Tracking::Tree t("6742.root", "BSC_DATA_TREE");
-	int numOfEvents = t.GetNumOfEvents();
+	//Tracking::Tree t("6742.root", "BSC_DATA_TREE");
+	Tracking::Tree::instance()->ReadTree("6742.root", "BSC_DATA_TREE", 0);
+	int numOfEvents = Tracking::Tree::instance()->GetNumOfEvents();
 	numOfEvents = 10;
     for(int evNo = 0 ; evNo < numOfEvents ; evNo++){
     	std::cout<<"======================================================" << std::endl;
     	for(int plNum = 0 ; plNum < rpc->GetNumOfPlanes() ; plNum++){
-    		rpc->GetPlane(plNum)->SetFiredStrips(t,evNo);
+    		rpc->GetPlane(plNum)->SetFiredStripsVector(evNo);
     		int numOfStripsFired = rpc->GetPlane(plNum)->GetFiredStripsVector().size();
 #define DEBUG_MSG
 #ifdef DEBUG_MSG

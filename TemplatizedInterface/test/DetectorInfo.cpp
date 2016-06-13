@@ -28,8 +28,10 @@ int main() {
   int yhigh = 10;
   TH2F *h2d = new TH2F("h2d", "Timing", nxbins, xlow, xhigh, nybins, ylow, yhigh);
 
-  Tracking::Tree tr("6702.root", "BSC_DATA_TREE", 0);
-  int numOfEvents = tr.GetNumOfEvents();
+  //Tracking::Tree tr("6702.root", "BSC_DATA_TREE", 0);
+
+  Tracking::Tree::instance()->ReadTree("6702.root", "BSC_DATA_TREE", 0);
+  int numOfEvents = Tracking::Tree::instance()->GetNumOfEvents();
   std::cout << "Total Num of Events : " << numOfEvents << std::endl;
   Detector *trigger1 = new Tomography::TriggeringPlane(2, "UpperPlane", 120, -1);
   Detector *trigger2 = new Tomography::TriggeringPlane(2, "LowerPalne", -120, 7);
@@ -45,14 +47,14 @@ int main() {
   for (int evNo = 0; evNo < numOfEvents; evNo++) {
     // for(int i=0 ; i < trigger1->GetNumOfPlanes() ;i++)
 
-    ch0 = tr.GetEntry("Module2_LE_CH31", evNo);
+    ch0 = Tracking::Tree::instance()->GetEntry("Module2_LE_CH31", evNo);
     for (int i = 0; i < trigger1->GetPlane(0)->GetNumOfScintillators(); i++) {
       std::string brName = trigger1->GetPlane(0)->GetScintVector()[i]->GetName();
-      ch1 = tr.GetEntry(brName, evNo);
+      ch1 = Tracking::Tree::instance()->GetEntry(brName, evNo);
       if (ch1->size()) {
         for (int j = 0; j < trigger2->GetPlane(0)->GetNumOfScintillators(); j++) {
           std::string brName1 = trigger2->GetPlane(0)->GetScintVector()[j]->GetName();
-          ch2 = tr.GetEntry(brName1, evNo);
+          ch2 = Tracking::Tree::instance()->GetEntry(brName1, evNo);
 
           if (ch2->size()) {
             // if(ch1->at(0) - ch2->at(0) > 500)

@@ -24,7 +24,7 @@ class ScintillatorPlane {
   int fLength;
   int fBreadth;
   int fHeight;
-  std::vector<int> fFiredStrips;
+  std::vector<int> fFiredStripsVector;
 
 public:
   ScintillatorPlane();
@@ -76,8 +76,8 @@ public:
   double GetHeight(){return fHeight;}
   //template<bool ForRpc>
  // bool IsShowerEvent(Tracking::Tree &t, int evNo);
-  void SetFiredStrips(Tracking::Tree &t, int evNo);
-  std::vector<int> GetFiredStripsVector(){return fFiredStrips;}
+  void SetFiredStripsVector(int evNo);
+  std::vector<int> GetFiredStripsVector(){return fFiredStripsVector;}
 
 };
 /*
