@@ -19,6 +19,8 @@
 #include "LinesAngle.h"
 #include "TEveStraightLineSet.h"
 #include "TRandom.h"
+#include "Tree.h"
+#include "base/Vector3D.h"
 
 namespace Tomography {
 
@@ -28,6 +30,34 @@ class Update {
 
 public:
   Update() {}
+
+  void *handleRoot(void *ptr) {
+	  TGeoHMatrix m;
+	      LinesAngle l;
+	      Double_t trans[3] = {0., 0., 0.};
+	      m.SetTranslation(trans);
+	      m.SetDx(rand() % 50);
+	      m.SetDy(rand() % 50);
+	      m.SetDz(75);
+	      Tracking::Tree::instance()->ReadTree("6742.root", "BSC_DATA_TREE", 0);
+	      int numOfEvents = Tracking::Tree::instance()->GetNumOfEvents();
+	      Tracking::Vector3D<double> temp;
+	      std::vector<HittedPixel *> hittedPixelVector;
+
+              for (int evNo = 0; evNo < numOfEvents; evNo++) {
+
+                TGeoBBox *shape;
+                std::cout << "Size : " << hittedPixelVector.size() << std::endl;
+                if (hittedPixelVector.size()) {
+                  for (int i = 0; i < hittedPixelVector.size(); i++) {
+                    Tracking::Singleton::instance()->RemoveElement(hittedPixelVector[i]->GetEveGeoShape());
+                  }
+                }
+
+                hittedPixelVector.clear();
+              }
+    }
+
   void *handle(void *ptr) {
 
     TGeoHMatrix m;
@@ -110,7 +140,53 @@ public:
     }
   }
 
-  void AddLine(Coordinates c) {
+
+Tracking::Vector3D<double> GetStripCoordinate(double x, double y, double z)
+    {
+        int tmp = 0;
+        Vector3D<double> temp;
+
+//        temp.SetX(floor( (x+(double)50) /3.125 ));
+//        temp.SetY(floor( (y+(double)50) /3.125 ));
+        temp.SetX(-50. + x*3.125 + 1.5625);
+        temp.SetY(-50. + y*3.125 + 1.5625);
+        temp.SetZ(z);
+
+        return temp;
+    }
+
+/*
+ *
+ *          stripcoord[i].SetX(-50. + (strip[i].x())*3.125 + 1.5625);
+			stripcoord[i].SetY(-50. + (strip[i].y())*3.125 + 1.5625);
+			stripcoord[i].SetZ(coordinate[i].z());
+ */
+
+void GenerateCoordinates(std::vector<int>xVec,std::vector<int>yVec){
+	for(int i=0 ; i<xVec.size() ; i++){
+		for(int j=0 ; j<yVec.size() ; j++){
+			Tracking::Vector3D<double> coordinates = GetStripCoordinate(xVec[i],yVec[j],50);
+			coordinates.Print();
+		}
+	}
+}
+
+/*  Tracking::Vector3D<double> GetStripCoordinate(double x, double y, double z)
+      {
+          int tmp = 0;
+          Vector3D<double> temp;
+
+  //        temp.SetX(floor( (x+(double)50) /3.125 ));
+  //        temp.SetY(floor( (y+(double)50) /3.125 ));
+          temp.SetX(-50. + x*3.125 + 1.5625);
+          temp.SetY(-50. + y*3.125 + 1.5625);
+          temp.SetZ(z);
+
+          return temp;
+      }
+ */
+
+void AddLine(Coordinates c) {
     int startDetIndex = 1;
     int lastDetIndex = c.GetLength();
     ls->AddLine(c.GetCoordinate(startDetIndex).x(), c.GetCoordinate(startDetIndex).y(),
@@ -132,6 +208,11 @@ public:
     TThread *mythread = new TThread("My Thread", (void (*)(void *)) & Update::handle, (void *)this);
     mythread->Run();
   }
+
+  void RunThread2() {
+      TThread *mythread2 = new TThread("My Thread2", (void (*)(void *)) & Update::handleRoot, (void *)this);
+      mythread2->Run();
+    }
 };
 }
 

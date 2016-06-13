@@ -27,14 +27,17 @@ int ScintillatorPlane::DetectTotalScinitillatorFired(){
 
 }
 
-void ScintillatorPlane::SetFiredStrips(Tracking::Tree &t, int evNo) {
+//void ScintillatorPlane::SetFiredStripsVector(Tracking::Tree &t, int evNo) {
+//Provided the Root file is registered with SetupManager
+void ScintillatorPlane::SetFiredStripsVector(int evNo) {
   fScintTotal = 0;
   int scintVectorSize = fScintVector.size();
-  fFiredStrips.clear();
+  fFiredStripsVector.clear();
   for (int i = 0; i < scintVectorSize; i++) {
-    fScintVector[i]->DetectAndSetHit<true>(t, evNo);
+  //  fScintVector[i]->DetectAndSetHit<true>(t, evNo);
+	fScintVector[i]->DetectAndSetHit<true>(evNo);
     if(fScintVector[i]->GetScintHit())
-    	fFiredStrips.push_back(i);
+    	fFiredStripsVector.push_back(i);
 
   }
 }

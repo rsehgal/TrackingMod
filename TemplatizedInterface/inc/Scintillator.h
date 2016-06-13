@@ -78,7 +78,7 @@ public:
   std::string GetName(){return fName;}
 
   template <bool ForRpc>
-  void DetectAndSetHit(Tracking::Tree &t, int evNo);
+  void DetectAndSetHit( int evNo);
 
 /*
 #ifndef USE_EVE
@@ -92,7 +92,8 @@ public:
 };
 
 template <bool ForRpc>
-void Scintillator::DetectAndSetHit(Tracking::Tree &t, int evNo) {
+//void Scintillator::DetectAndSetHit(Tracking::Tree &t, int evNo) {
+void Scintillator::DetectAndSetHit(int evNo) {
   /*
   *  For the time being hard coding the information related to
   *  trigger module and channel.
@@ -101,16 +102,33 @@ void Scintillator::DetectAndSetHit(Tracking::Tree &t, int evNo) {
   *  ModuleVector variable "modVector" should be filled after reading the ROOT file
   *
   */
+  Tracking::Tree *t = Tracking::Tree::instance()->GetTree();
   fScintHit = false;
-  Tracking::Channel *trigMultiHit = t.GetEntry("Module2_LE_CH31", evNo);
+  Tracking::Channel *trigMultiHit = t->GetEntry("Module2_LE_CH31", evNo);
   long trig = 0;
   trig = trigMultiHit->at(0);
   ch = 0;
-  ch = t.GetEntry(fName, evNo);
+  ch = t->GetEntry(fName, evNo);
   if (ch->size()) {
     long scintillator = 0;
     scintillator = ch->at(0);
+    /* The below logic is duplicate for the time being.
+     * Based on the actual logic, it needs to be changed
+     * for Scintiallator and Rpc
+     */
 
+    if(ForRpc) {
+    	long rpcData = scintillator;
+    	if (rpcData >= 19450 && rpcData <= 20550)
+    	          fScintHit = true;
+
+    }else {
+    	long scintillatorData = scintillator;
+    	if (scintillatorData >= 19450 && scintillatorData <= 20550)
+    	          fScintHit = true;
+    }
+
+/*
     if (scintillator > 0) {
       if (ForRpc) {
         long rpcData = scintillator;
@@ -123,10 +141,11 @@ void Scintillator::DetectAndSetHit(Tracking::Tree &t, int evNo) {
       }
     }
   }
+*/
 
   // std::cout<<"fScintHit : "<< fScintHit <<std::endl;
 }
-
+}
 } /* namespace Tomography */
 
 #endif /* PLANE_H_ */
