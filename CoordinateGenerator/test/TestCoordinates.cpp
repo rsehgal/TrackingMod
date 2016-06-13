@@ -11,7 +11,7 @@ typedef Tomography::Properties Detector;
 int main()
 {
 	Vector3D<double> temp;
-	Tomography::Coordinates c1;
+	//Tomography::Coordinates c1;
 
 	//Tomography::SetupManager s1;
 	//Tomography::SetupManager s2;
@@ -47,15 +47,17 @@ int main()
 	//std::vector<Detector*> detVector_s1 = s1.GetDetectorVector("GLASS");
 	//totalDetectors_s1 = detVector_s1.size();
 
-	std::vector<Detector*> detVector = Tomography::SetupManager::instance()->GetUpperLayerDetectorVector("GLASS");
-	totalDetectors_s1 = detVector.size();
+	std::vector<Detector*> detVectorUpper = Tomography::SetupManager::instance()->GetUpperLayerDetectorVector("GLASS");
+	//totalDetectors_s1 = detVector.size();
+
+
+	std::vector<Detector*> detVectorLower = Tomography::SetupManager::instance()->GetLowerLayerDetectorVector("GLASS");
+	//totalDetectors_s1 = detVector.size();
 
 
 
 
-
-
-
+	Tomography::Coordinates c1(detVectorUpper);
 	//int N = totalDetectors;
 	//int M = 30;
         //for(int j=0;j<4;j++){
@@ -63,7 +65,7 @@ int main()
 	std::cout<<"Detectors Above Object:"<<std::endl;
 	std::cout<<""<<std::endl;
 
-	c1.CoGenerator(0);
+	c1.CoGenerator();
 	c1.SetStrips();
 	c1.SetStripCoordinates();
 	c1.Print();
@@ -90,7 +92,7 @@ int main()
 	std::cout<<"Printing MidPoint of all the strips where intersection happens:"<<std::endl;
 	std::cout<<""<<std::endl;
 
-	for(int i = 0 ; i < totalDetectors_s1 ; i++)
+	for(int i = 0 ; i < detVectorUpper.size() ; i++)
 	{
 		temp = c1.GetStripCoordinate(i+1);
 		temp.Print();
@@ -109,8 +111,8 @@ int main()
 		std::cout<<""<<std::endl;
 	//////////////////////////
 
-		temp = c1.GetSpecificCoordinate(-15.0);
-			Tomography::Coordinates c2(temp);
+		temp = c1.GetSpecificCoordinate(15.0);
+			Tomography::Coordinates c2(detVectorLower,temp);
 
 					  //Detector *rpc5 = new Tomography::GlassRpc(3,"FirstGlassRpc", -30,-1);
 					  //Detector *rpc6 = new Tomography::GlassRpc(3,"SecondGlassRpc", -60,-1);
@@ -122,10 +124,10 @@ int main()
 					//s2.Register(rpc7);
 					//s2.Register(rpc8);
 
-					std::vector<Detector*> detVector2 = Tomography::SetupManager::instance()->GetLowerLayerDetectorVector("GLASS");
-							totalDetectors_s2 = detVector2.size();
+					//std::vector<Detector*> detVector2 = Tomography::SetupManager::instance()->GetLowerLayerDetectorVector("GLASS");
+							//totalDetectors_s2 = detVector2.size();
 
-	c2.CoGenerator(totalDetectors_s2);
+	c2.CoGenerator();
 	c2.SetStrips();
 	c2.SetStripCoordinates();
 	c2.Print();
@@ -133,7 +135,7 @@ int main()
 	std::cout<<"Printing MidPoint of all the strips where intersection happens:"<<std::endl;
 	std::cout<<""<<std::endl;
 
-	for(int i = 0 ; i < totalDetectors_s2; i++)
+	for(int i = 0 ; i < detVectorLower.size(); i++)
 	{
 		temp = c2.GetStripCoordinate(i+1);
 		temp.Print();
@@ -152,7 +154,8 @@ int main()
 
 	angle = l.CalculateAngle(c1.GetCoordinate(1), c1.GetCoordinate(2), c2.GetCoordinate(1), c2.GetCoordinate(2));
 	std::cout<<angle<<std::endl;
-
+	//c1.SetStrips(4.,2.,30.);
+	//c1.Print();
 
 	return 0;
 }
