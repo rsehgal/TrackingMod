@@ -18,7 +18,7 @@
 #include "Properties.h"
 #include "Coordinates.h"
 //#include "SetupManager.h"
-#include "Eve/Singleton.h"
+//include "Eve/Singleton.h"
 #include "HittedPixel.h"
 #include "VisualizationHelper.h"
 #include "TThread.h"

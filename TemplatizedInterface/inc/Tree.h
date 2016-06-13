@@ -6,8 +6,6 @@
 #include <algorithm>
 #include "base/Global.h"
 #include <string>
-#include <TTree.h>
-
 namespace Tracking{
 
 class Tree{

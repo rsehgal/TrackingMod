@@ -1,9 +1,3 @@
-/*
- * StripTest.cpp
- *
- *  Created on: Jun 6, 2016
- *      Author: rsehgal
- */
 
 #include "GlassRpc.h"
 #include "Properties.h"

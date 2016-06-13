@@ -13,7 +13,7 @@
 #include "base/Global.h"
 #include "HittedPixel.h"
 #include "TGeoBBox.h"
-#include "Eve/Singleton.h"
+#include "visualizer/Eve/Singleton.h"
 #include "VisualizationHelper.h"
 #include "TThread.h"
 #include "LinesAngle.h"
@@ -21,6 +21,10 @@
 #include "TRandom.h"
 #include "Tree.h"
 #include "base/Vector3D.h"
+#include "Properties.h"
+#include "SetupManager.h"
+ #include "visualizer/Eve/Singleton.h"
+ typedef Tomography::Properties Detector;
 
 namespace Tomography {
 
@@ -39,23 +43,64 @@ public:
 	      m.SetDx(rand() % 50);
 	      m.SetDy(rand() % 50);
 	      m.SetDz(75);
-	      Tracking::Tree::instance()->ReadTree("6742.root", "BSC_DATA_TREE", 0);
+	      //Tracking::Tree::instance()->ReadTree("6742.root", "BSC_DATA_TREE", 0);
 	      int numOfEvents = Tracking::Tree::instance()->GetNumOfEvents();
 	      Tracking::Vector3D<double> temp;
 	      std::vector<HittedPixel *> hittedPixelVector;
+              /////////////////////////
+    std::vector<Detector*> detectors = Tomography::SetupManager::instance()->GetDetectorVector("GLASS");
 
-              for (int evNo = 0; evNo < numOfEvents; evNo++) {
-
-                TGeoBBox *shape;
-                std::cout << "Size : " << hittedPixelVector.size() << std::endl;
+        for(int evNo = 0 ; evNo < numOfEvents ; evNo++)
+        {
+          //hittedPixelVector.clear();
+            std::cout<<"======================================================" << std::endl;
+     
+            for(int j = 0 ; j < detectors.size() ; j++)
+            { 
+                  detectors[j]->SetFiredStripsVector(evNo);
+                  //GenerateCoordinates(detectors[j]->GetPlane(0)->GetFiredStripsVector(),detectors[j]->GetPlane(1)->GetFiredStripsVector());
+             
+              for(int xval=0; xval < detectors[j]->GetPlane(0)->GetFiredStripsVector().size() ; xval++){
+                for(int yval=0 ; yval < detectors[j]->GetPlane(1)->GetFiredStripsVector().size() ; yval++){
+                  
+              //TGeoBBox *shape;
+              //hittedPixelVector.push_back(new HittedPixel(m));
+                
+                /*std::cout << "Size : " << hittedPixelVector.size() << std::endl;
+                if (hittedPixelVector.size()) {
+                  for (int i = 0; i < hittedPixelVector.size(); i++) {
+                    Tracking::Singleton::instance()->RemoveElement(hittedPixelVector[i]->GetEveGeoShape());
+                  }
+                }*/
+                 
+                temp = GetStripCoordinate(detectors[j]->GetPlane(0)->GetFiredStripsVector()[xval],
+                       detectors[j]->GetPlane(1)->GetFiredStripsVector()[yval],detectors[j]->GetZPos());
+                temp.Print();
+                  
+              if (gEve) {
+                m.SetDx(temp.x());
+                m.SetDy(temp.y());
+                m.SetDz(temp.z());
+          hittedPixelVector.push_back(new HittedPixel(m));
+          Tracking::Singleton::instance()->AddElement(hittedPixelVector[hittedPixelVector.size()-1]->GetEveGeoShape());
+          //Tracking::Singleton::instance()->AddElement(hittedPixelVector[0]->GetEveGeoShape());
+                  }
+   
+              }
+            }
+            }
+            sleep(2);
+            std::cout << "Size : " << hittedPixelVector.size() << std::endl;
                 if (hittedPixelVector.size()) {
                   for (int i = 0; i < hittedPixelVector.size(); i++) {
                     Tracking::Singleton::instance()->RemoveElement(hittedPixelVector[i]->GetEveGeoShape());
                   }
                 }
-
-                hittedPixelVector.clear();
-              }
+            hittedPixelVector.clear();
+            //Tracking::Singleton::instance()->AddElement(ls);
+                
+                //Tracking::Singleton::instance()->RemoveElement();
+        }      
     }
 
   void *handle(void *ptr) {

@@ -39,7 +39,7 @@ int main(){
   channelVector.push_back(32);
 
   std::cout<<"===========================================================================" << std::endl;
-  Detector *rpc0 = new GlassRpc(3,"SecondGlassRpc", 120,-1);
+  Detector *rpc0 = new GlassRpc(2,"SecondGlassRpc", 120,31);
   Detector *rpc1 = new GlassRpc(3,"SecondGlassRpc", 90,-1);
   Detector *rpc2 = new GlassRpc(3,"SecondGlassRpc", 60,-1);
   Detector *rpc3 = new GlassRpc(3,"SecondGlassRpc", 30,63);
@@ -80,6 +80,7 @@ int main(){
   Tomography::SetupManager::instance()->Register(rpc6);
   Tomography::SetupManager::instance()->Register(rpc7);
 //  //Tomography::SetupManager::instance()->RunThread();
+
   Update u;
   u.RunThread();
 
