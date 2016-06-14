@@ -25,7 +25,7 @@ int main() {
   std::vector<int> channelVector;
   channelVector.push_back(32);
 
-  Tracking::Tree::instance()->ReadTree("6785.root", "BSC_DATA_TREE", 0);
+  Tracking::Tree::instance()->ReadTree("6797.root", "BSC_DATA_TREE", 0);
   std::cout << "===========================================================================" << std::endl;
   Detector *rpc1 = new GlassRpc(2, "FirstGlassRpc", 120, 31);
   Detector *rpc2 = new GlassRpc(3, "SecondGlassRpc", 150, -1);

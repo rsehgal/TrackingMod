@@ -25,6 +25,7 @@ class ScintillatorPlane {
   int fBreadth;
   int fHeight;
   std::vector<int> fFiredStripsVector;
+  double fEfficiency;
 
 public:
   ScintillatorPlane();
@@ -74,9 +75,23 @@ public:
   double GetLength(){return fLength;}
   double GetBreadth(){return fBreadth;}
   double GetHeight(){return fHeight;}
+  double GetEfficiency() {return fEfficiency;}
   //template<bool ForRpc>
  // bool IsShowerEvent(Tracking::Tree &t, int evNo);
   void SetFiredStripsVector(int evNo);
+  void SetEfficiency()
+  {
+    int count = 0;
+    int numOfEvents = Tracking::Tree::instance()->GetNumOfEvents();
+    for(int i = 0 ; i <  numOfEvents ; i++)
+    {
+       SetFiredStripsVector(i);
+       if(GetFiredStripsVector().size() == 0)
+        count++;
+    }
+          double tmp = ((double)(numOfEvents-count))*100.; 
+          fEfficiency = tmp/(double)numOfEvents;
+  }
   std::vector<int> GetFiredStripsVector(){return fFiredStripsVector;}
 
 };

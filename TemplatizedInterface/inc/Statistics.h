@@ -22,7 +22,7 @@ class Statistics{
 private:
 	std::vector<int> FiredXStrips;
 	std::vector<int> FiredYStrips;
-	std::vector<int> TotalCluster;
+	std::vector<std::vector<int>> TotalCluster;
 	std::vector<Detector*> detectors;
 	double efficiency;
 public:

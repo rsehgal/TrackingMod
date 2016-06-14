@@ -9,9 +9,13 @@ void Statistics::Initialize() {
 	detectors = Tomography::SetupManager::instance()->GetDetectorVector("GLASS");
 	FiredXStrips.resize(32);
 	FiredYStrips.resize(32);
-	TotalCluster.resize(1024);
-for(int i = 0 ; i < TotalCluster.size() ; i++)
-	TotalCluster[i] = 0;
+	TotalCluster.resize(detectors.size());
+	for(int i = 0 ; i < TotalCluster.size() ; i++)
+	{
+		TotalCluster[i].resize(1024);
+		for(int j = 0 ; j < 1024 ; j++)
+			TotalCluster[i][j] = 0;
+	}
 }
 
 void Statistics::GetXPlaneHistogram() {
@@ -19,7 +23,10 @@ void Statistics::GetXPlaneHistogram() {
 //Application *app = new TApplication("Histograms", NULL, NULL);
 std::vector<TCanvas*> c;
 c.resize(detectors.size());
-int count[] = {0,0};
+int count[detectors.size()];
+for(int i = 0 ; i < detectors.size() ; i++)
+count[i] = 0;
+
 for(int i = 0 ; i < c.size() ; i++)
 {
 	c[i] = new TCanvas(detectors[i]->GetName().c_str(), "Fired Strip/Pixel Data", 200, 10);
@@ -68,19 +75,19 @@ int numOfEvents = Tracking::Tree::instance()->GetNumOfEvents();
           	histogram[j*3+1]->Fill(detectors[j]->GetPlane(1)->GetFiredStripsVector().size());
          // }
            histogram[j*3+2]->Fill(detectors[j]->GetPlane(0)->GetFiredStripsVector().size() * detectors[j]->GetPlane(1)->GetFiredStripsVector().size());
-          // TotalCluster[detectors[j]->GetPlane(0)->GetFiredStripsVector().size() * detectors[j]->GetPlane(1)->GetFiredStripsVector().size()]++;
+           TotalCluster[j][detectors[j]->GetPlane(0)->GetFiredStripsVector().size() * detectors[j]->GetPlane(1)->GetFiredStripsVector().size()]++;
       //  } 
-           if(detectors[j]->GetPlane(0)->GetFiredStripsVector().size() == 0 && detectors[j]->GetPlane(1)->GetFiredStripsVector().size() == 0)
+           if(detectors[j]->GetPlane(0)->GetFiredStripsVector().size() == 0 || detectors[j]->GetPlane(1)->GetFiredStripsVector().size() == 0)
           //  if(detectors[j]->GetPlane(0)->GetFiredStripsVector().size()  || detectors[j]->GetPlane(1)->GetFiredStripsVector().size())
            	count[j]++;
           
 
           }
       }
-      double tmp = ((double)(numOfEvents-count[0]))*100.;
-       double tmp1 = ((double)(numOfEvents-count[1]))*100.;
-      std::cout<<"Efficiency for Detector 1: "<<tmp/(double)numOfEvents<<"%"<<std::endl;
-       std::cout<<"Efficiency for Detector 2: "<<tmp1/(double)numOfEvents<<"%"<<std::endl;
+      //double tmp = ((double)(numOfEvents-count[0]))*100.;
+      // double tmp1 = ((double)(numOfEvents-count[1]))*100.;
+     // std::cout<<"Efficiency for Detector 1: "<<tmp/(double)numOfEvents<<"%"<<std::endl;
+      // std::cout<<"Efficiency for Detector 2: "<<tmp1/(double)numOfEvents<<"%"<<std::endl;
       //std::cout<<"Efficiency for Detector 1: "<<count/(double)numOfEvents * 100<<"%"<<std::endl;
         for(int i = 0 ; i < detectors.size() ; i++)
         {
@@ -93,16 +100,23 @@ int numOfEvents = Tracking::Tree::instance()->GetNumOfEvents();
         	c[i]->cd(3);
         	histogram[i*3+2]->Draw();
         }    
-/*
-        for(int i = 0 ; i < TotalCluster.size() ; i++)
-        {
-        	if(TotalCluster[i] != 0)
-        	{  
-        	tmp = (double)TotalCluster[i]*100;
-        	std::cout<<"Total Pixels Fired: "<<i<<"   "<<"Percentage: "<<tmp/(double)numOfEvents<<std::endl;
-        }
-        }
-*/
+
+        for(int j = 0 ; j < detectors.size() ; j++)
+        { 
+        	double tmp = ((double)(numOfEvents-count[j]))*100.;
+        	
+	        std::cout<<"Efficiency for Detector "<<j+1<<": "<<tmp/(double)numOfEvents<<"%"<<std::endl;
+
+	        for(int i = 0 ; i < TotalCluster[j].size() ; i++)
+	        {
+	        	if(TotalCluster[j][i] != 0)
+	        	{  
+	        		tmp = (double)TotalCluster[j][i]*100;
+					std::cout<<"Total Pixels Fired: "<<i<<"   "<<"Percentage: "<<tmp/(double)numOfEvents<<std::endl;
+	       		 }
+	        }
+    	}
+
 }
 
 void Statistics::GetYPlaneHistogram() {

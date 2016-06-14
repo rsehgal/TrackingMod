@@ -28,6 +28,7 @@ private:
   double fLength;
   double fBreadth;
   double fHeight;
+  double fEfficiency;
   int fDim;
   int fNumOfPlanes;
   std::vector<int> fChannelsInDim; //where vector index represent dimension number
@@ -59,6 +60,19 @@ public:
   }
   void SetZPos(double zPos){fZPos = zPos;}
   void SetDetectorType(std::string detType){fDetectorType = detType;}
+  void SetEfficiency()
+  {
+    int count = 0;
+    int numOfEvents = Tracking::Tree::instance()->GetNumOfEvents();
+    for(int i = 0 ; i <  numOfEvents ; i++)
+    {
+       SetFiredStripsVector(i);
+       if(GetPlane(0)->GetFiredStripsVector().size() == 0 || GetPlane(1)->GetFiredStripsVector().size() == 0)
+        count++;
+    }
+          double tmp = ((double)(numOfEvents-count))*100.; 
+          fEfficiency = tmp/(double)numOfEvents;
+  }
 
   double GetZPos(){return fZPos;}
   double GetLength(){return fLength;}
@@ -92,6 +106,8 @@ public:
   std::vector<int> GetFiredStripsVector(int planeNo){
 	  fScintillatorPlaneVector[planeNo]->GetFiredStripsVector();
   }
+
+  double GetEfficiency(){return fEfficiency;}
 
 };
 
