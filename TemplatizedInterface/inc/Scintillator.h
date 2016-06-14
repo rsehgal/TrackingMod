@@ -112,6 +112,7 @@ void Scintillator::DetectAndSetHit(int evNo) {
   fScintHit = false;
   Tracking::Channel *trigMultiHit = t->GetEntry("Module2_LE_CH31", evNo);
   long trig = 0;
+  if(trigMultiHit->size())
   trig = trigMultiHit->at(0);
   ch = 0;
   ch = t->GetEntry(fName, evNo);

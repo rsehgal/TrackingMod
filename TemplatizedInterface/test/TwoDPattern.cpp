@@ -32,7 +32,7 @@ void GenerateTimingHistogram() {
   c2->Divide(1, 1);
   c2->cd(1);
   // Tracking::Tree t("6742.root", "BSC_DATA_TREE");
-  Tracking::Tree::instance()->ReadTree("6742.root", "BSC_DATA_TREE", 0);
+  Tracking::Tree::instance()->ReadTree("6785.root", "BSC_DATA_TREE", 0);
   Tracking::Tree *t = Tracking::Tree::instance()->GetTree();
   int numOfEvents = t->GetNumOfEvents();
 
