@@ -11,17 +11,7 @@ using namespace Tomography;
 
 void GenerateTimingHistogram();
 
-int main() {
-
-  /*
-    RPC rpc(2,96,"FirstRpc");
-    rpc.PrintStripNames();
-    RPC rpc2(3,64,"FirstRpc");
-    rpc2.PrintStripNames();
-  */
-
-  GenerateTimingHistogram();
-}
+int main() { GenerateTimingHistogram(); }
 
 void GenerateTimingHistogram() {
   Scintillator::SetStartingId(-1);
@@ -41,7 +31,7 @@ void GenerateTimingHistogram() {
   TCanvas *c2 = new TCanvas("c2", "Timing-Info", 200, 10, 700, 500);
   c2->Divide(1, 1);
   c2->cd(1);
-  //Tracking::Tree t("6742.root", "BSC_DATA_TREE");
+  // Tracking::Tree t("6742.root", "BSC_DATA_TREE");
   Tracking::Tree::instance()->ReadTree("6742.root", "BSC_DATA_TREE", 0);
   Tracking::Tree *t = Tracking::Tree::instance()->GetTree();
   int numOfEvents = t->GetNumOfEvents();
