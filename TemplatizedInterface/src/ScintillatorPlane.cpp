@@ -27,17 +27,35 @@ int ScintillatorPlane::DetectTotalScinitillatorFired(){
 
 }
 
+void ScintillatorPlane::SetEfficiency(){
+	  int count = 0;
+	  int numOfEvents = Tracking::Tree::instance()->GetNumOfEvents();
+	  for(int i = 0 ; i <  numOfEvents ; i++){
+		  SetFiredStripsVector(i);
+		  if(GetFiredStripsVector().size()){
+			  count++;
+		  }
+
+	  }
+	  fEfficiency = count/(double)numOfEvents*100;
+  }
+
 //void ScintillatorPlane::SetFiredStripsVector(Tracking::Tree &t, int evNo) {
 //Provided the Root file is registered with SetupManager
 void ScintillatorPlane::SetFiredStripsVector(int evNo) {
   fScintTotal = 0;
   int scintVectorSize = fScintVector.size();
   fFiredStripsVector.clear();
+  fFiredStripsIDVector.clear();
+  fFiredStripsNameVector.clear();
   for (int i = 0; i < scintVectorSize; i++) {
   //  fScintVector[i]->DetectAndSetHit<true>(t, evNo);
 	fScintVector[i]->DetectAndSetHit<true>(evNo);
-    if(fScintVector[i]->GetScintHit())
+    if(fScintVector[i]->GetScintHit()){
     	fFiredStripsVector.push_back(i);
+    	fFiredStripsIDVector.push_back(fScintVector[i]->GetScintId());
+    	fFiredStripsNameVector.push_back(fScintVector[i]->GetName());
+    }
 
   }
 }

@@ -30,6 +30,20 @@ Properties::Properties(std::string name,std::vector<int> channelsInDim){
   }
 }
 
+  void Properties::SetEfficiency()
+   {
+     int count = 0;
+     int numOfEvents = Tracking::Tree::instance()->GetNumOfEvents();
+     for(int i = 0 ; i <  numOfEvents ; i++)
+     {
+        SetFiredStripsVector(i);
+        if(GetPlane(0)->GetFiredStripsVector().size() || GetPlane(1)->GetFiredStripsVector().size())
+         count++;
+     }
+           //double tmp = ((double)(numOfEvents-count))*100.;
+           fEfficiency = count/(double)numOfEvents*100;
+   }
+
 void Properties::GetX_Y_And_ClusterHistograms()
 {
  // TApplication *fApp = new TApplication("Histograms", NULL, NULL);

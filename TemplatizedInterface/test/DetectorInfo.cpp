@@ -30,7 +30,8 @@ int main() {
 
   //Tracking::Tree tr("6702.root", "BSC_DATA_TREE", 0);
 
-  Tracking::Tree::instance()->ReadTree("6702.root", "BSC_DATA_TREE", 0);
+//  Tracking::Tree::instance()->ReadTree("6702.root", "BSC_DATA_TREE", 0);
+  Tracking::Tree::instance()->ReadTree("6853.root", "BSC_DATA_TREE", 0);
   int numOfEvents = Tracking::Tree::instance()->GetNumOfEvents();
   std::cout << "Total Num of Events : " << numOfEvents << std::endl;
   Detector *trigger1 = new Tomography::TriggeringPlane(2, "UpperPlane", 120, -1);

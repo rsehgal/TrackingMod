@@ -65,7 +65,8 @@ public:
   }
   void SetZPos(double zPos){fZPos = zPos;}
   void SetDetectorType(std::string detType){fDetectorType = detType;}
-  void SetEfficiency()
+  void SetEfficiency();
+  /*void SetEfficiency()
   {
     int count = 0;
     int numOfEvents = Tracking::Tree::instance()->GetNumOfEvents();
@@ -78,6 +79,7 @@ public:
           double tmp = ((double)(numOfEvents-count))*100.; 
           fEfficiency = tmp/(double)numOfEvents;
   }
+  */
 
   double GetZPos(){return fZPos;}
   double GetLength(){return fLength;}
@@ -115,6 +117,13 @@ public:
 	  fScintillatorPlaneVector[planeNo]->GetFiredStripsVector();
   }
 
+  std::vector<int> GetFiredStripsIDVector(int planeNo){
+  	  fScintillatorPlaneVector[planeNo]->GetFiredStripsIDVector();
+    }
+
+  std::vector<std::string> GetFiredStripsNameVector(int planeNo){
+    	  fScintillatorPlaneVector[planeNo]->GetFiredStripsNameVector();
+    }
   double GetEfficiency(){return fEfficiency;}
 
 };

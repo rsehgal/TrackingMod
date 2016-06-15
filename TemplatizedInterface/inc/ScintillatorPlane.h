@@ -25,6 +25,8 @@ class ScintillatorPlane {
   int fBreadth;
   int fHeight;
   std::vector<int> fFiredStripsVector;
+  std::vector<int> fFiredStripsIDVector;
+  std::vector<std::string> fFiredStripsNameVector;
   double fEfficiency;
 
 public:
@@ -79,6 +81,8 @@ public:
   //template<bool ForRpc>
  // bool IsShowerEvent(Tracking::Tree &t, int evNo);
   void SetFiredStripsVector(int evNo);
+  void SetEfficiency();
+  /*
   void SetEfficiency()
   {
     int count = 0;
@@ -92,7 +96,10 @@ public:
           double tmp = ((double)(numOfEvents-count))*100.; 
           fEfficiency = tmp/(double)numOfEvents;
   }
+  */
   std::vector<int> GetFiredStripsVector(){return fFiredStripsVector;}
+  std::vector<int> GetFiredStripsIDVector(){return fFiredStripsIDVector;}
+  std::vector<std::string> GetFiredStripsNameVector(){return fFiredStripsNameVector;}
 
 };
 /*
