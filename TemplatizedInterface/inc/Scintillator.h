@@ -126,12 +126,12 @@ void Scintillator::DetectAndSetHit(int evNo) {
 
     if(ForRpc) {
     	long rpcData = scintillator;
-    	if (rpcData >= 19450 && rpcData <= 20550)
+    	if (rpcData >= 19450 && rpcData <= 22550)
     	          fScintHit = true;
 
     }else {
     	long scintillatorData = scintillator;
-    	if (scintillatorData >= 19450 && scintillatorData <= 20550)
+    	if (scintillatorData >= 19450 && scintillatorData <= 22550)
     	          fScintHit = true;
     }
 
