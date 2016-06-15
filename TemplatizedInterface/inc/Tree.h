@@ -6,6 +6,8 @@
 #include <algorithm>
 #include "base/Global.h"
 #include <string>
+#include <TObjArray.h>
+#include <iostream>
 namespace Tracking{
 
 class Tree{
@@ -51,6 +53,13 @@ class Tree{
 
 		//Some statistical function for Generating Histograms
 		void CreateHistogram(std::string bName);
+		void PrintBranchNames(){
+			 TObjArray* listOfBranches = t->GetListOfBranches();
+			 TIter iObj(listOfBranches);
+			 while (TObject* obj = iObj()) {
+				 std::cout<< obj->GetName() << std::endl;
+			 }
+		}
 
 
 };
