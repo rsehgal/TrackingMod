@@ -10,6 +10,7 @@
 #include "TRandom.h"
 #include "Tree.h"
 #include "base/Vector3D.h"
+#include "base/Global.h"
 #include "Properties.h"
 #include "SetupManager.h"
 #include "visualizer/Eve/Singleton.h"
@@ -31,5 +32,6 @@ public:
 	void GetXPlaneHistogram();
 	void GetYPlaneHistogram();
 	void GetClusterHistogram();
+	void StripProfile();
 
 };
