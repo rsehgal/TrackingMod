@@ -43,6 +43,23 @@ void Tree::ReadTree(std::string rootFl, std::string treeName, int rw){
 	    f->GetObject(treeName.c_str(), t);
 	    numOfEvents = t->GetEntries();
 	  }
+	  FillBranchNamesVector();
+	  Initialize();
+	  /*
+	  vpx.resize(fBranchNamesVector.size());
+	  bvpx.resize(fBranchNamesVector.size());
+	  for(int i = 0 ; i<fBranchNamesVector.size() ; i++){
+		  t->SetBranchAddress(fBranchNamesVector[i],&vpx[i],&bvpx[i]);
+	  }
+	  */
+}
+
+void Tree::Initialize(){
+	for(int i = 0 ; i < fBranchNamesVector.size() ; i++){
+		// t->SetBranchAddress(bName.c_str(),&vpx,&bvpx);
+		std::string bName = fBranchNamesVector[i];
+		t->SetBranchAddress(fBranchNamesVector[i].c_str(),&fBranchMap[bName].vpx,&fBranchMap[bName].bvpx);
+	}
 }
 
 Tree::Tree(std::string rootFl, std::string treeName, int rw){
@@ -133,6 +150,8 @@ void Tree::TreeR_V2(std::string bName, int entry){
 
 }
 
+/*
+ * Previous Version
 Channel* Tree::GetEntry(std::string bName, int evNo){
 
   Channel *vpx = 0;
@@ -143,5 +162,33 @@ Channel* Tree::GetEntry(std::string bName, int evNo){
   t->ResetBranchAddresses();
   return vpx;
 
+}
+*/
+/*
+ * Idea is to Initialize the tree first.
+ *
+ * Then get the value for particular event using branch name
+ */
+Channel* Tree::GetEntry(std::string bName, int evNo){
+
+	fBranchMap[bName].tentry = t->LoadTree(evNo);
+	fBranchMap[bName].bvpx->GetEntry(fBranchMap[bName].tentry);
+	return fBranchMap[bName].vpx;
+
+}
+
+void Tree::FillBranchNamesVector(){
+  TObjArray *listOfBranches = t->GetListOfBranches();
+  TIter iObj(listOfBranches);
+  while (TObject *obj = iObj()) {
+	  std::string name = (std::string)obj->GetName();
+      fBranchNamesVector.push_back(name);
+  }
+}
+
+void Tree::PrintBranchNames() {
+  for (int i = 0; i < fBranchNamesVector.size(); i++) {
+    std::cout << fBranchNamesVector[i] << std::endl;
+  }
 }
 } /*end of Tomography namespace*/
