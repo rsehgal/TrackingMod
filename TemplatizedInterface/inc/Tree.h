@@ -6,7 +6,17 @@
 #include <algorithm>
 #include "base/Global.h"
 #include <string>
+#include <TObjArray.h>
+#include <iostream>
+#include <map>
 namespace Tracking{
+
+struct Branch{
+	std::string sBranchName;
+	Channel *vpx;
+	TBranch *bvpx;
+	Long64_t tentry;
+};
 
 class Tree{
 	
@@ -25,6 +35,8 @@ class Tree{
 		Tree();
 	    Tree(std::string rootFl);
 		Tree(std::string rootFl, std::string treeName="testTree",int rw=0);
+		std::vector<std::string> fBranchNamesVector;
+		std::map<std::string,Branch> fBranchMap;
 
 	public:
 		//Tree();
@@ -51,6 +63,10 @@ class Tree{
 
 		//Some statistical function for Generating Histograms
 		void CreateHistogram(std::string bName);
+		void FillBranchNamesVector();
+		std::vector<std::string> GetBranchNamesVector(){return fBranchNamesVector;}
+		void PrintBranchNames();
+		void Initialize();
 
 
 };
