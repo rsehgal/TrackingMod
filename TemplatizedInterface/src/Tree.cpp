@@ -58,6 +58,10 @@ void Tree::Initialize(){
 	for(int i = 0 ; i < fBranchNamesVector.size() ; i++){
 		// t->SetBranchAddress(bName.c_str(),&vpx,&bvpx);
 		std::string bName = fBranchNamesVector[i];
+		std::size_t pos = 0;
+		pos = bName.find("NUMBER_OF_CHANNELS");
+		//std::cout<<"Position : " << pos << std::endl;
+		if(!pos || pos > 20)
 		t->SetBranchAddress(fBranchNamesVector[i].c_str(),&fBranchMap[bName].vpx,&fBranchMap[bName].bvpx);
 	}
 }
