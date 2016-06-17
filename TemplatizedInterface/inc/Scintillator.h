@@ -38,6 +38,10 @@ class Scintillator {
   static int fSno;
   int fStripNo;
 
+  //Data members to store window starting and end
+  //This is provided to allow user to modify window if required.
+  static long fStart,fEnd;
+
 /*
 #ifndef USE_EVE
   Tracking::Visualizer v;
@@ -85,7 +89,16 @@ public:
   int GetStripNum(){return fStripNo;}
   template <bool ForRpc>
   void DetectAndSetHit( int evNo);
-
+  static void SetWindowStart(long start){
+	  fStart = start;
+  }
+  static void SetWindowEnd(long end){
+	  fEnd = end;
+  }
+  static void SetWindowStartEnd(long start, long end){
+	  fStart = start;
+	  fEnd = end;
+  }
 /*
 #ifndef USE_EVE
   void CreateTGeoVolume();
@@ -126,12 +139,12 @@ void Scintillator::DetectAndSetHit(int evNo) {
 
     if(ForRpc) {
     	long rpcData = scintillator;
-    	if (rpcData >= 19450 && rpcData <= 22550)
+    	if (rpcData >= fStart && rpcData <= fEnd)
     	          fScintHit = true;
 
     }else {
     	long scintillatorData = scintillator;
-    	if (scintillatorData >= 19450 && scintillatorData <= 22550)
+    	if (scintillatorData >= fStart && scintillatorData <= fEnd)
     	          fScintHit = true;
     }
 
