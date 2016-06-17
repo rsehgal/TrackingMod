@@ -23,8 +23,8 @@ using namespace Tomography;
 
 int main(int argc, char *argv[]) {
   bool verbose = false;
-  int x[20] = {8000, 8200, 8400, 8600, 8800, 9000,  9100,  9200,  9300,  9400,
-               9500, 9600, 9700, 9800, 9900, 10000, 10100, 10200, 10300, 10400};
+  int x[20] = {8000, 8200, 8400, 8600, 8800, 9000,  9200,  9400,  9600,  9800,
+               10000, 10100, 10200, 10300, 10400, 10500, 10600, 10700, 10800, 10900};
   int size = 20;
   std::vector<std::string> flName;
 
@@ -40,6 +40,7 @@ int main(int argc, char *argv[]) {
   TMultiGraph *mg3 = new TMultiGraph();
   mg3->SetTitle("Only X plane (ie. BOTTOM Gap) ON");
 
+/*
   // Trying to add Legends
   TLegend *leg = new TLegend(0.1, 0.7, 0.48, 0.9);
   leg->SetHeader("The Legend Title");
@@ -47,6 +48,7 @@ int main(int argc, char *argv[]) {
   leg->AddEntry("f1", "Function abs(#frac{sin(x)}{x})", "l");
   leg->AddEntry("gr", "Graph with error bars", "lep");
   leg->Draw();
+*/
 
   TGraph *both_on1 = new TGraph();
   both_on1->SetTitle("w.r.t both");
@@ -137,7 +139,7 @@ int main(int argc, char *argv[]) {
   filetype.push_back(topOn);
   filetype.push_back(bottomOn);
 
-  Scintillator::SetWindowStartEnd(19450, 22500);
+  Scintillator::SetWindowStartEnd(19450, 21500);
   for (int i = 0; i < 3; i++) {
     std::cout << "////////////////////" << std::endl;
     std::cout << "////////////////////" << std::endl;
@@ -166,27 +168,27 @@ int main(int argc, char *argv[]) {
       }
       if (i == 0) {
         // both_on->SetPoint(temp1,j+1,rpc2->GetEfficiency());
-        both_on1->SetPoint(temp1, x[j], rpc2->GetEfficiency());
-        top_on1->SetPoint(temp2, x[j], rpc2->GetPlane(0)->GetEfficiency());
-        bottom_on1->SetPoint(temp3, x[j], rpc2->GetPlane(1)->GetEfficiency());
+        both_on1->SetPoint(temp1, x[j], rpc1->GetEfficiency());
+        top_on1->SetPoint(temp2, x[j], rpc1->GetPlane(1)->GetEfficiency());
+        bottom_on1->SetPoint(temp3, x[j], rpc1->GetPlane(0)->GetEfficiency());
         temp1++;
         temp2++;
         temp3++;
       }
       if (i == 1) {
         // top_on->SetPoint(temp2,j+1,rpc2->GetEfficiency());
-        both_on2->SetPoint(temp1, x[j], rpc2->GetEfficiency());
-        top_on2->SetPoint(temp2, x[j], rpc2->GetPlane(1)->GetEfficiency());
-        bottom_on2->SetPoint(temp3, x[j], rpc2->GetPlane(0)->GetEfficiency());
+        both_on2->SetPoint(temp1, x[j], rpc1->GetEfficiency());
+        top_on2->SetPoint(temp2, x[j], rpc1->GetPlane(1)->GetEfficiency());
+        bottom_on2->SetPoint(temp3, x[j], rpc1->GetPlane(0)->GetEfficiency());
         temp1++;
         temp2++;
         temp3++;
       }
       if (i == 2) {
         // bottom_on->SetPoint(temp3,j+1,rpc2->GetEfficiency());
-        both_on3->SetPoint(temp3, x[j], rpc2->GetEfficiency());
-        top_on3->SetPoint(temp2, x[j], rpc2->GetPlane(1)->GetEfficiency());
-        bottom_on3->SetPoint(temp3, x[j], rpc2->GetPlane(0)->GetEfficiency());
+        both_on3->SetPoint(temp3, x[j], rpc1->GetEfficiency());
+        top_on3->SetPoint(temp2, x[j], rpc1->GetPlane(1)->GetEfficiency());
+        bottom_on3->SetPoint(temp3, x[j], rpc1->GetPlane(0)->GetEfficiency());
         temp1++;
         temp2++;
         temp3++;
