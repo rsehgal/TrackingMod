@@ -73,7 +73,16 @@ public:
           }
         }
       }
-      sleep(fDelay);
+      //sleep(fDelay);
+      bool skipDelay = true;
+      for (int j = 0; j < detectors.size(); j++) {
+        skipDelay &= detectors[j]->GetPlane(0)->GetFiredStripsVector().size()==0 &&
+                     detectors[j]->GetPlane(1)->GetFiredStripsVector().size()==0;
+        //sleep(fDelay);
+      }
+
+      if(!skipDelay)
+        sleep(fDelay);
       std::cout << "Size : " << hittedPixelVector.size() << std::endl;
       if (hittedPixelVector.size()) {
         for (int i = 0; i < hittedPixelVector.size(); i++) {

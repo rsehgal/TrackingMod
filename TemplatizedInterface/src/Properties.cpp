@@ -30,15 +30,34 @@ Properties::Properties(std::string name,std::vector<int> channelsInDim){
   }
 }
 
+  void Properties::SetEventDetected(int evNo){
+    SetFiredStripsVector(evNo);
+    fEventDetected  = false;
+    #ifdef EFF_AND
+      fEventDetected = GetPlane(0)->GetFiredStripsVector().size() && GetPlane(1)->GetFiredStripsVector().size();
+    #else
+      fEventDetected = GetPlane(0)->GetFiredStripsVector().size() || GetPlane(1)->GetFiredStripsVector().size();
+    #endif
+
+  }
+
   void Properties::SetEfficiency()
    {
      int count = 0;
      int numOfEvents = Tracking::Tree::instance()->GetNumOfEvents();
      for(int i = 0 ; i <  numOfEvents ; i++)
      {
-        SetFiredStripsVector(i);
+         SetEventDetected(i);
+         if(fEventDetected)
+           count++;
+        /*SetFiredStripsVector(i);
+        #ifdef EFF_AND
+        if(GetPlane(0)->GetFiredStripsVector().size() && GetPlane(1)->GetFiredStripsVector().size())
+         count++;
+        #else
         if(GetPlane(0)->GetFiredStripsVector().size() || GetPlane(1)->GetFiredStripsVector().size())
          count++;
+        #endif*/
      }
            //double tmp = ((double)(numOfEvents-count))*100.;
            fEfficiency = count/(double)numOfEvents*100;

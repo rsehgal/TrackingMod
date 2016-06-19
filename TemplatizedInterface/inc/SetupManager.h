@@ -22,6 +22,7 @@
 #include "HittedPixel.h"
 #include "VisualizationHelper.h"
 #include "TThread.h"
+#include "Tree.h"
 /*
 #include "TThread.h"
 #include <TEveGeoShape.h>
@@ -43,6 +44,7 @@ typedef Tomography::Properties Detector;
       int count;
       //TEveGeoShape *fEveShape;
     private:
+        double fEfficiency;
         std::vector<Detector*> fTriggeringPlaneVector;
         std::vector<Detector*> fCmsRpcVector;
         std::vector<Detector*> fGlassRpcVector;
@@ -120,6 +122,31 @@ typedef Tomography::Properties Detector;
           if(detType.compare("TRG")==0)
             return fTriggeringPlaneVector;
         }
+
+        void SetEfficiency(std::string detType){
+          int numOfEvents = 0;
+          int count = 0;
+          bool detected = false;
+          numOfEvents = Tracking::Tree::instance()->GetNumOfEvents();
+          std::cout<<"Total Num of Events  : " <<  numOfEvents << std::endl;
+          std::vector<Detector*> detVect = GetDetectorVector(detType);
+          for(int evNo = 0 ; evNo < numOfEvents ; evNo++){
+            for(int detNo = 0 ; detNo < detVect.size() ; detNo++){
+              detVect[detNo]->SetEventDetected(evNo);
+              if(detNo==0){
+              detected = detVect[detNo]->EventDetected();
+              }else{
+                detected &= detVect[detNo]->EventDetected();
+              }
+            }
+            if(detected)
+              count++;
+          }
+
+          fEfficiency = count/(double)numOfEvents * 100;
+
+        }
+        double GetEfficiency(){return fEfficiency;};
 
         static SetupManager *instance();
 
