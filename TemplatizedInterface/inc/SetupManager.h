@@ -161,7 +161,11 @@ typedef Tomography::Properties Detector;
               if(detNo==0){
               fEventDetected = detVect[detNo]->EventDetected();
               }else{
+#ifdef EFF_SETUP_AND
                 fEventDetected &= detVect[detNo]->EventDetected();
+#else
+                fEventDetected |= detVect[detNo]->EventDetected();
+#endif
               }
             }
         }

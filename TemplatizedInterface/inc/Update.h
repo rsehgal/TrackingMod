@@ -47,8 +47,10 @@ public:
     Tracking::Vector3D<double> temp;
     std::vector<HittedPixel *> hittedPixelVector;
 
-    std::vector<Detector *> detectors = Tomography::SetupManager::instance()->GetDetectorVector("GLASS");
-
+    //std::vector<Detector *> detectors = Tomography::SetupManager::instance()->GetDetectorVector("GLASS");
+    SetupManager *setup = Tomography::SetupManager::instance();
+    std::vector<Detector *> detectors = setup->GetDetectorVector("GLASS");
+    /*
     for (int evNo = 0; evNo < numOfEvents; evNo++) {
       std::cout << "======================================================" << std::endl;
 
@@ -91,6 +93,59 @@ public:
       }
       hittedPixelVector.clear();
     }
+    */
+    int evCount = 0;
+    for (int evNo = 0; evNo < numOfEvents; evNo++) {
+      std::cout << "======================================================" << std::endl;
+
+      setup->SetEventDetected("GLASS",evNo);
+#ifdef EFF_SETUP_AND
+      if(setup->EventDetected())
+#endif
+      {
+    	  evCount++;
+    	  std::cout<<"Genuine event no w.r.t Full Setup : " << evCount << std::endl;
+      for (int j = 0; j < detectors.size(); j++) {
+        //detectors[j]->SetFiredStripsVector(evNo);
+
+        for (int xval = 0; xval < detectors[j]->GetPlane(0)->GetFiredStripsVector().size(); xval++) {
+          for (int yval = 0; yval < detectors[j]->GetPlane(1)->GetFiredStripsVector().size(); yval++) {
+
+            temp = GetStripCoordinate(detectors[j]->GetPlane(0)->GetFiredStripsVector()[xval],
+                                      detectors[j]->GetPlane(1)->GetFiredStripsVector()[yval], detectors[j]->GetZPos());
+            temp.Print();
+
+            if (gEve) {
+              m.SetDx(temp.x());
+              m.SetDy(temp.y());
+              m.SetDz(temp.z());
+              hittedPixelVector.push_back(new HittedPixel(m));
+              Tracking::Singleton::instance()->AddElement(
+                  hittedPixelVector[hittedPixelVector.size() - 1]->GetEveGeoShape());
+            }
+          }
+        }
+      }
+      //sleep(fDelay);
+      bool skipDelay = true;
+      for (int j = 0; j < detectors.size(); j++) {
+        skipDelay &= detectors[j]->GetPlane(0)->GetFiredStripsVector().size()==0 &&
+                     detectors[j]->GetPlane(1)->GetFiredStripsVector().size()==0;
+        //sleep(fDelay);
+      }
+
+      if(!skipDelay)
+        sleep(fDelay);
+      std::cout << "Size : " << hittedPixelVector.size() << std::endl;
+    }
+      if (hittedPixelVector.size()) {
+        for (int i = 0; i < hittedPixelVector.size(); i++) {
+          Tracking::Singleton::instance()->RemoveElement(hittedPixelVector[i]->GetEveGeoShape());
+        }
+      }
+      hittedPixelVector.clear();
+    }
+
   }
 
   void *handle(void *ptr) {
