@@ -46,7 +46,7 @@ int main(int argc, char *argv[]) {
   //Statistics s;
   //if required delay can be Set using SetDelay() function
   //Default value is set to 2 sec
-  u.SetDelay(2);
+  u.SetDelay(1);
   u.RunThread2();
   //s.Initialize();
   //s.GetXPlaneHistogram();

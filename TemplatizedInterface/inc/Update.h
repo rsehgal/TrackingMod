@@ -53,9 +53,11 @@ public:
     SetupManager *setup = Tomography::SetupManager::instance();
     std::vector<Detector *> detectors = setup->GetDetectorVector("GLASS");
     int evCount = 0;
+#ifdef ANG_DIST
     TCanvas *canvas = new TCanvas("AngDist", "AngularDistribution", 800, 600);
     canvas->Divide(1,1);
     TH1F  *angHist = new TH1F("AD", "Angular Distribution", 50., 0, 90);
+#endif
     for (int evNo = 0; evNo < numOfEvents; evNo++) {
       std::cout << "======================================================" << std::endl;
 
@@ -101,7 +103,9 @@ public:
       std::cout << "Angle : "
                 << l.CalculateAngle(temp1, temp)
                 << std::endl;
+#ifdef ANG_DIST
       angHist->Fill(l.CalculateAngle(temp1, temp));
+#endif
 
       //sleep(fDelay);
       bool skipDelay = true;
@@ -129,9 +133,11 @@ public:
       hittedPixelVector.clear();
     }
     //angHist->SaveAs("AngDist.gif");
+#ifdef ANG_DIST
     canvas->cd(1);
     angHist->Draw();
     canvas->SaveAs("AngularDistribution.gif");
+#endif
 
   }
 
