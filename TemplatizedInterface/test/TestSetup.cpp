@@ -18,7 +18,10 @@ using namespace Tomography;
 
 int main(int argc, char *argv[]) {
 
-  Tracking::Tree::instance()->ReadTree("6915.root", "BSC_DATA_TREE", 0);
+ // Tracking::Tree::instance()->ReadTree("6928.root", "BSC_DATA_TREE", 0);
+  std::string temp_str = std::to_string(atoi(argv[1]));
+  temp_str += ".root";
+  Tracking::Tree::instance()->ReadTree(temp_str.c_str(), "BSC_DATA_TREE", 0);
   Detector *rpc1 = new GlassRpc(2, "FirstGlassRpc", 30, 31);
   Detector *rpc2 = new GlassRpc(4, "SecondGlassRpc", -30, 31);
   //Setting the allowed ClusterSize
