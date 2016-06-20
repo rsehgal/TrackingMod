@@ -52,51 +52,10 @@ public:
     //std::vector<Detector *> detectors = Tomography::SetupManager::instance()->GetDetectorVector("GLASS");
     SetupManager *setup = Tomography::SetupManager::instance();
     std::vector<Detector *> detectors = setup->GetDetectorVector("GLASS");
-    /*
-    for (int evNo = 0; evNo < numOfEvents; evNo++) {
-      std::cout << "======================================================" << std::endl;
-
-      for (int j = 0; j < detectors.size(); j++) {
-        detectors[j]->SetFiredStripsVector(evNo);
-
-        for (int xval = 0; xval < detectors[j]->GetPlane(0)->GetFiredStripsVector().size(); xval++) {
-          for (int yval = 0; yval < detectors[j]->GetPlane(1)->GetFiredStripsVector().size(); yval++) {
-
-            temp = GetStripCoordinate(detectors[j]->GetPlane(0)->GetFiredStripsVector()[xval],
-                                      detectors[j]->GetPlane(1)->GetFiredStripsVector()[yval], detectors[j]->GetZPos());
-            temp.Print();
-
-            if (gEve) {
-              m.SetDx(temp.x());
-              m.SetDy(temp.y());
-              m.SetDz(temp.z());
-              hittedPixelVector.push_back(new HittedPixel(m));
-              Tracking::Singleton::instance()->AddElement(
-                  hittedPixelVector[hittedPixelVector.size() - 1]->GetEveGeoShape());
-            }
-          }
-        }
-      }
-      //sleep(fDelay);
-      bool skipDelay = true;
-      for (int j = 0; j < detectors.size(); j++) {
-        skipDelay &= detectors[j]->GetPlane(0)->GetFiredStripsVector().size()==0 &&
-                     detectors[j]->GetPlane(1)->GetFiredStripsVector().size()==0;
-        //sleep(fDelay);
-      }
-
-      if(!skipDelay)
-        sleep(fDelay);
-      std::cout << "Size : " << hittedPixelVector.size() << std::endl;
-      if (hittedPixelVector.size()) {
-        for (int i = 0; i < hittedPixelVector.size(); i++) {
-          Tracking::Singleton::instance()->RemoveElement(hittedPixelVector[i]->GetEveGeoShape());
-        }
-      }
-      hittedPixelVector.clear();
-    }
-    */
     int evCount = 0;
+    TCanvas *canvas = new TCanvas("AngDist", "AngularDistribution", 800, 600);
+    canvas->Divide(1,1);
+    TH1F  *angHist = new TH1F("AD", "Angular Distribution", 50., 0, 90);
     for (int evNo = 0; evNo < numOfEvents; evNo++) {
       std::cout << "======================================================" << std::endl;
 
@@ -139,6 +98,11 @@ public:
       AddLine(temp1, temp);
       Tracking::Singleton::instance()->AddElement(ls);
 
+      std::cout << "Angle : "
+                << l.CalculateAngle(temp1, temp)
+                << std::endl;
+      angHist->Fill(l.CalculateAngle(temp1, temp));
+
       //sleep(fDelay);
       bool skipDelay = true;
       for (int j = 0; j < detectors.size(); j++) {
@@ -164,6 +128,10 @@ public:
       }
       hittedPixelVector.clear();
     }
+    //angHist->SaveAs("AngDist.gif");
+    canvas->cd(1);
+    angHist->Draw();
+    canvas->SaveAs("AngularDistribution.gif");
 
   }
 

@@ -13,6 +13,7 @@ private:
 public:
 	double GetAngle();
 	double CalculateAngle(Tracking::Vector3D<double> p1, Tracking::Vector3D<double> p2, Tracking::Vector3D<double> q1, Tracking::Vector3D<double> q2);
+	double CalculateAngle(Tracking::Vector3D<double> p1, Tracking::Vector3D<double> p2);
 	double GetAngleRadian(double angleDegree);
 
 };
