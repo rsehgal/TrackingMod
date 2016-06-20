@@ -40,6 +40,7 @@ private:
   std::vector<ScintillatorPlane*> fScintillatorPlaneVector;
   double fZPos;
   std::string fDetectorType;
+  bool fEventDetected; // Will tell whether an event is detected by detector or not
 
   /* Every Detector will be having different channel dimension
    * Here i am considering that each channel is rectangular in shape
@@ -81,6 +82,8 @@ public:
   }
   */
 
+  bool EventDetected(){return fEventDetected;}
+  void SetEventDetected(int evNo);
   double GetZPos(){return fZPos;}
   double GetLength(){return fLength;}
   double GetBreadth(){return fBreadth;}

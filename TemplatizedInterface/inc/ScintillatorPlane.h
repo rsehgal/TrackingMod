@@ -28,6 +28,7 @@ class ScintillatorPlane {
   std::vector<int> fFiredStripsIDVector;
   std::vector<std::string> fFiredStripsNameVector;
   double fEfficiency;
+  static int fClusterSize;
 
 public:
   ScintillatorPlane();
@@ -66,7 +67,7 @@ public:
         fScintVector.push_back(new Scintillator(moduleId, len, brd, fHeight,scintPlacedLocation));
 
       }
-
+      fClusterSize = 2;
     }
   ~ScintillatorPlane();
   std::string GetName(){return fName;}
@@ -78,8 +79,10 @@ public:
   double GetBreadth(){return fBreadth;}
   double GetHeight(){return fHeight;}
   double GetEfficiency() {return fEfficiency;}
+  int GetClusterSize(){return fClusterSize;}
   //template<bool ForRpc>
  // bool IsShowerEvent(Tracking::Tree &t, int evNo);
+  static void SetClusterSize(int clSize){fClusterSize = clSize;}
   void SetFiredStripsVector(int evNo);
   void SetEfficiency();
   /*

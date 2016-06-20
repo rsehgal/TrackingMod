@@ -30,15 +30,43 @@ Properties::Properties(std::string name,std::vector<int> channelsInDim){
   }
 }
 
+void Properties::SetEventDetected(int evNo) {
+  SetFiredStripsVector(evNo);
+  fEventDetected = false;
+#ifdef EFF_AND
+#ifdef CLUSTER_SIZE
+  fEventDetected = (GetPlane(0)->GetFiredStripsVector().size() > 0. && GetPlane(0)->GetFiredStripsVector().size() <= GetPlane(0)->GetClusterSize()) &&
+		           (GetPlane(1)->GetFiredStripsVector().size() > 0. && GetPlane(1)->GetFiredStripsVector().size() <= GetPlane(1)->GetClusterSize());
+#else
+  fEventDetected = GetPlane(0)->GetFiredStripsVector().size() && GetPlane(1)->GetFiredStripsVector().size();
+#endif
+#else
+#ifdef CLUSTER_SIZE
+  fEventDetected = (GetPlane(0)->GetFiredStripsVector().size() > 0. && GetPlane(0)->GetFiredStripsVector().size() <= GetPlane(0)->GetClusterSize()) ||
+                   (GetPlane(1)->GetFiredStripsVector().size() > 0. && GetPlane(1)->GetFiredStripsVector().size() <= GetPlane(1)->GetClusterSize());
+#else
+  fEventDetected = GetPlane(0)->GetFiredStripsVector().size() || GetPlane(1)->GetFiredStripsVector().size();
+#endif
+#endif
+}
+
   void Properties::SetEfficiency()
    {
      int count = 0;
      int numOfEvents = Tracking::Tree::instance()->GetNumOfEvents();
      for(int i = 0 ; i <  numOfEvents ; i++)
      {
-        SetFiredStripsVector(i);
+         SetEventDetected(i);
+         if(fEventDetected)
+           count++;
+        /*SetFiredStripsVector(i);
+        #ifdef EFF_AND
+        if(GetPlane(0)->GetFiredStripsVector().size() && GetPlane(1)->GetFiredStripsVector().size())
+         count++;
+        #else
         if(GetPlane(0)->GetFiredStripsVector().size() || GetPlane(1)->GetFiredStripsVector().size())
          count++;
+        #endif*/
      }
            //double tmp = ((double)(numOfEvents-count))*100.;
            fEfficiency = count/(double)numOfEvents*100;
@@ -47,7 +75,7 @@ Properties::Properties(std::string name,std::vector<int> channelsInDim){
 void Properties::GetX_Y_And_ClusterHistograms()
 {
  // TApplication *fApp = new TApplication("Histograms", NULL, NULL);
-  TCanvas *c = new TCanvas((GetName()+"Cluster").c_str(), (GetName() + " ClusterSize").c_str(), 400, 300);
+  TCanvas *c = new TCanvas((GetName()+"Cluster").c_str(), (GetName() + " ClusterSize").c_str(), 800, 600);
   c->Divide(2,2);
 
   int nxbins = 32;
@@ -73,14 +101,19 @@ void Properties::GetX_Y_And_ClusterHistograms()
   }
       
   c->cd(1);
+  histogram_x->GetXaxis()->SetRangeUser(0,10);
   histogram_x->Draw();
 
   c->cd(2);
+  histogram_y->GetXaxis()->SetRangeUser(0,10);
   histogram_y->Draw();
 
+
   c->cd(3);
+  histogram_pixel->GetXaxis()->SetRangeUser(0,10);
   histogram_pixel->Draw();
 
+  c->SaveAs((GetName()+"ClusterSize.gif").c_str());
 //  fApp->Run();
 }
 
@@ -113,6 +146,7 @@ void Properties::GetStripProfile()
   }
       
     histogram->Draw();
+    c->SaveAs((GetName()+"StripProfile.gif").c_str());
    // fapp->Run();
 }
 

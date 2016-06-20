@@ -22,6 +22,7 @@
 #include "HittedPixel.h"
 #include "VisualizationHelper.h"
 #include "TThread.h"
+#include "Tree.h"
 /*
 #include "TThread.h"
 #include <TEveGeoShape.h>
@@ -43,13 +44,15 @@ typedef Tomography::Properties Detector;
       int count;
       //TEveGeoShape *fEveShape;
     private:
+        double fEfficiency;
+        bool fEventDetected;
         std::vector<Detector*> fTriggeringPlaneVector;
         std::vector<Detector*> fCmsRpcVector;
         std::vector<Detector*> fGlassRpcVector;
         int TriggeringPlaneLowerLayerStartsAt = 3;  //from 4th detector
         int CmsRpcLowerLayerStartsAt = 3;
         int GlassRpcLowerLayerStartsAt;
-        SetupManager(){count=0;GlassRpcLowerLayerStartsAt=0;}
+        SetupManager(){count=0;GlassRpcLowerLayerStartsAt=0; fEventDetected=false;}
     public:
         //SetupManager(){count=0;}
         void Register(Detector *det){
@@ -119,6 +122,52 @@ typedef Tomography::Properties Detector;
             return fGlassRpcVector;
           if(detType.compare("TRG")==0)
             return fTriggeringPlaneVector;
+        }
+
+        void SetEfficiency(std::string detType){
+          int numOfEvents = 0;
+          int count = 0;
+          bool detected = false;
+          numOfEvents = Tracking::Tree::instance()->GetNumOfEvents();
+          std::cout<<"Total Num of Events  : " <<  numOfEvents << std::endl;
+          /*std::vector<Detector*> detVect = GetDetectorVector(detType);
+          for(int evNo = 0 ; evNo < numOfEvents ; evNo++){
+            for(int detNo = 0 ; detNo < detVect.size() ; detNo++){
+              detVect[detNo]->SetEventDetected(evNo);
+              if(detNo==0){
+              detected = detVect[detNo]->EventDetected();
+              }else{
+                detected &= detVect[detNo]->EventDetected();
+              }
+            }*/
+            for(int evNo = 0 ; evNo < numOfEvents ; evNo++){
+            SetEventDetected(detType,evNo);
+            if(fEventDetected)
+              count++;
+          }
+
+          fEfficiency = count/(double)numOfEvents * 100;
+
+        }
+
+        double GetEfficiency(){return fEfficiency;};
+        bool EventDetected(){return fEventDetected;}
+
+        void SetEventDetected(std::string detType, int evNo){
+            std::vector<Detector*> detVect = GetDetectorVector(detType);
+          //for(int evNo = 0 ; evNo < numOfEvents ; evNo++){
+            for(int detNo = 0 ; detNo < detVect.size() ; detNo++){
+              detVect[detNo]->SetEventDetected(evNo);
+              if(detNo==0){
+              fEventDetected = detVect[detNo]->EventDetected();
+              }else{
+#ifdef EFF_SETUP_AND
+                fEventDetected &= detVect[detNo]->EventDetected();
+#else
+                fEventDetected |= detVect[detNo]->EventDetected();
+#endif
+              }
+            }
         }
 
         static SetupManager *instance();
