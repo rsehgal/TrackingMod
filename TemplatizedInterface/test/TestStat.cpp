@@ -15,7 +15,7 @@
 #include <TApplication.h>
 #include "Update.h"
 #include "Tree.h"
- #include "Statistics.h"
+#include "Statistics.h"
 typedef Tomography::Properties Detector;
 using namespace Tomography;
 
@@ -29,10 +29,10 @@ int main() {
   Tomography::SetupManager::instance()->Register(rpc1);
   Tomography::SetupManager::instance()->Register(rpc2);
 
- rpc1->GetX_Y_And_ClusterHistograms();
- rpc1->GetStripProfile();
- rpc2->GetX_Y_And_ClusterHistograms();
- rpc2->GetStripProfile();
- 
+  rpc1->GetX_Y_And_ClusterHistograms();
+  rpc1->GetStripProfile();
+  rpc2->GetX_Y_And_ClusterHistograms();
+  rpc2->GetStripProfile();
+
   fApp->Run();
 }

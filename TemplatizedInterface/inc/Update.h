@@ -42,9 +42,11 @@ public:
     LinesAngle l;
     Double_t trans[3] = {0., 0., 0.};
     m.SetTranslation(trans);
+    Coordinates c(Tomography::SetupManager::instance()->GetDetectorVector("GLASS"));
 
     int numOfEvents = Tracking::Tree::instance()->GetNumOfEvents();
     Tracking::Vector3D<double> temp;
+    Tracking::Vector3D<double> temp1;
     std::vector<HittedPixel *> hittedPixelVector;
 
     //std::vector<Detector *> detectors = Tomography::SetupManager::instance()->GetDetectorVector("GLASS");
@@ -105,9 +107,14 @@ public:
       {
     	  evCount++;
     	  std::cout<<"Genuine event no w.r.t Full Setup : " << evCount << std::endl;
+#ifdef ACCUMULATE_TRACK
+#else
+          if (ls)
+            Tracking::Singleton::instance()->RemoveElement();
+#endif
       for (int j = 0; j < detectors.size(); j++) {
         //detectors[j]->SetFiredStripsVector(evNo);
-
+    	temp1=temp;
         for (int xval = 0; xval < detectors[j]->GetPlane(0)->GetFiredStripsVector().size(); xval++) {
           for (int yval = 0; yval < detectors[j]->GetPlane(1)->GetFiredStripsVector().size(); yval++) {
 
@@ -125,7 +132,13 @@ public:
             }
           }
         }
+
       }
+      ls = new TEveStraightLineSet();
+      ls->SetLineColor(5);
+      AddLine(temp1, temp);
+      Tracking::Singleton::instance()->AddElement(ls);
+
       //sleep(fDelay);
       bool skipDelay = true;
       for (int j = 0; j < detectors.size(); j++) {
@@ -137,10 +150,16 @@ public:
       if(!skipDelay)
         sleep(fDelay);
       std::cout << "Size : " << hittedPixelVector.size() << std::endl;
+      //if(ls)
+    	//  Tracking::Singleton::instance()->RemoveElement();
     }
+
+
+
       if (hittedPixelVector.size()) {
         for (int i = 0; i < hittedPixelVector.size(); i++) {
           Tracking::Singleton::instance()->RemoveElement(hittedPixelVector[i]->GetEveGeoShape());
+
         }
       }
       hittedPixelVector.clear();
@@ -255,10 +274,24 @@ void GenerateCoordinates(std::vector<int>xVec,std::vector<int>yVec){
 void AddLine(Coordinates c) {
     int startDetIndex = 1;
     int lastDetIndex = c.GetLength();
+    //std::cout<<"LAST INDEX : "<< lastDetIndex << std::endl;
     ls->AddLine(c.GetCoordinate(startDetIndex).x(), c.GetCoordinate(startDetIndex).y(),
                 c.GetCoordinate(startDetIndex).z(), c.GetCoordinate(lastDetIndex).x(),
                 c.GetCoordinate(lastDetIndex).y(), c.GetCoordinate(lastDetIndex).z());
     AddMarkers(c);
+  }
+
+void AddLine(Vector3D<Precision>p1, Vector3D<Precision>p2) {
+    int startDetIndex = 1;
+    //int lastDetIndex = c.GetLength();
+    //std::cout<<"LAST INDEX : "<< lastDetIndex << std::endl;
+    std::cout<<"P1 : " ; p1.Print();
+    std::cout<<"P2 : " ; p2.Print();
+    AddMarkers(p1);
+    AddMarkers(p2);
+    ls->AddLine(p1.x(), p1.y(), p1.z(),
+    		    p2.x(), p2.y(), p2.z());
+    //AddMarkers(c);
   }
 
   void AddMarkers(Coordinates c) {
@@ -269,6 +302,12 @@ void AddLine(Coordinates c) {
     ls->SetMarkerSize(1.3);
     ls->SetMarkerStyle(4);
   }
+
+  void AddMarkers(Vector3D<Precision> p) {
+      ls->AddMarker(p.x(), p.y(), p.z());
+      ls->SetMarkerSize(1.3);
+      ls->SetMarkerStyle(4);
+    }
 
   void RunThread() {
     TThread *mythread = new TThread("My Thread", (void (*)(void *)) & Update::handle, (void *)this);

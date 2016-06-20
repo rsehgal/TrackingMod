@@ -51,6 +51,14 @@ option(UNITTEST "Enable various Unit tests" ON)
 option(ROOT "Enable ROOT" OFF)
 option(EFF_AND "Efficiency will be calculated only if both plane fires" OFF)
 option(EFF_SETUP_AND "Efficiency w.r.t full Setup, i.e all the detector fires for an event" OFF)
+option(CLUSTER_SIZE "Allow to restrict the Cluster Size cut, default value will be 2 if switched ON." OFF)
+option(ACCUMULATE_TRACK "All the tracks will be displayed" OFF)
+
+
+if(ACCUMULATE_TRACK)
+add_definitions(-DACCUMULATE_TRACK)
+endif(ACCUMULATE_TRACK)
+
 if(EFF_AND)
 add_definitions(-DEFF_AND)
 endif(EFF_AND)
@@ -58,6 +66,11 @@ endif(EFF_AND)
 if(EFF_SETUP_AND)
 add_definitions(-DEFF_SETUP_AND)
 endif(EFF_SETUP_AND)
+
+if(CLUSTER_SIZE)
+add_definitions(-DCLUSTER_SIZE)
+endif(CLUSTER_SIZE)
+
 
 if(VISUALIZATION)
 add_definitions(-DSHOW_VISUALIZATION)
