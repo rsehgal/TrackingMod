@@ -53,7 +53,11 @@ option(EFF_AND "Efficiency will be calculated only if both plane fires" OFF)
 option(EFF_SETUP_AND "Efficiency w.r.t full Setup, i.e all the detector fires for an event" OFF)
 option(CLUSTER_SIZE "Allow to restrict the Cluster Size cut, default value will be 2 if switched ON." OFF)
 option(ACCUMULATE_TRACK "All the tracks will be displayed" OFF)
+option(ANG_DIST "To calculate the angular distribution from tracks" OFF)
 
+if(ANG_DIST)
+add_definitions(-DANG_DIST)
+endif(ANG_DIST)
 
 if(ACCUMULATE_TRACK)
 add_definitions(-DACCUMULATE_TRACK)
