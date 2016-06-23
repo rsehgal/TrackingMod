@@ -19,10 +19,11 @@
 typedef Tomography::Properties Detector;
 using namespace Tomography;
 
-int main() {
+int main(int argc, char* argv[]) {
+  std::string temp_str = std::to_string(atoi(argv[1]));
+  temp_str += ".root";
   TApplication *fApp = new TApplication("Test", NULL, NULL);
-  Tracking::Tree::instance()->ReadTree("6915.root", "BSC_DATA_TREE", 0);
-
+  Tracking::Tree::instance()->ReadTree(temp_str.c_str(), "BSC_DATA_TREE", 0);
   Detector *rpc1 = new GlassRpc(2, "FirstGlassRpc", 120, 31);
   Detector *rpc2 = new GlassRpc(4, "SecondGlassRpc", 150, 31);
 

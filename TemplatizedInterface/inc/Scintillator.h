@@ -23,6 +23,7 @@
 namespace Tomography {
 
 class Scintillator {
+  long fValue;
   double fLength;
   double fBreadth;
   double fHeight;
@@ -87,6 +88,7 @@ public:
 #endif
   std::string GetName(){return fName;}
   int GetStripNum(){return fStripNo;}
+  long GetValue(){return fValue;}
   template <bool ForRpc>
   void DetectAndSetHit( int evNo);
   static void SetWindowStart(long start){
@@ -139,13 +141,18 @@ void Scintillator::DetectAndSetHit(int evNo) {
 
     if(ForRpc) {
     	long rpcData = scintillator;
-    	if (rpcData >= fStart && rpcData <= fEnd)
-    	          fScintHit = true;
+        std::cout<< "Rpcdata : " << rpcData << std::endl;
+    	if (rpcData >= fStart && rpcData <= fEnd){
+    	         fScintHit = true;
+ 		 fValue = rpcData;
+         }
 
     }else {
     	long scintillatorData = scintillator;
-    	if (scintillatorData >= fStart && scintillatorData <= fEnd)
-    	          fScintHit = true;
+    	if (scintillatorData >= fStart && scintillatorData <= fEnd){
+	         fScintHit = true;
+		 fValue = scintillatorData;
+	}
     }
 
 /*

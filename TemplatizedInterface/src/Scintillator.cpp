@@ -24,6 +24,7 @@ Scintillator::Scintillator(){}
 
 Scintillator::Scintillator(int moduleId, double length, double breadth,double height):
   fModuleId(moduleId),fLength(length), fBreadth(breadth),fHeight(height){
+  fValue=100000;
   fId++;
   fScintId = fId;
   fSno++;
@@ -35,7 +36,7 @@ Scintillator::Scintillator(int moduleId, double length, double breadth,double he
 
 Scintillator::Scintillator(int moduleId, double length, double breadth,double height,Tracking::Vector3D<double> placedLocation):
   fModuleId(moduleId),fLength(length), fBreadth(breadth),fHeight(height){
-
+  fValue=100000;
   fPlacedLocation = placedLocation;
   fId++;
   fScintId = fId;
