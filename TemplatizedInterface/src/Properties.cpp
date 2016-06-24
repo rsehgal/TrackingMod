@@ -33,21 +33,34 @@ Properties::Properties(std::string name,std::vector<int> channelsInDim){
 void Properties::SetEventDetected(int evNo) {
   SetFiredStripsVector(evNo);
   fEventDetected = false;
+
+for(int i = 0 ; i < fNumOfPlanes ; i++) {
 #ifdef EFF_AND
 #ifdef CLUSTER_SIZE
-  fEventDetected = (GetPlane(0)->GetFiredStripsVector().size() > 0. && GetPlane(0)->GetFiredStripsVector().size() <= GetPlane(0)->GetClusterSize()) &&
-		           (GetPlane(1)->GetFiredStripsVector().size() > 0. && GetPlane(1)->GetFiredStripsVector().size() <= GetPlane(1)->GetClusterSize());
+  if(i==0)
+  fEventDetected = (GetPlane(i)->GetFiredStripsVector().size() > 0. && GetPlane(i)->GetFiredStripsVector().size() <= GetPlane(i)->GetClusterSize());
+  else
+  fEventDetected &= (GetPlane(i)->GetFiredStripsVector().size() > 0. && GetPlane(i)->GetFiredStripsVector().size() <= GetPlane(i)->GetClusterSize());
 #else
-  fEventDetected = GetPlane(0)->GetFiredStripsVector().size() && GetPlane(1)->GetFiredStripsVector().size();
+  if(i==0)
+  fEventDetected = GetPlane(i)->GetFiredStripsVector().size();
+  else
+  fEventDetected &= GetPlane(i)->GetFiredStripsVector().size();
 #endif
 #else
 #ifdef CLUSTER_SIZE
-  fEventDetected = (GetPlane(0)->GetFiredStripsVector().size() > 0. && GetPlane(0)->GetFiredStripsVector().size() <= GetPlane(0)->GetClusterSize()) ||
-                   (GetPlane(1)->GetFiredStripsVector().size() > 0. && GetPlane(1)->GetFiredStripsVector().size() <= GetPlane(1)->GetClusterSize());
+  if(i==0)
+  fEventDetected = (GetPlane(i)->GetFiredStripsVector().size() > 0. && GetPlane(i)->GetFiredStripsVector().size() <= GetPlane(i)->GetClusterSize());
+  else
+  fEventDetected |=  (GetPlane(i)->GetFiredStripsVector().size() > 0. && GetPlane(i)->GetFiredStripsVector().size() <= GetPlane(i)->GetClusterSize());
 #else
-  fEventDetected = GetPlane(0)->GetFiredStripsVector().size() || GetPlane(1)->GetFiredStripsVector().size();
+  if(i==0)
+  fEventDetected = GetPlane(i)->GetFiredStripsVector().size() 
+  else
+  fEventDetected |= GetPlane(i)->GetFiredStripsVector().size();
 #endif
 #endif
+}
 }
 
   void Properties::SetEfficiency()

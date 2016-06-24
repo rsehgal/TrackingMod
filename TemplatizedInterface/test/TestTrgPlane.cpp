@@ -34,6 +34,29 @@ for(int i = 0 ; i < trgPlaneVect.size() ; i++){
     
 }
 
+//setup->SetEventDetected("TRG",1);
+//
+
+Tomography::ScintillatorPlane::SetClusterSize(1);
+for(int evNo= 19 ;evNo <20;  evNo++){
+std::cout<<"--------------------Event No :  " << evNo << " ---------------------------------"<<std::endl;
+        setup->SetEventDetected("TRG",evNo);
+        std::cout<<"Event Detected : "<< setup->EventDetected() << std::endl;
+        for(int j = 0 ; j < trgPlaneVect.size() ; j++){
+            std::cout<<"---- Triggering Plane no : "<< j << " ---- "<< std::endl;
+            for(int i = 0 ; i < trgPlaneVect[j]->GetNumOfPlanes() ; i++){
+                std::cout<< "Plane num : "<< i <<" : "<< trgPlaneVect[j]->GetPlane(i)->GetFiredStripsVector().size() << std::endl;
+                std::vector<Scintillator*> scintVector = trgPlaneVect[j]->GetPlane(i)->GetScintVector();
+                std::vector<int> stripVect = trgPlaneVect[j]->GetPlane(i)->GetFiredStripsVector();
+                int stripVectorSize = stripVect.size();
+                for(int k = 0 ; k < stripVectorSize ; k++){
+                        std::cout<<"strip no : "<< stripVect[k] << " : Value : " << scintVector[stripVect[k]]->GetValue() << std::endl;
+                }
+
+                }
+
+        }
+        }
 
 return 0;
 
