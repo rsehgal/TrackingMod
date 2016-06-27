@@ -18,7 +18,7 @@ namespace Tomography {
 int Scintillator::fId = -1;
 int Scintillator::fSno = -1;
 long Scintillator::fStart = 19450;
-long Scintillator::fEnd = 20550;
+long Scintillator::fEnd = 21000;
 
 Scintillator::Scintillator(){}
 

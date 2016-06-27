@@ -140,12 +140,25 @@ void Scintillator::DetectAndSetHit(int evNo) {
      */
 
     if(ForRpc) {
+    	for(int i = 0 ; i<ch->size() ; i++){
+    		scintillator = ch->at(i);
+    		long rpcData = scintillator;
+                if (rpcData >= fStart && rpcData <= fEnd) {
+                  fScintHit = true;
+                  fValue = rpcData;
+                  break;
+                }
+        }
+/*
     	long rpcData = scintillator;
         //std::cout<< "Rpcdata : " << rpcData << std::endl;
+
     	if (rpcData >= fStart && rpcData <= fEnd){
     	         fScintHit = true;
  		 fValue = rpcData;
          }
+
+*/
 
     }else {
     	long scintillatorData = scintillator;
