@@ -65,7 +65,7 @@ int main(int argc, char *argv[]){
 		std::cout<<"================================ Mulitihit Printing Done ==========================" << std::endl;
 		int count = 0 ;
 		for(int evNo=0;evNo<numOfEvents;++evNo) {
-
+			setup->SetEventDetected("TRG",evNo);
 		for(int i=0;i<trgVect.size();++i) {
 
 			for(int j=0;j<trgVect[i]->GetNumOfPlanes();++j) {
@@ -93,9 +93,8 @@ int main(int argc, char *argv[]){
 		}
 	}
 		if(count)
-			std::cout<<"***************** Something Unexpected Happening ***********************" << std::endl;
+			std::cout<<std::endl<<"***************** Something Unexpected Happening ***********************" << std::endl<<std::endl;
 		else
-			std::cout<<"---------- GR8888 , Program running as Expected --------------" << std::endl;
+			std::cout<<std::endl<<"---------- GR8888 , Program running as Expected --------------" << std::endl << std::endl;
+
 }
-
-
