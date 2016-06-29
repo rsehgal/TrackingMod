@@ -107,6 +107,13 @@ public:
 		std::cout<<"("<<vec[0]<<","<<vec[1]<<","<<vec[2]<<")"<<std::endl;
 	}
 
+	TRACKING_INLINE
+	void operator = (Vector3D<Type> vec2){
+		this->vec[0]=vec2.vec[0];
+		this->vec[1]=vec2.vec[1];
+		this->vec[2]=vec2.vec[2];
+	}
+
 	BINARY_OP(+)
 	BINARY_OP(-)
 	SCALAR_OP(+)

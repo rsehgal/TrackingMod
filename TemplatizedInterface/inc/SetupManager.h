@@ -154,6 +154,7 @@ typedef Tomography::Properties Detector;
         bool EventDetected(){return fEventDetected;}
 
         void SetEventDetected(std::string detType, int evNo){
+        	fEventDetected = false;
             std::vector<Detector*> detVect = GetDetectorVector(detType);
           //for(int evNo = 0 ; evNo < numOfEvents ; evNo++){
             for(int detNo = 0 ; detNo < detVect.size() ; detNo++){

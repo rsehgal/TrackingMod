@@ -97,7 +97,10 @@ public:
       }
       ls = new TEveStraightLineSet();
       ls->SetLineColor(5);
-      AddLine(temp1, temp);
+      Vector3D<double> dir = (temp1-temp)/(temp1-temp).Mag();
+      Vector3D<double>temp11 = temp1+dir*80;
+      Vector3D<double>temp22 = temp-dir*80;
+      AddLine(temp11, temp22);
       Tracking::Singleton::instance()->AddElement(ls);
 
       std::cout << "Angle : "

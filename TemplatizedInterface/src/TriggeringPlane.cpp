@@ -35,7 +35,7 @@ TriggeringPlane::TriggeringPlane(int moduleId, std::string rpcName, double zPos,
   SetNumOfPlanes(numOfPlanes);
   SetName(rpcName);
   SetZPos(zPos);
-  SetLBH(180,144,1);
+  SetLBH(144,180,1);
   Initialize();
   /*for(int i = 0 ; i < numOfPlanes ; i++){
     InsertPlane(new ScintillatorPlane(moduleId,32,zPos,GetLength(),GetBreadth()));

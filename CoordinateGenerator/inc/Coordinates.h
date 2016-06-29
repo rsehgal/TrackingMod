@@ -30,17 +30,29 @@ private:
   std::vector<Tracking::Vector3D<double>> stripcoord;
   std::vector<Tracking::Vector3D<double>> strip;
   std::vector<Detector *> det;
+
+  Vector3D<double> fP1;
+  Vector3D<double> fP2;
   // vector<vector <double>> coordinate;
   // vector<vector <double>> stripcoord;    //generated coordinates from midpoints of 2-D grid of each detectors
   // vector<vector <double>> strip;
 
 public:
-  // Coordinates();     ooooooooooooooooooooooooooooo
+  Coordinates();     //ooooooooooooooooooooooooooooo
   Coordinates(std::vector<Detector *> det);
   // Coordinates(Vector3D<double> init);   ooooooooooooooooooooo
   Coordinates(std::vector<Detector *> det, Vector3D<double> init);
+  Coordinates(Vector3D<double> p1, Vector3D<double> p2 );
   //~Coordinates(Vector3D<double> init);
   void InitializeVectors();
+
+
+  //Function to calculation extrapolated point of intersection with Detector plan
+  //std::vector<Vector3D<double>> GetPOI();
+  Vector3D<double> GetPOI(Detector *det, bool topToDown=true);
+
+  void SetP1(Vector3D<double> p){fP1 = p;}
+  void SetP2(Vector3D<double> p){fP2 = p;}
 
   // void CoGenerator(std::vector <Detector*> det,int N1=0);
   void CoGenerator();

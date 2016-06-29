@@ -52,7 +52,7 @@ public:
         scintPlacedLocation.SetZ(zPos);
 
         double len=0., brd=0.;
-        if(xdir){
+        if(!xdir){
           len =  fLength / numOfScintillators;
           brd = fBreadth;
           scintPlacedLocation.SetX(-fLength/2.+i*len);

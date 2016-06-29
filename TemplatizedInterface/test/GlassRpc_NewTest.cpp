@@ -30,8 +30,10 @@ int main(int argc, char *argv[]) {
   temp_str += ".root";
   Tracking::Tree::instance()->ReadTree(temp_str.c_str(), "BSC_DATA_TREE", 0);
   std::cout << "===========================================================================" << std::endl;
-  Detector *rpc1 = new GlassRpc(2, "FirstGlassRpc", 60, 31);
-  Detector *rpc2 = new GlassRpc(4, "SecondGlassRpc", -60, 31);
+  Detector *topPlane = new TriggeringPlane(2,"TopPlane", 105,-1);
+   Detector *bottomPlane = new TriggeringPlane(2,"BottomPlane", -105,7);
+  Detector *rpc1 = new GlassRpc(2, "FirstGlassRpc", 45, 31);
+  Detector *rpc2 = new GlassRpc(4, "SecondGlassRpc", -75, 31);
 
   //This line should be added after creation of all RPCs
   Tomography::ScintillatorPlane::SetClusterSize(1);
@@ -41,6 +43,8 @@ int main(int argc, char *argv[]) {
   v.Register(rpc2);
   Tomography::SetupManager::instance()->Register(rpc2);
 
+  v.Register(topPlane);
+  v.Register(bottomPlane);
 
   Update u;
   //Statistics s;
