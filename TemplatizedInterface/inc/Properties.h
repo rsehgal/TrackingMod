@@ -47,6 +47,11 @@ private:
    *
    */
 
+  //X and Y alignment variables
+  double fDx;
+  double fDy;
+  double fDTheta;
+
 
 
 
@@ -82,6 +87,18 @@ public:
   }
   */
 
+  void SetDx(double val){fDx = val;}
+  void SetDy(double val){fDy = val;}
+  void SetDTheta(double val){fDTheta = val;}
+  void SetDxDyDTheta(double dX, double dY, double dTheta){
+	  fDx = dX;
+	  fDy = dY;
+	  fDTheta = dTheta;
+  }
+
+  double GetDx(){return fDx;}
+  double GetDy(){return fDy;}
+  double GetDTheta(){return fDTheta;}
   bool EventDetected(){return fEventDetected;}
   void SetEventDetected(int evNo);
   double GetZPos(){return fZPos;}

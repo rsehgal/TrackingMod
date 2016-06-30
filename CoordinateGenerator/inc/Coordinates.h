@@ -50,14 +50,21 @@ public:
   //Function to calculation extrapolated point of intersection with Detector plan
   //std::vector<Vector3D<double>> GetPOI();
   Vector3D<double> GetPOI(Detector *det, bool topToDown=true);
-
+  void SetPoints(std::vector<Tracking::Vector3D<double>>tempVect){
+	  fP1 = tempVect[0];
+	  fP2 = tempVect[tempVect.size()-1];
+	  fP1.Print();
+	  fP2.Print();
+  }
   void SetP1(Vector3D<double> p){fP1 = p;}
   void SetP2(Vector3D<double> p){fP2 = p;}
+
 
   // void CoGenerator(std::vector <Detector*> det,int N1=0);
   void CoGenerator();
   Vector3D<double> GetCoordinate(int detector); // Enter value between 0 < detector < total detectors
   Vector3D<double> GetStripCoordinate(double x, double y, double z);
+  Vector3D<double> GetStripCoordinate(Detector *det, double x, double y, double z);
   void SetStrips(double x, double y, double z);
   void SetStripCoordinates();
   Tracking::Vector3D<double> GetStripCoordinate(int detector);

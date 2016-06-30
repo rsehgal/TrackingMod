@@ -114,7 +114,19 @@ public:
 		this->vec[2]=vec2.vec[2];
 	}
 
-	BINARY_OP(+)
+	TRACKING_INLINE
+    void Transform(Type dx, Type dy, Type dt) {
+          Type x, y;
+          x = this->x();
+          y = this->y();
+
+          this->vec[0] = dx + (std::cos(dt) * x - std::sin(dt) * y);
+          this->vec[1] = dy + (std::sin(dt) * x + std::cos(dt) * y);
+
+
+        }
+
+        BINARY_OP(+)
 	BINARY_OP(-)
 	SCALAR_OP(+)
 	SCALAR_OP(-)

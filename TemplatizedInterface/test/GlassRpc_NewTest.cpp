@@ -30,7 +30,7 @@ int main(int argc, char *argv[]) {
   temp_str += ".root";
   Tracking::Tree::instance()->ReadTree(temp_str.c_str(), "BSC_DATA_TREE", 0);
   std::cout << "===========================================================================" << std::endl;
-  Detector *topPlane = new TriggeringPlane(2,"TopPlane", 105,-1);
+  Detector *topPlane = new TriggeringPlane(2,"TopPlane", 100.,50.,105, 3.14159/3.,-1);
    Detector *bottomPlane = new TriggeringPlane(2,"BottomPlane", -105,7);
   Detector *rpc1 = new GlassRpc(2, "FirstGlassRpc", 45, 31);
   Detector *rpc2 = new GlassRpc(4, "SecondGlassRpc", -75, 31);
@@ -44,13 +44,15 @@ int main(int argc, char *argv[]) {
   Tomography::SetupManager::instance()->Register(rpc2);
 
   v.Register(topPlane);
+  Tomography::SetupManager::instance()->Register(topPlane);
   v.Register(bottomPlane);
+  Tomography::SetupManager::instance()->Register(bottomPlane);
 
   Update u;
   //Statistics s;
   //if required delay can be Set using SetDelay() function
   //Default value is set to 2 sec
-  u.SetDelay(1);
+  u.SetDelay(0);
   u.RunThread2();
   //s.Initialize();
   //s.GetXPlaneHistogram();

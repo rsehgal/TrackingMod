@@ -43,6 +43,11 @@ class Scintillator {
   //This is provided to allow user to modify window if required.
   static long fStart,fEnd;
 
+  // X and Y alignment variables
+  double fDx;
+  double fDy;
+  double fDTheta;
+
 /*
 #ifndef USE_EVE
   Tracking::Visualizer v;
@@ -59,6 +64,20 @@ class Scintillator {
 
 public:
   Scintillator();
+
+  void SetDx(double val) { fDx = val; }
+  void SetDy(double val) { fDy = val; }
+  void SetDTheta(double val) { fDTheta = val; }
+  void SetDxDyDTheta(double dX, double dY, double dTheta) {
+    fDx = dX;
+    fDy = dY;
+    fDTheta = dTheta;
+  }
+
+  double GetDx() { return fDx; }
+  double GetDy() { return fDy; }
+  double GetDTheta() { return fDTheta; }
+
   Scintillator(int moduleId, double length, double breadth,double height);
   Scintillator(int moduleId, double length, double breadth,double height,Tracking::Vector3D<double> placedLocation);
   ~Scintillator();

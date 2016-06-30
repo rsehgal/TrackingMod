@@ -42,7 +42,7 @@ public:
     LinesAngle l;
     Double_t trans[3] = {0., 0., 0.};
     m.SetTranslation(trans);
-    Coordinates c(Tomography::SetupManager::instance()->GetDetectorVector("GLASS"));
+    //Coordinates c(Tomography::SetupManager::instance()->GetDetectorVector("GLASS"));
 
     int numOfEvents = Tracking::Tree::instance()->GetNumOfEvents();
     Tracking::Vector3D<double> temp;
@@ -52,13 +52,23 @@ public:
     //std::vector<Detector *> detectors = Tomography::SetupManager::instance()->GetDetectorVector("GLASS");
     SetupManager *setup = Tomography::SetupManager::instance();
     std::vector<Detector *> detectors = setup->GetDetectorVector("GLASS");
+    std::vector<Detector *> trgPlaneVect = setup->GetDetectorVector("TRG");
     int evCount = 0;
 #ifdef ANG_DIST
     TCanvas *canvas = new TCanvas("AngDist", "AngularDistribution", 800, 600);
     canvas->Divide(1,1);
     TH1F  *angHist = new TH1F("AD", "Angular Distribution", 50., 0, 90);
 #endif
+    std::vector<Tracking::Vector3D<double>> tempVect;
+    std::vector<Tracking::Vector3D<double>> poiVect;
+    int countValid = 0;
+    Coordinates c;
+
     for (int evNo = 0; evNo < numOfEvents; evNo++) {
+    	tempVect.clear();
+    	poiVect.clear();
+    	setup->SetEventDetected("TRG",evNo);
+    	if(setup->EventDetected()){
       std::cout << "======================================================" << std::endl;
 
       setup->SetEventDetected("GLASS",evNo);
@@ -79,22 +89,50 @@ public:
         for (int xval = 0; xval < detectors[j]->GetPlane(0)->GetFiredStripsVector().size(); xval++) {
           for (int yval = 0; yval < detectors[j]->GetPlane(1)->GetFiredStripsVector().size(); yval++) {
 
-            temp = GetStripCoordinate(detectors[j]->GetPlane(0)->GetFiredStripsVector()[xval],
-                                      detectors[j]->GetPlane(1)->GetFiredStripsVector()[yval], detectors[j]->GetZPos());
-            temp.Print();
+//            temp = GetStripCoordinate(detectors[j]->GetPlane(0)->GetFiredStripsVector()[xval],
+//                                      detectors[j]->GetPlane(1)->GetFiredStripsVector()[yval], detectors[j]->GetZPos());
+
+        	  temp = c.GetStripCoordinate(detectors[j],detectors[j]->GetPlane(0)->GetFiredStripsVector()[xval],
+        	                                        detectors[j]->GetPlane(1)->GetFiredStripsVector()[yval], detectors[j]->GetZPos());
+
+            //temp.Print();
 
             if (gEve) {
               m.SetDx(temp.x());
               m.SetDy(temp.y());
               m.SetDz(temp.z());
-              hittedPixelVector.push_back(new HittedPixel(m));
-              Tracking::Singleton::instance()->AddElement(
-                  hittedPixelVector[hittedPixelVector.size() - 1]->GetEveGeoShape());
+              //hittedPixelVector.push_back(new HittedPixel(m));
+              hittedPixelVector.push_back(new HittedPixel(m,true,false));
+
+//              Tracking::Singleton::instance()->AddElement(
+//                  hittedPixelVector[hittedPixelVector.size() - 1]->GetEveGeoShape());
             }
           }
         }
-
+        tempVect.push_back(temp);
       }
+
+
+      //Code block for Track Validation
+      //Coordinates c;
+      c.SetPoints(tempVect);
+      std::cout<<"TopPlaneIntersection : ";c.GetPOI(trgPlaneVect[0],false).Print();
+      std::cout<<"BottomPlaneIntersection : ";c.GetPOI(trgPlaneVect[1],true).Print();
+      poiVect.push_back(c.GetPOI(trgPlaneVect[0],false));
+      poiVect.push_back(c.GetPOI(trgPlaneVect[1],true));
+      int realNo = 10000, calcNo = 10000;
+      bool valid = Validate(poiVect,realNo,calcNo);
+      std::cout << "Validity : " << valid << std::endl;
+      if (valid){
+    	  std::cout<<"Found Valid Track for Event No : " << evNo << std::endl;
+        countValid++;
+      }
+
+
+      // Displaying all illuminated pixel
+      for (int i = 0; i < hittedPixelVector.size(); i++)
+        Tracking::Singleton::instance()->AddElement(hittedPixelVector[i]->GetEveGeoShape());
+
       ls = new TEveStraightLineSet();
       ls->SetLineColor(5);
       Vector3D<double> dir = (temp1-temp)/(temp1-temp).Mag();
@@ -135,6 +173,9 @@ public:
       }
       hittedPixelVector.clear();
     }
+    }//end of event loop
+
+    std::cout<<"Total Number of Valid Tracks : " << countValid << std::endl;
     //angHist->SaveAs("AngDist.gif");
 #ifdef ANG_DIST
     canvas->cd(1);
@@ -143,6 +184,28 @@ public:
 #endif
 
   }
+
+
+  bool Validate(std::vector<Tracking::Vector3D<double>> tempVect,int& realNo, int& calcNo){
+  	bool valid=true;
+      SetupManager *setup = SetupManager::instance();
+      std::vector<Detector *> trgPlaneVect = setup->GetDetectorVector("TRG");
+      for(int i = 0 ; i < trgPlaneVect.size() ; i++){
+       int scintNo = 10000;
+       int calcScintNo = 10000;
+       //std::cout<<"Name : "<< trgPlaneVect[i]->GetName() << std::endl;
+       if(trgPlaneVect[i]->GetPlane(0)->GetFiredStripsVector().size())
+       scintNo = trgPlaneVect[i]->GetPlane(0)->GetFiredStripsVector()[0];
+       realNo = scintNo;
+       //std::cout<<"Breadth : " << trgPlaneVect[i]->GetLength() << std::endl;
+       calcScintNo = floor((trgPlaneVect[i]->GetLength()/2 - tempVect[i].x())/18.);
+       calcNo = calcScintNo;
+       valid &= (scintNo == calcScintNo);
+       std::cout<<"Real Scint No : " << scintNo <<"  :: Calculated Scint Num : " << calcScintNo << std::endl;
+      }
+      return valid;
+
+    }
 
   void *handle(void *ptr) {
 

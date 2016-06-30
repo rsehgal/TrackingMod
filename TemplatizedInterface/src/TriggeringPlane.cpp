@@ -45,4 +45,22 @@ TriggeringPlane::TriggeringPlane(int moduleId, std::string rpcName, double zPos,
   //InsertPlane(new ScintillatorPlane(moduleId,32,zPos,GetLength()/3,GetBreadth(),GetHeight(),GetLength()/3.,false));
 }
 
+TriggeringPlane::TriggeringPlane(int moduleId, std::string rpcName, double xPos, double yPos, double zPos, double theta, int startId) {
+	SetDxDyDTheta(xPos,yPos,theta);
+  SetDetectorType("TRG");
+  Scintillator::SetStartingId(startId);
+  int numOfPlanes = 1;
+  SetNumOfPlanes(numOfPlanes);
+  SetName(rpcName);
+  SetZPos(zPos);
+  SetLBH(144,180,1);
+  Initialize();
+  /*for(int i = 0 ; i < numOfPlanes ; i++){
+    InsertPlane(new ScintillatorPlane(moduleId,32,zPos,GetLength(),GetBreadth()));
+  }*/
+  //InsertPlane(new ScintillatorPlane(moduleId,32,zPos,GetLength()/3,GetBreadth(),GetHeight(),-1*GetLength()/3.,false));
+  InsertPlane(new ScintillatorPlane(moduleId,8,xPos,yPos,zPos,theta,GetLength(),GetBreadth(),GetHeight(),0.,false));
+  //InsertPlane(new ScintillatorPlane(moduleId,32,zPos,GetLength()/3,GetBreadth(),GetHeight(),GetLength()/3.,false));
+}
+
 } /* namespace Tomography */
