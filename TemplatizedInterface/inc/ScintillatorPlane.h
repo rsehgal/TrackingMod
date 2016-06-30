@@ -133,7 +133,7 @@ public:
   double GetBreadth(){return fBreadth;}
   double GetHeight(){return fHeight;}
   double GetEfficiency() {return fEfficiency;}
-  int GetClusterSize(){return fClusterSize;}
+  static int GetClusterSize(){return fClusterSize;}
   //template<bool ForRpc>
  // bool IsShowerEvent(Tracking::Tree &t, int evNo);
   static void SetClusterSize(int clSize){fClusterSize = clSize;}

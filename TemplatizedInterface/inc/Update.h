@@ -43,6 +43,7 @@ public:
     Double_t trans[3] = {0., 0., 0.};
     m.SetTranslation(trans);
     //Coordinates c(Tomography::SetupManager::instance()->GetDetectorVector("GLASS"));
+    //ScintillatorPlane::SetClusterSize(1);
 
     int numOfEvents = Tracking::Tree::instance()->GetNumOfEvents();
     Tracking::Vector3D<double> temp;
@@ -53,6 +54,8 @@ public:
     SetupManager *setup = Tomography::SetupManager::instance();
     std::vector<Detector *> detectors = setup->GetDetectorVector("GLASS");
     std::vector<Detector *> trgPlaneVect = setup->GetDetectorVector("TRG");
+
+    std::cout<<"CLUSTERRR : " << ScintillatorPlane::GetClusterSize() << std::endl;
     int evCount = 0;
 #ifdef ANG_DIST
     TCanvas *canvas = new TCanvas("AngDist", "AngularDistribution", 800, 600);
@@ -64,12 +67,13 @@ public:
     int countValid = 0;
     Coordinates c;
 
+    //numOfEvents = 153;
     for (int evNo = 0; evNo < numOfEvents; evNo++) {
     	tempVect.clear();
     	poiVect.clear();
     	setup->SetEventDetected("TRG",evNo);
     	if(setup->EventDetected()){
-      std::cout << "======================================================" << std::endl;
+      std::cout << "=================== YES ===================================" << std::endl;
 
       setup->SetEventDetected("GLASS",evNo);
 #ifdef EFF_SETUP_AND
@@ -109,12 +113,18 @@ public:
             }
           }
         }
+/*
+        temp.Transform(detectors[j]->GetDx(), detectors[j]->GetDy(), detectors[j]->GetDTheta() );
+        std::cout<<"X Strip : " << detectors[j]->GetPlane(0)->GetFiredStripsVector()[0] << std::endl;
+        std::cout<<"Y Strip : " << detectors[j]->GetPlane(1)->GetFiredStripsVector()[0] << std::endl;
+*/
         tempVect.push_back(temp);
       }
 
 
       //Code block for Track Validation
       //Coordinates c;
+
       c.SetPoints(tempVect);
       std::cout<<"TopPlaneIntersection : ";c.GetPOI(trgPlaneVect[0],false).Print();
       std::cout<<"BottomPlaneIntersection : ";c.GetPOI(trgPlaneVect[1],true).Print();
@@ -123,6 +133,7 @@ public:
       int realNo = 10000, calcNo = 10000;
       bool valid = Validate(poiVect,realNo,calcNo);
       std::cout << "Validity : " << valid << std::endl;
+      std::cout<<"-------------- Event No : " << evNo << "-------------------"<<std::endl;
       if (valid){
     	  std::cout<<"Found Valid Track for Event No : " << evNo << std::endl;
         countValid++;
@@ -189,8 +200,20 @@ public:
   bool Validate(std::vector<Tracking::Vector3D<double>> tempVect,int& realNo, int& calcNo){
   	bool valid=true;
       SetupManager *setup = SetupManager::instance();
+
       std::vector<Detector *> trgPlaneVect = setup->GetDetectorVector("TRG");
+/*
+      std::cout<<"------ IN Validator Before Transform ---------" << std::endl;
+      tempVect[0].Print();
+      tempVect[1].Print();
+      std::cout<<"------ IN Validator After Transform ---------" << std::endl;
+*/
+
       for(int i = 0 ; i < trgPlaneVect.size() ; i++){
+    	  //tempVect[i].Transform(-trgPlaneVect[i]->GetDx(),-trgPlaneVect[i]->GetDy(),-trgPlaneVect[i]->GetDTheta());
+    	  tempVect[i].Print();
+
+
        int scintNo = 10000;
        int calcScintNo = 10000;
        //std::cout<<"Name : "<< trgPlaneVect[i]->GetName() << std::endl;
@@ -198,11 +221,12 @@ public:
        scintNo = trgPlaneVect[i]->GetPlane(0)->GetFiredStripsVector()[0];
        realNo = scintNo;
        //std::cout<<"Breadth : " << trgPlaneVect[i]->GetLength() << std::endl;
-       calcScintNo = floor((trgPlaneVect[i]->GetLength()/2 - tempVect[i].x())/18.);
+       calcScintNo = floor((trgPlaneVect[i]->GetLength()/2 + tempVect[i].x())/18.);
        calcNo = calcScintNo;
        valid &= (scintNo == calcScintNo);
        std::cout<<"Real Scint No : " << scintNo <<"  :: Calculated Scint Num : " << calcScintNo << std::endl;
       }
+      std::cout<<"---------Exiting Validator----------" << std::endl;
       return valid;
 
     }

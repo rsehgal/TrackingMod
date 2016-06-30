@@ -20,6 +20,7 @@ typedef Tomography::Properties Detector;
 using namespace Tomography;
 
 int main(int argc, char *argv[]) {
+
   TApplication *fApp = new TApplication("Test", NULL, NULL);
   Tomography::VisualizationHelper v;
   std::vector<int> channelVector;
@@ -30,13 +31,19 @@ int main(int argc, char *argv[]) {
   temp_str += ".root";
   Tracking::Tree::instance()->ReadTree(temp_str.c_str(), "BSC_DATA_TREE", 0);
   std::cout << "===========================================================================" << std::endl;
-  Detector *topPlane = new TriggeringPlane(2,"TopPlane", 100.,50.,105, 3.14159/3.,-1);
-   Detector *bottomPlane = new TriggeringPlane(2,"BottomPlane", -105,7);
-  Detector *rpc1 = new GlassRpc(2, "FirstGlassRpc", 45, 31);
-  Detector *rpc2 = new GlassRpc(4, "SecondGlassRpc", -75, 31);
+/*  Detector *topPlane = new TriggeringPlane(2,"TopPlane", 0, 0,105, 0.,-1);
+   Detector *bottomPlane = new TriggeringPlane(2,"BottomPlane",0.,0., -105, 0., 7);
+  Detector *rpc1 = new GlassRpc(4, "FirstGlassRpc",0.,0., 45, 0.,31);
+  Detector *rpc2 = new GlassRpc(2, "SecondGlassRpc",0.,0., -75,0., 31);*/
+
+  Detector *topPlane = new TriggeringPlane(2,"TopPlane", 105, -1);
+  Detector *bottomPlane = new TriggeringPlane(2,"BottomPlane",-105, 7);
+  Detector *rpc1 = new GlassRpc(4, "FirstGlassRpc", 45, 31);
+  Detector *rpc2 = new GlassRpc(2, "SecondGlassRpc",-75, 31);
 
   //This line should be added after creation of all RPCs
   Tomography::ScintillatorPlane::SetClusterSize(1);
+  std::cout<<"CLUSTER : " << Tomography::ScintillatorPlane::GetClusterSize() << std::endl;
 
   v.Register(rpc1);
   Tomography::SetupManager::instance()->Register(rpc1);
@@ -47,6 +54,8 @@ int main(int argc, char *argv[]) {
   Tomography::SetupManager::instance()->Register(topPlane);
   v.Register(bottomPlane);
   Tomography::SetupManager::instance()->Register(bottomPlane);
+
+
 
   Update u;
   //Statistics s;

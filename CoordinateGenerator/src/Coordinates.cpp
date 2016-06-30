@@ -182,7 +182,7 @@ Vector3D<double> Coordinates::GetStripCoordinate(Detector *det, double x, double
   double stripLength = det->GetPlane(0)->GetScintVector()[0]->GetLength()/det->GetPlane(0)->GetNumOfScintillators();
   double stripBreadth = det->GetPlane(1)->GetScintVector()[0]->GetBreadth()/det->GetPlane(0)->GetNumOfScintillators();
   //std::cout<<"StripLenght : " << stripLength << " :  StripBredth : " << stripBreadth << std::endl;
-  temp.SetX(-det->GetLength()/2. + x * stripLength + stripLength/2.);
+  temp.SetX(-det->GetLength()/2. + (31-x) * stripLength + stripLength/2.);
   temp.SetY(-det->GetBreadth()/2. + y * stripBreadth + stripBreadth/2.);
   temp.SetZ(z);
 
