@@ -42,13 +42,16 @@ int main(int argc, char *argv[]) {
   Detector *rpc1 = new GlassRpc(4, "FirstGlassRpc", 45, 31);
   Detector *rpc2 = new GlassRpc(2, "SecondGlassRpc",-75, 31);
 
-  Detector *paddle = new Paddle(2,"Paddle", -15, 15, 18., 76.);
+  //Creating and Registering Paddle
+  Detector *paddle = new Paddle(2,"Paddle", -15, 15, 18., 66.);
   paddle->GetPlane(0)->GetScintVector()[0]->SetPlacedLocation(Tracking::Vector3D<double>(0.,0.,-15));
   v.Register(paddle);
+  Tomography::SetupManager::instance()->Register(paddle);
+
   std::cout<<"GET PLACED LOCATION of PADDLE : " ;
   paddle->GetPlane(0)->GetScintVector()[0]->GetPlacedLocation().Print();
   //This line should be added after creation of all RPCs
-  Tomography::ScintillatorPlane::SetClusterSize(2);
+  Tomography::ScintillatorPlane::SetClusterSize(1);
   std::cout<<"CLUSTER : " << Tomography::ScintillatorPlane::GetClusterSize() << std::endl;
 
   v.Register(rpc1);

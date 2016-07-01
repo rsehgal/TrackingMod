@@ -88,6 +88,7 @@ public:
     SetupManager *setup = Tomography::SetupManager::instance();
     std::vector<Detector *> detectors = setup->GetDetectorVector("GLASS");
     std::vector<Detector *> trgPlaneVect = setup->GetDetectorVector("TRG");
+    std::vector<Detector *> paddleVect = setup->GetDetectorVector("PADDLE");
 
     //std::cout<<"CLUSTERRR : " << ScintillatorPlane::GetClusterSize() << std::endl;
     int evCount = 0;
@@ -184,10 +185,17 @@ public:
       c.SetPoints(tempVect);
       std::cout<<"TopPlaneIntersection : ";c.GetPOI(trgPlaneVect[0],false).Print();
       std::cout<<"BottomPlaneIntersection : ";c.GetPOI(trgPlaneVect[1],true).Print();
+      //
       poiVect.push_back(c.GetPOI(trgPlaneVect[0],false));
       poiVect.push_back(c.GetPOI(trgPlaneVect[1],true));
+      //
       int realNo = 10000, calcNo = 10000;
       bool valid = Validate(poiVect,realNo,calcNo);
+      std::cout<<"PaddleIntersection : "; c.GetPOI(paddleVect[0],true).Print();
+      Tracking::Vector3D<double> paddlePOI = c.GetPOI(paddleVect[0],true);
+      valid &= std::fabs(paddlePOI.x()) <= 9 &&  std::fabs(paddlePOI.y()) <= 33;
+
+
       //std::cout << "Validity : " << valid << std::endl;
       //std::cout<<"-------------- Event No : " << evNo << "-------------------"<<std::endl;
       if (valid){
