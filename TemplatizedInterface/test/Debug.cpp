@@ -32,7 +32,7 @@ int main(int argc, char *argv[]) {
 	  Tomography::SetupManager::instance()->Register(topPlane);
 	  Tomography::SetupManager::instance()->Register(bottomPlane);
 
-	  Tomography::ScintillatorPlane::SetClusterSize(1);
+	  //Tomography::ScintillatorPlane::SetClusterSize(1);
 
 	  Tomography::SetupManager::instance()->SetEventDetected("TRG",152);
 	  std::cout<<"EventDetectd : " << Tomography::SetupManager::instance()->EventDetected() << std::endl;

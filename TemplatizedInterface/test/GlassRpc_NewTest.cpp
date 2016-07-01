@@ -38,9 +38,13 @@ int main(int argc, char *argv[]) {
   Detector *rpc2 = new GlassRpc(2, "SecondGlassRpc",0.,0., -75,0., 31);*/
 
   Detector *topPlane = new TriggeringPlane(2,"TopPlane", 105, -1);
+  topPlane->SetClusterSize(1);
   Detector *bottomPlane = new TriggeringPlane(2,"BottomPlane",-105, 7);
+  bottomPlane->SetClusterSize(1);
   Detector *rpc1 = new GlassRpc(4, "FirstGlassRpc", 45, 31);
+  rpc1->SetClusterSize(2);
   Detector *rpc2 = new GlassRpc(2, "SecondGlassRpc",-75, 31);
+  rpc2->SetClusterSize(2);
 
   //Creating and Registering Paddle
   Detector *paddle = new Paddle(2,"Paddle", -15, 15, 18., 66.);
@@ -51,8 +55,8 @@ int main(int argc, char *argv[]) {
   std::cout<<"GET PLACED LOCATION of PADDLE : " ;
   paddle->GetPlane(0)->GetScintVector()[0]->GetPlacedLocation().Print();
   //This line should be added after creation of all RPCs
-  Tomography::ScintillatorPlane::SetClusterSize(1);
-  std::cout<<"CLUSTER : " << Tomography::ScintillatorPlane::GetClusterSize() << std::endl;
+  //Tomography::ScintillatorPlane::SetClusterSize(1);
+  //std::cout<<"CLUSTER : " << Tomography::ScintillatorPlane::GetClusterSize() << std::endl;
 
   v.Register(rpc1);
   Tomography::SetupManager::instance()->Register(rpc1);

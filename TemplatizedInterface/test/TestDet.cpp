@@ -13,7 +13,10 @@ int main(int argc , char *argv[]){
         Tracking::Tree::instance()->ReadTree(temp_str.c_str(), "BSC_DATA_TREE", 0);
 
 	Detector *rpc1 = new GlassRpc(2,"MT-1",60,31);
+	rpc1->SetClusterSize(1);
+
 	Detector *rpc2 = new GlassRpc(4,"MT-2",-60,31);
+	rpc2->SetClusterSize(1);
         SetupManager *setup = Tomography::SetupManager::instance();
         setup->Register(rpc1);
         setup->Register(rpc2);
@@ -47,7 +50,7 @@ int main(int argc , char *argv[]){
 
 #endif
 
-        Tomography::ScintillatorPlane::SetClusterSize(1);
+    //    Tomography::ScintillatorPlane::SetClusterSize(1);
 for(int evNo= 19 ;evNo <20;  evNo++){
 std::cout<<"--------------------Event No :  " << evNo << " ---------------------------------"<<std::endl;
         setup->SetEventDetected("GLASS",evNo);

@@ -28,6 +28,8 @@ namespace Tomography {
 
 class Properties {
 private:
+
+  int fClusterSize;
   int fTotalNumOfChannels;
   std::string fName;
   double fLength;
@@ -72,6 +74,12 @@ public:
   void SetZPos(double zPos){fZPos = zPos;}
   void SetDetectorType(std::string detType){fDetectorType = detType;}
   void SetEfficiency();
+
+  void SetClusterSize(int clusterSize){fClusterSize = clusterSize;}
+  int GetClusterSize(){return fClusterSize;}
+
+  //static void SetClusterSize(int clusterSize){fClusterSize = clusterSize;}
+  //static int GetClusterSize(){return fClusterSize;}
   /*void SetEfficiency()
   {
     int count = 0;

@@ -18,6 +18,7 @@ namespace Tomography {
 
 class TriggeringPlane : public Properties {
 
+//	static int fClusterSize;
 public:
   TriggeringPlane();
 
@@ -29,6 +30,11 @@ public:
   TriggeringPlane(int moduleId,std::string rpcName,double zPos, int startId=31);
   TriggeringPlane(int moduleId,std::string rpcName,double xPos, double yPos,double zPos,double theta, int startId=31);
   TriggeringPlane(std::string name, std::vector<int> channelDimVector);
+/*
+  static void SetClusterSize(int clusterSize){fClusterSize = clusterSize;
+   }
+  static int GetClusterSize(){return fClusterSize;}
+*/
   virtual ~TriggeringPlane();
 
 

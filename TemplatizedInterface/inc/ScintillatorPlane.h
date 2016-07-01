@@ -28,7 +28,8 @@ class ScintillatorPlane {
   std::vector<int> fFiredStripsIDVector;
   std::vector<std::string> fFiredStripsNameVector;
   double fEfficiency;
-  static int fClusterSize;
+  //static int fClusterSize;
+  int fClusterSize;
 
   // X and Y alignment variables
   double fDx;
@@ -72,7 +73,7 @@ public:
         fScintVector.push_back(new Scintillator(moduleId, len, brd, fHeight,scintPlacedLocation));
 
       }
-      fClusterSize = 2;
+      //fClusterSize = 2;
     }
 
   ScintillatorPlane(int moduleId, int numOfScintillators, double xPos, double yPos, double zPos, double theta, double scintPlaneLength,
@@ -106,7 +107,7 @@ public:
           fScintVector.push_back(new Scintillator(moduleId, len, brd, fHeight,scintPlacedLocation));
 
         }
-        fClusterSize = 2;
+       // fClusterSize = 2;
       }
 
 
@@ -134,10 +135,12 @@ public:
   double GetBreadth(){return fBreadth;}
   double GetHeight(){return fHeight;}
   double GetEfficiency() {return fEfficiency;}
-  static int GetClusterSize(){return fClusterSize;}
+  int GetClusterSize(){return fClusterSize;}
+  void SetClusterSize(int clSize){fClusterSize = clSize;}
+  //static int GetClusterSize(){return fClusterSize;}
   //template<bool ForRpc>
  // bool IsShowerEvent(Tracking::Tree &t, int evNo);
-  static void SetClusterSize(int clSize){fClusterSize = clSize;}
+  //static void SetClusterSize(int clSize){fClusterSize = clSize;}
   void SetFiredStripsVector(int evNo);
   void SetEfficiency();
   /*

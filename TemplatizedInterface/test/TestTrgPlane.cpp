@@ -13,7 +13,9 @@ int main(int argc, char *argv[]){
   Tracking::Tree::instance()->ReadTree(temp_str.c_str(), "BSC_DATA_TREE", 0);
   std::cout << "===========================================================================" << std::endl;
   Detector *topPlane = new TriggeringPlane(2,"TopPlane",105,-1);
+  topPlane->SetClusterSize(1);
   Detector *bottomPlane = new TriggeringPlane(2,"bottomPlane",105,7);
+  bottomPlane->SetClusterSize(1);
   
 Tomography::SetupManager::instance()->Register(topPlane);
 Tomography::SetupManager::instance()->Register(bottomPlane);
@@ -37,7 +39,7 @@ for(int i = 0 ; i < trgPlaneVect.size() ; i++){
 //setup->SetEventDetected("TRG",1);
 //
 
-Tomography::ScintillatorPlane::SetClusterSize(1);
+//Tomography::ScintillatorPlane::SetClusterSize(1);
 for(int evNo= 19 ;evNo <20;  evNo++){
 std::cout<<"--------------------Event No :  " << evNo << " ---------------------------------"<<std::endl;
         setup->SetEventDetected("TRG",evNo);

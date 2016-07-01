@@ -9,6 +9,8 @@
 
 namespace Tomography {
 
+int Paddle::fClusterSize = 2;
+
 Paddle::Paddle() {
   // TODO Auto-generated constructor stub
 }

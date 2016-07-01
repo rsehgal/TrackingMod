@@ -9,6 +9,8 @@
 
 namespace Tomography{
 
+//int Properties::fClusterSize = 10;
+
 Properties::Properties(){
   fDim = fChannelsInDim.size();
   fTotalNumOfChannels = 0;
@@ -30,7 +32,7 @@ Properties::Properties(std::string name,std::vector<int> channelsInDim){
   }
 }
 
-void Properties::SetEventDetected(int evNo) {
+/*void Properties::SetEventDetected(int evNo) {
   SetFiredStripsVector(evNo);
   fEventDetected = false;
 
@@ -56,6 +58,39 @@ for(int i = 0 ; i < fNumOfPlanes ; i++) {
 #else
   if(i==0)
   fEventDetected = GetPlane(i)->GetFiredStripsVector().size() 
+  else
+  fEventDetected |= GetPlane(i)->GetFiredStripsVector().size();
+#endif
+#endif
+}
+}*/
+
+void Properties::SetEventDetected(int evNo) {
+  SetFiredStripsVector(evNo);
+  fEventDetected = false;
+
+for(int i = 0 ; i < fNumOfPlanes ; i++) {
+#ifdef EFF_AND
+#ifdef CLUSTER_SIZE
+  if(i==0)
+  fEventDetected = (GetPlane(i)->GetFiredStripsVector().size() > 0. && GetPlane(i)->GetFiredStripsVector().size() <= fClusterSize); // GetPlane(i)->GetClusterSize());
+  else
+  fEventDetected &= (GetPlane(i)->GetFiredStripsVector().size() > 0. && GetPlane(i)->GetFiredStripsVector().size() <= fClusterSize); //GetPlane(i)->GetClusterSize());
+#else
+  if(i==0)
+  fEventDetected = GetPlane(i)->GetFiredStripsVector().size();
+  else
+  fEventDetected &= GetPlane(i)->GetFiredStripsVector().size();
+#endif
+#else
+#ifdef CLUSTER_SIZE
+  if(i==0)
+  fEventDetected = (GetPlane(i)->GetFiredStripsVector().size() > 0. && GetPlane(i)->GetFiredStripsVector().size() <= fClusterSize); // GetPlane(i)->GetClusterSize());
+  else
+  fEventDetected |=  (GetPlane(i)->GetFiredStripsVector().size() > 0. && GetPlane(i)->GetFiredStripsVector().size() <= fClusterSize); //GetPlane(i)->GetClusterSize());
+#else
+  if(i==0)
+  fEventDetected = GetPlane(i)->GetFiredStripsVector().size()
   else
   fEventDetected |= GetPlane(i)->GetFiredStripsVector().size();
 #endif

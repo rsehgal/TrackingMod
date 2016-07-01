@@ -11,6 +11,7 @@
 
 namespace Tomography {
 
+//int GlassRpc::fClusterSize = 2;
 GlassRpc::GlassRpc() {
   // TODO Auto-generated constructor stub
 }
@@ -43,6 +44,8 @@ GlassRpc::GlassRpc(int moduleId, std::string rpcName, double zPos, int startId) 
   }*/
   InsertPlane(new ScintillatorPlane(moduleId,32,zPos,GetLength(),GetBreadth(),GetHeight(),0.,true));
   InsertPlane(new ScintillatorPlane(moduleId,32,zPos,GetLength(),GetBreadth(),GetHeight(),0.,false));
+  SetClusterSize(2);
+
 }
 
 GlassRpc::GlassRpc(int moduleId, std::string rpcName, double xPos, double yPos, double zPos, double theta,  int startId) {

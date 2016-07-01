@@ -25,7 +25,9 @@ int main(int argc, char *argv[]) {
   Detector *rpc1 = new GlassRpc(2, "FirstGlassRpc", 30, 31);
   Detector *rpc2 = new GlassRpc(4, "SecondGlassRpc", -30, 31);
   //Setting the allowed ClusterSize
-  Tomography::ScintillatorPlane::SetClusterSize(1);
+  //Tomography::ScintillatorPlane::SetClusterSize(1);
+  rpc1->SetClusterSize(1);
+  rpc2->SetClusterSize(1);
   Tomography::SetupManager::instance()->Register(rpc1);
   Tomography::SetupManager::instance()->Register(rpc2);
   Tomography::SetupManager::instance()->SetEfficiency("GLASS");

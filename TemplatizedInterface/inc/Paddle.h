@@ -13,6 +13,8 @@
 namespace Tomography {
 
 class Paddle : public Properties {
+
+	static int fClusterSize;
 public:
   Paddle(int moduleId, std::string detName, double zPos, int startId , double length, double breadth) {
 	  SetDetectorType("PADDLE");
@@ -28,6 +30,8 @@ public:
 	}
 
   Paddle();
+  static void SetClusterSize(int clusterSize){fClusterSize = clusterSize;}
+  static int GetClusterSize(){return fClusterSize;}
   ~Paddle(){}
 };
 

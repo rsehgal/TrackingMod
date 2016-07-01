@@ -48,9 +48,14 @@ int main(int argc, char *argv[]) {
   temp_str += ".root";
   Tracking::Tree::instance()->ReadTree(temp_str.c_str(), "BSC_DATA_TREE", 0);
   Detector *MT1 = new GlassRpc(2, "MT1", -75, 31);
+  MT1->SetClusterSize(1);
   Detector *MT2 = new GlassRpc(4, "MT2", 45, 31);
+  MT2->SetClusterSize(1);
   Detector *ScintTop = new TriggeringPlane(2, "ScintTop", 105, -1);
+  ScintTop->SetClusterSize(1);
   Detector *ScintBottom = new TriggeringPlane(2, "ScintBottom", -105, 7);
+  ScintBottom->SetClusterSize(1);
+
   SetupManager *setup = SetupManager::instance();
   setup->Register(MT2);
   setup->Register(MT1);
@@ -62,7 +67,7 @@ int main(int argc, char *argv[]) {
   LienVector TopIntersection, BottomIntersection;
   std::vector<Detector *> DetVect = setup->GetDetectorVector("GLASS");
   std::vector<Detector *> ScintVect = setup->GetDetectorVector("TRG");
-  ScintillatorPlane::SetClusterSize(1);
+  //ScintillatorPlane::SetClusterSize(1);
   int count = 0, othercount = 0;
 
   Coordinates c;
