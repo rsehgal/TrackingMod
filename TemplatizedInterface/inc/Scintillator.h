@@ -11,6 +11,7 @@
 #include "Tree.h"
 #include "base/Global.h"
 #include "base/Vector3D.h"
+
 #ifdef SHOW_VISUALIZATION
 #include "TGeoVolume.h"
 #endif
@@ -32,6 +33,10 @@ class Scintillator {
   int fScintId; // represents it id of channel on a Module
   static int fId; // Static variable to increase whenever a new object is created.
   bool fScintHit;
+
+  //These are required to create TrackBox, which is basically another step of validation
+  std::vector<Tracking::Vector3D<double>> fVerticesVector;
+
 
   Tracking::Channel *ch;// Data structure to hold data for the scintillator
   
@@ -84,6 +89,7 @@ public:
   static void SetStartingId(int sId){fId = sId;}
   static void SetStartingStripNum(){fSno = -1;}
 
+  void SetPlacedLocation(Tracking::Vector3D<double> location){fPlacedLocation = location ;}
   void SetLength(double length){fLength = length;}
   void SetBreadth(double breadth){fBreadth = breadth;}
   void SetHeight(double height){fHeight = height;}
@@ -119,6 +125,18 @@ public:
   static void SetWindowStartEnd(long start, long end){
 	  fStart = start;
 	  fEnd = end;
+  }
+
+  void FillVerticesVector(){
+
+	fVerticesVector.push_back(Tracking::Vector3D<double>(fPlacedLocation.x()-fLength/2., fPlacedLocation.y()-fBreadth/2, fPlacedLocation.z()));
+	fVerticesVector.push_back(Tracking::Vector3D<double>(fPlacedLocation.x()+fLength/2., fPlacedLocation.y()-fBreadth/2, fPlacedLocation.z()));
+	fVerticesVector.push_back(Tracking::Vector3D<double>(fPlacedLocation.x()+fLength/2., fPlacedLocation.y()+fBreadth/2, fPlacedLocation.z()));
+	fVerticesVector.push_back(Tracking::Vector3D<double>(fPlacedLocation.x()-fLength/2., fPlacedLocation.y()+fBreadth/2, fPlacedLocation.z()));
+  }
+
+  std::vector<Tracking::Vector3D<double>> GetVertices(){
+    return fVerticesVector;
   }
 /*
 #ifndef USE_EVE

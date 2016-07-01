@@ -129,6 +129,7 @@ public:
   int GetNumOfScintillators(){return fNumOfScintillators;}
   int DetectTotalScinitillatorFired();
   std::vector<Scintillator*> GetScintVector(){return fScintVector;}
+  Scintillator* GetScintillator(int scintNo){return fScintVector[scintNo];}
   double GetLength(){return fLength;}
   double GetBreadth(){return fBreadth;}
   double GetHeight(){return fHeight;}

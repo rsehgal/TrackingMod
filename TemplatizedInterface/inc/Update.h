@@ -24,6 +24,10 @@
 #include "Properties.h"
 #include "SetupManager.h"
  #include "visualizer/Eve/Singleton.h"
+
+//Used to create TrackBox
+#include <TGeoArb8.h>
+
  typedef Tomography::Properties Detector;
 
 namespace Tomography {
@@ -32,10 +36,40 @@ class Update {
 
   TEveStraightLineSet *ls;
   int fDelay;
+  TGeoArb8 *fTrackBox;
 
 public:
   Update() {fDelay = 2;}
+
   void SetDelay(int delay){fDelay = delay;}
+
+  void CreateTrackBox(Scintillator* top, Scintillator *bottom) {
+	//Z should be Z of ScintillatorPlane ie. 105
+    fTrackBox = new TGeoArb8(105);
+    std::vector<Tracking::Vector3D<double>> topVertices = top->GetVertices();
+    std::vector<Tracking::Vector3D<double>> bottomVertices = bottom->GetVertices();
+    for(int i = 0 ; i < topVertices.size() ; i++){
+    	topVertices[i].Print();
+    	fTrackBox->SetVertex(topVertices[i].x(),topVertices[i].y(),topVertices[i].z());
+    }
+    std::cout<<"++++++++++++++++++++++++++++++++++++++++++++"<<std::endl;
+    for(int i = 0 ; i < bottomVertices.size() ; i++){
+    	bottomVertices[i].Print();
+    	fTrackBox->SetVertex(bottomVertices[i].x(),bottomVertices[i].y(),bottomVertices[i].z());
+    }
+  }
+
+  bool Validate(std::vector<Tracking::Vector3D<double>> tempVect){
+	bool valid = true;
+	double vect[]={0.,0.,0.};
+	for(int i = 0 ; i < tempVect.size() ; i++){
+		vect[0]=tempVect[i].x();
+		vect[1]=tempVect[i].y();
+		vect[2]=tempVect[i].z();
+		valid &= fTrackBox->Contains(vect);
+	}
+	return valid;
+  }
 
   void *handleRoot(void *ptr) {
     TGeoHMatrix m;
@@ -55,7 +89,7 @@ public:
     std::vector<Detector *> detectors = setup->GetDetectorVector("GLASS");
     std::vector<Detector *> trgPlaneVect = setup->GetDetectorVector("TRG");
 
-    std::cout<<"CLUSTERRR : " << ScintillatorPlane::GetClusterSize() << std::endl;
+    //std::cout<<"CLUSTERRR : " << ScintillatorPlane::GetClusterSize() << std::endl;
     int evCount = 0;
 #ifdef ANG_DIST
     TCanvas *canvas = new TCanvas("AngDist", "AngularDistribution", 800, 600);
@@ -73,6 +107,14 @@ public:
     	poiVect.clear();
     	setup->SetEventDetected("TRG",evNo);
     	if(setup->EventDetected()){
+
+    		/*//Creating an imaginary box using top and bottom fired scintillators
+    		int topScintNo = trgPlaneVect[0]->GetPlane(0)->GetFiredStripsVector()[0];
+    		int bottomScintNo = trgPlaneVect[1]->GetPlane(0)->GetFiredStripsVector()[0];
+    		Scintillator* topScint = trgPlaneVect[0]->GetPlane(0)->GetScintillator(topScintNo);
+    		Scintillator* bottomScint = trgPlaneVect[1]->GetPlane(0)->GetScintillator(bottomScintNo);
+    		CreateTrackBox(topScint,bottomScint);*/
+
       std::cout << "=================== YES ===================================" << std::endl;
 
       setup->SetEventDetected("GLASS",evNo);
@@ -80,6 +122,13 @@ public:
       if(setup->EventDetected())
 #endif
       {
+    	  //Creating an imaginary box using top and bottom fired scintillators
+    	      		int topScintNo = trgPlaneVect[0]->GetPlane(0)->GetFiredStripsVector()[0];
+    	      		int bottomScintNo = trgPlaneVect[1]->GetPlane(0)->GetFiredStripsVector()[0];
+    	      		Scintillator* topScint = trgPlaneVect[0]->GetPlane(0)->GetScintillator(topScintNo);
+    	      		Scintillator* bottomScint = trgPlaneVect[1]->GetPlane(0)->GetScintillator(bottomScintNo);
+    	      		CreateTrackBox(topScint,bottomScint);
+
     	  evCount++;
     	  std::cout<<"Genuine event no w.r.t Full Setup : " << evCount << std::endl;
 #ifdef ACCUMULATE_TRACK
@@ -121,7 +170,14 @@ public:
         tempVect.push_back(temp);
       }
 
-
+      //Validation using TrackBox algorithm
+      /*bool valid = Validate(tempVect);
+      if (valid) {
+        std::cout << "Found Valid Track for Event No : " << evNo << std::endl;
+        countValid++;
+      }
+*/
+      //Validation using intersection algorithm
       //Code block for Track Validation
       //Coordinates c;
 
@@ -132,15 +188,17 @@ public:
       poiVect.push_back(c.GetPOI(trgPlaneVect[1],true));
       int realNo = 10000, calcNo = 10000;
       bool valid = Validate(poiVect,realNo,calcNo);
-      std::cout << "Validity : " << valid << std::endl;
-      std::cout<<"-------------- Event No : " << evNo << "-------------------"<<std::endl;
+      //std::cout << "Validity : " << valid << std::endl;
+      //std::cout<<"-------------- Event No : " << evNo << "-------------------"<<std::endl;
       if (valid){
     	  std::cout<<"Found Valid Track for Event No : " << evNo << std::endl;
         countValid++;
       }
 
 
+
       // Displaying all illuminated pixel
+      if(valid){
       for (int i = 0; i < hittedPixelVector.size(); i++)
         Tracking::Singleton::instance()->AddElement(hittedPixelVector[i]->GetEveGeoShape());
 
@@ -158,6 +216,7 @@ public:
 #ifdef ANG_DIST
       angHist->Fill(l.CalculateAngle(temp1, temp));
 #endif
+      }
 
       //sleep(fDelay);
       bool skipDelay = true;

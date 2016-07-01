@@ -122,6 +122,8 @@ public:
 
           this->vec[0] = dx + (std::cos(dt) * x - std::sin(dt) * y);
           this->vec[1] = dy + (std::sin(dt) * x + std::cos(dt) * y);
+//          this->vec[0] += dy;
+//          this->vec[1] += dx;
 
 
         }

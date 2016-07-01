@@ -45,6 +45,7 @@ Scintillator::Scintillator(int moduleId, double length, double breadth,double he
   std::stringstream ss;
   ss << "Module" << fModuleId <<"_LE_CH" << fScintId;
   fName = ss.str();
+  FillVerticesVector();
 }
 
 Scintillator::~Scintillator() {
