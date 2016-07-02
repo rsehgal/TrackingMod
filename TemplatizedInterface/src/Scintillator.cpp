@@ -58,13 +58,13 @@ TGeoBBox* Scintillator::GetScintShape(){
   }
 
 #ifndef USE_EVE
-
+#if 0
 void Scintillator::CreateTGeoVolume(){
   fTGeoVolume = v.CreateTGeoVolume(fName.c_str(),new TGeoBBox(fName.c_str(), fLength / 2., fBreadth / 2., fHeight / 2.));
   fTGeoVolume->SetVisibility(kTRUE);
   fTGeoVolume->SetLineColor(kGreen);
 }
-
+#endif
 #endif
 #endif
 } /* namespace Tomography */

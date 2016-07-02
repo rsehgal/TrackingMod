@@ -4,7 +4,7 @@
 #include "TriggeringPlane.h"
 #include <vector>
 #include <iostream>
-#include "VisualizationHelper.h"
+//#include "VisualizationHelper.h"
 #include "SetupManager.h"
 #include <TApplication.h>
 #include "base/Vector3D.h"

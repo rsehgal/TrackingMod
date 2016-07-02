@@ -138,14 +138,15 @@ public:
   std::vector<Tracking::Vector3D<double>> GetVertices(){
     return fVerticesVector;
   }
-/*
+
+#if 0
 #ifndef USE_EVE
   void CreateTGeoVolume();
 #else
 
   //This block is for EVE
 #endif
-*/
+#endif
 
 };
 

@@ -11,12 +11,12 @@
 #include "TriggeringPlane.h"
 #include <vector>
 #include <iostream>
-#include "VisualizationHelper.h"
+//#include "VisualizationHelper.h"
 #include "SetupManager.h"
-#include <TApplication.h>
-#include "Update.h"
+//#include <TApplication.h>
+//#include "Update.h"
 #include "Tree.h"
- #include "Statistics.h"
+// #include "Statistics.h"
 typedef Tomography::Properties Detector;
 using namespace Tomography;
 

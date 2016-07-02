@@ -16,7 +16,7 @@
 #include <TCanvas.h>
 typedef Tomography::Properties Detector;
 using namespace Tomography;
-int main() {
+int main(int argc, char *argv[]) {
 
   TApplication *fApp = new TApplication("Test", NULL, NULL);
   TCanvas *c1 = new TCanvas("c2", "Timing-Info", 200, 10, 700, 500);
@@ -31,7 +31,9 @@ int main() {
   //Tracking::Tree tr("6702.root", "BSC_DATA_TREE", 0);
 
 //  Tracking::Tree::instance()->ReadTree("6702.root", "BSC_DATA_TREE", 0);
-  Tracking::Tree::instance()->ReadTree("6853.root", "BSC_DATA_TREE", 0);
+  std::string temp_str = std::to_string(atoi(argv[1]));
+  temp_str += ".root";
+  Tracking::Tree::instance()->ReadTree(temp_str.c_str(), "BSC_DATA_TREE", 0);
   int numOfEvents = Tracking::Tree::instance()->GetNumOfEvents();
   std::cout << "Total Num of Events : " << numOfEvents << std::endl;
   Detector *trigger1 = new Tomography::TriggeringPlane(2, "UpperPlane", 120, -1);

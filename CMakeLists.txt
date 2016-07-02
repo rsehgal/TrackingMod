@@ -46,7 +46,7 @@ endif(CCACHE_FOUND)
 
 option(VISUALIZATION "Enable or Disable Visualization" ON)
 option(OPENGL "Use OpenGL for Visualization" OFF)
-option(EVE "Use Eve for Visualization" ON)
+option(EVE "Use Eve for Visualization" OFF)
 option(UNITTEST "Enable various Unit tests" ON)
 option(ROOT "Enable ROOT" ON)
 option(EFF_AND "Efficiency will be calculated only if both plane fires" ON)
@@ -114,6 +114,10 @@ ${ROOT_LIBRARIES}
 if(EVE)
 set(EXTERNAL_LIBS ${EXTERNAL_LIBS}
 Eve Geom
+)
+else()
+set(EXTERNAL_LIBS ${EXTERNAL_LIBS}
+Geom
 )
 endif(EVE)
 
@@ -190,8 +194,17 @@ endmacro()
 SET(TESTSDIR ${TESTSDIR}
 ${CMAKE_SOURCE_DIR}/CoordinateGenerator/test
 ${CMAKE_SOURCE_DIR}/TemplatizedInterface/test
+${CMAKE_SOURCE_DIR}/TemplatizedInterface/test/core
+${CMAKE_SOURCE_DIR}/TemplatizedInterface/test/plots
 #${CMAKE_SOURCE_DIR}/test
 )
+
+if(EVE)
+SET(TESTSDIR ${TESTSDIR}
+${CMAKE_SOURCE_DIR}/TemplatizedInterface/test/visualization
+)
+endif(EVE)
+
 #COLLECTING ALL TEST FILES
 macro(collect_tests TESTS)
   foreach(TEST ${TESTS})

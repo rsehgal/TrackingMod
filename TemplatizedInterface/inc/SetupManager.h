@@ -20,7 +20,7 @@
 //#include "SetupManager.h"
 //include "Eve/Singleton.h"
 #include "HittedPixel.h"
-#include "VisualizationHelper.h"
+//#include "VisualizationHelper.h"
 #include "TThread.h"
 #include "Tree.h"
 /*
