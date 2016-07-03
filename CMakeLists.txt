@@ -158,7 +158,11 @@ ${CMAKE_SOURCE_DIR}/inc
 ${CMAKE_SOURCE_DIR}
 )
 
-
+if(EVE)
+set(INCLUDES ${INCLUDES}
+${CMAKE_SOURCE_DIR}/TemplatizedInterface/inc/visualization
+)
+endif(EVE)
 
 if(VISUALIZATION)
 set(INCLUDES ${INCLUDES} ${CMAKE_SOURCE_DIR}/visualizer)
