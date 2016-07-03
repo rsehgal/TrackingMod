@@ -3,7 +3,7 @@
 #include "base/Global.h"
 //#include "HittedPixel.h"
 #include "TGeoBBox.h"
-#include "visualizer/Eve/Singleton.h"
+//#include "visualizer/Eve/Singleton.h"
 //#include "VisualizationHelper.h"
 #include "TThread.h"
 //#include "TEveStraightLineSet.h"
@@ -13,7 +13,7 @@
 #include "base/Global.h"
 #include "Properties.h"
 #include "SetupManager.h"
-#include "visualizer/Eve/Singleton.h"
+//#include "visualizer/Eve/Singleton.h"
 #include <TCanvas.h>
 #include <TH1F.h>
 
