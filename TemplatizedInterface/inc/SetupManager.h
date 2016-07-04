@@ -158,6 +158,7 @@ typedef Tomography::Properties Detector;
 
         double GetEfficiency(){return fEfficiency;};
         bool EventDetected(){return fEventDetected;}
+        void GetHitPlot(std::string detType);
 
         void SetEventDetected(std::string detType, int evNo){
         	fEventDetected = false;
