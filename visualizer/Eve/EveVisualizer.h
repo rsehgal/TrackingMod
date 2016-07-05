@@ -40,6 +40,7 @@ public:
   void AddLine(Vector3D<double>p1, Vector3D<double>p2);
   static void Show();
   static void UpdateScene();
+  void AddMarkers(Vector3D<double> pt);
 
 };
 

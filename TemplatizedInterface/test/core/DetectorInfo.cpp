@@ -84,7 +84,7 @@ int main(int argc, char *argv[]) {
     std::cout << "" << std::endl;
   }
 
-  h2d->Draw("lego2");
+  h2d->Draw();
   // h2d->Draw();
   c1->Modified();
   c1->Update();

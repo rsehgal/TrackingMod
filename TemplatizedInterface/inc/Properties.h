@@ -155,6 +155,12 @@ public:
     }
   double GetEfficiency(){return fEfficiency;}
 
+  Tracking::Vector3D<double> Random(){
+	  return Tracking::Vector3D<double>(Tracking::Global::GenRandomDet(-fLength/2.,fLength/2.),
+			                            Tracking::Global::GenRandomDet(-fLength/2.,fLength/2.),
+										fZPos);
+  }
+
 };
 
 } /* namespace Tomography */

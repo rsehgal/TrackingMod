@@ -29,6 +29,19 @@ public:
 
 	}
 
+  Paddle(int moduleId, std::string detName, double zPos, int startId , double length, double breadth, double height) {
+  	  SetDetectorType("PADDLE");
+  	  Scintillator::SetStartingId(startId);
+  	  int numOfPlanes = 1;
+  	  SetNumOfPlanes(numOfPlanes);
+  	  SetName(detName);
+  	  SetZPos(zPos);
+  	  SetLBH(length,breadth,height);
+  	  Initialize();
+  	  InsertPlane(new ScintillatorPlane(moduleId,1,zPos,GetLength(),GetBreadth(),GetHeight(),0.,false));
+
+  	}
+
   Paddle();
   static void SetClusterSize(int clusterSize){fClusterSize = clusterSize;}
   static int GetClusterSize(){return fClusterSize;}

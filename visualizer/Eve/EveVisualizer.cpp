@@ -24,12 +24,24 @@ void EveVisualizer::AddLine(Vector3D<double>p1, Vector3D<double>p2){
   ls = new TEveStraightLineSet();
   ls->AddLine( p1.x(),p1.y(),p1.z(),
 		       p2.x(),p2.y(),p2.z());
-  ls->SetMarkerSize(1.5);
-  ls->SetMarkerStyle(4);
+  AddMarkers(p1);
+  AddMarkers(p2);
+  //ls->SetMarkerSize(1.5);
+  //ls->SetMarkerStyle(4);
   Singleton::instance()->AddLineSet(ls);
   //gEve->AddElement(ls);
   //Singleton::instance()->AddElement(ls);
 }
+
+void EveVisualizer::AddMarkers(Vector3D<double> pt) {
+     /*for (int i = 0; i < c.GetLength(); i++) {
+       ls->AddMarker(pt.x(), pt.y(), pt.z());
+     }*/
+	ls->AddMarker(pt.x(), pt.y(), pt.z());
+     ls->SetMarkerSize(1.3);
+     ls->SetMarkerStyle(4);
+   }
+
 
 EveVisualizer::EveVisualizer(){
   //fApp = new TApplication("VecGeom Visualizer", NULL, NULL);

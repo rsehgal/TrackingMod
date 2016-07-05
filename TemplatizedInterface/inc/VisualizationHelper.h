@@ -13,6 +13,7 @@
 #include "Eve/EveVisualizer.h"
 #include "TEveManager.h"
 #include "TEveGeoShape.h"
+#include "TEveStraightLineSet.h"
 #include <TGeoMatrix.h>
 typedef Tracking::EveVisualizer TomographyVisualizer;
 #else
@@ -25,6 +26,7 @@ typedef Tracking::Visualizer TomographyVisualizer;
 #include "TApplication.h"
 #include "GlassRpc.h"
 #include "Properties.h"
+#include "Track.h"
 
 typedef Tomography::Properties Detector;
 namespace Tomography{
@@ -67,6 +69,14 @@ public:
         }
 #else
 #endif
+  }
+
+  void Register(Track *t){
+	  fVis.AddLine(t->GetP1(),t->GetP2());
+  }
+
+  void RegisterLine(Tracking::Vector3D<double> p1, Tracking::Vector3D<double> p2){
+	  fVis.AddLine(p1,p2);
   }
 
   void Show(){

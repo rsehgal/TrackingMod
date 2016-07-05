@@ -69,7 +69,8 @@ public:
 		vec[1]=y;
 		vec[2]=z;
 	}
-
+	TRACKING_INLINE
+	Type* GetArr(){return vec;}
 	TRACKING_INLINE
 	void SetX(Type x){vec[0]=x;}
 	TRACKING_INLINE
@@ -102,6 +103,12 @@ public:
 	Type Mag()  {
 	    return std::sqrt(Mag2());
 	  }
+
+	TRACKING_INLINE
+	Vector3D<Type> Unit(){
+		return Vector3D<Type>(this->x()/this->Mag(), this->y()/this->Mag(), this->z()/this->Mag());
+	}
+
 	TRACKING_INLINE
 	void Print(){
 		std::cout<<"("<<vec[0]<<","<<vec[1]<<","<<vec[2]<<")"<<std::endl;

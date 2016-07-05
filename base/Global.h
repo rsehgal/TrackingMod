@@ -25,6 +25,15 @@ typedef std::vector<Module> ModuleVector;
 
 #define Precision double
 #define TRACKING_INLINE inline
+
+class Global{
+public:
+	Global(){}
+static double GenRandomDet(double min, double max) {
+  return (rand() / (static_cast<double>(RAND_MAX) + 1.0)) * (max - min) + min;
+}
+};
+
 }//end of Tracking namespace
 
 

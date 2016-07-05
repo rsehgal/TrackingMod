@@ -8,6 +8,7 @@
 #include "Imaging.h"
 #include "base/Vector3D.h"
 #include "base/Global.h"
+#include <iostream>
 using namespace Tracking;
 
 int main() {
@@ -23,5 +24,9 @@ int main() {
   Tracking::Vector3D<Precision> pocaPt = im.POCA(p, u, q, v, t1, t2);
 
   pocaPt.Print();
+
+  std::cout<<"--------------------"<<std::endl;
+  Tracking::Vector3D<double> tpt(1.,2.,3.);
+  tpt.Unit().Print();
   return 0;
 }
