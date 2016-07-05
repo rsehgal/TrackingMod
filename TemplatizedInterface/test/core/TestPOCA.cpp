@@ -50,22 +50,38 @@ int main(){
     setup->Register(paddle);
 
     TGeoShape *scatterer = new TGeoBBox("TestScatterer", 5.,5.,5.);
-    int numOfTracks = 1;
+    int numOfTracks = 100;
     Tomography::SimulateScatteredTracks s(scatterer,"GLASS");
-    while(numOfTracks){
+    std::vector<Track*> incomingTracksVector;
+    std::vector<Track*> outgoingTracksVector;
+
+    for(int trkNo = 0 ; trkNo < numOfTracks ; trkNo++){
     s.GenerateIncomingTrack();
     s.GenerateOutgoingTrack();
     v.Register(s.GetIncomingTrack());
+    incomingTracksVector.push_back(s.GetIncomingTrack());
+    outgoingTracksVector.push_back(s.GetOutgoingTrack());
 
     v.RegisterLine(s.GetIncomingTrack()->GetP2(),s.GetScatteringPoint());
     v.RegisterLine(s.GetScatteringPoint(),s.GetOutgoingTrack()->GetP1());
 
     v.Register(s.GetOutgoingTrack());
-    numOfTracks--;
+    //numOfTracks--;
     }
 
 
     //v.RegisterLine(hitVector[0], hitVector[hitVector.size()-1]);
+
+
+    //Printing Coordinates of incoming and outgoing tracks
+    for(int i=0 ; i < numOfTracks ; i++){
+    	std::cout<<"P1 for IncomingTrack : "; incomingTracksVector[i]->GetP1().Print();
+    	std::cout<<"P2 for IncomingTrack : "; incomingTracksVector[i]->GetP2().Print();
+        std::cout << "P1 for OutgoingTrack : "; outgoingTracksVector[i]->GetP1().Print();
+        std::cout << "P2 for OutgoingTrack : "; outgoingTracksVector[i]->GetP2().Print();
+        std::cout<<"---------------------------------------------" << std::endl;
+    }
+
 	v.Show();
 	gEve->DoRedraw3D();
 

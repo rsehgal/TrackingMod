@@ -48,7 +48,7 @@ public:
   Track* GetIncomingTrack(){return fIncomingTrack;}
   Track* GetOutgoingTrack(){return fOutgoingTrack;}
   Tracking::Vector3D<double> GetScatteringPoint(){return fPOI;}
-  void SetPenetrationDepth(double val){fPenetrationDepth = val;}
+  void SetPenetrationDepth(double val){fPenetrationDepth=val;}
 };
 
 } /* namespace Tomography */
