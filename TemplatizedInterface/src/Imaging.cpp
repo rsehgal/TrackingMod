@@ -36,13 +36,13 @@ Vec_t ImageReconstruction::POCA(Vec_t p, Vec_t u, Vec_t q, Vec_t v, Vec_t &p1, V
 	Precision c = (-uDotv*uDotv + vMag2*uMag2);
 	Precision d = (-vMag2*b)/(uDotv*c);
 	s = a+d;
-	std::cout<<"B1 : "<<b1<<" : B2 : "<<b2<<std::endl;
-	std::cout<<"A : "<<a<<" : B : "<<b<<" : C : "<<c<<" : D : "<<d<<std::endl;
-	std::cout<<"S : "<<s<<std::endl;
+	// std::cout<<"B1 : "<<b1<<" : B2 : "<<b2<<std::endl;
+	// std::cout<<"A : "<<a<<" : B : "<<b<<" : C : "<<c<<" : D : "<<d<<std::endl;
+	// std::cout<<"S : "<<s<<std::endl;
 
 
 	t = (uDotv*(pDotu-qDotu) - uMag2*(pDotv-qDotv))/(uDotv*uDotv - uMag2*vMag2);
-	std::cout<<"T : "<<t<<std::endl;
+	// std::cout<<"T : "<<t<<std::endl;
 
 	//Vec_t
 	p1 = p + u*s;

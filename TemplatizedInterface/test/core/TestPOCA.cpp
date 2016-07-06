@@ -51,10 +51,10 @@ int main(){
     setup->Register(paddle);
 
     TGeoShape *scatterer = new TGeoBBox("TestScatterer", 5.,5.,5.);
-    int numOfTracks = 10;
+    int numOfTracks = 100;
     Tomography::SimulateScatteredTracks s(scatterer,"GLASS");
-    std::vector<Track*> incomingTracksVector;
-    std::vector<Track*> outgoingTracksVector;
+    std::vector<Track> incomingTracksVector;
+    std::vector<Track> outgoingTracksVector;
 
     incomingTracksVector.reserve(numOfTracks);
     outgoingTracksVector.reserve(numOfTracks);
@@ -65,14 +65,24 @@ int main(){
     std::cout<<"--- Scattering point : " ; s.GetScatteringPoint().Print();
     v.Register(s.GetIncomingTrack());
 
-    incomingTracksVector.push_back(s.GetIncomingTrack());
-    outgoingTracksVector.push_back(s.GetOutgoingTrack());
+    Track incoming = *s.GetIncomingTrack();
+    Track outgoing = *s.GetOutgoingTrack();
+    incomingTracksVector.push_back(incoming);
+    outgoingTracksVector.push_back(outgoing);
+/*
+std::cout<<"------------------------------------" << std::endl;
 
+    std::cout<<"Current Incoming track : ";
+    incomingTracksVector[trkNo].GetP1().Print() ;
+    incomingTracksVector[trkNo].GetP2().Print();
 
-    std::cout<<"Incoming track : ";
-    incomingTracksVector[trkNo]->GetP1().Print() ;
-    outgoingTracksVector[trkNo]->GetP1().Print();
-
+    if(trkNo >0){
+        std::cout<<"Previous Incoming track : ";
+    incomingTracksVector[trkNo-1].GetP1().Print() ;
+    incomingTracksVector[trkNo-1].GetP2().Print();
+    }
+std::cout<<"------------------------------------" << std::endl;
+*/
     v.RegisterLine(s.GetIncomingTrack()->GetP2(),s.GetScatteringPoint());
     v.RegisterLine(s.GetScatteringPoint(),s.GetOutgoingTrack()->GetP1());
     v.Register(s.GetOutgoingTrack());
@@ -85,27 +95,31 @@ int main(){
 
     Tracking::ImageReconstruction im;
     Tracking::Vector3D<double> pocaPt;
-    double error = 1e-13;
+    double error = 1e-1;
     double minz=0., maxz=0.;
 
-    incomingTracksVector[0]->GetP1().Print();
-    incomingTracksVector[1]->GetP1().Print();
+    incomingTracksVector[0].GetP1().Print();
+    incomingTracksVector[1].GetP1().Print();
 
 
     //Printing Coordinates of incoming and outgoing tracks
-/*
+
     int mismatchCount = 0;
     for(int i=0 ; i < numOfTracks ; i++){
-    	std::cout<<"P1 for IncomingTrack : "; incomingTracksVector[i]->GetP1().Print();
-    	std::cout<<"P2 for IncomingTrack : "; incomingTracksVector[i]->GetP2().Print();
-        std::cout << "P1 for OutgoingTrack : "; outgoingTracksVector[i]->GetP1().Print();
-        std::cout << "P2 for OutgoingTrack : "; outgoingTracksVector[i]->GetP2().Print();
+    	std::cout<<"P1 for IncomingTrack : "; incomingTracksVector[i].GetP1().Print();
+    	std::cout<<"P2 for IncomingTrack : "; incomingTracksVector[i].GetP2().Print();
+        std::cout << "P1 for OutgoingTrack : "; outgoingTracksVector[i].GetP1().Print();
+        std::cout << "P2 for OutgoingTrack : "; outgoingTracksVector[i].GetP2().Print();
+        std::cout<< "Scattering Point : "; s.GetScatteringPoint().Print();
+        
         std::cout<<"---------------------------------------------" << std::endl;
         Tracking::Vector3D<double> p1(0.,0.,0.), q1(0.,0.,0.);
-        pocaPt = im.POCA(incomingTracksVector[i]->GetP1(),
-        		         incomingTracksVector[i]->GetDirCosine(),
-						 outgoingTracksVector[i]->GetP1(),
-						 outgoingTracksVector[i]->GetDirCosine(),p1,q1);
+        pocaPt = im.POCA(incomingTracksVector[i].GetP1(),
+        		         incomingTracksVector[i].GetDirCosine(),
+						 outgoingTracksVector[i].GetP1(),
+						 outgoingTracksVector[i].GetDirCosine(),p1,q1);
+
+        std::cout<< "POCA point : "; pocaPt.Print();
 
         Tracking::Vector3D<double> diff = pocaPt - s.GetScatteringPoint();
 
@@ -113,7 +127,7 @@ int main(){
         	mismatchCount++;
         }
 
-        std::cout<<"POCA POINT : "; pocaPt.Print();
+        // std::cout<<"POCA POINT : "; pocaPt.Print();
 
         if(pocaPt.z() < minz)
         	minz = pocaPt.z();
@@ -124,7 +138,7 @@ int main(){
 
     std::cout<<"Total Num of mismatched Points : " << mismatchCount << std::endl;
     std::cout<<"MinZ : "<< minz <<" : MaxZ : "<< maxz << std::endl;
-*/
+
 
 	v.Show();
 	gEve->DoRedraw3D();
