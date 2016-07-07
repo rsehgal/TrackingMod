@@ -10,18 +10,22 @@
 #include "Properties.h"
 #include "GlassRpc.h"
 #include "SetupManager.h"
-#include "VisualizationHelper.h"
 #include <TApplication.h>
 #include "Track.h"
 #include <TGeoShape.h>
 #include <TGeoBBox.h>
 #include "Paddle.h"
 #include "Imaging.h"
+#ifdef USE_EVE
+#include "VisualizationHelper.h"
+#endif
 typedef Tomography::Properties Detector;
 using namespace Tomography;
 int main(){
 	TApplication *fApp = new TApplication("Test", NULL, NULL);
+#ifdef USE_EVE
 	Tomography::VisualizationHelper v;
+#endif
 	Detector *rpc0 = new GlassRpc(4, "FirstGlassRpc", 60, 31);
 	Detector *rpc1 = new GlassRpc(2, "SecondGlassRpc", 30, 31);
 	Detector *rpc2 = new GlassRpc(4, "ThirdGlassRpc", -30, 31);
@@ -31,23 +35,10 @@ int main(){
 	setup->Register(rpc1);
 	setup->Register(rpc2);
 	setup->Register(rpc3);
-	v.Register(rpc0);
-	v.Register(rpc1);
-	v.Register(rpc2);
-	v.Register(rpc3);
-
-
-/*
-	Tomography::SimulateScatteredTracks s("GLASS");
-	std::vector<Tracking::Vector3D<double>> hitVector = s.GetHitVector();
-	Track t(hitVector[0], hitVector[hitVector.size()-1]);
-	v.Register(&t);
-*/
 
    // Creating and Registering Paddle
     Detector *paddle = new Paddle(2, "Paddle", 0, 15, 10., 10., 10.);
     paddle->GetPlane(0)->GetScintVector()[0]->SetPlacedLocation(Tracking::Vector3D<double>(0., 0., 0.));
-    v.Register(paddle);
     setup->Register(paddle);
 
     TGeoShape *scatterer = new TGeoBBox("TestScatterer", 5.,5.,5.);
@@ -55,38 +46,39 @@ int main(){
     Tomography::SimulateScatteredTracks s(scatterer,"GLASS");
     std::vector<Track> incomingTracksVector;
     std::vector<Track> outgoingTracksVector;
+    std::vector<Tracking::Vector3D<double>> poiVect;
 
     incomingTracksVector.reserve(numOfTracks);
     outgoingTracksVector.reserve(numOfTracks);
+
+#ifdef USE_EVE
+	v.Register(rpc0);
+	v.Register(rpc1);
+	v.Register(rpc2);
+	v.Register(rpc3);
+	v.Register(paddle);
+
+#endif
 
     for(int trkNo = 0 ; trkNo < numOfTracks ; trkNo++){
     s.GenerateIncomingTrack();
     s.GenerateOutgoingTrack();
     std::cout<<"--- Scattering point : " ; s.GetScatteringPoint().Print();
-    v.Register(s.GetIncomingTrack());
+
 
     Track incoming = *s.GetIncomingTrack();
     Track outgoing = *s.GetOutgoingTrack();
     incomingTracksVector.push_back(incoming);
     outgoingTracksVector.push_back(outgoing);
-/*
-std::cout<<"------------------------------------" << std::endl;
+    poiVect.push_back(s.GetScatteringPoint());
 
-    std::cout<<"Current Incoming track : ";
-    incomingTracksVector[trkNo].GetP1().Print() ;
-    incomingTracksVector[trkNo].GetP2().Print();
 
-    if(trkNo >0){
-        std::cout<<"Previous Incoming track : ";
-    incomingTracksVector[trkNo-1].GetP1().Print() ;
-    incomingTracksVector[trkNo-1].GetP2().Print();
-    }
-std::cout<<"------------------------------------" << std::endl;
-*/
-    v.RegisterLine(s.GetIncomingTrack()->GetP2(),s.GetScatteringPoint());
-    v.RegisterLine(s.GetScatteringPoint(),s.GetOutgoingTrack()->GetP1());
+#ifdef USE_EVE
+    v.Register(s.GetIncomingTrack());
+    v.RegisterLine(s.GetIncomingTrack()->GetP2(), s.GetScatteringPoint());
+    v.RegisterLine(s.GetScatteringPoint(), s.GetOutgoingTrack()->GetP1());
     v.Register(s.GetOutgoingTrack());
-    //numOfTracks--;
+#endif
     }
 
 
@@ -95,7 +87,7 @@ std::cout<<"------------------------------------" << std::endl;
 
     Tracking::ImageReconstruction im;
     Tracking::Vector3D<double> pocaPt;
-    double error = 1e-1;
+    double error = 1e-11;
     double minz=0., maxz=0.;
 
     incomingTracksVector[0].GetP1().Print();
@@ -110,7 +102,7 @@ std::cout<<"------------------------------------" << std::endl;
     	std::cout<<"P2 for IncomingTrack : "; incomingTracksVector[i].GetP2().Print();
         std::cout << "P1 for OutgoingTrack : "; outgoingTracksVector[i].GetP1().Print();
         std::cout << "P2 for OutgoingTrack : "; outgoingTracksVector[i].GetP2().Print();
-        std::cout<< "Scattering Point : "; s.GetScatteringPoint().Print();
+        std::cout<< "Scattering Point : "; poiVect[i].Print();//s.GetScatteringPoint().Print();
         
         std::cout<<"---------------------------------------------" << std::endl;
         Tracking::Vector3D<double> p1(0.,0.,0.), q1(0.,0.,0.);
@@ -121,15 +113,13 @@ std::cout<<"------------------------------------" << std::endl;
 
         std::cout<< "POCA point : "; pocaPt.Print();
 
-        Tracking::Vector3D<double> diff = pocaPt - s.GetScatteringPoint();
+        Tracking::Vector3D<double> diff = pocaPt - poiVect[i];
 
         if(std::fabs(diff.x()) > error || std::fabs(diff.y()) > error || std::fabs(diff.z()) > error ){
         	mismatchCount++;
         }
 
-        // std::cout<<"POCA POINT : "; pocaPt.Print();
-
-        if(pocaPt.z() < minz)
+              if(pocaPt.z() < minz)
         	minz = pocaPt.z();
         if(pocaPt.z() > maxz)
         	maxz = pocaPt.z();
@@ -138,10 +128,12 @@ std::cout<<"------------------------------------" << std::endl;
 
     std::cout<<"Total Num of mismatched Points : " << mismatchCount << std::endl;
     std::cout<<"MinZ : "<< minz <<" : MaxZ : "<< maxz << std::endl;
+    std::cout<<"Estimated Target Thickness : " << (maxz - minz) << std::endl;
 
-
+#ifdef USE_EVE
 	v.Show();
 	gEve->DoRedraw3D();
+#endif
 
 	fApp->Run();
 
