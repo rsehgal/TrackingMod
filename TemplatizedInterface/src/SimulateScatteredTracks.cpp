@@ -32,7 +32,7 @@ SimulateScatteredTracks::SimulateScatteredTracks(TGeoShape *scatterer, std::stri
   fDetectorVect = setup->GetDetectorVector(detType);
   fIncomingTrack = new Track();
   fOutgoingTrack = new Track();
-  fPenetrationDepth = 0.022;
+  fPenetrationDepth = 0.02;
   //GenerateIncomingTrack();
   //GenerateOutgoingTrack();
 /*

@@ -78,6 +78,9 @@ public:
   void RegisterLine(Tracking::Vector3D<double> p1, Tracking::Vector3D<double> p2){
 	  fVis.AddLine(p1,p2);
   }
+  void Register(Tracking::Vector3D<double> pt){
+	  fVis.AddMarkers(pt);
+  }
 
   void Show(){
 #ifdef USE_EVE

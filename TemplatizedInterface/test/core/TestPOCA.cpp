@@ -14,6 +14,7 @@
 #include "Track.h"
 #include <TGeoShape.h>
 #include <TGeoBBox.h>
+#include <TGeoSphere.h>
 #include "Paddle.h"
 #include "Imaging.h"
 #ifdef USE_EVE
@@ -21,7 +22,10 @@
 #endif
 typedef Tomography::Properties Detector;
 using namespace Tomography;
-int main(){
+int main(int argc, char *argv[]){
+	int numTracks = atoi(argv[1]);
+	//double penetration = (double)atoi(argv[2]);
+	//std::cout<<"Penetration Level is set to : " << penetration << std::endl;
 	TApplication *fApp = new TApplication("Test", NULL, NULL);
 #ifdef USE_EVE
 	Tomography::VisualizationHelper v;
@@ -42,8 +46,13 @@ int main(){
     setup->Register(paddle);
 
     TGeoShape *scatterer = new TGeoBBox("TestScatterer", 5.,5.,5.);
-    int numOfTracks = 100;
+    //TGeoShape *scatterer = new TGeoSphere("TestScatterer", 0.,5.,0.,180.,0.,360.);
+    int numOfTracks = numTracks;
     Tomography::SimulateScatteredTracks s(scatterer,"GLASS");
+    //Default penetration depth is set to 0.02
+    s.SetPenetrationDepth(0.05);
+    //s.SetPenetrationDepth(penetration);
+    //std::cout<<"Penetration Level is set to : " << penetration << std::endl;
     std::vector<Track> incomingTracksVector;
     std::vector<Track> outgoingTracksVector;
     std::vector<Tracking::Vector3D<double>> poiVect;
@@ -74,10 +83,11 @@ int main(){
 
 
 #ifdef USE_EVE
-    v.Register(s.GetIncomingTrack());
+    /*v.Register(s.GetIncomingTrack());
     v.RegisterLine(s.GetIncomingTrack()->GetP2(), s.GetScatteringPoint());
     v.RegisterLine(s.GetScatteringPoint(), s.GetOutgoingTrack()->GetP1());
-    v.Register(s.GetOutgoingTrack());
+    v.Register(s.GetOutgoingTrack());*/
+
 #endif
     }
 
@@ -112,6 +122,10 @@ int main(){
 						 outgoingTracksVector[i].GetDirCosine(),p1,q1);
 
         std::cout<< "POCA point : "; pocaPt.Print();
+#ifdef USE_EVE
+        v.RegisterLine(pocaPt,pocaPt);
+        v.Register(pocaPt);
+#endif
 
         Tracking::Vector3D<double> diff = pocaPt - poiVect[i];
 

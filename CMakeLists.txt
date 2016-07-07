@@ -54,7 +54,9 @@ option(EFF_SETUP_AND "Efficiency w.r.t full Setup, i.e all the detector fires fo
 option(CLUSTER_SIZE "Allow to restrict the Cluster Size cut, default value will be 2 if switched ON." ON)
 option(ACCUMULATE_TRACK "All the tracks will be displayed" OFF)
 option(ANG_DIST "To calculate the angular distribution from tracks" OFF)
+option(CGAL "CGAL library for geometrical algorithms" OFF)
 
+find_package(CGAL REQUIRED)
 
 
 if(ANG_DIST)
