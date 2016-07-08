@@ -56,7 +56,7 @@ option(ACCUMULATE_TRACK "All the tracks will be displayed" OFF)
 option(ANG_DIST "To calculate the angular distribution from tracks" OFF)
 option(CGAL "CGAL library for geometrical algorithms" OFF)
 
-find_package(CGAL REQUIRED)
+#find_package(CGAL REQUIRED)
 
 
 if(ANG_DIST)
@@ -221,8 +221,8 @@ endmacro()
 macro(build_executables EXECUTABLES)
   foreach(EXECUTABLE ${EXECUTABLES})
     get_filename_component(TARGET_NAME ${EXECUTABLE} NAME_WE)
-    add_executable(${TARGET_NAME} ${EXECUTABLE} ${sources} ${headers})
-    target_link_libraries(${TARGET_NAME} ${EXTERNAL_LIBS})
+    add_executable(${TARGET_NAME} ${EXECUTABLE} ${headers})
+    target_link_libraries(${TARGET_NAME} ${TOMOLIB})
 #  if(EVE)
 #    target_link_libraries(${TARGET_NAME} ${ROOT_LIBRARIES} Geom Eve)
 #  else()
@@ -236,8 +236,19 @@ include_dirs("${INCLUDES}")
 collect_headers("${INCLUDES}")
 collect_sources("${SOURCES}")
 collect_tests("${TESTSDIR}")
-build_executables("${tests}")
 
+message(STATUS "--------- Following source file will be use for the creation of Shared library -----------")
+message(STATUS ${sources})
+message(STATUS "------------------------------------------------------------------------------------------")
+add_library(Tomo SHARED ${sources})
+target_link_libraries(Tomo ${EXTERNAL_LIBS})
+set(TOMOLIB ${TOMOLIB}
+Tomo
+)
+
+link_directories(${CMAKE_SOURCE_DIR}/build)
+
+build_executables("${tests}")
 message(STATUS ${headers})
 message(STATUS "====================================================")
 message(STATUS ${tests})
