@@ -17,6 +17,7 @@ public:
   ~MyPhysics();
   void ConstructParticle();
   void ConstructProcess();
+  void ConstructEM();
 };
 
 #endif /* SIMULATIONS_MST_INC_MYPHYSICS_H_ */
