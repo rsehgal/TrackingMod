@@ -10,6 +10,7 @@
 #include "G4SystemOfUnits.hh"
 #include "Randomize.hh"
 #include "G4Proton.hh"
+#include "G4Electron.hh"
 
 MyPrimaryGeneratorAction::MyPrimaryGeneratorAction(){}
 MyPrimaryGeneratorAction::~MyPrimaryGeneratorAction(){
@@ -32,12 +33,14 @@ void MyPrimaryGeneratorAction::GeneratePrimaries(G4Event *event){
   fParticleGun->SetParticleEnergy(6.*MeV);
   */
 
-  fParticleGun->SetParticleDefinition(G4Proton::ProtonDefinition());
+  //fParticleGun->SetParticleDefinition(G4Proton::ProtonDefinition());
+  fParticleGun->SetParticleDefinition(G4Electron::ElectronDefinition());
 
   //Set the kinetic energy of the protons to 50 keV
   //and tell the gun to emit them along the x-axis
   fParticleGun->SetParticleEnergy(50.*keV);
-  fParticleGun->SetParticleMomentumDirection(G4ThreeVector(1.0,0,0));
+  fParticleGun->SetParticlePosition(G4ThreeVector(0.,0.,90*cm*0.1));
+  fParticleGun->SetParticleMomentumDirection(G4ThreeVector(1.,0.,-1.));
   fParticleGun->GeneratePrimaryVertex(event);
 
 }

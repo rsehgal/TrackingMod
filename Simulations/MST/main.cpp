@@ -4,6 +4,8 @@
 #include "MyPrimaryGeneratorAction.h"
 #include "MyDetectorConstruction.h"
 #include "QBBC.hh"
+#include "FTFP_BERT.hh"
+#include "MyPhysics.h"
 //#include "QGSP_BIC_EMY.hh"
 /*
 #include "G4UImanager.hh"
@@ -22,8 +24,10 @@ int main(int argc, char *argv[]){
   
 
   G4RunManager *runManager = new G4RunManager;
-  G4VModularPhysicsList *phyList = new QBBC;
-  //G4VUserPhysicsList* physics = new FTFP_BERT();
+  //G4VModularPhysicsList *phyList = new QBBC;
+  //G4VUserPhysicsList* phyList = new FTFP_BERT;
+
+  G4VUserPhysicsList* phyList = new MyPhysics;
 
   //Detector Construction
   runManager->SetUserInitialization(new MyDetectorConstruction());
