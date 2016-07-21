@@ -18,6 +18,12 @@
 #include "G4MuPairProduction.hh"
 #include "G4PhotoElectricEffect.hh"
 #include "G4ProcessManager.hh"
+
+#include "G4eMultipleScattering.hh"
+#include "G4eIonisation.hh"
+#include "G4eBremsstrahlung.hh"
+//#include "PhysListEmStandard.hh"
+#include "G4EmStandardPhysics.hh"
 MyPhysics::MyPhysics() {
   // TODO Auto-generated constructor stub
 }
@@ -39,11 +45,14 @@ void MyPhysics::ConstructParticle(){
 
 void MyPhysics::ConstructProcess(){
   AddTransportation();
+  G4PhysicsListHelper *ph = G4PhysicsListHelper::GetPhysicsListHelper();
+  //(new G4EmStandardPhysics())->ConstructProcess();
   ConstructEM();
 
 }
 
 void MyPhysics::ConstructEM(){
+
   G4PhysicsListHelper *ph = G4PhysicsListHelper::GetPhysicsListHelper();
 
   theParticleIterator->reset();
@@ -52,11 +61,27 @@ void MyPhysics::ConstructEM(){
       G4String particleName = particle->GetParticleName();
       if (particleName == "mu+" || particleName == "mu-") {
         // muon
+        std::cout<<"---- Here ------" << std::endl;
         ph->RegisterProcess(new G4MuMultipleScattering, particle);
+        //std::cout<<"Registered MultipleScattering for : " << particleName << std::endl;
+
         ph->RegisterProcess(new G4MuIonisation, particle);
+        //std::cout<<"Registered Ionization for : " << particleName << std::endl;
         ph->RegisterProcess(new G4MuBremsstrahlung, particle);
+        //std::cout<<"Registered Brehsstrahlung for : " << particleName << std::endl;
         ph->RegisterProcess(new G4MuPairProduction, particle);
+        //std::cout<<"Registered PairProduction for : " << particleName << std::endl;
       }
+
+      if (particleName == "e+") {
+            //positron
+            ph->RegisterProcess(new G4eMultipleScattering, particle);
+            ph->RegisterProcess(new G4eIonisation,         particle);
+            ph->RegisterProcess(new G4eBremsstrahlung,     particle);
+           // ph->RegisterProcess(new G4eplusAnnihilation,   particle);
+
+          }
     }
+
 
 }

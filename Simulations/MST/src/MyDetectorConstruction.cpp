@@ -23,20 +23,19 @@ G4VPhysicalVolume* MyDetectorConstruction::Construct(){
   G4bool checkOverlaps = true;
 
   
-  // Envelope parameters
+  // Envelope params
   //
-  G4double env_sizeXY = 20*cm, env_sizeZ = 30*cm;
+  G4double env_sizeXY = 20*m, env_sizeZ = 30*m;
   //G4Material* env_mat = nist->FindOrBuildMaterial("G4_WATER");
   
   //     
   // World
   //
-  G4double magFactor=0.1;
-  G4double world_sizeXYZ = 200*cm*magFactor;
+  G4double world_sizeXYZ = 200*cm;
   G4double world_sizeXY = 1.2*env_sizeXY;
   G4double world_sizeZ  = 1.2*env_sizeZ;
   G4Material* world_mat = nist->FindOrBuildMaterial("G4_AIR");
-  
+
   G4Box* solidWorld =    
     new G4Box("World",                       //its name
        0.5*world_sizeXYZ, 0.5*world_sizeXYZ, 0.5*world_sizeXYZ);     //its size
@@ -55,28 +54,17 @@ G4VPhysicalVolume* MyDetectorConstruction::Construct(){
                       false,                 //no boolean operation
                       0,                     //copy number
                       checkOverlaps);        //overlaps checking
-  
+
   G4Material *orb_material = nist->FindOrBuildMaterial("G4_AIR");
-  /*
-	G4Orb *orb = new G4Orb("simpleOrb",0.2*world_sizeXY);
-	G4LogicalVolume *logicalOrb = new G4LogicalVolume(orb,orb_material,"LogicalOb");
-	G4VPhysicalVolume *phyOrb = new G4PVPlacement(0,
-												  G4ThreeVector(),
-												  logicalOrb,
-												  "PhysicalWorld",
-												  logicWorld,
-												  false,
-												  0,
-												  checkOverlaps);*/
 
   //RPC setup of 1mx1m
   
-  G4Box *rpc = new G4Box("RPC",0.25*world_sizeXYZ, 0.25*world_sizeXYZ, 1.4*cm*magFactor);
+  G4Box *rpc = new G4Box("RPC",0.25*world_sizeXYZ, 0.25*world_sizeXYZ, 2.*cm);
   G4LogicalVolume *logicalRpc = new G4LogicalVolume(rpc,orb_material,"LogicalRpc");
-  G4ThreeVector firstRpc(0.,0.,60*cm*magFactor);
-  G4ThreeVector secondRpc(0.,0.,30*cm*magFactor);
-  G4ThreeVector thirdRpc(0.,0.,-30*cm*magFactor);
-  G4ThreeVector fourthRpc(0.,0.,-60*cm*magFactor);
+  G4ThreeVector firstRpc(0.,0.,60*cm);
+  G4ThreeVector secondRpc(0.,0.,30*cm);
+  G4ThreeVector thirdRpc(0.,0.,-30*cm);
+  G4ThreeVector fourthRpc(0.,0.,-60*cm);
   
 
   // G4Orb *orb = new G4Orb("simpleOrb",0.2*world_sizeXY);
@@ -120,6 +108,26 @@ G4VPhysicalVolume* MyDetectorConstruction::Construct(){
                           false,
                           0,
                           checkOverlaps);
+
+  G4double a; // atomic mass
+  G4double z; // atomic number
+  G4double density;
+
+  G4Material* Pb =
+    new G4Material("Lead", z= 82., a= 207.19*g/mole, density= 11.35*g/cm3);
+  G4Box *leadBlock = new G4Box("LeadBlock",5.*cm,5.*cm,5.*cm);
+  //G4LogicalVolume *logicalLeadBlock = new G4LogicalVolume(leadBlock,nist->FindOrBuildMaterial("G4_Pb"),"LogicalLeadBlock");
+  G4LogicalVolume *logicalLeadBlock = new G4LogicalVolume(leadBlock,Pb,"LogicalLeadBlock");
+  G4VPhysicalVolume *phyLeadBlock = new G4PVPlacement(0,
+                            //G4ThreeVector(),
+                            G4ThreeVector(),
+                            logicalLeadBlock,
+                            "PhysicalWorld",
+                            logicWorld,
+                            false,
+                            0,
+                            checkOverlaps);
+
   /*G4VPhysicalVolume *phyRpc1 = new G4PVPlacement(0.,
                                                 firstRpc,
                                                 G4ThreeVector(),

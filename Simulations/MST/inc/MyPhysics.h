@@ -7,7 +7,8 @@
 
 #ifndef SIMULATIONS_MST_INC_MYPHYSICS_H_
 #define SIMULATIONS_MST_INC_MYPHYSICS_H_
-
+#include "QBBC.hh"
+#include "FTFP_BERT.hh"
 #include "G4VUserPhysicsList.hh"
 #include "globals.hh"
 

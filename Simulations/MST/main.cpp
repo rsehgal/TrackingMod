@@ -6,6 +6,7 @@
 #include "QBBC.hh"
 #include "FTFP_BERT.hh"
 #include "MyPhysics.h"
+#include "PhysicsList.h"
 //#include "QGSP_BIC_EMY.hh"
 /*
 #include "G4UImanager.hh"
@@ -24,16 +25,15 @@ int main(int argc, char *argv[]){
   
 
   G4RunManager *runManager = new G4RunManager;
-  //G4VModularPhysicsList *phyList = new QBBC;
-  //G4VUserPhysicsList* phyList = new FTFP_BERT;
-
-  G4VUserPhysicsList* phyList = new MyPhysics;
+  //G4VUserPhysicsList* phyList = new MyPhysics;
 
   //Detector Construction
   runManager->SetUserInitialization(new MyDetectorConstruction());
 
   //Physics List
-  runManager->SetUserInitialization(phyList);
+  //runManager->SetUserInitialization(phyList);
+  //runManager->SetUserInitialization(new PhysicsList);
+  runManager->SetUserInitialization(new MyPhysics);
 
   //Primary Generator Action
   runManager->SetUserAction(new MyPrimaryGeneratorAction());
@@ -48,35 +48,6 @@ int main(int argc, char *argv[]){
    GeantVisualizer *visualiser = new GeantVisualizer(argc, argv);
    visualiser->Start();
 
-
-/*
-G4UIExecutive* ui = 0;
-  if ( argc == 1 ) {
-    ui = new G4UIExecutive(argc, argv);
-  }
-  
- G4VisManager* visManager = new G4VisExecutive;
- visManager->Initialize();
- G4UImanager* UImanager = G4UImanager::GetUIpointer();
- // Process macro or start UI session
-  //
-  if ( ! ui ) { 
-    // batch mode
-    G4String command = "/control/execute ";
-    G4String fileName = argv[1];
-    UImanager->ApplyCommand(command+fileName);
-  }
-  else { 
-    // interactive mode
-    UImanager->ApplyCommand("/control/execute init_vis.mac");
-    ui->SessionStart();
-    delete ui;
-  }
-  //freeing the memory allocated to runManager
-  delete visManager;
-  
-  delete runManager;
-*/
   return 0;
 
 }
