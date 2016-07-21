@@ -7,6 +7,7 @@
 #include "FTFP_BERT.hh"
 #include "MyPhysics.h"
 #include "PhysicsList.h"
+#include "HodoScope.h"
 //#include "QGSP_BIC_EMY.hh"
 /*
 #include "G4UImanager.hh"
@@ -28,7 +29,8 @@ int main(int argc, char *argv[]){
   //G4VUserPhysicsList* phyList = new MyPhysics;
 
   //Detector Construction
-  runManager->SetUserInitialization(new MyDetectorConstruction());
+  //runManager->SetUserInitialization(new MyDetectorConstruction());
+  runManager->SetUserInitialization(new HodoScope());
 
   //Physics List
   //runManager->SetUserInitialization(phyList);
