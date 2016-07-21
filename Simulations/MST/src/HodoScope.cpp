@@ -264,6 +264,47 @@ G4VPhysicalVolume* HodoScope::Construct(){
                             0,
                             checkOverlaps);
 
+  G4Box *alBlock = new G4Box("AlBlock",5.*cm,5.*cm,5.*cm);
+    //G4LogicalVolume *logicalLeadBlock = new G4LogicalVolume(leadBlock,nist->FindOrBuildMaterial("G4_Pb"),"LogicalLeadBlock");
+    G4LogicalVolume *logicalAlBlock = new G4LogicalVolume(alBlock,Al,"LogicalLeadBlock");
+
+  G4VPhysicalVolume *phyAlBlock = new G4PVPlacement(0,
+                              //G4ThreeVector(),
+                              G4ThreeVector(50.*cm,0.,0.),
+                              logicalAlBlock,
+                              "PhysicalAlBlock",
+                              logicWorld,
+                              false,
+                              0,
+                              checkOverlaps);
+
+  //Trying to create enriched uranium
+  double fractionmass;
+  double iz,ia;
+  double abundance;
+  G4Isotope* iso_U235 = new  G4Isotope ("U235",iz=92, ia=235, a=235.0439242*g/mole);
+  G4Isotope* iso_U238 = new  G4Isotope ("U238", iz=92, ia=238, a=238.0507847 *g/mole);
+  G4Element* ele_enrichedU = new  G4Element("enriched U", symbol="U" , ncomponents=2);
+  ele_enrichedU-> AddIsotope (iso_U235, abundance=80.*perCent);
+  ele_enrichedU-> AddIsotope (iso_U235, abundance=20.*perCent);
+  G4Material* mat_enrichedU =   new G4Material ("U for nuclear  power generation" , density= 19.050*g/cm3 ,  ncomponents = 1 , kStateSolid );
+  mat_enrichedU-> AddElement( ele_enrichedU , fractionmass = 1 );
+
+  G4Box *urBlock = new G4Box("UrBlock",5.*cm,5.*cm,5.*cm);
+      //G4LogicalVolume *logicalLeadBlock = new G4LogicalVolume(leadBlock,nist->FindOrBuildMaterial("G4_Pb"),"LogicalLeadBlock");
+      G4LogicalVolume *logicalUrBlock = new G4LogicalVolume(urBlock,mat_enrichedU,"LogicalLeadBlock");
+
+    G4VPhysicalVolume *phyUrBlock = new G4PVPlacement(0,
+                                //G4ThreeVector(),
+                                G4ThreeVector(-50.*cm,0.,0.),
+                                logicalUrBlock,
+                                "PhysicalAlBlock",
+                                logicWorld,
+                                false,
+                                0,
+                                checkOverlaps);
+
+
   /*G4VPhysicalVolume *phyRpc1 = new G4PVPlacement(0.,
                                                 firstRpc,
                                                 G4ThreeVector(),
