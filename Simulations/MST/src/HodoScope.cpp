@@ -327,6 +327,7 @@ G4VPhysicalVolume* HodoScope::Construct(){
   //Considering Square RPCs
 
 
+	fScoringVolume = logicalLeadBlock;
 
 	return physWorld;
 

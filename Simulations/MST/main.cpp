@@ -6,7 +6,9 @@
 #include "QBBC.hh"
 #include "FTFP_BERT.hh"
 #include "MyPhysics.h"
-#include "PhysicsList.h"
+#include "B1ActionInitialization.hh"
+
+//#include "PhysicsList.h"
 #include "HodoScope.h"
 //#include "QGSP_BIC_EMY.hh"
 /*
@@ -38,14 +40,17 @@ int main(int argc, char *argv[]){
   runManager->SetUserInitialization(new MyPhysics);
 
   //Primary Generator Action
-  runManager->SetUserAction(new MyPrimaryGeneratorAction());
+  //runManager->SetUserAction(new MyPrimaryGeneratorAction());
+
+  // User action initialization
+  runManager->SetUserInitialization(new B1ActionInitialization());
 
   //Initiaizer G4 Kernel
-  runManager->Initialize();
+  //runManager->Initialize();
 
   //Cause the run manager to generate a single event using the
   //primary generator action registered above.
-  runManager->BeamOn(1);
+  //runManager->BeamOn(1);
 
    GeantVisualizer *visualiser = new GeantVisualizer(argc, argv);
    visualiser->Start();

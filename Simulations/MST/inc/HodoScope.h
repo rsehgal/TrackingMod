@@ -10,9 +10,11 @@ class G4LogicalVolume;
 
 class HodoScope : public G4VUserDetectorConstruction
 {
+G4LogicalVolume* fScoringVolume;
 public:
 	HodoScope();
 	~HodoScope();
 	G4VPhysicalVolume* Construct();
+        G4LogicalVolume* GetScoringVolume() const { return fScoringVolume; }
 };
 #endif
