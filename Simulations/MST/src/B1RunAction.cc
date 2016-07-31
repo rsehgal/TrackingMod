@@ -76,6 +76,7 @@ void B1RunAction::BeginOfRunAction(const G4Run*)
 { 
   //inform the runManager to save random number seed
   G4RunManager::GetRunManager()->SetRandomNumberStore(false);
+
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -140,6 +141,18 @@ void B1RunAction::EndOfRunAction(const G4Run* run)
      << "------------------------------------------------------------"
      << G4endl
      << G4endl;
+
+  G4cout << "Num of Tracks : " 
+         << b1Run->NumOfTracks()
+         << G4endl;
+
+  G4cout << "------ Printing Tracking info at the end of Run ------- " << G4endl;
+  for(int i = 0 ;i < b1Run->NumOfTracks() ; i++){
+    G4cout << "----- Printing Event No : " << i+1 << "  --------" << G4endl;
+    for(int j = 0 ; j < b1Run->GetPhysicalTrackVector()[i].size() ; j++){
+      b1Run->GetPhysicalTrackVector()[i][j].Print();
+    }
+  }
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

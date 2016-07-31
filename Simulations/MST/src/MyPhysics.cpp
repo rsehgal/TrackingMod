@@ -65,11 +65,11 @@ void MyPhysics::ConstructEM(){
         ph->RegisterProcess(new G4MuMultipleScattering, particle);
         //std::cout<<"Registered MultipleScattering for : " << particleName << std::endl;
 
-        ph->RegisterProcess(new G4MuIonisation, particle);
+        //ph->RegisterProcess(new G4MuIonisation, particle);
         //std::cout<<"Registered Ionization for : " << particleName << std::endl;
-        ph->RegisterProcess(new G4MuBremsstrahlung, particle);
+        //ph->RegisterProcess(new G4MuBremsstrahlung, particle);
         //std::cout<<"Registered Brehsstrahlung for : " << particleName << std::endl;
-        ph->RegisterProcess(new G4MuPairProduction, particle);
+        //ph->RegisterProcess(new G4MuPairProduction, particle);
         //std::cout<<"Registered PairProduction for : " << particleName << std::endl;
       }
 

@@ -36,7 +36,11 @@
 #include "G4Event.hh"
 #include "G4RunManager.hh"
 #include "G4LogicalVolume.hh"
+#include "G4Track.hh"
+#include "G4ThreeVector.hh"
+#include "base/Vector3D.h"
 
+using Tracking::Vector3D;
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 B1SteppingAction::B1SteppingAction(B1EventAction* eventAction)
@@ -71,7 +75,14 @@ void B1SteppingAction::UserSteppingAction(const G4Step* step)
 
   // collect energy deposited in this step
   G4double edepStep = step->GetTotalEnergyDeposit();
-  fEventAction->AddEdep(edepStep);  
+  fEventAction->AddEdep(edepStep);
+
+  G4Track* track = step->GetTrack();
+  std::cout<<"Position : ";
+  G4ThreeVector hit = track->GetPosition();
+  std::cout<<hit.x()<<", "<<hit.y()<<", "<<hit.z()<<std::endl;
+  fEventAction->push_back(Vector3D<double>(hit.x(),hit.y(),hit.z()));
+    
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

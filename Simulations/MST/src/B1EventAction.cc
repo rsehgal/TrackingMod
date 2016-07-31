@@ -51,6 +51,8 @@ B1EventAction::~B1EventAction()
 void B1EventAction::BeginOfEventAction(const G4Event*)
 {    
   fEdep = 0.;
+  hitVect.clear();
+  std::cout<<"+++++++++++++++++++++++++++++++++++++++++++++++++++"<<std::endl;
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -61,7 +63,12 @@ void B1EventAction::EndOfEventAction(const G4Event*)
   B1Run* run 
     = static_cast<B1Run*>(
         G4RunManager::GetRunManager()->GetNonConstCurrentRun());
+    run->FillPhysicalTrackVector(hitVect);
   run->AddEdep(fEdep);
+  std::cout<<"---------------------------------------------------"<<std::endl;
+  // for(int i=0 ; i<hitVect.size(); i++){
+  //   hitVect[i].Print();
+  // }
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

@@ -62,6 +62,10 @@ void B1Run::AddEdep (G4double edep)
   fEdep2 += edep*edep;
 }
 
+void B1Run::FillPhysicalTrackVector(std::vector<Vector3D<double>> hitVect){
+    phyTrackVect.push_back(hitVect);
+
+}
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 

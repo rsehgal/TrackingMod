@@ -26,10 +26,10 @@ MyPrimaryGeneratorAction::MyPrimaryGeneratorAction() {
 MyPrimaryGeneratorAction::~MyPrimaryGeneratorAction() { delete fParticleGun; }
 
 void MyPrimaryGeneratorAction::GeneratePrimaries(G4Event *event) {
-  fParticleGun->SetParticlePosition(G4ThreeVector(-50 * cm, 0., -120 * cm));
-  fParticleGun->GeneratePrimaryVertex(event);
+   //fParticleGun->SetParticlePosition(G4ThreeVector(-50 * cm, 0., -120 * cm));
+   //fParticleGun->GeneratePrimaryVertex(event);
   fParticleGun->SetParticlePosition(G4ThreeVector(0., 0., -120 * cm));
   fParticleGun->GeneratePrimaryVertex(event);
-  fParticleGun->SetParticlePosition(G4ThreeVector(50 * cm, 0., -120 * cm));
-  fParticleGun->GeneratePrimaryVertex(event);
+   //fParticleGun->SetParticlePosition(G4ThreeVector(50 * cm, 0., -120 * cm));
+   //fParticleGun->GeneratePrimaryVertex(event);
 }

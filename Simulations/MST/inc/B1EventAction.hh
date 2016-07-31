@@ -33,6 +33,9 @@
 
 #include "G4UserEventAction.hh"
 #include "globals.hh"
+#include "base/Vector3D.h"
+#include <vector>
+using Tracking::Vector3D;
 
 /// Event action class
 ///
@@ -47,9 +50,13 @@ class B1EventAction : public G4UserEventAction
     virtual void EndOfEventAction(const G4Event* event);
 
     void AddEdep(G4double edep) { fEdep += edep; }
+    void push_back(Vector3D<double> pt){hitVect.push_back(pt);}
+    std::vector<Vector3D<double>> GetHitVector(){return hitVect;}
 
   private:
     G4double  fEdep;
+    std::vector<Vector3D<double>> hitVect; 
+
 };
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

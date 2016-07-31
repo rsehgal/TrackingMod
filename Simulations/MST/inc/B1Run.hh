@@ -33,7 +33,11 @@
 
 #include "G4Run.hh"
 #include "globals.hh"
+#include <vector>
+#include "base/Vector3D.h"
+using Tracking::Vector3D;
 
+using PhysicalTrackVector = std::vector< std::vector<Vector3D<double>> > ;
 class G4Event;
 
 /// Run class
@@ -41,6 +45,7 @@ class G4Event;
 
 class B1Run : public G4Run
 {
+     PhysicalTrackVector phyTrackVect;
   public:
     B1Run();
     virtual ~B1Run();
@@ -53,6 +58,10 @@ class B1Run : public G4Run
     // get methods
     G4double GetEdep()  const { return fEdep; }
     G4double GetEdep2() const { return fEdep2; }
+    PhysicalTrackVector GetPhysicalTrackVector() const {return phyTrackVect;}
+    int NumOfTracks() const {return phyTrackVect.size();}
+    void FillPhysicalTrackVector(std::vector<Vector3D<double>> hitVect);
+
 
   private:
     G4double  fEdep;

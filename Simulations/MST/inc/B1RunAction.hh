@@ -45,6 +45,8 @@ class G4LogicalVolume;
 
 class B1RunAction : public G4UserRunAction
 {
+
+    
   public:
     B1RunAction();
     virtual ~B1RunAction();
