@@ -286,7 +286,7 @@ G4VPhysicalVolume* HodoScope::Construct(){
   G4Isotope* iso_U238 = new  G4Isotope ("U238", iz=92, ia=238, a=238.0507847 *g/mole);
   G4Element* ele_enrichedU = new  G4Element("enriched U", symbol="U" , ncomponents=2);
   ele_enrichedU-> AddIsotope (iso_U235, abundance=80.*perCent);
-  ele_enrichedU-> AddIsotope (iso_U235, abundance=20.*perCent);
+  ele_enrichedU-> AddIsotope (iso_U238, abundance=20.*perCent);
   G4Material* mat_enrichedU =   new G4Material ("U for nuclear  power generation" , density= 19.050*g/cm3 ,  ncomponents = 1 , kStateSolid );
   mat_enrichedU-> AddElement( ele_enrichedU , fractionmass = 1 );
 
