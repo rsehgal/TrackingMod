@@ -10,6 +10,10 @@
 #include "G4PVPlacement.hh"
 #include "G4SystemOfUnits.hh"
 #include "G4VPhysicalVolume.hh"
+#include "G4Isotope.hh"
+#include "G4Element.hh"
+#include "G4Material.hh"
+#include "G4UnitsTable.hh"
 
 MyDetectorConstruction::MyDetectorConstruction(){
 
@@ -57,10 +61,38 @@ G4VPhysicalVolume* MyDetectorConstruction::Construct(){
 
   G4Material *orb_material = nist->FindOrBuildMaterial("G4_AIR");
 
+  G4double a; // atomic mass
+    G4double z; // atomic number
+    G4double density;
+
+
+  //Trying to create gas R134a (C2H2F4)
+    // define Elements
+    char *name="";
+    char *symbol="";
+    int natoms=0;
+    int ncomponents;
+
+    a = 1.01*g/mole;
+    G4Element* elH  = new G4Element(name="Hydrogen",symbol="H" , z= 1., a);
+
+    a = 12.01*g/mole;
+    G4Element* elC  = new G4Element(name="Carbon"  ,symbol="C" , z= 6., a);
+
+    a = 19.00*g/mole;
+    G4Element* elF  = new G4Element(name="Fluorine"  ,symbol="F" , z= 9., a);
+
+    density = 8.280*g/cm3;
+    G4Material* C2H2F4= new G4Material(name="C2H2F4", density, ncomponents=3);
+    C2H2F4->AddElement(elC , natoms=2);
+    C2H2F4->AddElement(elH , natoms=2);
+    C2H2F4->AddElement(elF, natoms=4);
+
+
   //RPC setup of 1mx1m
-  
   G4Box *rpc = new G4Box("RPC",0.25*world_sizeXYZ, 0.25*world_sizeXYZ, 2.*cm);
   G4LogicalVolume *logicalRpc = new G4LogicalVolume(rpc,orb_material,"LogicalRpc");
+  //G4LogicalVolume *logicalRpc = new G4LogicalVolume(rpc,C2H2F4,"LogicalRpc");
   G4ThreeVector firstRpc(0.,0.,60*cm);
   G4ThreeVector secondRpc(0.,0.,30*cm);
   G4ThreeVector thirdRpc(0.,0.,-30*cm);
@@ -109,9 +141,7 @@ G4VPhysicalVolume* MyDetectorConstruction::Construct(){
                           0,
                           checkOverlaps);
 
-  G4double a; // atomic mass
-  G4double z; // atomic number
-  G4double density;
+
 
   G4Material* Pb =
     new G4Material("Lead", z= 82., a= 207.19*g/mole, density= 11.35*g/cm3);

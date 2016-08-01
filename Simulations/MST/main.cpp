@@ -52,8 +52,22 @@ int main(int argc, char *argv[]){
   //primary generator action registered above.
   //runManager->BeamOn(1);
 
-   GeantVisualizer *visualiser = new GeantVisualizer(argc, argv);
-   visualiser->Start();
+  //read a macro file of commands
+  #if (1)
+  G4UImanager* UI = G4UImanager::GetUIpointer();
+  G4String command = "/control/execute ";
+  G4String fileName = argv[1];
+  UI->ApplyCommand(command+fileName);
+  #else
+   GeantVisualizer *visualizer = new GeantVisualizer(argc, argv);
+   //visualizer->Start(argv[1]);
+    if(argc==1)
+      visualizer->Start();
+    else
+      visualizer->Start(argv[1]);
+  #endif
+
+  delete runManager;
 
   return 0;
 

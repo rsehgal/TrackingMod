@@ -4,6 +4,7 @@
 #include "G4UImanager.hh"
 #include "G4VisExecutive.hh"
 #include "G4UIExecutive.hh"
+#include "G4String.hh"
 
 class GeantVisualizer
 {
@@ -11,6 +12,7 @@ public:
 	GeantVisualizer(int argc, char **argv);
 	~GeantVisualizer();
 	void Start();
+	void Start(G4String filename);
 
 private:
 	G4VisManager* fVisManager;
@@ -38,5 +40,11 @@ void GeantVisualizer::Start(){
     fUi->SessionStart();
 }
   
+void GeantVisualizer::Start(G4String filename){
 
+        fVisManager->Initialize();
+        fUImanager->ApplyCommand("/control/execute init_vis.mac");
+        fUImanager->ApplyCommand("/control/execute "+filename);
+    fUi->SessionStart();
+}
 #endif
