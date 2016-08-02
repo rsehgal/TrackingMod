@@ -3,12 +3,13 @@
 
 #include "G4VUserDetectorConstruction.hh"
 #include "globals.hh"
+#include <G4Material.hh>
 
 class G4VUserDetectorConstruction;
 class G4VPhysicalVolume;
 class G4LogicalVolume;
 class B2aDetectorMessenger;
-class G4Material;
+//class G4Material;
 
 class HodoScope : public G4VUserDetectorConstruction
 {
@@ -24,5 +25,6 @@ public:
 	G4VPhysicalVolume* Construct();
     G4LogicalVolume* GetScoringVolume() const { return fScoringVolume; }
     void SetTargetMaterial (G4String );
+    G4String GetTargetMaterial() const {return fTargetMaterial->GetName();}
 };
 #endif

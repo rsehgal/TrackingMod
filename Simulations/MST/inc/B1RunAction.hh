@@ -33,6 +33,7 @@
 
 #include "G4UserRunAction.hh"
 #include "globals.hh"
+#include <fstream>
 
 class G4Run;
 class G4LogicalVolume;
@@ -46,6 +47,8 @@ class G4LogicalVolume;
 class B1RunAction : public G4UserRunAction
 {
 
+    G4String  fFileName;
+    std::ofstream fs;
     
   public:
     B1RunAction();

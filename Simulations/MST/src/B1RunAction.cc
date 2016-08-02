@@ -40,6 +40,9 @@
 #include "G4UnitsTable.hh"
 #include "G4SystemOfUnits.hh"
 
+#include <iostream>
+#include <fstream>
+
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 B1RunAction::B1RunAction()
@@ -76,6 +79,7 @@ void B1RunAction::BeginOfRunAction(const G4Run*)
 { 
   //inform the runManager to save random number seed
   G4RunManager::GetRunManager()->SetRandomNumberStore(false);
+  fs.open("run.txt", std::ios::app);
 
 }
 
@@ -83,6 +87,9 @@ void B1RunAction::BeginOfRunAction(const G4Run*)
 
 void B1RunAction::EndOfRunAction(const G4Run* run)
 {
+  // std::ofstream fs;
+  // fs.open("run.txt", std::ios::app);
+
   G4int nofEvents = run->GetNumberOfEvent();
   if (nofEvents == 0) return;
   
@@ -109,12 +116,14 @@ void B1RunAction::EndOfRunAction(const G4Run* run)
    = static_cast<const MyPrimaryGeneratorAction*>
      (G4RunManager::GetRunManager()->GetUserPrimaryGeneratorAction());
   G4String runCondition;
+  G4double particleEnergy ;
+  const G4ParticleGun* particleGun ;
   if (generatorAction)
   {
-    const G4ParticleGun* particleGun = generatorAction->GetParticleGun();
+    particleGun = generatorAction->GetParticleGun();
     runCondition += particleGun->GetParticleDefinition()->GetParticleName();
     runCondition += " of ";
-    G4double particleEnergy = particleGun->GetParticleEnergy();
+    particleEnergy = particleGun->GetParticleEnergy();
     runCondition += G4BestUnit(particleEnergy,"Energy");
   }
         
@@ -147,12 +156,24 @@ void B1RunAction::EndOfRunAction(const G4Run* run)
          << G4endl;
 
   G4cout << "------ Printing Tracking info at the end of Run ------- " << G4endl;
+  fs << particleEnergy << " " << detectorConstruction->GetTargetMaterial() << " ";
   for(int i = 0 ;i < b1Run->NumOfTracks() ; i++){
     G4cout << "----- Printing Event No : " << i+1 << "  --------" << G4endl;
     for(int j = 0 ; j < b1Run->GetPhysicalTrackVector()[i].size() ; j++){
       b1Run->GetPhysicalTrackVector()[i][j].Print();
     }
+    std::cout<<"scattering Angle : " << b1Run->GetScatteringAngleVector()[i] << std::endl;
+
+    //Logic to store the scattering angle of every event into "run.txt"
+    
+    fs << b1Run->GetScatteringAngleVector()[i] << " " ;
+    //fs << "Hello ";
+
   }
+
+  fs << std::endl;
+
+  fs.close();
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

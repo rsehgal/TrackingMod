@@ -35,6 +35,9 @@
 #include "globals.hh"
 #include <vector>
 #include "base/Vector3D.h"
+#include <G4String.hh>
+#include <fstream>
+
 using Tracking::Vector3D;
 
 using PhysicalTrackVector = std::vector< std::vector<Vector3D<double>> > ;
@@ -46,6 +49,7 @@ class G4Event;
 class B1Run : public G4Run
 {
      PhysicalTrackVector phyTrackVect;
+     std::vector<double> scatteringAngleVect;
   public:
     B1Run();
     virtual ~B1Run();
@@ -61,11 +65,14 @@ class B1Run : public G4Run
     PhysicalTrackVector GetPhysicalTrackVector() const {return phyTrackVect;}
     int NumOfTracks() const {return phyTrackVect.size();}
     void FillPhysicalTrackVector(std::vector<Vector3D<double>> hitVect);
+    void FillScatteringAngleVector(double scatteringAngle){scatteringAngleVect.push_back(scatteringAngle);}
+    std::vector<double> GetScatteringAngleVector()const {return scatteringAngleVect;}
 
 
   private:
     G4double  fEdep;
     G4double  fEdep2;
+    
 };
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

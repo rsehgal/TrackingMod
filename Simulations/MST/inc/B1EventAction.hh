@@ -52,9 +52,11 @@ class B1EventAction : public G4UserEventAction
     void AddEdep(G4double edep) { fEdep += edep; }
     void push_back(Vector3D<double> pt){hitVect.push_back(pt);}
     std::vector<Vector3D<double>> GetHitVector(){return hitVect;}
+    void CalcScatteringAngle();
 
   private:
     G4double  fEdep;
+    G4double fScatteringAngle;
     std::vector<Vector3D<double>> hitVect; 
 
 };

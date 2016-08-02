@@ -33,6 +33,7 @@
 
 #include "G4Event.hh"
 #include "G4RunManager.hh"
+#include "LinesAngle.h"
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
@@ -51,6 +52,7 @@ B1EventAction::~B1EventAction()
 void B1EventAction::BeginOfEventAction(const G4Event*)
 {    
   fEdep = 0.;
+  fScatteringAngle = 0.;
   hitVect.clear();
   std::cout<<"+++++++++++++++++++++++++++++++++++++++++++++++++++"<<std::endl;
 }
@@ -65,10 +67,22 @@ void B1EventAction::EndOfEventAction(const G4Event*)
         G4RunManager::GetRunManager()->GetNonConstCurrentRun());
     run->FillPhysicalTrackVector(hitVect);
   run->AddEdep(fEdep);
+  CalcScatteringAngle();
+  std::cout<<"Scattering Angle : " << fScatteringAngle << std::endl;
+  run->FillScatteringAngleVector(fScatteringAngle);
+
   std::cout<<"---------------------------------------------------"<<std::endl;
   // for(int i=0 ; i<hitVect.size(); i++){
   //   hitVect[i].Print();
   // }
+}
+
+void B1EventAction::CalcScatteringAngle(){
+  int size = hitVect.size();
+  int hSize = size/2;
+  LinesAngle l;
+
+  fScatteringAngle = l.GetAngleRadian(l.CalculateAngle(hitVect[0],hitVect[hSize-1],hitVect[hSize],hitVect[size-1]));
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
