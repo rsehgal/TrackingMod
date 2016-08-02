@@ -39,7 +39,7 @@
 
 B1EventAction::B1EventAction()
 : G4UserEventAction(),
-  fEdep(0.)
+  fEdep(0.),verbose(false)
 {} 
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -54,7 +54,8 @@ void B1EventAction::BeginOfEventAction(const G4Event*)
   fEdep = 0.;
   fScatteringAngle = 0.;
   hitVect.clear();
-  std::cout<<"+++++++++++++++++++++++++++++++++++++++++++++++++++"<<std::endl;
+  if(verbose)
+    std::cout<<"+++++++++++++++++++++++++++++++++++++++++++++++++++"<<std::endl;
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -68,13 +69,19 @@ void B1EventAction::EndOfEventAction(const G4Event*)
     run->FillPhysicalTrackVector(hitVect);
   run->AddEdep(fEdep);
   CalcScatteringAngle();
-  std::cout<<"Scattering Angle : " << fScatteringAngle << std::endl;
+  
   run->FillScatteringAngleVector(fScatteringAngle);
 
+if(verbose){
+  for(int i=0 ; i<hitVect.size(); i++){
+     hitVect[i].Print();
+   }
+   std::cout<<"Scattering Angle : " << fScatteringAngle << std::endl;
   std::cout<<"---------------------------------------------------"<<std::endl;
-  // for(int i=0 ; i<hitVect.size(); i++){
-  //   hitVect[i].Print();
-  // }
+}
+
+
+  // 
 }
 
 void B1EventAction::CalcScatteringAngle(){

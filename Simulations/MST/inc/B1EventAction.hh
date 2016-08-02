@@ -58,6 +58,7 @@ class B1EventAction : public G4UserEventAction
     G4double  fEdep;
     G4double fScatteringAngle;
     std::vector<Vector3D<double>> hitVect; 
+    bool verbose;
 
 };
 

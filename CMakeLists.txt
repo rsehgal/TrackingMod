@@ -202,6 +202,7 @@ ${CMAKE_SOURCE_DIR}/CoordinateGenerator/test
 ${CMAKE_SOURCE_DIR}/TemplatizedInterface/test
 ${CMAKE_SOURCE_DIR}/TemplatizedInterface/test/core
 ${CMAKE_SOURCE_DIR}/TemplatizedInterface/test/plots
+${CMAKE_SOURCE_DIR}/Simulations/MST/test
 #${CMAKE_SOURCE_DIR}/test
 )
 

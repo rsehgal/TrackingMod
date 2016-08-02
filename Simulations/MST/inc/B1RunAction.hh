@@ -49,6 +49,7 @@ class B1RunAction : public G4UserRunAction
 
     G4String  fFileName;
     std::ofstream fs;
+    bool verbose;
     
   public:
     B1RunAction();

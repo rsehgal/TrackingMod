@@ -46,7 +46,7 @@ using Tracking::Vector3D;
 B1SteppingAction::B1SteppingAction(B1EventAction* eventAction)
 : G4UserSteppingAction(),
   fEventAction(eventAction),
-  fScoringVolume(0)
+  fScoringVolume(0),verbose(false)
 {}
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -78,9 +78,11 @@ void B1SteppingAction::UserSteppingAction(const G4Step* step)
   fEventAction->AddEdep(edepStep);
 
   G4Track* track = step->GetTrack();
-  std::cout<<"Position : ";
   G4ThreeVector hit = track->GetPosition();
+  if(verbose){
+  std::cout<<"Position : ";
   std::cout<<hit.x()<<", "<<hit.y()<<", "<<hit.z()<<std::endl;
+  }
   fEventAction->push_back(Vector3D<double>(hit.x(),hit.y(),hit.z()));
     
 }
