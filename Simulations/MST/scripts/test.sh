@@ -1,6 +1,6 @@
 #!/bin/sh
 rm -rf run.txt
-for ener in 2 3
+for ener in 2 3 4
 do
 sed "s/ENERGY/$ener/g" my.mac.temp > $ener.mac
 for var in "$@"

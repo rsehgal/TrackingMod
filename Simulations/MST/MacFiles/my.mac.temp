@@ -17,5 +17,5 @@
 #Run 1 on Aluminium
 /B2/det/setTargetMaterial G4_MATERIAL
 /gun/particle mu+
-/gun/energy 2 GeV
-/run/beamOn 100
+/gun/energy ENERGY GeV
+/run/beamOn 1000 

@@ -12,9 +12,9 @@ int main(int argc, char *argv[]){
 
     TApplication *fApp = new TApplication("Test", NULL, NULL);
 	TCanvas *c = new TCanvas("TestCanvas", "ScatteringAngleCanvas", 800, 600);
-	c->Divide(2,2);
+	c->Divide(4,3);
 	std::vector<TH1F*> histogram;
-	int numOfEnergies = 2;
+	int numOfEnergies = 3;
 	int numOfMaterials = 4;
 	int nxbins = 80;
 	
@@ -38,10 +38,16 @@ int main(int argc, char *argv[]){
     double scatteringAngle = 0.;
     int n = 0;
     
-    while(n!=4){
+    while(n!=12){
+	std::stringstream ss;
     	c->cd(n+1);
     int numOfEvents = std::atoi(argv[1]);
     runfile >> energy >> material;
+    ss << energy/1000.;
+    std::string title = material+"_"+ss.str()+"GeV";
+    histogram[n]->SetTitle(title.c_str());
+    histogram[n]->SetName(title.c_str());
+    
     std::cout<<"Energy : " << energy << ":: material : " << material << std::endl;
     while(numOfEvents){
     	runfile >> scatteringAngle;
