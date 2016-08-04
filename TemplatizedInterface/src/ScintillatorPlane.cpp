@@ -9,7 +9,7 @@
 
 namespace Tomography {
 
-int ScintillatorPlane::fClusterSize = 2;
+//int ScintillatorPlane::fClusterSize = 2;
 
 ScintillatorPlane::ScintillatorPlane() {
   // TODO Auto-generated constructor stub

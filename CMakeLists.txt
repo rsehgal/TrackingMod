@@ -46,7 +46,7 @@ endif(CCACHE_FOUND)
 
 option(VISUALIZATION "Enable or Disable Visualization" ON)
 option(OPENGL "Use OpenGL for Visualization" OFF)
-option(EVE "Use Eve for Visualization" ON)
+option(EVE "Use Eve for Visualization" OFF)
 option(UNITTEST "Enable various Unit tests" ON)
 option(ROOT "Enable ROOT" ON)
 option(EFF_AND "Efficiency will be calculated only if both plane fires" ON)
@@ -54,7 +54,9 @@ option(EFF_SETUP_AND "Efficiency w.r.t full Setup, i.e all the detector fires fo
 option(CLUSTER_SIZE "Allow to restrict the Cluster Size cut, default value will be 2 if switched ON." ON)
 option(ACCUMULATE_TRACK "All the tracks will be displayed" OFF)
 option(ANG_DIST "To calculate the angular distribution from tracks" OFF)
+option(CGAL "CGAL library for geometrical algorithms" OFF)
 
+#find_package(CGAL REQUIRED)
 
 
 if(ANG_DIST)
@@ -115,6 +117,10 @@ if(EVE)
 set(EXTERNAL_LIBS ${EXTERNAL_LIBS}
 Eve Geom
 )
+else()
+set(EXTERNAL_LIBS ${EXTERNAL_LIBS}
+Geom
+)
 endif(EVE)
 
 endif(ROOT)
@@ -154,7 +160,11 @@ ${CMAKE_SOURCE_DIR}/inc
 ${CMAKE_SOURCE_DIR}
 )
 
-
+if(EVE)
+set(INCLUDES ${INCLUDES}
+${CMAKE_SOURCE_DIR}/TemplatizedInterface/inc/visualization
+)
+endif(EVE)
 
 if(VISUALIZATION)
 set(INCLUDES ${INCLUDES} ${CMAKE_SOURCE_DIR}/visualizer)
@@ -190,8 +200,18 @@ endmacro()
 SET(TESTSDIR ${TESTSDIR}
 ${CMAKE_SOURCE_DIR}/CoordinateGenerator/test
 ${CMAKE_SOURCE_DIR}/TemplatizedInterface/test
+${CMAKE_SOURCE_DIR}/TemplatizedInterface/test/core
+${CMAKE_SOURCE_DIR}/TemplatizedInterface/test/plots
+${CMAKE_SOURCE_DIR}/Simulations/MST/test
 #${CMAKE_SOURCE_DIR}/test
 )
+
+if(EVE)
+SET(TESTSDIR ${TESTSDIR}
+${CMAKE_SOURCE_DIR}/TemplatizedInterface/test/visualization
+)
+endif(EVE)
+
 #COLLECTING ALL TEST FILES
 macro(collect_tests TESTS)
   foreach(TEST ${TESTS})
@@ -202,8 +222,8 @@ endmacro()
 macro(build_executables EXECUTABLES)
   foreach(EXECUTABLE ${EXECUTABLES})
     get_filename_component(TARGET_NAME ${EXECUTABLE} NAME_WE)
-    add_executable(${TARGET_NAME} ${EXECUTABLE} ${sources} ${headers})
-    target_link_libraries(${TARGET_NAME} ${EXTERNAL_LIBS})
+    add_executable(${TARGET_NAME} ${EXECUTABLE} ${headers})
+    target_link_libraries(${TARGET_NAME} ${TOMOLIB})
 #  if(EVE)
 #    target_link_libraries(${TARGET_NAME} ${ROOT_LIBRARIES} Geom Eve)
 #  else()
@@ -217,9 +237,21 @@ include_dirs("${INCLUDES}")
 collect_headers("${INCLUDES}")
 collect_sources("${SOURCES}")
 collect_tests("${TESTSDIR}")
-build_executables("${tests}")
 
+message(STATUS "--------- Following source file will be use for the creation of Shared library -----------")
+message(STATUS ${sources})
+message(STATUS "------------------------------------------------------------------------------------------")
+add_library(Tomo SHARED ${sources})
+target_link_libraries(Tomo ${EXTERNAL_LIBS})
+set(TOMOLIB ${TOMOLIB}
+Tomo
+)
+
+link_directories(${CMAKE_SOURCE_DIR}/build)
+
+build_executables("${tests}")
 message(STATUS ${headers})
 message(STATUS "====================================================")
 message(STATUS ${tests})
 message(STATUS "====================================================")
+add_subdirectory(Simulations/MST)

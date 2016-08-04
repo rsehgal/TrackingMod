@@ -6,8 +6,11 @@
  */
 
 #include "Properties.h"
-
+#include <TCanvas.h>
+#include <TH2F.h>
 namespace Tomography{
+
+//int Properties::fClusterSize = 10;
 
 Properties::Properties(){
   fDim = fChannelsInDim.size();
@@ -30,7 +33,7 @@ Properties::Properties(std::string name,std::vector<int> channelsInDim){
   }
 }
 
-void Properties::SetEventDetected(int evNo) {
+/*void Properties::SetEventDetected(int evNo) {
   SetFiredStripsVector(evNo);
   fEventDetected = false;
 
@@ -61,6 +64,39 @@ for(int i = 0 ; i < fNumOfPlanes ; i++) {
 #endif
 #endif
 }
+}*/
+
+void Properties::SetEventDetected(int evNo) {
+  SetFiredStripsVector(evNo);
+  fEventDetected = false;
+
+for(int i = 0 ; i < fNumOfPlanes ; i++) {
+#ifdef EFF_AND
+#ifdef CLUSTER_SIZE
+  if(i==0)
+  fEventDetected = (GetPlane(i)->GetFiredStripsVector().size() > 0. && GetPlane(i)->GetFiredStripsVector().size() <= fClusterSize); // GetPlane(i)->GetClusterSize());
+  else
+  fEventDetected &= (GetPlane(i)->GetFiredStripsVector().size() > 0. && GetPlane(i)->GetFiredStripsVector().size() <= fClusterSize); //GetPlane(i)->GetClusterSize());
+#else
+  if(i==0)
+  fEventDetected = GetPlane(i)->GetFiredStripsVector().size();
+  else
+  fEventDetected &= GetPlane(i)->GetFiredStripsVector().size();
+#endif
+#else
+#ifdef CLUSTER_SIZE
+  if(i==0)
+  fEventDetected = (GetPlane(i)->GetFiredStripsVector().size() > 0. && GetPlane(i)->GetFiredStripsVector().size() <= fClusterSize); // GetPlane(i)->GetClusterSize());
+  else
+  fEventDetected |=  (GetPlane(i)->GetFiredStripsVector().size() > 0. && GetPlane(i)->GetFiredStripsVector().size() <= fClusterSize); //GetPlane(i)->GetClusterSize());
+#else
+  if(i==0)
+  fEventDetected = GetPlane(i)->GetFiredStripsVector().size()
+  else
+  fEventDetected |= GetPlane(i)->GetFiredStripsVector().size();
+#endif
+#endif
+}
 }
 
   void Properties::SetEfficiency()
@@ -84,6 +120,59 @@ for(int i = 0 ; i < fNumOfPlanes ; i++) {
            //double tmp = ((double)(numOfEvents-count))*100.;
            fEfficiency = count/(double)numOfEvents*100;
    }
+
+Tracking::Vector3D<double> Properties::GetStripCoordinate(int x, int y, int z) {
+  Tracking::Vector3D<double> temp;
+  double stripLength = GetPlane(0)->GetScintVector()[0]->GetLength()/GetPlane(0)->GetNumOfScintillators();
+  double stripBreadth = GetPlane(1)->GetScintVector()[0]->GetBreadth()/GetPlane(0)->GetNumOfScintillators();
+  temp.SetX(-GetLength()/2. + (31-x) * stripLength + stripLength/2.);
+  temp.SetY(-GetBreadth()/2. + y * stripBreadth + stripBreadth/2.);
+  temp.SetZ(z);
+
+  return temp;
+}
+
+
+void Properties::GetHitPlot(){
+  
+  TCanvas *cHitPlot = new TCanvas(GetName().c_str(), GetName().c_str(), 600, 450);
+  TH2F *h2dHitPlot = new TH2F("h2dHitPlot", "HitPlot", 500, -fLength, fLength, 500, -fBreadth, fBreadth);
+  h2dHitPlot->SetMarkerSize(0.5);
+  h2dHitPlot->SetMarkerStyle(20);
+  int numOfEvents = Tracking::Tree::instance()->GetNumOfEvents();
+  std::vector<int> topPlaneFiredStripVector;
+  std::vector<int> bottomPlaneFiredStripVector;
+  std::vector<Tracking::Vector3D<double>> pixelVect;
+  int count=0;
+  for(int evNo = 0 ; evNo < numOfEvents ; evNo++){
+    pixelVect.clear();
+    SetEventDetected(evNo);
+    topPlaneFiredStripVector = GetPlane(0)->GetFiredStripsVector();
+    bottomPlaneFiredStripVector = GetPlane(1)->GetFiredStripsVector();
+    if(fEventDetected){
+    //if(topPlaneFiredStripVector.size() && bottomPlaneFiredStripVector.size()){
+      for(int xval = 0  ; xval < topPlaneFiredStripVector.size() ; xval++){
+        for(int yval = 0  ; yval < bottomPlaneFiredStripVector.size() ; yval++){
+          count++;
+          pixelVect.push_back(GetStripCoordinate(topPlaneFiredStripVector[xval],bottomPlaneFiredStripVector[yval],GetZPos()));
+        }
+      }
+    }
+    if(pixelVect.size()){
+      for(int i = 0 ;  i < pixelVect.size() ; i++){
+        h2dHitPlot->Fill(pixelVect[i].x(), pixelVect[i].y());
+        //pixelVect[i].Print();
+      }
+    }
+
+  }
+
+  std::cout<<"Total Num of Hit Point for Detector  : "<< GetName() << " : " << count << std::endl;
+  std::cout<<"==================================================================="<< std::endl;
+  
+  h2dHitPlot->Draw();
+  
+}
 
 void Properties::GetX_Y_And_ClusterHistograms()
 {

@@ -28,6 +28,8 @@ namespace Tomography {
 
 class Properties {
 private:
+
+  int fClusterSize;
   int fTotalNumOfChannels;
   std::string fName;
   double fLength;
@@ -46,6 +48,11 @@ private:
    * Here i am considering that each channel is rectangular in shape
    *
    */
+
+  //X and Y alignment variables
+  double fDx;
+  double fDy;
+  double fDTheta;
 
 
 
@@ -67,6 +74,12 @@ public:
   void SetZPos(double zPos){fZPos = zPos;}
   void SetDetectorType(std::string detType){fDetectorType = detType;}
   void SetEfficiency();
+
+  void SetClusterSize(int clusterSize){fClusterSize = clusterSize;}
+  int GetClusterSize(){return fClusterSize;}
+
+  //static void SetClusterSize(int clusterSize){fClusterSize = clusterSize;}
+  //static int GetClusterSize(){return fClusterSize;}
   /*void SetEfficiency()
   {
     int count = 0;
@@ -82,6 +95,18 @@ public:
   }
   */
 
+  void SetDx(double val){fDx = val;}
+  void SetDy(double val){fDy = val;}
+  void SetDTheta(double val){fDTheta = val;}
+  void SetDxDyDTheta(double dX, double dY, double dTheta){
+	  fDx = dX;
+	  fDy = dY;
+	  fDTheta = dTheta;
+  }
+
+  double GetDx(){return fDx;}
+  double GetDy(){return fDy;}
+  double GetDTheta(){return fDTheta;}
   bool EventDetected(){return fEventDetected;}
   void SetEventDetected(int evNo);
   double GetZPos(){return fZPos;}
@@ -103,7 +128,8 @@ public:
   std::string GetDetectorType(){return fDetectorType;}
   void GetStripProfile();
   void GetX_Y_And_ClusterHistograms();
-
+  void GetHitPlot();
+  Tracking::Vector3D<double> GetStripCoordinate(int x, int y, int z);
   //void FetchInfo(Tracking::Tree t);
   void InsertPlane(ScintillatorPlane *plane){
     fScintillatorPlaneVector.push_back(plane);
@@ -128,6 +154,12 @@ public:
     	  fScintillatorPlaneVector[planeNo]->GetFiredStripsNameVector();
     }
   double GetEfficiency(){return fEfficiency;}
+
+  Tracking::Vector3D<double> Random(){
+	  return Tracking::Vector3D<double>(Tracking::Global::GenRandomDet(-fLength/2.,fLength/2.),
+			                            Tracking::Global::GenRandomDet(-fLength/2.,fLength/2.),
+										fZPos);
+  }
 
 };
 

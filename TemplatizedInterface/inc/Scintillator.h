@@ -11,6 +11,7 @@
 #include "Tree.h"
 #include "base/Global.h"
 #include "base/Vector3D.h"
+
 #ifdef SHOW_VISUALIZATION
 #include "TGeoVolume.h"
 #endif
@@ -33,6 +34,10 @@ class Scintillator {
   static int fId; // Static variable to increase whenever a new object is created.
   bool fScintHit;
 
+  //These are required to create TrackBox, which is basically another step of validation
+  std::vector<Tracking::Vector3D<double>> fVerticesVector;
+
+
   Tracking::Channel *ch;// Data structure to hold data for the scintillator
   
   //Strip num always start from 0, ScintId can start from other number also
@@ -42,6 +47,11 @@ class Scintillator {
   //Data members to store window starting and end
   //This is provided to allow user to modify window if required.
   static long fStart,fEnd;
+
+  // X and Y alignment variables
+  double fDx;
+  double fDy;
+  double fDTheta;
 
 /*
 #ifndef USE_EVE
@@ -59,12 +69,27 @@ class Scintillator {
 
 public:
   Scintillator();
+
+  void SetDx(double val) { fDx = val; }
+  void SetDy(double val) { fDy = val; }
+  void SetDTheta(double val) { fDTheta = val; }
+  void SetDxDyDTheta(double dX, double dY, double dTheta) {
+    fDx = dX;
+    fDy = dY;
+    fDTheta = dTheta;
+  }
+
+  double GetDx() { return fDx; }
+  double GetDy() { return fDy; }
+  double GetDTheta() { return fDTheta; }
+
   Scintillator(int moduleId, double length, double breadth,double height);
   Scintillator(int moduleId, double length, double breadth,double height,Tracking::Vector3D<double> placedLocation);
   ~Scintillator();
   static void SetStartingId(int sId){fId = sId;}
   static void SetStartingStripNum(){fSno = -1;}
 
+  void SetPlacedLocation(Tracking::Vector3D<double> location){fPlacedLocation = location ;}
   void SetLength(double length){fLength = length;}
   void SetBreadth(double breadth){fBreadth = breadth;}
   void SetHeight(double height){fHeight = height;}
@@ -101,14 +126,27 @@ public:
 	  fStart = start;
 	  fEnd = end;
   }
-/*
+
+  void FillVerticesVector(){
+
+	fVerticesVector.push_back(Tracking::Vector3D<double>(fPlacedLocation.x()-fLength/2., fPlacedLocation.y()-fBreadth/2, fPlacedLocation.z()));
+	fVerticesVector.push_back(Tracking::Vector3D<double>(fPlacedLocation.x()+fLength/2., fPlacedLocation.y()-fBreadth/2, fPlacedLocation.z()));
+	fVerticesVector.push_back(Tracking::Vector3D<double>(fPlacedLocation.x()+fLength/2., fPlacedLocation.y()+fBreadth/2, fPlacedLocation.z()));
+	fVerticesVector.push_back(Tracking::Vector3D<double>(fPlacedLocation.x()-fLength/2., fPlacedLocation.y()+fBreadth/2, fPlacedLocation.z()));
+  }
+
+  std::vector<Tracking::Vector3D<double>> GetVertices(){
+    return fVerticesVector;
+  }
+
+#if 0
 #ifndef USE_EVE
   void CreateTGeoVolume();
 #else
 
   //This block is for EVE
 #endif
-*/
+#endif
 
 };
 
@@ -140,12 +178,25 @@ void Scintillator::DetectAndSetHit(int evNo) {
      */
 
     if(ForRpc) {
+    	for(int i = 0 ; i<ch->size() ; i++){
+    		scintillator = ch->at(i);
+    		long rpcData = scintillator;
+                if (rpcData >= fStart && rpcData <= fEnd) {
+                  fScintHit = true;
+                  fValue = rpcData;
+                  break;
+                }
+        }
+/*
     	long rpcData = scintillator;
         //std::cout<< "Rpcdata : " << rpcData << std::endl;
+
     	if (rpcData >= fStart && rpcData <= fEnd){
     	         fScintHit = true;
  		 fValue = rpcData;
          }
+
+*/
 
     }else {
     	long scintillatorData = scintillator;

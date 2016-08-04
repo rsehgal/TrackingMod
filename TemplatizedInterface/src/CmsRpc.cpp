@@ -11,6 +11,8 @@
 
 namespace Tomography {
 
+//int CmsRpc::fClusterSize = 2;
+
 CmsRpc::CmsRpc() {
   // TODO Auto-generated constructor stub
 }
@@ -43,6 +45,8 @@ CmsRpc::CmsRpc(int moduleId, std::string rpcName, double zPos, int startId) {
   InsertPlane(new ScintillatorPlane(moduleId,32,zPos,GetLength()/3,GetBreadth(),GetHeight(),-1*GetLength()/3.,false));
   InsertPlane(new ScintillatorPlane(moduleId,32,zPos,GetLength()/3,GetBreadth(),GetHeight(),0.,false));
   InsertPlane(new ScintillatorPlane(moduleId,32,zPos,GetLength()/3,GetBreadth(),GetHeight(),GetLength()/3.,false));
+  SetClusterSize(2);
+
 }
 
 } /* namespace Tomography */

@@ -18,7 +18,7 @@ namespace Tomography {
 int Scintillator::fId = -1;
 int Scintillator::fSno = -1;
 long Scintillator::fStart = 19450;
-long Scintillator::fEnd = 20550;
+long Scintillator::fEnd = 21000;
 
 Scintillator::Scintillator(){}
 
@@ -45,6 +45,7 @@ Scintillator::Scintillator(int moduleId, double length, double breadth,double he
   std::stringstream ss;
   ss << "Module" << fModuleId <<"_LE_CH" << fScintId;
   fName = ss.str();
+  FillVerticesVector();
 }
 
 Scintillator::~Scintillator() {
@@ -57,13 +58,13 @@ TGeoBBox* Scintillator::GetScintShape(){
   }
 
 #ifndef USE_EVE
-
+#if 0
 void Scintillator::CreateTGeoVolume(){
   fTGeoVolume = v.CreateTGeoVolume(fName.c_str(),new TGeoBBox(fName.c_str(), fLength / 2., fBreadth / 2., fHeight / 2.));
   fTGeoVolume->SetVisibility(kTRUE);
   fTGeoVolume->SetLineColor(kGreen);
 }
-
+#endif
 #endif
 #endif
 } /* namespace Tomography */

@@ -28,7 +28,13 @@ class ScintillatorPlane {
   std::vector<int> fFiredStripsIDVector;
   std::vector<std::string> fFiredStripsNameVector;
   double fEfficiency;
-  static int fClusterSize;
+  //static int fClusterSize;
+  int fClusterSize;
+
+  // X and Y alignment variables
+  double fDx;
+  double fDy;
+  double fDTheta;
 
 public:
   ScintillatorPlane();
@@ -52,7 +58,7 @@ public:
         scintPlacedLocation.SetZ(zPos);
 
         double len=0., brd=0.;
-        if(xdir){
+        if(!xdir){
           len =  fLength / numOfScintillators;
           brd = fBreadth;
           scintPlacedLocation.SetX(-fLength/2.+i*len);
@@ -67,22 +73,74 @@ public:
         fScintVector.push_back(new Scintillator(moduleId, len, brd, fHeight,scintPlacedLocation));
 
       }
-      fClusterSize = 2;
+      //fClusterSize = 2;
     }
+
+  ScintillatorPlane(int moduleId, int numOfScintillators, double xPos, double yPos, double zPos, double theta, double scintPlaneLength,
+                        double scintPlaneBreadth, double scintPlaneHeight,double planeShift, bool xdir=true, std::string planeName = "Test-ScintillatorPlane"):
+                        fLength(scintPlaneLength),fBreadth(scintPlaneBreadth), fHeight(scintPlaneHeight){
+        fNumOfScintillators=numOfScintillators;
+        Tracking::Vector3D<double> scintPlacedLocation;
+        for (int i = 0; i < numOfScintillators; i++) {
+        	fDx = xPos;
+        	fDy = yPos;
+        	fDTheta = theta;
+
+          scintPlacedLocation.Set(0.,0.,0.);
+          scintPlacedLocation.SetZ(zPos);
+
+          double len=0., brd=0.;
+          if(!xdir){
+            len =  fLength / numOfScintillators;
+            brd = fBreadth;
+            scintPlacedLocation.SetX(-fLength/2.+i*len);
+            scintPlacedLocation.SetY(planeShift);
+
+          }else{
+            len =  fLength ;
+            brd = fBreadth / numOfScintillators;
+            scintPlacedLocation.SetX(planeShift);
+            scintPlacedLocation.SetY(-fBreadth/2.+i*brd);
+
+          }
+          scintPlacedLocation.Transform(fDx,fDy,theta);
+          fScintVector.push_back(new Scintillator(moduleId, len, brd, fHeight,scintPlacedLocation));
+
+        }
+       // fClusterSize = 2;
+      }
+
+
   ~ScintillatorPlane();
+  void SetDx(double val) { fDx = val; }
+  void SetDy(double val) { fDy = val; }
+  void SetDTheta(double val) { fDTheta = val; }
+  void SetDxDyDTheta(double dX, double dY, double dTheta) {
+    fDx = dX;
+    fDy = dY;
+    fDTheta = dTheta;
+  }
+
+  double GetDx() { return fDx; }
+  double GetDy() { return fDy; }
+  double GetDTheta() { return fDTheta; }
+
   std::string GetName(){return fName;}
   int GetTotalScintillatorFired(){return fScintTotal;}
   int GetNumOfScintillators(){return fNumOfScintillators;}
   int DetectTotalScinitillatorFired();
   std::vector<Scintillator*> GetScintVector(){return fScintVector;}
+  Scintillator* GetScintillator(int scintNo){return fScintVector[scintNo];}
   double GetLength(){return fLength;}
   double GetBreadth(){return fBreadth;}
   double GetHeight(){return fHeight;}
   double GetEfficiency() {return fEfficiency;}
   int GetClusterSize(){return fClusterSize;}
+  void SetClusterSize(int clSize){fClusterSize = clSize;}
+  //static int GetClusterSize(){return fClusterSize;}
   //template<bool ForRpc>
  // bool IsShowerEvent(Tracking::Tree &t, int evNo);
-  static void SetClusterSize(int clSize){fClusterSize = clSize;}
+  //static void SetClusterSize(int clSize){fClusterSize = clSize;}
   void SetFiredStripsVector(int evNo);
   void SetEfficiency();
   /*

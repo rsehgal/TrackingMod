@@ -19,8 +19,8 @@
 #include "Coordinates.h"
 //#include "SetupManager.h"
 //include "Eve/Singleton.h"
-#include "HittedPixel.h"
-#include "VisualizationHelper.h"
+//#include "HittedPixel.h"
+//#include "VisualizationHelper.h"
 #include "TThread.h"
 #include "Tree.h"
 /*
@@ -49,6 +49,7 @@ typedef Tomography::Properties Detector;
         std::vector<Detector*> fTriggeringPlaneVector;
         std::vector<Detector*> fCmsRpcVector;
         std::vector<Detector*> fGlassRpcVector;
+        std::vector<Detector*> fPaddleVector;
         int TriggeringPlaneLowerLayerStartsAt = 3;  //from 4th detector
         int CmsRpcLowerLayerStartsAt = 3;
         int GlassRpcLowerLayerStartsAt;
@@ -66,6 +67,9 @@ typedef Tomography::Properties Detector;
 
           if(det->GetDetectorType().compare("TRG") == 0)
             fTriggeringPlaneVector.push_back(det);
+
+          if(det->GetDetectorType().compare("PADDLE") == 0)
+            fPaddleVector.push_back(det);
 
         }
 
@@ -122,6 +126,8 @@ typedef Tomography::Properties Detector;
             return fGlassRpcVector;
           if(detType.compare("TRG")==0)
             return fTriggeringPlaneVector;
+          if(detType.compare("PADDLE")==0)
+            return fPaddleVector;
         }
 
         void SetEfficiency(std::string detType){
@@ -152,8 +158,10 @@ typedef Tomography::Properties Detector;
 
         double GetEfficiency(){return fEfficiency;};
         bool EventDetected(){return fEventDetected;}
+        void GetHitPlot(std::string detType);
 
         void SetEventDetected(std::string detType, int evNo){
+        	fEventDetected = false;
             std::vector<Detector*> detVect = GetDetectorVector(detType);
           //for(int evNo = 0 ; evNo < numOfEvents ; evNo++){
             for(int detNo = 0 ; detNo < detVect.size() ; detNo++){

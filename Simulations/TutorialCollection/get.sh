@@ -1,0 +1,21 @@
+mkdir Day1
+cd Day1
+wget http://www.ifh.de/geant4/g4course2011/TestEm3a.tgz
+cd ..
+mkdir Day2
+cd Day2
+wget http://www.ifh.de/geant4/g4course2011/day2a.tgz
+wget http://www.ifh.de/geant4/g4course2011/day2b.tgz
+wget http://www.ifh.de/geant4/g4course2011/day2c.tgz
+wget http://www.ifh.de/geant4/g4course2011/day2d.tgz
+wget http://www.ifh.de/geant4/g4course2011/day2e.tgz
+wget http://www.ifh.de/geant4/g4course2011/day2f.tgz
+cd ..
+mkdir Day3
+cd Day3
+wget http://www.ifh.de/geant4/g4course2011/day3a.tgz
+wget http://www.ifh.de/geant4/g4course2011/day2d.tgz
+wget http://www.ifh.de/geant4/g4course2011/day3e.tgz
+wget http://www.ifh.de/geant4/g4course2011/day3f.tgz
+wget http://www.ifh.de/geant4/g4course2011/day3g.tgz
+

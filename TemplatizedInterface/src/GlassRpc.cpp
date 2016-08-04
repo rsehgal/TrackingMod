@@ -11,6 +11,7 @@
 
 namespace Tomography {
 
+//int GlassRpc::fClusterSize = 2;
 GlassRpc::GlassRpc() {
   // TODO Auto-generated constructor stub
 }
@@ -43,6 +44,26 @@ GlassRpc::GlassRpc(int moduleId, std::string rpcName, double zPos, int startId) 
   }*/
   InsertPlane(new ScintillatorPlane(moduleId,32,zPos,GetLength(),GetBreadth(),GetHeight(),0.,true));
   InsertPlane(new ScintillatorPlane(moduleId,32,zPos,GetLength(),GetBreadth(),GetHeight(),0.,false));
+  SetClusterSize(2);
+
+}
+
+GlassRpc::GlassRpc(int moduleId, std::string rpcName, double xPos, double yPos, double zPos, double theta,  int startId) {
+	SetDxDyDTheta(xPos,yPos,theta);
+  SetDetectorType("GLASS");
+  Scintillator::SetStartingId(startId);
+  Scintillator::SetStartingStripNum();
+  int numOfPlanes = 2;
+  SetNumOfPlanes(numOfPlanes);
+  SetName(rpcName);
+  SetZPos(zPos);
+  SetLBH(100,100,1);
+  Initialize();
+  /*for(int i = 0 ; i < numOfPlanes ; i++){
+    InsertPlane(new ScintillatorPlane(moduleId,32,zPos,GetLength(),GetBreadth()));
+  }*/
+  InsertPlane(new ScintillatorPlane(moduleId,32,xPos,yPos,zPos,theta,GetLength(),GetBreadth(),GetHeight(),0.,true));
+  InsertPlane(new ScintillatorPlane(moduleId,32,xPos,yPos,zPos,theta,GetLength(),GetBreadth(),GetHeight(),0.,false));
 }
 
 } /* namespace Tomography */

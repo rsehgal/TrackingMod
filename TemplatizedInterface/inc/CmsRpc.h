@@ -18,6 +18,7 @@ namespace Tomography {
 
 class CmsRpc : public Properties {
 
+//	static int fClusterSize;
 public:
   CmsRpc();
 
@@ -28,6 +29,12 @@ public:
   CmsRpc(int moduleId,std::string rpcName,double zPos, int startId=31);
   CmsRpc(std::string name, std::vector<int> channelDimVector);
   virtual ~CmsRpc();
+/*
+  static void SetClusterSize(int clusterSize){fClusterSize = clusterSize;
+
+  }
+  static int GetClusterSize(){return fClusterSize;}
+*/
 
 
 

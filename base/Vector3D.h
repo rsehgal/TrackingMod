@@ -69,7 +69,8 @@ public:
 		vec[1]=y;
 		vec[2]=z;
 	}
-
+	TRACKING_INLINE
+	Type* GetArr(){return vec;}
 	TRACKING_INLINE
 	void SetX(Type x){vec[0]=x;}
 	TRACKING_INLINE
@@ -102,12 +103,39 @@ public:
 	Type Mag()  {
 	    return std::sqrt(Mag2());
 	  }
+
+	TRACKING_INLINE
+	Vector3D<Type> Unit(){
+		return Vector3D<Type>(this->x()/this->Mag(), this->y()/this->Mag(), this->z()/this->Mag());
+	}
+
 	TRACKING_INLINE
 	void Print(){
 		std::cout<<"("<<vec[0]<<","<<vec[1]<<","<<vec[2]<<")"<<std::endl;
 	}
 
-	BINARY_OP(+)
+	TRACKING_INLINE
+	void operator = (Vector3D<Type> vec2){
+		this->vec[0]=vec2.vec[0];
+		this->vec[1]=vec2.vec[1];
+		this->vec[2]=vec2.vec[2];
+	}
+
+	TRACKING_INLINE
+    void Transform(Type dx, Type dy, Type dt) {
+          Type x, y;
+          x = this->x();
+          y = this->y();
+
+          this->vec[0] = dx + (std::cos(dt) * x - std::sin(dt) * y);
+          this->vec[1] = dy + (std::sin(dt) * x + std::cos(dt) * y);
+//          this->vec[0] += dy;
+//          this->vec[1] += dx;
+
+
+        }
+
+        BINARY_OP(+)
 	BINARY_OP(-)
 	SCALAR_OP(+)
 	SCALAR_OP(-)
