@@ -26,6 +26,8 @@ typedef std::vector<Module> ModuleVector;
 #define Precision double
 #define TRACKING_INLINE inline
 
+#define PI 3.14159265359
+
 class Global{
 public:
 	Global(){}

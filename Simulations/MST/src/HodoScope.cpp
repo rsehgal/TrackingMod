@@ -15,6 +15,8 @@
 #include "G4Material.hh"
 #include "G4UnitsTable.hh"
 #include "B2aDetectorMessenger.hh"
+//#include "base/Global.h"
+#define PI 3.14159265359
 
 HodoScope::HodoScope(){
 double density = 2.700*g/cm3;
@@ -246,6 +248,7 @@ G4VPhysicalVolume* HodoScope::Construct(){
 */
 
 //Generalized target which can be changed from UI, default material is set to Aluminium
+/*
 G4Box *target = new G4Box("Target",5.*cm,5.*cm,5.*cm);
   //G4LogicalVolume *logicalLeadBlock = new G4LogicalVolume(leadBlock,nist->FindOrBuildMaterial("G4_Pb"),"LogicalLeadBlock");
   fLogicTarget = new G4LogicalVolume(target,fTargetMaterial,"LogicalTargetBlock");
@@ -253,6 +256,83 @@ G4Box *target = new G4Box("Target",5.*cm,5.*cm,5.*cm);
                             //G4ThreeVector(),
                             G4ThreeVector(),
                             fLogicTarget,
+                            "PhysicalWorld",
+                            logicWorld,
+                            false,
+                            0,
+                            checkOverlaps);
+*/
+
+
+G4Material* matPb = nist->FindOrBuildMaterial("G4_Pb");
+G4Box *targetPb = new G4Box("TargetPb",5.*cm,5.*cm,5.*cm);
+  //G4LogicalVolume *logicalLeadBlock = new G4LogicalVolume(leadBlock,nist->FindOrBuildMaterial("G4_Pb"),"LogicalLeadBlock");
+  G4LogicalVolume* fLogicTargetPb = new G4LogicalVolume(targetPb,matPb,"LogicalTargetPbBlock");
+  G4VPhysicalVolume *phyTargetPbBlock = new G4PVPlacement(0,
+                            //G4ThreeVector(),
+                            G4ThreeVector(),
+                            fLogicTargetPb,
+                            "PhysicalWorld",
+                            logicWorld,
+                            false,
+                            0,
+                            checkOverlaps);
+
+ 
+  G4Material* matU = nist->FindOrBuildMaterial("G4_U");
+//G4Box *targetU = new G4Box("TargetU",5.*cm,5.*cm,5.*cm);
+G4Sphere *targetU = new G4Sphere("TargetU",0., 10.*cm, 0., 2*PI, 0. , PI);
+  //G4LogicalVolume *logicalLeadBlock = new G4LogicalVolume(leadBlock,nist->FindOrBuildMaterial("G4_Pb"),"LogicalLeadBlock");
+ G4LogicalVolume* fLogicTargetU = new G4LogicalVolume(targetU,matU,"LogicalTargetUBlock");
+  G4VPhysicalVolume *phyTargetUBlock = new G4PVPlacement(0,
+                            //G4ThreeVector(),
+                            G4ThreeVector(50.*cm,0.,0.),
+                            fLogicTargetU,
+                            "PhysicalWorld",
+                            logicWorld,
+                            false,
+                            0,
+                            checkOverlaps);
+
+    G4Material* matAm = nist->FindOrBuildMaterial("G4_Am");
+//G4Box *targetU = new G4Box("TargetU",5.*cm,5.*cm,5.*cm);
+G4Sphere *targetAm = new G4Sphere("TargetAm",0., 2.*cm, 0., 2*PI, 0. , PI);
+  //G4LogicalVolume *logicalLeadBlock = new G4LogicalVolume(leadBlock,nist->FindOrBuildMaterial("G4_Pb"),"LogicalLeadBlock");
+ G4LogicalVolume* fLogicTargetAm = new G4LogicalVolume(targetAm,matAm,"LogicalTargetAmBlock");
+  G4VPhysicalVolume *phyTargetAmBlock = new G4PVPlacement(0,
+                            //G4ThreeVector(),
+                            G4ThreeVector(-50.*cm,0.,-10.*cm),
+                            fLogicTargetAm,
+                            "PhysicalWorld",
+                            logicWorld,
+                            false,
+                            0,
+                            checkOverlaps);
+
+    G4VPhysicalVolume *phyTargetAmBlock2 = new G4PVPlacement(0,
+                            //G4ThreeVector(),
+                            G4ThreeVector(-20.*cm,0.,-10.*cm),
+                            fLogicTargetAm,
+                            "PhysicalWorld",
+                            logicWorld,
+                            false,
+                            0,
+                            checkOverlaps);
+
+      G4VPhysicalVolume *phyTargetAmBlock3 = new G4PVPlacement(0,
+                            //G4ThreeVector(),
+                            G4ThreeVector(40.*cm,0.,+10.*cm),
+                            fLogicTargetAm,
+                            "PhysicalWorld",
+                            logicWorld,
+                            false,
+                            0,
+                            checkOverlaps);
+
+        G4VPhysicalVolume *phyTargetAmBlock4 = new G4PVPlacement(0,
+                            //G4ThreeVector(),
+                            G4ThreeVector(-10.*cm,40.,20.*cm),
+                            fLogicTargetAm,
                             "PhysicalWorld",
                             logicWorld,
                             false,

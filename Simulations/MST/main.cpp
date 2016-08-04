@@ -22,10 +22,17 @@
 
 #include "Randomize.hh"
 
+//Some image reconstruction related stuff
+//#include <TApplication.h>
+//#include "VisualizationHelper.h"
+#include "base/Vector3D.h"
+//using Tomography::VisualizationHelper;
+
 
 int main(int argc, char *argv[]){
+// TApplication *fApp = new TApplication("Test", NULL, NULL);
+//   VisualizationHelper v;
 
-  
 
   G4RunManager *runManager = new G4RunManager;
   //G4VUserPhysicsList* phyList = new MyPhysics;
@@ -68,6 +75,9 @@ int main(int argc, char *argv[]){
   #endif
 
   delete runManager;
+  // v.Show();
+  //   gEve->DoRedraw3D(); 
+  //   fApp->Run();
 
   return 0;
 

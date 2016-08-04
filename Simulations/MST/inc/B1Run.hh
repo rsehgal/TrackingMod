@@ -37,6 +37,8 @@
 #include "base/Vector3D.h"
 #include <G4String.hh>
 #include <fstream>
+#include "Track.h"
+using Tomography::Track;
 
 using Tracking::Vector3D;
 
@@ -50,6 +52,9 @@ class B1Run : public G4Run
 {
      PhysicalTrackVector phyTrackVect;
      std::vector<double> scatteringAngleVect;
+     std::vector<Track> incomingTrackVect;
+     std::vector<Track> outgoingTrackVect;
+     
   public:
     B1Run();
     virtual ~B1Run();
@@ -67,6 +72,10 @@ class B1Run : public G4Run
     void FillPhysicalTrackVector(std::vector<Vector3D<double>> hitVect);
     void FillScatteringAngleVector(double scatteringAngle){scatteringAngleVect.push_back(scatteringAngle);}
     std::vector<double> GetScatteringAngleVector()const {return scatteringAngleVect;}
+    void FillIncomingTrackVector(Track trk){incomingTrackVect.push_back(trk);}
+    void FillOutgoingTrackVector(Track trk){outgoingTrackVect.push_back(trk);}
+    std::vector<Track> GetIncomingTrackVector() const {return incomingTrackVect;}
+    std::vector<Track> GetOutgoingTrackVector() const {return outgoingTrackVect;}
 
 
   private:

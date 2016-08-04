@@ -155,6 +155,7 @@ file(COPY ${CFG_FILES} DESTINATION ${PROJECT_SOURCE_DIR}/build)
 set(INCLUDES ${INCLUDES}
 ${CMAKE_SOURCE_DIR}/CoordinateGenerator/inc
 ${CMAKE_SOURCE_DIR}/TemplatizedInterface/inc
+${CMAKE_SOURCE_DIR}/Helpers/inc
 #${PROJECT_SOURCE_DIR}/visualizer
 ${CMAKE_SOURCE_DIR}/inc
 ${CMAKE_SOURCE_DIR}
@@ -196,6 +197,17 @@ macro(collect_sources SOURCES)
   endforeach()
 endmacro()
 
+#COLLECTING ALL HELPERS FILES
+set(HELPERS ${HELPERS}
+${CMAKE_SOURCE_DIR}/Helpers/src
+)
+
+macro(collect_helpers HELPERS)
+  foreach(HELPER ${HELPERS})
+    file(GLOB helpers ${helpers} ${HELPER}/*.cpp)
+  endforeach()
+endmacro()
+
 
 SET(TESTSDIR ${TESTSDIR}
 ${CMAKE_SOURCE_DIR}/CoordinateGenerator/test
@@ -223,7 +235,7 @@ macro(build_executables EXECUTABLES)
   foreach(EXECUTABLE ${EXECUTABLES})
     get_filename_component(TARGET_NAME ${EXECUTABLE} NAME_WE)
     add_executable(${TARGET_NAME} ${EXECUTABLE} ${headers})
-    target_link_libraries(${TARGET_NAME} ${TOMOLIB})
+    target_link_libraries(${TARGET_NAME} ${TOMOLIB} ${HELPERSLIB})
 #  if(EVE)
 #    target_link_libraries(${TARGET_NAME} ${ROOT_LIBRARIES} Geom Eve)
 #  else()
@@ -237,14 +249,24 @@ include_dirs("${INCLUDES}")
 collect_headers("${INCLUDES}")
 collect_sources("${SOURCES}")
 collect_tests("${TESTSDIR}")
+collect_helpers("${HELPERS}")
 
-message(STATUS "--------- Following source file will be use for the creation of Shared library -----------")
+message(STATUS "--------- Following source file will be use for the creation of TOMO Shared library -----------")
 message(STATUS ${sources})
 message(STATUS "------------------------------------------------------------------------------------------")
 add_library(Tomo SHARED ${sources})
 target_link_libraries(Tomo ${EXTERNAL_LIBS})
 set(TOMOLIB ${TOMOLIB}
 Tomo
+)
+
+message(STATUS "--------- Following source files will be use for the creation of HELPERS Shared library -----------")
+message(STATUS ${helpers})
+message(STATUS "------------------------------------------------------------------------------------------")
+add_library(Helpers SHARED ${helpers})
+#target_link_libraries(Tomo ${EXTERNAL_LIBS})
+set(HELPERSLIB ${HELPERSLIB}
+Helpers
 )
 
 link_directories(${CMAKE_SOURCE_DIR}/build)

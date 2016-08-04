@@ -1,6 +1,6 @@
 //#ifndef df
 #include <tgmath.h>
-#include "TemplatizedInterface/inc/LinesAngle.h"
+#include "LinesAngle.h"
 //#define PI 3.14159265359
 //namespace Tomography{
 double LinesAngle::GetAngle(){ return AngleDegree; }

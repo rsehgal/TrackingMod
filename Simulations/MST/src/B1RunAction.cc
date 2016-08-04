@@ -42,7 +42,16 @@
 
 #include <iostream>
 #include <fstream>
+// #ifdef USE_EVE
+// #include "VisualizationHelper.h"
+// #include "Imaging.h"
+// #endif
+//#include <TROOT.h>
+//#include <TApplication.h>
 
+//using Tomography::VisualizationHelper;
+#include "Imaging.h"
+using Tracking::ImageReconstruction;
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 B1RunAction::B1RunAction()
@@ -80,7 +89,12 @@ void B1RunAction::BeginOfRunAction(const G4Run*)
   //inform the runManager to save random number seed
   G4RunManager::GetRunManager()->SetRandomNumberStore(false);
   fs.open("run.txt", std::ios::app);
+  ftrack.open("tracks.txt",std::ios::app);
+  /*#ifdef USE_EVE
+  VisualizationHelper v;
+  #endif*/
 
+// TApplication *fApp = new TApplication("Test", NULL, NULL);
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -89,6 +103,14 @@ void B1RunAction::EndOfRunAction(const G4Run* run)
 {
   // std::ofstream fs;
   // fs.open("run.txt", std::ios::app);
+
+//TApplication *fApp = new TApplication("Test", NULL, NULL);
+/*
+#ifdef USE_EVE
+  VisualizationHelper v;
+#endif
+*/  
+  ImageReconstruction im;
 
   G4int nofEvents = run->GetNumberOfEvent();
   if (nofEvents == 0) return;
@@ -168,15 +190,35 @@ void B1RunAction::EndOfRunAction(const G4Run* run)
   }
 
     //Logic to store the scattering angle of every event into "run.txt"
-    
     fs << b1Run->GetScatteringAngleVector()[i] << " " ;
+    
+    //std::cout<<"GetIncomingTrackVector Size : " << b1Run->GetIncomingTrackVector().size() << std::endl;
+
+if(1){
     //fs << "Hello ";
+    Tracking::Vector3D<double> p1(0.,0.,0.), q1(0.,0.,0.);
+    Tracking::Vector3D<double>  pocaPt = im.POCA(b1Run->GetIncomingTrackVector()[i].GetP1(),
+                         b1Run->GetIncomingTrackVector()[i].GetDirCosine(),
+                         b1Run->GetOutgoingTrackVector()[i].GetP1(),
+                         b1Run->GetOutgoingTrackVector()[i].GetDirCosine(),p1,q1);
+
+    //pocaPt.Print();
+    ftrack<< pocaPt.x() <<" "<<pocaPt.y() << " "<< pocaPt.z() << std::endl;
+  }
+
+    //v.Register(pocaPt);
+   
 
   }
+
+  //v.Show();
+  //gEve->DoRedraw3D();
+//  fApp->Run();
 
   fs << std::endl;
 
   fs.close();
+  ftrack.close();
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

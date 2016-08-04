@@ -35,7 +35,10 @@
 #include "globals.hh"
 #include "base/Vector3D.h"
 #include <vector>
+#include "Track.h"
+using Tomography::Track;
 using Tracking::Vector3D;
+
 
 /// Event action class
 ///
@@ -53,12 +56,16 @@ class B1EventAction : public G4UserEventAction
     void push_back(Vector3D<double> pt){hitVect.push_back(pt);}
     std::vector<Vector3D<double>> GetHitVector(){return hitVect;}
     void CalcScatteringAngle();
+    void GenerateIncomingTrack();
+    void GenerateOutgoingTrack();
 
   private:
     G4double  fEdep;
     G4double fScatteringAngle;
     std::vector<Vector3D<double>> hitVect; 
     bool verbose;
+    Track incoming;
+    Track outgoing;
 
 };
 

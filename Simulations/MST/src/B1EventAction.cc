@@ -69,17 +69,36 @@ void B1EventAction::EndOfEventAction(const G4Event*)
     run->FillPhysicalTrackVector(hitVect);
   run->AddEdep(fEdep);
   CalcScatteringAngle();
-  
   run->FillScatteringAngleVector(fScatteringAngle);
 
-if(verbose){
+
+
+if(verbose)
+{
   for(int i=0 ; i<hitVect.size(); i++){
      hitVect[i].Print();
    }
-   std::cout<<"Scattering Angle : " << fScatteringAngle << std::endl;
-  std::cout<<"---------------------------------------------------"<<std::endl;
+   //std::cout<<"Scattering Angle : " << fScatteringAngle << std::endl;
+
+/*   //if(fScatteringAngle*1000 > 20. && fScatteringAngle*1000 < 100.)
+   {
+    //Generating incoming and outgoing track for image reconstruction
+  GenerateIncomingTrack();
+  GenerateOutgoingTrack();
+  run->FillIncomingTrackVector(incoming);
+  run->FillOutgoingTrackVector(outgoing);
+   }
+*/  //std::cout<<"---------------------------------------------------"<<std::endl;
 }
 
+   if(fScatteringAngle*1000 > 20. && fScatteringAngle*1000 < 100.)
+   {
+    //Generating incoming and outgoing track for image reconstruction
+  GenerateIncomingTrack();
+  GenerateOutgoingTrack();
+  run->FillIncomingTrackVector(incoming);
+  run->FillOutgoingTrackVector(outgoing);
+   }
 
   // 
 }
@@ -90,6 +109,22 @@ void B1EventAction::CalcScatteringAngle(){
   LinesAngle l;
 
   fScatteringAngle = l.GetAngleRadian(l.CalculateAngle(hitVect[0],hitVect[hSize-1],hitVect[hSize],hitVect[size-1]));
+}
+
+void B1EventAction::GenerateIncomingTrack(){
+  int size = hitVect.size();
+  //std::cout<<"Size : must be Six : " << size << std::endl;
+  int hSize = size/2;
+  incoming.SetP1(hitVect[0]);
+  incoming.SetP2(hitVect[hSize-1]);
+  
+}
+
+void B1EventAction::GenerateOutgoingTrack(){
+  int size = hitVect.size();
+  int hSize = size/2;
+  outgoing.SetP1(hitVect[hSize]);
+  outgoing.SetP2(hitVect[size-1]);
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

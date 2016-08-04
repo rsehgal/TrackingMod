@@ -11,6 +11,9 @@
 #include "G4RunManager.hh"
 #include "G4SystemOfUnits.hh"
 #include "Randomize.hh"
+#include "base/Global.h"
+#include "base/Vector3D.h"
+using Tracking::Vector3D;
 
 MyPrimaryGeneratorAction::MyPrimaryGeneratorAction() {
   G4int n_particle = 1;
@@ -28,8 +31,29 @@ MyPrimaryGeneratorAction::~MyPrimaryGeneratorAction() { delete fParticleGun; }
 void MyPrimaryGeneratorAction::GeneratePrimaries(G4Event *event) {
    //fParticleGun->SetParticlePosition(G4ThreeVector(-50 * cm, 0., -120 * cm));
    //fParticleGun->GeneratePrimaryVertex(event);
-  fParticleGun->SetParticlePosition(G4ThreeVector(0., 0., -120 * cm));
+
+  //Tracking::Global::GenRandomDet(-fLength/2.,fLength/2.),
+    //                              Tracking::Global::GenRandomDet(-fLength/2.
+  
+  //fParticleGun->SetParticlePosition(G4ThreeVector(0., 0., -120 * cm));
+  Vector3D<double> pt1(Tracking::Global::GenRandomDet(-50.,50.),
+                      Tracking::Global::GenRandomDet(-50.,50.),
+                      //Tracking::Global::GenRandomDet(0.,50.)
+                      -120);
+
+  Vector3D<double> pt2(Tracking::Global::GenRandomDet(-50.,50.),
+                      Tracking::Global::GenRandomDet(-50.,50.),
+                      120);
+  //std::cout<< pt.Unit().x() << pt.Unit().y() << pt.Unit().z() << std::endl;
+  double x = (pt2-pt1).Unit().x();
+  double y = (pt2-pt1).Unit().y();
+  double z = (pt2-pt1).Unit().z();
+
+  //fParticleGun->SetParticleMomentumDirection(G4ThreeVector(x,y,z));
+  fParticleGun->SetParticlePosition(G4ThreeVector(Tracking::Global::GenRandomDet(-50.,50.)*cm, Tracking::Global::GenRandomDet(-50.,50.)*cm, -120 * cm));
+  fParticleGun->SetParticleMomentumDirection(G4ThreeVector(x,y,z));
   fParticleGun->GeneratePrimaryVertex(event);
    //fParticleGun->SetParticlePosition(G4ThreeVector(50 * cm, 0., -120 * cm));
    //fParticleGun->GeneratePrimaryVertex(event);
+
 }
