@@ -56,6 +56,7 @@ class B2aDetectorMessenger: public G4UImessenger
     virtual ~B2aDetectorMessenger();
     
     virtual void SetNewValue(G4UIcommand*, G4String);
+   // virtual void SetNewValue(G4UIcommand* command,double newValue);
     
   private:
     HodoScope*  fDetectorConstruction;
@@ -64,6 +65,7 @@ class B2aDetectorMessenger: public G4UImessenger
     G4UIdirectory*           fDetDirectory;
 
     G4UIcmdWithAString*      fTargMatCmd;
+    G4UIcmdWithADoubleAndUnit*      fMatThicknessCmd;
     //G4UIcmdWithAString*      fChamMatCmd;
 
     //G4UIcmdWithADoubleAndUnit* fStepMaxCmd;

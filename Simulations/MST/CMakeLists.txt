@@ -26,7 +26,10 @@ else()
 endif()
 
 #----------------------------------------------------------------------------
-
+option(USE_RND "Shooting particles in random direction" OFF)
+if(USE_RND)
+add_definitions(-DRANDOM_GUN)
+endif(USE_RND)
 
 file(GLOB MAC_FILES ${PROJECT_SOURCE_DIR}/MacFiles/*)
 message(STATUS ${MAC_FILES})

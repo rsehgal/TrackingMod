@@ -248,8 +248,9 @@ G4VPhysicalVolume* HodoScope::Construct(){
 */
 
 //Generalized target which can be changed from UI, default material is set to Aluminium
-/*
-G4Box *target = new G4Box("Target",5.*cm,5.*cm,5.*cm);
+
+//G4Box *target = new G4Box("Target",5.*cm,5.*cm,5.*cm);
+target = new G4Box("Target",5.*cm,5.*cm,5.*cm);
   //G4LogicalVolume *logicalLeadBlock = new G4LogicalVolume(leadBlock,nist->FindOrBuildMaterial("G4_Pb"),"LogicalLeadBlock");
   fLogicTarget = new G4LogicalVolume(target,fTargetMaterial,"LogicalTargetBlock");
   G4VPhysicalVolume *phyTargetBlock = new G4PVPlacement(0,
@@ -261,8 +262,10 @@ G4Box *target = new G4Box("Target",5.*cm,5.*cm,5.*cm);
                             false,
                             0,
                             checkOverlaps);
-*/
 
+
+/*
+//------------------------  Successfully able to create alphabet P & C   ----------------------------------
 
 G4Material* matPb = nist->FindOrBuildMaterial("G4_Pb");
 G4Box *target1 = new G4Box("Target1",5.*cm,2.*cm,5.*cm);
@@ -336,6 +339,11 @@ G4VPhysicalVolume *phyTarget112 = new G4PVPlacement(0,
                             false,
                             0,
                             checkOverlaps);
+
+
+//-------------------------------------------------------------------------------
+*/
+
 /*
 G4Box *target4 = new G4Box("Target4",3.*cm,2.*cm,5.*cm);
 G4LogicalVolume* fLogicTarget4 = new G4LogicalVolume(target4,matPb,"LogicalTargetPbBlock4");
@@ -822,4 +830,14 @@ void HodoScope::SetTargetMaterial(G4String materialName)
           << materialName << " not found" << G4endl;
      }
   }
+}
+
+void HodoScope::SetTargetThickness(double val){
+  target->SetZHalfLength(val);
+  G4cout
+          << G4endl
+          << "----> The target thickness is  changed to " << val << G4endl;
+     
+  
+  G4RunManager::GetRunManager()->GeometryHasBeenModified();
 }

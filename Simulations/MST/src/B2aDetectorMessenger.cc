@@ -52,7 +52,14 @@ B2aDetectorMessenger::B2aDetectorMessenger(HodoScope* Det)
   fTargMatCmd->SetParameterName("choice",false);
   fTargMatCmd->AvailableForStates(G4State_PreInit,G4State_Idle);
 
-  /*fChamMatCmd = new G4UIcmdWithAString("/B2/det/setChamberMaterial",this);
+  fMatThicknessCmd = new G4UIcmdWithADoubleAndUnit("/B2/det/setTargetThickness",this);
+  fMatThicknessCmd->SetGuidance("Select width of target.");
+  fMatThicknessCmd->SetParameterName("thickness",false);
+  fMatThicknessCmd->SetUnitCategory("Length");
+  fMatThicknessCmd->AvailableForStates(G4State_Idle);
+
+  /*
+  fChamMatCmd = new G4UIcmdWithAString("/B2/det/setChamberMaterial",this);
   fChamMatCmd->SetGuidance("Select Material of the Chamber.");
   fChamMatCmd->SetParameterName("choice",false);
   fChamMatCmd->AvailableForStates(G4State_PreInit,G4State_Idle);
@@ -82,6 +89,12 @@ void B2aDetectorMessenger::SetNewValue(G4UIcommand* command,G4String newValue)
   if( command == fTargMatCmd )
    { fDetectorConstruction->SetTargetMaterial(newValue);}
 
+ if( command == fMatThicknessCmd ){
+  fDetectorConstruction
+      ->SetTargetThickness(fMatThicknessCmd->GetNewDoubleValue(newValue));
+
+ }
+
  /* if( command == fChamMatCmd )
    { fDetectorConstruction->SetChamberMaterial(newValue);}
 
@@ -90,5 +103,12 @@ void B2aDetectorMessenger::SetNewValue(G4UIcommand* command,G4String newValue)
       ->SetMaxStep(fStepMaxCmd->GetNewDoubleValue(newValue));
   }   */
 }
-
+/*
+void B2aDetectorMessenger::SetNewValue(G4UIcommand* command,double newValue)
+{
+ 
+ if( command == fMatThicknessCmd )
+   { fDetectorConstruction->SetTargetThickness(newValue);}
+}
+*/
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
