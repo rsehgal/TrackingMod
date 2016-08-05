@@ -7,6 +7,12 @@
 #include <algorithm>
 #include <cstring>
 #include <sstream>
+#include <TGraph.h>
+#include <TMultiGraph.h>
+#include <TLegend.h>
+
+
+void GenerateGraph();
 
 int main(int argc, char *argv[]){
 
@@ -77,9 +83,67 @@ int main(int argc, char *argv[]){
     }
 
 
-
+    sd.close();
     std::cout<<"--- Execution Completed ----" << std::endl;
+    GenerateGraph();
 	fApp->Run();
 
 	return 0;
+}
+
+void GenerateGraph(){
+    std::string energy="";
+    std::string material="";
+    double thickness = 0.;
+    double stdDev = 0.;
+    std::ifstream sd;
+    sd.open("sd.txt");
+    int numOfSteps = 8;
+    TCanvas *cmat = new TCanvas("cmat", "SD", 800, 600);
+    cmat->Divide(1,1);
+    cmat->cd(1);
+    TMultiGraph *mg = new TMultiGraph();
+    mg->SetTitle("SD w.r.t thickness");
+
+    TGraph *mat1 = new TGraph();
+  mat1->SetTitle("Fe");
+  mat1->SetMarkerStyle(20);
+  mat1->SetMarkerColor(kRed);
+  mat1->SetLineWidth(2);
+
+  int pNo = 0;
+  int numOfMaterials = 2;
+  //while(numOfMaterials){
+    numOfSteps = 8;
+    while(numOfSteps){
+        pNo++;
+        sd >> energy >> material >> thickness >> stdDev ;
+        std::cout<< stdDev << std::endl;
+        mat1->SetPoint(pNo,thickness,stdDev);
+        numOfSteps--;
+    }
+   // numOfMaterials--;
+  //}
+    std::cout<<"--------------------------------"<<std::endl;
+
+TGraph *mat2 = new TGraph();
+  mat2->SetTitle("Pb");
+  mat2->SetMarkerStyle(21);
+  mat2->SetMarkerColor(kGreen);
+  mat2->SetLineWidth(2);
+numOfSteps = 8;
+    while(numOfSteps){
+        pNo++;
+       sd >> energy >> material >> thickness >> stdDev ;
+       std::cout<< stdDev << std::endl;
+        mat2->SetPoint(pNo,thickness,stdDev);
+        numOfSteps--;
+    }
+
+sd.close();
+  //mat1->GetXaxis()->SetRangeUser(8000, 11000);
+  
+  mg->Add(mat1);
+  mg->Add(mat2);
+  mg->Draw("AP");
 }
