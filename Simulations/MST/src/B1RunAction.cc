@@ -179,7 +179,7 @@ void B1RunAction::EndOfRunAction(const G4Run* run)
 
   if(verbose)
   G4cout << "------ Printing Tracking info at the end of Run ------- " << G4endl;
-  fs << particleEnergy << " " << detectorConstruction->GetTargetMaterial() << " ";
+  fs << particleEnergy << " " << detectorConstruction->GetTargetMaterial() << " " << detectorConstruction->GetTargetThickness() << " ";
   for(int i = 0 ;i < b1Run->NumOfTracks() ; i++){
     if(verbose){
     G4cout << "----- Printing Event No : " << i+1 << "  --------" << G4endl;

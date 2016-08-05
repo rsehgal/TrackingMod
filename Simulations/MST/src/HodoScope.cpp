@@ -41,7 +41,7 @@ delete fMessenger;
 G4VPhysicalVolume* HodoScope::Construct(){
   
   G4NistManager* nist = G4NistManager::Instance();
-  G4bool checkOverlaps = true;
+  G4bool checkOverlaps = false;
 
   G4double world_sizeXYZ = 200*cm;
 //  G4double world_sizeXY = 1.2*env_sizeXY;
@@ -833,7 +833,10 @@ void HodoScope::SetTargetMaterial(G4String materialName)
 }
 
 void HodoScope::SetTargetThickness(double val){
-  target->SetZHalfLength(val);
+
+  fTargetThickness = val;
+
+  target->SetZHalfLength(fTargetThickness);
   G4cout
           << G4endl
           << "----> The target thickness is  changed to " << val << G4endl;

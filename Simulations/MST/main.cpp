@@ -60,7 +60,7 @@ int main(int argc, char *argv[]){
   //runManager->BeamOn(1);
 
   //read a macro file of commands
-  #if (0)
+  #if (1)
   G4UImanager* UI = G4UImanager::GetUIpointer();
   G4String command = "/control/execute ";
   G4String fileName = argv[1];
