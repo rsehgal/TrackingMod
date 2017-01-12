@@ -111,7 +111,7 @@ public:
 
 	TRACKING_INLINE
 	void Print(){
-		std::cout<<"("<<vec[0]<<","<<vec[1]<<","<<vec[2]<<")"<<std::endl;
+		std::cout<<"("<<vec[0]<<","<<vec[1]<<","<<vec[2]<<")"; //<<std::endl;
 	}
 
 	TRACKING_INLINE

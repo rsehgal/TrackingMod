@@ -54,6 +54,7 @@ class B1Run : public G4Run
      std::vector<double> scatteringAngleVect;
      std::vector<Track> incomingTrackVect;
      std::vector<Track> outgoingTrackVect;
+     std::vector<Vector3D<double>> fPocaPtVect;
      
   public:
     B1Run();
@@ -76,6 +77,8 @@ class B1Run : public G4Run
     void FillOutgoingTrackVector(Track trk){outgoingTrackVect.push_back(trk);}
     std::vector<Track> GetIncomingTrackVector() const {return incomingTrackVect;}
     std::vector<Track> GetOutgoingTrackVector() const {return outgoingTrackVect;}
+    void FillPocaPtVector(Vector3D<double> pt) { fPocaPtVect.push_back(pt);}
+    std::vector<Vector3D<double>> GetPocaPtVector()const {return fPocaPtVect;}
 
 
   private:

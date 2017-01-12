@@ -11,7 +11,9 @@ using Tracking::Vector3D;
 int main(){
 	TApplication *fApp = new TApplication("Test", NULL, NULL);
 	VisualizationHelper v;
+#ifdef USE_EVE
 	v.RegisterLine(Vector3D<double>(0.,0.,0.),Vector3D<double>(0.,0.,0.));
+#endif
 
     Vector3D<double> pt;
     std::ifstream ft;

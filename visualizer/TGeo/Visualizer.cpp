@@ -54,7 +54,8 @@ void Visualizer::Show(){
   std::cout<<"========= Inside Expected SHOW() ============="<<std::endl;
   std::cout<<"=============================================="<<std::endl;
 
-  TGeoVolume *top = gGeoManager->MakeBox("Top", NULL, kInfinity, kInfinity, kInfinity);
+  //TGeoVolume *top = gGeoManager->MakeBox("Top", NULL, kInfinity, kInfinity, kInfinity);
+TGeoVolume *top = gGeoManager->MakeBox("Top", NULL, 1000., 1000., 1000.);
   gGeoManager->SetTopVolume(top);
   for(int i = 0 ; i < fVolumes.size() ; i++){
   top->AddNode(std::get<0>(fVolumes[i]), 1 , std::get<1>(fVolumes[i]));
@@ -84,7 +85,8 @@ void Visualizer::Show(){
 }
 
 void Visualizer::Show(TGeoVolume *vol){
-  TGeoVolume *top = gGeoManager->MakeBox("Top", NULL, kInfinity, kInfinity, kInfinity);
+//  TGeoVolume *top = gGeoManager->MakeBox("Top", NULL, kInfinity, kInfinity, kInfinity);
+  TGeoVolume *top = gGeoManager->MakeBox("Top", NULL, 100, 100, 100);
   gGeoManager->SetTopVolume(top);
   //TGeoVolume *vol = fGeoManager->MakeSphere("SPHERE", NULL, 30, 40, 0, 180, 0, 360);
   top->AddNode(vol, 1);
@@ -97,7 +99,7 @@ void Visualizer::AddMarkers(Tracking::Vector3D<double> pt){
   TPolyMarker3D *marker = new TPolyMarker3D(1); 
 //  marker->SetMarkerColor(color); 
   marker->SetMarkerSize(1);
-  marker->SetMarkerStyle(5); 
+  marker->SetMarkerStyle(7); 
   marker->SetNextPoint(pt.x(), pt.y(), pt.z());  
   fMarkers.push_back(marker);
 }

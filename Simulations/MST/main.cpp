@@ -60,6 +60,7 @@ int main(int argc, char *argv[]){
   //runManager->BeamOn(1);
 
   //read a macro file of commands
+/*
   #if (0)
   G4UImanager* UI = G4UImanager::GetUIpointer();
   G4String command = "/control/execute ";
@@ -73,8 +74,48 @@ int main(int argc, char *argv[]){
     else
       visualizer->Start(argv[1]);
   #endif
+*/
+#ifdef G4VIS_USE
+    // Visualization manager construction
+    G4VisManager* visManager = new G4VisExecutive;
+    // G4VisExecutive can take a verbosity argument - see /vis/verbose guidance.
+    // G4VisManager* visManager = new G4VisExecutive("Quiet");
+    visManager->Initialize();
+#endif
+
+    // Get the pointer to the User Interface manager
+    G4UImanager* UImanager = G4UImanager::GetUIpointer();
+
+    if (argc>1) {
+        // execute an argument macro file if exist
+        G4String command = "/control/execute ";
+        G4String fileName = argv[1];
+        UImanager->ApplyCommand(command+fileName);
+    }
+    else {
+        //Needed with Qt sessions
+        // Initialize Geant4 kernel
+        runManager->Initialize();
+
+        // start interactive session
+#ifdef G4UI_USE
+        G4UIExecutive* ui = new G4UIExecutive(argc, argv);
+#ifdef G4VIS_USE
+        UImanager->ApplyCommand("/control/execute init_vis.mac");
+#else
+        UImanager->ApplyCommand("/control/execute init.mac");
+#endif
+        if (ui->IsGUI())
+            UImanager->ApplyCommand("/control/execute gui.mac");
+        ui->SessionStart();
+        delete ui;
+#endif
+    }
+
 
   delete runManager;
+
+
   // v.Show();
   //   gEve->DoRedraw3D(); 
   //   fApp->Run();

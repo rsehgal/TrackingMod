@@ -35,6 +35,9 @@
 #include "G4RunManager.hh"
 #include "LinesAngle.h"
 
+#include "Imaging.h"
+using Tracking::ImageReconstruction;
+
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 B1EventAction::B1EventAction()
@@ -98,6 +101,8 @@ if(verbose)
   GenerateOutgoingTrack();
   run->FillIncomingTrackVector(incoming);
   run->FillOutgoingTrackVector(outgoing);
+  CalculatePOCA();
+  run->FillPocaPtVector(fPocaPt);
    }
 
   // 
@@ -112,11 +117,14 @@ void B1EventAction::CalcScatteringAngle(){
 }
 
 void B1EventAction::GenerateIncomingTrack(){
+  std::cout<<"-----------------------------------------------------"<<std::endl;
   int size = hitVect.size();
   //std::cout<<"Size : must be Six : " << size << std::endl;
   int hSize = size/2;
   incoming.SetP1(hitVect[0]);
   incoming.SetP2(hitVect[hSize-1]);
+  std::cout<<"INComing : "; hitVect[0].Print() ; std::cout<<" : ";  hitVect[hSize-1].Print();
+  std::cout<< std::endl;
   
 }
 
@@ -125,6 +133,18 @@ void B1EventAction::GenerateOutgoingTrack(){
   int hSize = size/2;
   outgoing.SetP1(hitVect[hSize]);
   outgoing.SetP2(hitVect[size-1]);
+  std::cout<<"OUTGoing : "; hitVect[hSize].Print(); std::cout<< " : "; hitVect[size-1].Print();
+  std::cout<< std::endl;
+
+}
+
+void B1EventAction::CalculatePOCA(){
+  Tracking::Vector3D<double> p1(0.,0.,0.), q1(0.,0.,0.);
+  fPocaPt = fIm.POCA(incoming.GetP1(),
+                     incoming.GetDirCosine(),
+                     outgoing.GetP1(),
+                     outgoing.GetDirCosine(),p1,q1);
+  std::cout<<"PocaPt : "; fPocaPt.Print() ; std::cout<<std::endl;
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

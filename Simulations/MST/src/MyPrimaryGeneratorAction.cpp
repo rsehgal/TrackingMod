@@ -23,8 +23,8 @@ MyPrimaryGeneratorAction::MyPrimaryGeneratorAction() {
   // Set the kinetic energy of the protons to 50 keV
   // and tell the gun to emit them along the x-axis
   fParticleGun->SetParticleEnergy(50. * keV);
-  fParticleGun->SetParticlePosition(G4ThreeVector(0., 0., -120 * cm ));
-  fParticleGun->SetParticleMomentumDirection(G4ThreeVector(0., 0., 1.));
+  fParticleGun->SetParticlePosition(G4ThreeVector(0., 0., 120 * cm ));
+  fParticleGun->SetParticleMomentumDirection(G4ThreeVector(0., 0., -1.));
 }
 MyPrimaryGeneratorAction::~MyPrimaryGeneratorAction() { delete fParticleGun; }
 
@@ -39,11 +39,11 @@ void MyPrimaryGeneratorAction::GeneratePrimaries(G4Event *event) {
   Vector3D<double> pt1(Tracking::Global::GenRandomDet(-50.,50.),
                       Tracking::Global::GenRandomDet(-50.,50.),
                       //Tracking::Global::GenRandomDet(0.,50.)
-                      -120);
+                      120);
 
   Vector3D<double> pt2(Tracking::Global::GenRandomDet(-50.,50.),
                       Tracking::Global::GenRandomDet(-50.,50.),
-                      120);
+                      -120);
   //std::cout<< pt.Unit().x() << pt.Unit().y() << pt.Unit().z() << std::endl;
   double x = (pt2-pt1).Unit().x();
   double y = (pt2-pt1).Unit().y();
@@ -51,7 +51,7 @@ void MyPrimaryGeneratorAction::GeneratePrimaries(G4Event *event) {
 
   //fParticleGun->SetParticleMomentumDirection(G4ThreeVector(x,y,z));
   #ifdef RANDOM_GUN
-  fParticleGun->SetParticlePosition(G4ThreeVector(Tracking::Global::GenRandomDet(-50.,50.)*cm, Tracking::Global::GenRandomDet(-50.,50.)*cm, -120 * cm));
+  fParticleGun->SetParticlePosition(G4ThreeVector(Tracking::Global::GenRandomDet(-50.,50.)*cm, Tracking::Global::GenRandomDet(-50.,50.)*cm, 120 * cm));
   fParticleGun->SetParticleMomentumDirection(G4ThreeVector(x,y,z));
   #endif
   fParticleGun->GeneratePrimaryVertex(event);

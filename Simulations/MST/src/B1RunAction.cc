@@ -197,19 +197,28 @@ void B1RunAction::EndOfRunAction(const G4Run* run)
 if(1){
     //fs << "Hello ";
     Tracking::Vector3D<double> p1(0.,0.,0.), q1(0.,0.,0.);
+    //b1Run->GetIncomingTrackVector()[i].Print(); std::cout<<std::endl;
+    /*
     Tracking::Vector3D<double>  pocaPt = im.POCA(b1Run->GetIncomingTrackVector()[i].GetP1(),
                          b1Run->GetIncomingTrackVector()[i].GetDirCosine(),
                          b1Run->GetOutgoingTrackVector()[i].GetP1(),
                          b1Run->GetOutgoingTrackVector()[i].GetDirCosine(),p1,q1);
-
+    
     //pocaPt.Print();
     ftrack<< pocaPt.x() <<" "<<pocaPt.y() << " "<< pocaPt.z() << std::endl;
+    */
+
+    
   }
 
     //v.Register(pocaPt);
    
 
   }
+
+for (auto &PocaPt : b1Run->GetPocaPtVector()){
+	ftrack<< PocaPt.x() <<" "<<PocaPt.y() << " "<< PocaPt.z() << std::endl;
+    }
 
   //v.Show();
   //gEve->DoRedraw3D();

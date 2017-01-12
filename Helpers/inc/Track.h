@@ -26,6 +26,7 @@ public:
   void SetP1(Tracking::Vector3D<double> val){fP1 = val; CalculateDirCosine();}
   void SetP2(Tracking::Vector3D<double> val){fP2 = val; CalculateDirCosine();}
   Tracking::Vector3D<double> GetDirCosine(){return fDirCosine;}
+  void Print(){fP1.Print(); std::cout<<" : " ; fP2.Print();}
 
   ~Track();
 };

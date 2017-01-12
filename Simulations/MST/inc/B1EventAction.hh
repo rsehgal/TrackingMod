@@ -39,6 +39,8 @@
 using Tomography::Track;
 using Tracking::Vector3D;
 
+#include "Imaging.h"
+using Tracking::ImageReconstruction;
 
 /// Event action class
 ///
@@ -58,6 +60,9 @@ class B1EventAction : public G4UserEventAction
     void CalcScatteringAngle();
     void GenerateIncomingTrack();
     void GenerateOutgoingTrack();
+    void CalculatePOCA();
+    Vector3D<double> GetPOCA(){return fPocaPt;}
+
 
   private:
     G4double  fEdep;
@@ -66,6 +71,8 @@ class B1EventAction : public G4UserEventAction
     bool verbose;
     Track incoming;
     Track outgoing;
+    Vector3D<double> fPocaPt;
+    ImageReconstruction fIm;
 
 };
 
