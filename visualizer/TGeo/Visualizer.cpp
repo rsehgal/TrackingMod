@@ -65,6 +65,14 @@ void Visualizer::Show(){
   gGeoManager->CloseGeometry();
   #ifndef USE_OGL
   top->Draw();
+  for (auto &line : fLines) {
+      line->Draw();
+  }
+
+  for (auto &marker : fMarkers) {
+      marker->Draw();   
+  }
+   
   #else
   top->Draw("ogl"); //to display the geometry using openGL
   #endif
@@ -83,6 +91,32 @@ void Visualizer::Show(TGeoVolume *vol){
   gGeoManager->CloseGeometry();
   top->Draw();
   //fApp->Run();
+}
+
+void Visualizer::AddMarkers(Tracking::Vector3D<double> pt){
+  TPolyMarker3D *marker = new TPolyMarker3D(1); 
+//  marker->SetMarkerColor(color); 
+  marker->SetMarkerSize(1);
+  marker->SetMarkerStyle(5); 
+  marker->SetNextPoint(pt.x(), pt.y(), pt.z());  
+  fMarkers.push_back(marker);
+}
+
+void Visualizer::AddLine(Tracking::Vector3D<double> p0,Tracking::Vector3D<double> p1){
+TPolyLine3D *line = new TPolyLine3D(2);  
+ line->SetPoint(0, p0.x(), p0.y(), p0.z());
+   line->SetPoint(1, p1.z(), p1.z(), p1.z());
+   line->SetLineColor(kBlue);   
+  fLines.push_back(line); 
+  /*
+  if (fVerbosity > 0) 
+  {     std::cout << "Added line " << p0 << "--" << p1 << " to Visualizer.\n";   
+  }
+  */
+}
+
+void Visualizer::AddLine(TPolyLine3D const &line){
+
 }
 
 void Visualizer::AddVolume( TGeoVolume *rootVolume) {
@@ -116,4 +150,7 @@ TGeoVolume* Visualizer::CreateTGeoVolume(std::string name,TGeoShape *shape){
   return (new TGeoVolume(name.c_str(), shape, Vacuum));
 }
 
+void AddLine(Tracking::Vector3D<double> pt1,Tracking::Vector3D<double> pt2){
+
+}
 } //end of Tracking namespace

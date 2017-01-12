@@ -25,6 +25,8 @@ int main(){
     }
 	
 	v.Show();
+    #ifdef USE_EVE
     gEve->DoRedraw3D(); 
+    #endif
     fApp->Run();
 }
