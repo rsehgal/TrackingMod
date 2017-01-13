@@ -48,7 +48,7 @@ public:
   void AddVolume();
   void AddPoint();
   void AddLine();
-  void AddMarkers(Tracking::Vector3D<double> pt);
+  void AddMarkers(Tracking::Vector3D<double> pt,int color=1);
   void AddLine(Tracking::Vector3D<double> pt1,Tracking::Vector3D<double> pt2);
   void AddLine(TPolyLine3D const &line);
   void AddVolume( TGeoVolume *rootVolume);

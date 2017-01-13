@@ -95,9 +95,11 @@ void Visualizer::Show(TGeoVolume *vol){
   //fApp->Run();
 }
 
-void Visualizer::AddMarkers(Tracking::Vector3D<double> pt){
+void Visualizer::AddMarkers(Tracking::Vector3D<double> pt,int color){
   TPolyMarker3D *marker = new TPolyMarker3D(1); 
-//  marker->SetMarkerColor(color); 
+  //pt.SetColor(2); //done just for testing of color change
+  std::cout<<"Color as Seen by visualizer : "<< pt.GetColor() << std::endl;
+  marker->SetMarkerColor(pt.GetColor()); 
   marker->SetMarkerSize(1);
   marker->SetMarkerStyle(7); 
   marker->SetNextPoint(pt.x(), pt.y(), pt.z());  

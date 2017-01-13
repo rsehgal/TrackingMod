@@ -217,7 +217,7 @@ if(1){
   }
 
 for (auto &PocaPt : b1Run->GetPocaPtVector()){
-	ftrack<< PocaPt.x() <<" "<<PocaPt.y() << " "<< PocaPt.z() << std::endl;
+	ftrack<< PocaPt.x() <<" "<<PocaPt.y() << " "<< PocaPt.z() << " " << PocaPt.GetColor() << std::endl;
     }
 
   //v.Show();

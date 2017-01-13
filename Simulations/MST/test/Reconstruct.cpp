@@ -19,9 +19,11 @@ int main(){
     std::ifstream ft;
     ft.open("tracks.txt");
     double x=0.,y=0.,z=0;
+    int color=0;
     while(!ft.eof()){
-    	ft >> x >> y >> z;
+    	ft >> x >> y >> z >> color;
     	pt.Set(x,y,z);
+	pt.SetColor(color);
     	v.Register(pt);
     
     }
