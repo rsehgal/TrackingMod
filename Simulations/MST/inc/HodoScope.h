@@ -28,7 +28,7 @@ public:
 	G4VPhysicalVolume* Construct();
     G4LogicalVolume* GetScoringVolume() const { return fScoringVolume; }
     void SetTargetMaterial (G4String );
-    void SetTargetThickness (double val);
+    void SetTargetThickness (double val){fTargetThickness = val;}
     double GetTargetThickness() const {return fTargetThickness;}
     G4String GetTargetMaterial() const {return fTargetMaterial->GetName();}
 };

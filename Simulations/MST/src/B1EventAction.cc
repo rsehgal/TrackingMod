@@ -144,8 +144,9 @@ void B1EventAction::CalculatePOCA(){
                      incoming.GetDirCosine(),
                      outgoing.GetP1(),
                      outgoing.GetDirCosine(),p1,q1);
-  //fPocaPt.SetColor((int(fScatteringAngle*1000)%6));
-fPocaPt.SetColor((int(fScatteringAngle*1000)/10));
+//  fPocaPt.SetColor((int(fScatteringAngle*1000)%6));
+//fPocaPt.SetColor((int(fScatteringAngle*1000)/10));
+  fPocaPt.SetColor((int(fScatteringAngle*1000)));
   
   std::cout<<"PocaPt : "; fPocaPt.Print() ; std::cout<<" : ScatteringAngle : "<< fScatteringAngle <<  " : Color : "<< fPocaPt.GetColor() << std::endl;
 }

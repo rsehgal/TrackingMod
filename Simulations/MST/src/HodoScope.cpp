@@ -15,6 +15,8 @@
 #include "G4Material.hh"
 #include "G4UnitsTable.hh"
 #include "B2aDetectorMessenger.hh"
+
+#include "Scatterers.h"
 //#include "base/Global.h"
 #define PI 3.14159265359
 
@@ -262,13 +264,14 @@ G4Box *target = new G4Box("Target",5.*cm,5.*cm,5.*cm);
                             0,
                             checkOverlaps);
 */
-
-
+/*
+//Alphabet 'P'
 G4Material* matPb = nist->FindOrBuildMaterial("G4_Pb");
+G4Material* matU = nist->FindOrBuildMaterial("G4_U");
 G4Box *target1 = new G4Box("Target1",5.*cm,2.*cm,5.*cm);
 G4LogicalVolume* fLogicTarget1 = new G4LogicalVolume(target1,matPb,"LogicalTargetPbBlock1");
 G4Box *target2 = new G4Box("Target2",2.*cm,5.*cm,5.*cm);
-G4LogicalVolume* fLogicTarget2 = new G4LogicalVolume(target2,matPb,"LogicalTargetPbBlock2");
+G4LogicalVolume* fLogicTarget2 = new G4LogicalVolume(target2,matU,"LogicalTargetPbBlock2");
 G4VPhysicalVolume *phyTarget11 = new G4PVPlacement(0,
                             //G4ThreeVector(),
                             G4ThreeVector(5.*cm,10*cm,0.),
@@ -309,6 +312,7 @@ G4VPhysicalVolume *phyTarget22 = new G4PVPlacement(0,
                             0,
                             checkOverlaps);
 
+//Alphabet 'C'
 G4VPhysicalVolume *phyTarget23 = new G4PVPlacement(0,
                             //G4ThreeVector(),
                             G4ThreeVector(20.*cm,0.,0.),
@@ -336,6 +340,7 @@ G4VPhysicalVolume *phyTarget112 = new G4PVPlacement(0,
                             false,
                             0,
                             checkOverlaps);
+*/
 /*
 G4Box *target4 = new G4Box("Target4",3.*cm,2.*cm,5.*cm);
 G4LogicalVolume* fLogicTarget4 = new G4LogicalVolume(target4,matPb,"LogicalTargetPbBlock4");
@@ -495,10 +500,23 @@ G4VPhysicalVolume *phyTargetC3 = new G4PVPlacement(0,
                             checkOverlaps);
                             */
 
+BallsInABox *scatterer = new BallsInABox();
+G4VPhysicalVolume *phyTargetPbBlock = new G4PVPlacement(0,
+                            //G4ThreeVector(),
+                            G4ThreeVector(),
+                            scatterer->GetTarget(),
+                            "PhysicalWorld",
+                            logicWorld,
+                            false,
+                            0,
+                            checkOverlaps);
+
 /*
-G4Box *targetPb = new G4Box("TargetPb",5.*cm,5.*cm,5.*cm);
+//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+G4Box *targetPb = new G4Box("TargetPb",10.*cm,10.*cm,10.*cm);
   //G4LogicalVolume *logicalLeadBlock = new G4LogicalVolume(leadBlock,nist->FindOrBuildMaterial("G4_Pb"),"LogicalLeadBlock");
-  G4LogicalVolume* fLogicTargetPb = new G4LogicalVolume(targetPb,matPb,"LogicalTargetPbBlock");
+  G4LogicalVolume* fLogicTargetPb = new G4LogicalVolume(targetPb,nist->FindOrBuildMaterial("G4_Al"),"LogicalTargetPbBlock");
   G4VPhysicalVolume *phyTargetPbBlock = new G4PVPlacement(0,
                             //G4ThreeVector(),
                             G4ThreeVector(),
@@ -509,21 +527,54 @@ G4Box *targetPb = new G4Box("TargetPb",5.*cm,5.*cm,5.*cm);
                             0,
                             checkOverlaps);
 
- 
-  G4Material* matU = nist->FindOrBuildMaterial("G4_U");
-//G4Box *targetU = new G4Box("TargetU",5.*cm,5.*cm,5.*cm);
-G4Sphere *targetU = new G4Sphere("TargetU",0., 10.*cm, 0., 2*PI, 0. , PI);
+
+G4Box *targetVac = new G4Box("TargetPb",9.*cm,9.*cm,9.*cm);
   //G4LogicalVolume *logicalLeadBlock = new G4LogicalVolume(leadBlock,nist->FindOrBuildMaterial("G4_Pb"),"LogicalLeadBlock");
- G4LogicalVolume* fLogicTargetU = new G4LogicalVolume(targetU,matU,"LogicalTargetUBlock");
-  G4VPhysicalVolume *phyTargetUBlock = new G4PVPlacement(0,
+  G4LogicalVolume* fLogicTargetVac = new G4LogicalVolume(targetVac,nist->FindOrBuildMaterial("G4_Al"),"LogicalTargetPbBlock");
+  G4VPhysicalVolume *phyTargetVacBlock = new G4PVPlacement(0,
                             //G4ThreeVector(),
-                            G4ThreeVector(50.*cm,0.,0.),
-                            fLogicTargetU,
+                            G4ThreeVector(),
+                            fLogicTargetVac,
                             "PhysicalWorld",
-                            logicWorld,
+			    fLogicTargetPb,
+                            //logicWorld,
                             false,
                             0,
                             checkOverlaps);
+
+ 
+  G4Material* matU = nist->FindOrBuildMaterial("G4_U");
+//G4Box *targetU = new G4Box("TargetU",5.*cm,5.*cm,5.*cm);
+G4Sphere *targetU = new G4Sphere("TargetU",0., 2.*cm, 0., 2*PI, 0. , PI);
+  //G4LogicalVolume *logicalLeadBlock = new G4LogicalVolume(leadBlock,nist->FindOrBuildMaterial("G4_Pb"),"LogicalLeadBlock");
+ G4LogicalVolume* fLogicTargetU = new G4LogicalVolume(targetU,nist->FindOrBuildMaterial("G4_U"),"LogicalTargetUBlock");
+  G4VPhysicalVolume *phyTargetUBlock = new G4PVPlacement(0,
+                            //G4ThreeVector(),
+                            G4ThreeVector(-5*cm,0.,0.),
+                            fLogicTargetU,
+                            "PhysicalWorld",
+                            fLogicTargetVac,
+                            //logicWorld,
+                            false,
+                            0,
+                            checkOverlaps);
+
+ G4VPhysicalVolume *phyTargetUBlock2 = new G4PVPlacement(0,
+                            //G4ThreeVector(),
+                            G4ThreeVector(5*cm,0.,0.),
+                            fLogicTargetU,
+                            "PhysicalWorld",
+			    fLogicTargetVac,
+                            //logicWorld,
+                            false,
+                            0,
+                            checkOverlaps);
+
+//++++++++++++++++++++++++++++++++++++++++++++++++++
+*/
+
+
+/*
 
     G4Material* matAm = nist->FindOrBuildMaterial("G4_Am");
 //G4Box *targetU = new G4Box("TargetU",5.*cm,5.*cm,5.*cm);
