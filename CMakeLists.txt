@@ -56,7 +56,14 @@ option(ACCUMULATE_TRACK "All the tracks will be displayed" OFF)
 option(ANG_DIST "To calculate the angular distribution from tracks" OFF)
 option(CGAL "CGAL library for geometrical algorithms" OFF)
 
-#find_package(CGAL REQUIRED)
+if(CGAL)
+find_package(CGAL REQUIRED)
+message(STATUS "************* Link CGAL **************")
+include(${CGAL_USE_FILE})
+set(EXTERNAL_LIBS ${EXTERNAL_LIBS}
+${CGAL_LIBRARIES}
+)
+endif(CGAL)
 
 
 if(ANG_DIST)
@@ -217,6 +224,13 @@ ${CMAKE_SOURCE_DIR}/TemplatizedInterface/test/plots
 ${CMAKE_SOURCE_DIR}/Simulations/MST/test
 #${CMAKE_SOURCE_DIR}/test
 )
+
+if(CGAL)
+SET(TESTSDIR ${TESTSDIR} 
+${CMAKE_SOURCE_DIR}/TemplatizedInterface/test/cgal
+)
+endif(CGAL)
+
 
 if(EVE)
 SET(TESTSDIR ${TESTSDIR}
