@@ -8,7 +8,8 @@ using Tomography::VisualizationHelper;
 using Tracking::Vector3D;
 
 
-int main(){
+int main(int argc, char *argv[]){
+const char* input_filename = (argc>1)?argv[1]:"tracks.txt";
 	TApplication *fApp = new TApplication("Test", NULL, NULL);
 	VisualizationHelper v;
 #ifdef USE_EVE
@@ -17,7 +18,7 @@ int main(){
 
     Vector3D<double> pt;
     std::ifstream ft;
-    ft.open("tracks.txt");
+    ft.open(input_filename);
     double x=0.,y=0.,z=0;
     int color=0;
     while(!ft.eof()){
