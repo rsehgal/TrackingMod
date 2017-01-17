@@ -23,7 +23,7 @@ public:
   BallsInABox(){
 G4NistManager* nist = G4NistManager::Instance();
 	G4Box *targetPb = new G4Box("TargetPb",10.*cm,10.*cm,10.*cm);
-  fLogicTargetPb = new G4LogicalVolume(targetPb,nist->FindOrBuildMaterial("G4_Al"),"LogicalTargetPbBlock");
+  fLogicTargetPb = new G4LogicalVolume(targetPb,nist->FindOrBuildMaterial("G4_Fe"),"LogicalTargetPbBlock");
 /* fPhyTargetPbBlock = new G4PVPlacement(0,
                             //G4ThreeVector(),
                             G4ThreeVector(),
@@ -37,7 +37,7 @@ G4NistManager* nist = G4NistManager::Instance();
 bool checkOverlaps = true;
 G4Box *targetVac = new G4Box("TargetPb",9.*cm,9.*cm,9.*cm);
   //G4LogicalVolume *logicalLeadBlock = new G4LogicalVolume(leadBlock,nist->FindOrBuildMaterial("G4_Pb"),"LogicalLeadBlock");
-  G4LogicalVolume* fLogicTargetVac = new G4LogicalVolume(targetVac,nist->FindOrBuildMaterial("G4_Al"),"LogicalTargetPbBlock");
+  G4LogicalVolume* fLogicTargetVac = new G4LogicalVolume(targetVac,nist->FindOrBuildMaterial("G4_Pb"),"LogicalTargetPbBlock");
   G4VPhysicalVolume *phyTargetVacBlock = new G4PVPlacement(0,
                             //G4ThreeVector(),
                             G4ThreeVector(),
@@ -51,7 +51,7 @@ G4Box *targetVac = new G4Box("TargetPb",9.*cm,9.*cm,9.*cm);
 
  
   G4Material* matU = nist->FindOrBuildMaterial("G4_U");
-G4Sphere *targetU = new G4Sphere("TargetU",0., 4.*cm, 0., 2*PI, 0. , PI);
+G4Sphere *targetU = new G4Sphere("TargetU",0., 5.*cm, 0., 2*PI, 0. , PI);
  G4LogicalVolume* fLogicTargetU = new G4LogicalVolume(targetU,nist->FindOrBuildMaterial("G4_U"),"LogicalTargetUBlock");
   G4VPhysicalVolume *phyTargetUBlock = new G4PVPlacement(0,
                             //G4ThreeVector(),

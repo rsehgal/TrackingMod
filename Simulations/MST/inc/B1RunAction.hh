@@ -34,6 +34,7 @@
 #include "G4UserRunAction.hh"
 #include "globals.hh"
 #include <fstream>
+#include <TH1F.h>
 
 class G4Run;
 class G4LogicalVolume;
@@ -50,6 +51,7 @@ class B1RunAction : public G4UserRunAction
     G4String  fFileName;
     std::ofstream fs;
     std::ofstream ftrack;
+    TH1F *fScatteringHist;
     bool verbose;
     
   public:

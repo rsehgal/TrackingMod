@@ -39,6 +39,10 @@
 #include "G4LogicalVolume.hh"
 #include "G4UnitsTable.hh"
 #include "G4SystemOfUnits.hh"
+#include "TFile.h"
+
+#include "Voxelator.h"
+
 
 #include <iostream>
 #include <fstream>
@@ -52,6 +56,7 @@
 //using Tomography::VisualizationHelper;
 #include "Imaging.h"
 using Tracking::ImageReconstruction;
+using Tomography::Voxelator;
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 B1RunAction::B1RunAction()
@@ -88,6 +93,8 @@ void B1RunAction::BeginOfRunAction(const G4Run*)
 { 
   //inform the runManager to save random number seed
   G4RunManager::GetRunManager()->SetRandomNumberStore(false);
+  fScatteringHist = new TH1F("fScatteringHist","Scattering Histogram",1000,0.,100.);
+  
   fs.open("run.txt", std::ios::app);
   ftrack.open("tracks.txt",std::ios::app);
   /*#ifdef USE_EVE
@@ -218,7 +225,39 @@ if(1){
 
 for (auto &PocaPt : b1Run->GetPocaPtVector()){
 	ftrack<< PocaPt.x() <<" "<<PocaPt.y() << " "<< PocaPt.z() << " " << PocaPt.GetColor() << std::endl;
+	fScatteringHist->Fill(PocaPt.GetColor());
     }
+
+//Now trying to voxelate PocaVector
+
+Voxelator vox;
+vox.Insert(b1Run->GetPocaPtVector()); //Voxelized Poca Ready
+std::ofstream voxTrack;
+voxTrack.open("VoxelizedTracks.txt");
+Vector3D<int> voxelatorDim = vox.GetVoxelatorDim();
+std::cout<< " -+-+-+-+--+-+-+--+--+-+--+-------+---++- " << std::endl;
+voxelatorDim.Print();
+
+for(int x = 0 ; x < voxelatorDim.x()-1 ; x++){
+    for(int y = 0 ; y < voxelatorDim.y()-1 ; y++){
+      for(int z = 0 ; z < voxelatorDim.z()-1 ; z++){
+	if(vox.GetVoxelizedCount()->GetBinContent(x,y,z))
+	voxTrack << x << " " << y << " " << z << " " <<  vox.GetVoxelizedHist()->GetBinContent(x,y,z) << std::endl;
+      }
+    }
+  }
+
+voxTrack.close();
+
+
+TFile f("histos.root","new");
+fScatteringHist->Write();
+vox.GetVoxelizedHist()->Write();
+//f.close();
+delete fScatteringHist;
+//auto xmax = max_element(std::begin(cloud), std::end(cloud)); // c++11
+
+
 
   //v.Show();
   //gEve->DoRedraw3D();

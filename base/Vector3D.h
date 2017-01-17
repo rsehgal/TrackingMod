@@ -64,6 +64,13 @@ public:
 			fColor=1;
 	}
 
+	Vector3D(Type x, Type y, Type z, int w){
+			vec[0]=x;
+			vec[1]=y;
+			vec[2]=z;
+			fColor=w;
+	}
+
 	~Vector3D(){}
 
 	TRACKING_INLINE
@@ -71,7 +78,17 @@ public:
 		vec[0]=x;
 		vec[1]=y;
 		vec[2]=z;
+		fColor=1;
 	}
+
+	TRACKING_INLINE
+	void Set(Type x, Type y, Type z, Type w){
+		vec[0]=x;
+		vec[1]=y;
+		vec[2]=z;
+		fColor = int(w);
+	}
+
         void SetColor(int color){
 		fColor=color;
  	}
@@ -91,6 +108,8 @@ public:
 	Type y(){return vec[1];}
 	TRACKING_INLINE
 	Type z(){return vec[2];}
+	TRACKING_INLINE
+	int w(){return fColor;}
 	TRACKING_INLINE
 	Type Dot(Vector3D<Type> vec2){
 		return vec[0]*vec2.x() + vec[1]*vec2.y() + vec[2]*vec2.z();
