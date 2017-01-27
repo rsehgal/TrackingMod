@@ -16,6 +16,8 @@
 #include "G4UnitsTable.hh"
 #include "B2aDetectorMessenger.hh"
 
+#include "G4GDMLParser.hh"
+
 #include "Scatterers.h"
 //#include "base/Global.h"
 #define PI 3.14159265359
@@ -107,7 +109,7 @@ G4VPhysicalVolume* HodoScope::Construct(){
 
 
     //Top and bottom Scintillator plane
-    G4Box *scintPlane = new G4Box("ScintPlane",0.40*world_sizeXYZ, 0.40*world_sizeXYZ, 2.*cm);
+    G4Box *scintPlane = new G4Box("ScintPlane",0.60*world_sizeXYZ, 0.60*world_sizeXYZ, 2.*cm);
       G4LogicalVolume *logicalScintPlane = new G4LogicalVolume(scintPlane,orb_material,"LogicalScintPlane");
       G4VPhysicalVolume *phyTopScintPlane = new G4PVPlacement(0,
                                 //G4ThreeVector(),
@@ -129,7 +131,7 @@ G4VPhysicalVolume* HodoScope::Construct(){
                                       0,
                                       checkOverlaps);
 
-      G4Box *shelf = new G4Box("Shelf",0.40*world_sizeXYZ, 0.40*world_sizeXYZ, 0.5*mm);
+      G4Box *shelf = new G4Box("Shelf",0.50*world_sizeXYZ, 0.50*world_sizeXYZ, 0.5*mm);
       G4LogicalVolume *logicalShelf = new G4LogicalVolume(shelf,Al,"LogicalShelf");
       //Now physically placing Six such shelves for Six Rpc's
       G4VPhysicalVolume *phyFirstShelf = new G4PVPlacement(0,
@@ -505,7 +507,7 @@ G4VPhysicalVolume *phyTargetPbBlock = new G4PVPlacement(0,
                             //G4ThreeVector(),
                             G4ThreeVector(),
                             scatterer->GetTarget(),
-                            "PhysicalWorld",
+                            "Scatterer",
                             logicWorld,
                             false,
                             0,
@@ -627,6 +629,9 @@ G4Sphere *targetAm = new G4Sphere("TargetAm",0., 2.*cm, 0., 2*PI, 0. , PI);
 
 	//fScoringVolume = logicalLeadBlock;
    fScoringVolume = logicalShelf;
+
+G4GDMLParser parser;
+parser.Write("Hodoscope.gdml", physWorld);
 
 	return physWorld;
 
