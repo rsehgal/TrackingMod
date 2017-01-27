@@ -14,8 +14,10 @@
 #include "Eve/EveVisualizer.h"
 #include "Eve/Singleton.h"
 #include <TEveStraightLineSet.h>
-
-
+#include "TGeoNode.h"
+#include "TEveGeoNode.h"
+//#include "TEveGeoTopNode.h"
+#include "TGeoManager.h"
 namespace Tracking {
 
 //TEveElementList* EveVisualizer::fEveGeomList = 0;
@@ -113,5 +115,11 @@ void EveVisualizer::UpdateScene(){
 }
 
 
+void EveVisualizer::ImportFromROOTFile(std::string geomFile){
+gGeoManager = gEve->GetGeometry(geomFile.c_str());
+TGeoNode* node1 = gGeoManager->GetTopVolume()->FindNode("INNE_1");
+TEveGeoTopNode* inn = new TEveGeoTopNode(gGeoManager, node1);
+gEve->AddGlobalElement(inn);
+}
 
 }//end of Tracking namespace

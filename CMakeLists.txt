@@ -222,6 +222,7 @@ ${CMAKE_SOURCE_DIR}/TemplatizedInterface/test
 ${CMAKE_SOURCE_DIR}/TemplatizedInterface/test/core
 ${CMAKE_SOURCE_DIR}/TemplatizedInterface/test/plots
 ${CMAKE_SOURCE_DIR}/Simulations/MST/test
+${CMAKE_SOURCE_DIR}/visualizer/test
 #${CMAKE_SOURCE_DIR}/test
 )
 
@@ -291,3 +292,8 @@ message(STATUS "====================================================")
 message(STATUS ${tests})
 message(STATUS "====================================================")
 add_subdirectory(Simulations/MST)
+
+#Copying the test geom.root file to build directory for visualization testing
+file(GLOB ROOT_FILES ${PROJECT_SOURCE_DIR}/RootFiles/*)
+message(STATUS ${ROOT_FILES})
+file(COPY ${ROOT_FILES} DESTINATION ${PROJECT_SOURCE_DIR}/build)

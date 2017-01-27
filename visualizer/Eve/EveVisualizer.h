@@ -41,7 +41,7 @@ public:
   static void Show();
   static void UpdateScene();
   void AddMarkers(Vector3D<double> pt);
-
+  void ImportFromROOTFile(std::string geomFile);
 };
 
 } //end of Tracking namespace

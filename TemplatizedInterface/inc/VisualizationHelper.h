@@ -90,7 +90,10 @@ public:
 #endif
   }
 
-
+ TomographyVisualizer GetVisualizer(){
+    return fVis;
+ }
+ 
 };
 
 }// end of Tomography namespace
