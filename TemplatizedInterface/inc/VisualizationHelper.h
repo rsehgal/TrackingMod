@@ -27,7 +27,7 @@ typedef Tracking::Visualizer TomographyVisualizer;
 #include "GlassRpc.h"
 #include "Properties.h"
 #include "Track.h"
-
+#include "TGeoManager.h"
 typedef Tomography::Properties Detector;
 namespace Tomography{
 
@@ -80,6 +80,27 @@ public:
   }
   void Register(Tracking::Vector3D<double> pt){
 	  fVis.AddMarkers(pt);
+  }
+
+  //Function to register directly from ROOT file
+  void Register(std::string geomFile){
+
+    gGeoManager = gEve->GetGeometry(geomFile.c_str());
+    int numOfTopNodes = gGeoManager->GetTopVolume()->GetNodes()->GetEntries();
+    for(int i = 0 ; i < numOfTopNodes ; i++){
+        std::cout<<"Name of : " << i <<" Node : "<< gGeoManager->GetTopVolume()->GetNodes()->At(i)->GetName() << std::endl;
+        std::string name = gGeoManager->GetTopVolume()->GetNodes()->At(i)->GetName();
+	TGeoNode* node1 = gGeoManager->GetTopVolume()->FindNode(gGeoManager->GetTopVolume()->GetNodes()->At(i)->GetName());
+        TGeoHMatrix m;
+	m.SetDx(node1->GetMatrix()->GetTranslation()[0]);//; = node1->GetMatrix();
+        m.SetDy(node1->GetMatrix()->GetTranslation()[1]);
+        m.SetDz(node1->GetMatrix()->GetTranslation()[2]);
+     
+	TGeoVolume* vol = node1->GetVolume();
+	TGeoShape* shape = vol->GetShape();
+        fVis.AddEveShape(name,shape,m);
+
+    }
   }
 
   void Show(){

@@ -18,6 +18,8 @@
 #include "TEveGeoNode.h"
 //#include "TEveGeoTopNode.h"
 #include "TGeoManager.h"
+#include "TGLViewer.h"
+#include "TGeoShape.h"
 namespace Tracking {
 
 //TEveElementList* EveVisualizer::fEveGeomList = 0;
@@ -77,6 +79,18 @@ if(gEve){
  }
 }
 
+void EveVisualizer::AddEveShape(std::string shapeName,TGeoShape *shape, TGeoHMatrix &mat){
+
+if(gEve){
+  fEveShape = new TEveGeoShape(shapeName.c_str());
+  fEveShape->SetShape(shape);
+//  fEveShape->SetMainColor(kGreen);
+  fEveShape->SetMainTransparency(60);
+  fEveShape->SetTransMatrix(mat);
+  //fEveGeomList->AddElement(fEveShape);
+  Singleton::instance()->AddElement(fEveShape);
+ }
+}
 void EveVisualizer::AddEveShape(TEveGeoShape *eveShape, TGeoHMatrix &mat){
 
   if(gEve){
@@ -117,9 +131,35 @@ void EveVisualizer::UpdateScene(){
 
 void EveVisualizer::ImportFromROOTFile(std::string geomFile){
 gGeoManager = gEve->GetGeometry(geomFile.c_str());
-TGeoNode* node1 = gGeoManager->GetTopVolume()->FindNode("INNE_1");
+//TGeoNode* node1 = gGeoManager->GetTopVolume()->FindNode("INNE_1");
+//
+int numOfTopNodes = gGeoManager->GetTopVolume()->GetNodes()->GetEntries();
+for(int i = 0 ; i < numOfTopNodes ; i++)
+//int i=0;
+{
+std::cout<<"Name of : " << i <<" Node : "<< gGeoManager->GetTopVolume()->GetNodes()->At(i)->GetName() << std::endl;
+TGeoNode* node1 = gGeoManager->GetTopVolume()->FindNode(gGeoManager->GetTopVolume()->GetNodes()->At(i)->GetName());
+std::cout<<"++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"<<std::endl;
+
+
+//double *trans=node1->GetMatrix()->GetTranslation();
+//std::cout<< trans[0] << ": "<< trans[1] << " : " <<  trans[2] << std::endl;
+std::cout << node1->GetMatrix()->GetTranslation()[2] << std::endl;
+std::cout<<"*******************************************************************************"<<std::endl;
+std::cout<<"Number of Entries : "<< numOfTopNodes << std::endl;
+std::cout<<"*******************************************************************************"<<std::endl;
 TEveGeoTopNode* inn = new TEveGeoTopNode(gGeoManager, node1);
 gEve->AddGlobalElement(inn);
+}
+/*
+TGLViewer *v = gEve->GetDefaultGLViewer();
+   v->GetClipSet()->SetClipType(TGLClip::EType(1));
+   v->RefreshPadEditor(v);
+
+   v->CurrentCamera().RotateRad(-.7, 0.5);
+   v->DoDraw();
+*/
+
 }
 
 }//end of Tracking namespace

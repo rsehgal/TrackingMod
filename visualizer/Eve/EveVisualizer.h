@@ -19,7 +19,7 @@ class TApplication;
 class TGeoBBox;
 class TGeoMatrix;
 class TEveStraightLineSet;
-
+class TGeoShape;
 
 
 namespace Tracking {
@@ -37,6 +37,7 @@ public:
   void AddEveShape(std::string shapeName,TGeoBBox *shape, TGeoHMatrix &mat);
   void AddEveShape(std::string shapeName,TGeoBBox *shape, int color, TGeoHMatrix &mat);
   void AddEveShape(TEveGeoShape *eveShape, TGeoHMatrix &mat);
+  void AddEveShape(std::string shapeName,TGeoShape *shape, TGeoHMatrix &mat);
   void AddLine(Vector3D<double>p1, Vector3D<double>p2);
   static void Show();
   static void UpdateScene();
