@@ -82,10 +82,32 @@ public:
 	  fVis.AddMarkers(pt);
   }
 
+  std::string GetFileName(std::string geomFile){
+    std::string fileName =  geomFile.substr(0,geomFile.find(".")-1);
+    std::string ext = geomFile.substr(geomFile.find(".")+1);
+    if(!ext.compare("gdml")){
+      TGeoManager::Import(geomFile.c_str());
+      std::string finalFileName = fileName+".root";
+      gGeoManager->Export(finalFileName.c_str());
+      return finalFileName;
+    }else{
+      if(!ext.compare("root")){
+    	return geomFile;
+    }else{
+    std::cerr<<"*************************************" << std::endl;
+    std::cerr<<"    UnRecognized file format??? " << std::endl;
+    std::cerr<<"*************************************" << std::endl;
+   }}
+   
+  }
+
+
   //Function to register directly from ROOT file
   void Register(std::string geomFile){
+    std::string finalName = GetFileName(geomFile);
+    
 
-    gGeoManager = gEve->GetGeometry(geomFile.c_str());
+    gGeoManager = gEve->GetGeometry(finalName.c_str());
     int numOfTopNodes = gGeoManager->GetTopVolume()->GetNodes()->GetEntries();
     for(int i = 0 ; i < numOfTopNodes ; i++){
         std::cout<<"Name of : " << i <<" Node : "<< gGeoManager->GetTopVolume()->GetNodes()->At(i)->GetName() << std::endl;
@@ -101,6 +123,30 @@ public:
         fVis.AddEveShape(name,shape,m);
 
     }
+  }
+
+  void Register(std::string geomFile, std::string placedVolumeName){
+    gGeoManager = gEve->GetGeometry(geomFile.c_str());
+    TGeoNode* node1 = gGeoManager->GetTopVolume()->FindNode(placedVolumeName.c_str());
+    TGeoHMatrix m;
+    m.SetDx(node1->GetMatrix()->GetTranslation()[0]);//; = node1->GetMatrix();
+    m.SetDy(node1->GetMatrix()->GetTranslation()[1]);
+    m.SetDz(node1->GetMatrix()->GetTranslation()[2]);
+
+    TGeoVolume* vol = node1->GetVolume();
+    TGeoShape* shape = vol->GetShape();
+    fVis.AddEveShape(placedVolumeName,shape,m);
+
+    TGeoMatrix* mat = node1->GetMatrix();    
+    std::cout<<"Translation Matrix : "<< mat->GetTranslation()[0]<<" , "<< mat->GetTranslation()[1] <<" , " <<  mat->GetTranslation()[2]<< std::endl;
+    if(!(mat->IsRotation()))
+       std::cout<<"NO Rotation"<< std::endl;
+      //std::cout<<"Rotation Matrix : "<< node1->GetMatrix()->GetRotation() << std::endl;
+    double local[3]={5.,0.,0.};
+    double master[3]={0.,0.,0.};
+    mat->LocalToMaster(local,master);
+    std::cout<<"W.r.t Local : "<< local[0] <<" , " << local[1] << " , " << local[2] << std::endl;
+    std::cout<<"W.r.t Master : "<< master[0] <<" , " << master[1] << " , " << master[2] << std::endl;
   }
 
   void Show(){
