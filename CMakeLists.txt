@@ -55,6 +55,7 @@ option(CLUSTER_SIZE "Allow to restrict the Cluster Size cut, default value will 
 option(ACCUMULATE_TRACK "All the tracks will be displayed" OFF)
 option(ANG_DIST "To calculate the angular distribution from tracks" OFF)
 option(CGAL "CGAL library for geometrical algorithms" OFF)
+option(EMULATOR "Building Emulator for HV Supply" OFF)
 
 if(CGAL)
 find_package(CGAL REQUIRED)
@@ -223,6 +224,7 @@ ${CMAKE_SOURCE_DIR}/TemplatizedInterface/test/core
 ${CMAKE_SOURCE_DIR}/TemplatizedInterface/test/plots
 ${CMAKE_SOURCE_DIR}/Simulations/MST/test
 ${CMAKE_SOURCE_DIR}/visualizer/test
+${CMAKE_SOURCE_DIR}/CAEN/test
 #${CMAKE_SOURCE_DIR}/test
 )
 
@@ -250,7 +252,7 @@ macro(build_executables EXECUTABLES)
   foreach(EXECUTABLE ${EXECUTABLES})
     get_filename_component(TARGET_NAME ${EXECUTABLE} NAME_WE)
     add_executable(${TARGET_NAME} ${EXECUTABLE} ${headers})
-    target_link_libraries(${TARGET_NAME} ${TOMOLIB} ${HELPERSLIB})
+    target_link_libraries(${TARGET_NAME} ${TOMOLIB} ${HELPERSLIB} ${EMULATORLIB})
 #  if(EVE)
 #    target_link_libraries(${TARGET_NAME} ${ROOT_LIBRARIES} Geom Eve)
 #  else()
@@ -259,12 +261,32 @@ macro(build_executables EXECUTABLES)
   endforeach()
 endmacro()
 
+
+if(EMULATOR)
+macro(collect_emulators Emulators)
+  foreach(Emulator ${Emulators})
+    file(GLOB emulators ${emulators} ${Emulator}/*.cpp)
+  endforeach()
+endmacro()
+
+set(HVEmulator ${HVEmulator}
+${CMAKE_SOURCE_DIR}/CAEN/Emulator/src
+)
+
+set(INCLUDES ${INCLUDES}
+${CMAKE_SOURCE_DIR}/CAEN/Emulator/inc
+)
+endif(EMULATOR)
+
 message(STATUS ${headers})
 include_dirs("${INCLUDES}")
 collect_headers("${INCLUDES}")
 collect_sources("${SOURCES}")
 collect_tests("${TESTSDIR}")
 collect_helpers("${HELPERS}")
+if(EMULATOR)
+collect_emulators("${HVEmulator}")
+endif(EMULATOR)
 
 message(STATUS "--------- Following source file will be use for the creation of TOMO Shared library -----------")
 message(STATUS ${sources})
@@ -283,6 +305,13 @@ add_library(Helpers SHARED ${helpers})
 set(HELPERSLIB ${HELPERSLIB}
 Helpers
 )
+
+if(EMULATOR)
+add_library(HVEmulator SHARED ${emulators})
+set(EMULATORLIB ${EMULATORLIB}
+HVEmulator
+)
+endif(EMULATOR)
 
 link_directories(${CMAKE_SOURCE_DIR}/build)
 
