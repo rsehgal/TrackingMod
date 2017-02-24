@@ -56,6 +56,7 @@ option(ACCUMULATE_TRACK "All the tracks will be displayed" OFF)
 option(ANG_DIST "To calculate the angular distribution from tracks" OFF)
 option(CGAL "CGAL library for geometrical algorithms" OFF)
 option(EMULATOR "Building Emulator for HV Supply" OFF)
+option(CAENWRAPPER "Building Wrapper for CAEN Library" OFF)
 
 if(CGAL)
 find_package(CGAL REQUIRED)
@@ -75,6 +76,10 @@ set(ACCUMULATE_TRACK ON)
 endif(ACCUMULATE_TRACK)
 add_definitions(-DANG_DIST)
 endif(ANG_DIST)
+
+if(EMULATOR)
+add_definitions(-DUSE_EMULATOR)
+endif(EMULATOR)
 
 if(ACCUMULATE_TRACK)
 add_definitions(-DACCUMULATE_TRACK)
@@ -262,6 +267,22 @@ macro(build_executables EXECUTABLES)
 endmacro()
 
 
+if(CAENWRAPPER)
+macro(collect_wrapper Wrappers)
+  foreach(Wrapper ${Wrappers})
+    file(GLOB wrappers ${wrappers} ${Wrapper}/*.cpp)
+  endforeach()
+endmacro()
+
+set(CAENWrapper ${CAENWrapper}
+${CMAKE_SOURCE_DIR}/CAEN/src
+)
+
+set(INCLUDES ${INCLUDES}
+${CMAKE_SOURCE_DIR}/CAEN/inc
+)
+endif(CAENWRAPPER)
+
 if(EMULATOR)
 macro(collect_emulators Emulators)
   foreach(Emulator ${Emulators})
@@ -284,6 +305,11 @@ collect_headers("${INCLUDES}")
 collect_sources("${SOURCES}")
 collect_tests("${TESTSDIR}")
 collect_helpers("${HELPERS}")
+
+if(CAENWRAPPER)
+collect_wrapper("${CAENWrapper}")
+endif(CAENWRAPPER)
+
 if(EMULATOR)
 collect_emulators("${HVEmulator}")
 endif(EMULATOR)
@@ -307,11 +333,19 @@ Helpers
 )
 
 if(EMULATOR)
+message(STATUS "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@")
 add_library(HVEmulator SHARED ${emulators})
 set(EMULATORLIB ${EMULATORLIB}
 HVEmulator
 )
 endif(EMULATOR)
+
+if(CAENWRAPPER)
+add_library(CAENWrapper SHARED ${wrappers})
+set(WRAPPERLIB ${WRAPPERLIB}
+CAENWrapper
+)
+endif(CAENWRAPPER)
 
 link_directories(${CMAKE_SOURCE_DIR}/build)
 

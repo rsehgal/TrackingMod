@@ -52,6 +52,8 @@ public:
     Slot():fName("TestSlot"),
            fNumOfChannels(6){
             id++;
+            std::string slotName = "TestSlot-"+id;
+            fName = (char*)slotName.c_str();
             fChannelVect.resize(fNumOfChannels);
             for(int i = 0 ; i < fNumOfChannels ; i++){
 

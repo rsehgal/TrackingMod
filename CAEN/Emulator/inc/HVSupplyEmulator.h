@@ -12,9 +12,10 @@
 #include <cstring>
 #include <map>
 #include "PhysicalHVSupply.h"
+#include "EmulatorConstants.h"
 namespace caen{
 
-using CAENHVRESULT = int;
+
 
 class HVSupplyEmulator{
 

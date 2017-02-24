@@ -8,6 +8,15 @@
 #ifndef CAEN_INC_HVSUPPLY_H_
 #define CAEN_INC_HVSUPPLY_H_
 #include <cstring>
+
+#ifdef USE_EMULATOR
+#include "EmulatorConstants.h"
+#include "HVSupplyEmulator.h"
+
+#else
+//Include header file of CAEN libraries
+#endif
+
 namespace caen {
 
 class HVSupply {
