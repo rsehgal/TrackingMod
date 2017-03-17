@@ -1,0 +1,252 @@
+#ifndef __ModuleV1190_HH_
+#define __ModuleV1190_HH_
+#include <iostream>
+#include <vector>
+#include "BSCModule.h"
+#include "ModuleVmeInterface.h"
+#include "ModuleV1190Data.h"
+
+const unsigned int V1190_Output_Buffer = 0x0000;
+const unsigned int V1190_Control_Register = 0x1000;
+const unsigned int V1190_Status_Register = 0x1002;
+const unsigned int V1190_Module_Reset = 0x1014;
+const unsigned int V1190_Event_Counter = 0x101C;
+const unsigned int V1190_Event_Stored = 0x1020;
+const unsigned int V1190_Micro = 0x102E;
+const unsigned int V1190_LEvent_FIFO = 0x1038;
+const unsigned int V1190_WEvent_FIFO_Status = 0x103E;
+const unsigned int V1190_Micro_Handshake = 0x1030;
+
+const unsigned V1190_Write_OK = 0x000001;
+const unsigned V1190_Read_OK = 0x000002;
+const unsigned V1190_Event_FIFO_Data_Ready = 0x1;
+const unsigned V1190_Event_FIFO_Full = 0x2;
+
+typedef enum V1190MeasType {
+  V1190_LeadingMeas  = 0,
+  V1190_TrailingMeas = 1,
+  V1190_InvalidMeas  = 2
+} V1190MeasType;
+
+typedef enum V1190Resolution{
+        Res_25ps = 3,
+        Res_100ps = 2,
+        Res_200ps = 1,
+        Res_800ps = 0
+}V1190Resolution;
+
+typedef enum V1190EdgeMode {
+  EdgeMode_Pair       = 0 ,
+  EdgeMode_Leading    = 2,
+  EdgeMode_Trailing   = 1,
+  EdgeMode_Both       = 3
+} V1190EdgeMode;
+
+typedef enum V1190ControlReg{
+  V1190_Control_Reg_Berren              = 0x001,
+  V1190_Control_Reg_Term                = 0x002,
+  V1190_Control_Reg_Term_Sw             = 0x004,
+  V1190_Control_Reg_Empty_Event         = 0x008,
+  V1190_Control_Reg_Align64             = 0x010,
+  V1190_Control_Reg_Compensation_Enable = 0x020,
+  V1190_Control_Reg_Test_FIFO_Enable    = 0x040,
+  V1190_Control_Reg_Read_Sram_Enable    = 0x080,
+  V1190_Control_Reg_Event_FIFO_Enable   = 0x100,
+  V1190_Control_Reg_Trigger_Tag_Enable  = 0x200
+} V1190ControlReg;
+
+typedef enum V1190StatusReg{
+  V1190_Status_Reg_Data_Ready   = 0x0001,
+  V1190_Status_Reg_Alm_Full     = 0x0002,
+  V1190_Status_Reg_Full         = 0x0004,
+  V1190_Status_Reg_Trg_Match    = 0x0008,
+  V1190_Status_Reg_Header_En    = 0x0010,
+  V1190_Status_Reg_Term_On      = 0x0020,
+  V1190_Status_Reg_Error0       = 0x0040,
+  V1190_Status_Reg_Error1       = 0x0080,
+  V1190_Status_Reg_Error2       = 0x0100,
+  V1190_Status_Reg_Error3       = 0x0200,
+  V1190_Status_Reg_Berr_Flag    = 0x0400,
+  V1190_Status_Reg_Purg         = 0x0800,
+  V1190_Status_Reg_Res0         = 0x1000,
+  V1190_Status_Reg_Res1         = 0x2000,
+  V1190_Status_Reg_Pair         = 0x4000,
+  V1190_Status_Reg_Trigger_Lost = 0x8000
+} V1190StatusReg;
+
+typedef enum V1190TrailerStatus {
+  V1190_StatusTriggerLost  = 0x1,
+  V1190_StatusTdcError     = 0x2,
+  V1190_StatusBufferOflw   = 0x4
+} V1190TrailerStatus;
+
+const unsigned long V1190_Data_Type_Mask = 0xf8000000;
+const unsigned long V1190_Data_Global_Header_Mask = 0x40000000;
+const unsigned long V1190_Data_Global_Trailer_Mask = 0x80000000;
+const unsigned long V1190_Data_Filler_Mask = 0xc0000000;
+
+
+
+typedef enum V1190ErrorType {
+  V1190_HitLostGr0_FifoOflw    = 0x0001,
+  V1190_HitLostGr0_L1Oflw      = 0x0002,
+  V1190_ErrorGr0               = 0x0004,
+  V1190_HitLostGr1_FifoOflw    = 0x0008,
+  V1190_HitLostGr1_L1Oflw      = 0x0010,
+  V1190_ErrorGr1               = 0x0020,
+  V1190_HitLostGr2_FifoOflw    = 0x0040,
+  V1190_HitLostGr2_L1Oflw      = 0x0080,
+  V1190_ErrorGr2               = 0x0100,
+  V1190_HitLostGr3_FifoOflw    = 0x0200,
+  V1190_HitLostGr3_L1Oflw      = 0x0400,
+  V1190_ErrorGr3               = 0x0800,
+  V1190_EventSizeLimit         = 0x1000,
+  V1190_EventLost_TrgFifoOflw  = 0x2000,
+  V1190_ChipFatalError         = 0x4000
+} V1190ErrorType;
+
+typedef enum V1190OppCodes{
+  OppCode_Set_Trigger_Matching_Mode         = 0x0000,
+  OppCode_Set_Trigger_Continuous_Mode       = 0x0100,
+  OppCode_Set_Window_Width                  = 0x1000,
+  OppCode_Set_Window_Offset                 = 0x1100,
+  OppCode_Set_Sw_Margin                     = 0x1200,
+  OppCode_Set_Reject_Margin                 = 0x1300,
+  OppCode_Enable_Trigger_Time_Substraction  = 0x1400,
+  OppCode_Disable_Trigger_Time_Substraction = 0x1500,
+  OppCode_Set_Edge_Detect_Mode              = 0x2200,
+  OppCode_Set_Trigger_Lead_LSB  = 0x2400,
+  OppCode_Set_Dead_Time                 = 0x2800,
+  OppCode_Enable_Header_Trailer = 0x3000,
+  OppCode_Set_Event_Size = 0x3300,
+  OppCode_Enable_Error_Mark = 0x3500,
+  OppCode_Error_Types   = 0x3900,
+  OppCode_Enable_All_Channels = 0x4200
+}V1190OppCodes;
+
+typedef enum V1190DeadTime {
+        Dead_Time_5ns = 0,
+        Dead_Time_10ns = 1,
+        Dead_Time_30ns = 2,
+        Dead_Time_100ns = 3
+} V1190DeadTime;
+
+typedef enum V1190EventsMax{
+        Events_Max_0 = 0,
+        Events_Max_1 = 1,
+        Events_Max_2 = 2,
+        Events_Max_4 = 3,
+        Events_Max_8 = 4,
+        Events_Max_16 = 5,
+        Events_Max_32 = 6,
+        Events_Max_64 = 7,
+        Events_Max_128 = 8,
+        Events_Max_Unlimited = 9,
+}V1190EventsMax;
+
+typedef enum BoardModelVersion{
+    Model_Version_A = 0,
+    Model_Version_B = 1,
+    Model_Version_N = 2
+} BoardModelVersion;
+
+const unsigned short V1190Channels = 128;
+
+const unsigned short ERR_VERNIER     = 0x0001;
+const unsigned short ERR_COARSE      = 0x0002;
+const unsigned short ERR_SELECT      = 0x0004;
+const unsigned short ERR_L1PARITY    = 0x0008;
+const unsigned short ERR_TFIFOPARITY = 0x0010;
+const unsigned short ERR_MATCHERROR  = 0x0020;
+const unsigned short ERR_RFIFOPARITY = 0x0040;
+const unsigned short ERR_RDOSTATE    = 0x0080;
+const unsigned short ERR_SUPPARITY   = 0x0100;
+const unsigned short ERR_CTLPARITY   = 0x0200;
+const unsigned short ERR_JTAGPARITY  = 0x0400;
+
+class ModuleV1190 : public BSCModule  {
+public:
+  ModuleV1190();
+  virtual ~ModuleV1190();
+  void Start();
+  void SetVmeInterface( ModuleVmeInterface * aVmeInt ){ _vmeInt = aVmeInt; };
+  int Initialize();
+ 
+//      void Calibrate();
+  bool Read();
+  bool Write();
+  void Stop();
+  BSCModule * Clone();
+
+  void PrintControlRegister();
+  unsigned GetStatus();
+  void MicroWait();
+ 
+  bool IsEventFIFOFull();
+  bool IsEventFIFOReady();
+  void Reset();
+  unsigned long ReadEventFIFO();
+  unsigned short FIFOWordCount( unsigned long aFIFOCounts );
+  unsigned short FIFOEventCount( unsigned long aFIFOCounts );
+ 
+  unsigned ReadData( void* aBuffer, unsigned int nMaxLongs );
+  unsigned ReadPacket( void* aBuffer, unsigned int nMaxLongs );
+  unsigned ReadValid( void* aBuffer, unsigned int nMaxLongs );
+ 
+  bool IsGlobalTrailer( unsigned long aData );
+  bool IsFiller( unsigned long aData );
+  unsigned long TriggerCounter();
+  unsigned long EventStored();
+  bool IsSetStatusReg( unsigned aBit );
+  unsigned short ReadStatusReg();
+  void SetControlReg( unsigned aBit );
+  void UnsetControlReg( unsigned aBit );
+  bool IsSetControlReg( unsigned aBit );
+  int16_t ReadControlReg();
+  void WriteMicro( int16_t aData );
+ 
+  void SetWindowWidth( int16_t aData );
+  void SetWindowOffset( int16_t aData );
+  void SetTriggerMatchingMode();
+  void SetTriggerContinuousMode();
+  void SetExtraSearchMargin( int16_t aData );
+  void SetRejectMargin( int16_t aData );
+  void EnableTriggerTimeSubstraction();
+  void DisableTriggerTimeSubstraction();
+  void EnableTDCEncapsulation();
+  void SetEdgeDetectMode( V1190EdgeMode aMode );
+ 
+  void SetIndividualLSB( V1190Resolution aResolution );
+  void SetDoubleHitResolution( V1190DeadTime aDeadTime );
+  void SetMaxHitsPerEvent( V1190EventsMax aEventsMax );
+  void EnableErrorMark();
+  void SetErrorEnables( unsigned short aErrors );
+  void EnableAllChannels();
+  void ReadConfigurationROM();
+private:
+  int _status;
+  unsigned _nChannels;
+  unsigned _nChipCount;
+  unsigned _wordCount;
+  unsigned _geo;
+  unsigned _triggerTimeTag;
+  unsigned _bunchId[ 4 ];
+  unsigned _eventId[ 4 ];
+  unsigned _unitWordCount;
+  unsigned long _boardModel;
+  BoardModelVersion _boardModelVersion;
+  std::vector< unsigned > _hitsPerChannel;
+  std::vector< std::vector< unsigned > > _hitsTE;
+  std::vector< std::vector< unsigned > > _hitsLE;
+
+  ModuleVmeInterface * _vmeInt;
+//  int32_t _handle;
+ 
+  unsigned _nLeadingEdgeHits[ V1190Channels + 1 ];
+  unsigned _nTrailingEdgeHits[ V1190Channels + 1 ];
+
+  std::vector< int > _leadingEdgeHit[ V1190Channels ];
+  std::vector< int > _trailingEdgeHit[ V1190Channels ];
+};
+
+#endif

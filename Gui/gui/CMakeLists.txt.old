@@ -1,0 +1,26 @@
+cmake_minimum_required(VERSION 2.8)
+PROJECT(TestProject)
+
+FIND_PACKAGE(Qt4 REQUIRED)
+INCLUDE(${QT_USE_FILE})
+
+QT4_WRAP_UI(UISrcs mainwindow.ui)
+QT4_WRAP_CPP(MOCSrcs inc/mainwindow.h)
+
+file(GLOB headers ${headers} ${CMAKE_CURRENT_SOURCE_DIR}/inc/*.h )
+file(GLOB sources ${sources} ${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp )
+
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/inc ${CMAKE_CURRENT_BINARY_DIR})
+
+
+#ADD_EXECUTABLE(MyProject test/main.cpp src/mainwindow.cpp ${headers} ${MOCSrcs} ${UISrcs})
+#TARGET_LINK_LIBRARIES(MyProject ${QT_LIBRARIES})
+
+#add_library(gui SHARED ${MOCSrcs} ${sources})
+#target_link_libraries(gui ${QT_LIBRARIES})
+#add_executable(main ${CMAKE_CURRENT_SOURCE_DIR}/test/main.cpp)
+#target_link_libraries(main gui)
+
+
+add_executable(testProg ${CMAKE_CURRENT_SOURCE_DIR}/test/testProg.cpp)
+target_link_libraries(testProg ${QT_LIBRARIES})
