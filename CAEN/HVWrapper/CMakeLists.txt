@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 2.8.8)
-project(Gnuplot C CXX)
+project(HVWrapper C CXX)
 
 #To put all the executables in build directory
 #SET(EXECUTABLE_OUTPUT_PATH ${CMAKE_BINARY_DIR}/bin) 
@@ -45,10 +45,18 @@ if(CCACHE_FOUND)
 endif(CCACHE_FOUND)
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/inc)
-file(GLOB headersGnuplot ${headersGnuplot} ${CMAKE_CURRENT_SOURCE_DIR}/inc/*.h )
-file(GLOB sourcesGnuplot ${sourcesGnuplot} ${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp )
-
-add_library(gnuplot SHARED ${headersGnuplot} ${sourcesGnuplot})
-add_executable(TestGnuplot ${CMAKE_CURRENT_SOURCE_DIR}/test/example.cc)
-target_link_libraries(TestGnuplot gnuplot)
-
+file(GLOB headersWrapper ${headersWrapper} ${CMAKE_CURRENT_SOURCE_DIR}/inc/*.h )
+file(GLOB sourcesWrapper ${sourcesWrapper} ${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp )
+message(STATUS "*************** Trying to create library libHVWrapper **********")
+message(STATUS "HEADERS : ${headersWrapper}")
+message(STATUS "SOURCES : ${sourcesWrapper}")
+if(EMULATOR)
+add_definitions(-DUSE_EMULATOR)
+include_directories(${CMAKE_SOURCE_DIR}/CAEN/Emulator/inc)
+add_library(HVWrapper SHARED ${headersWrapper} ${sourcesWrapper})
+target_link_libraries(HVWrapper hvemulator)
+else()
+find_package(CAEN REQUIRED)
+include_directories(${CAEN_INCLUDE_DIR})
+target_link_libraries(HVWrapper ${CAEN_LIBRARIES})
+endif(EMULATOR)

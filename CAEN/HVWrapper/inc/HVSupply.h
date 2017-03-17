@@ -32,29 +32,31 @@ class HVSupply {
 	float fVMon;
 	float fIMon;
 
+	//TODO: DATA TYPES of These parameter must be carefully checked
+
 	//Parameter for reading
-	float *param = NULL; // used for reading VMON and IMON
-	uint *param2 = NULL; //used for reading power status
-	ushort *id_channel = NULL;
+	float *param;// = NULL; // used for reading VMON and IMON
+	float *param2;// = NULL; //used for reading power status
+	ushort *id_channel;// = NULL;
 	std::string fParName;
 	int fPower;
 	int fSystemStatus;
 
 public:
-	HVSupply();
+	HVSupply(std::string name, std::string ipaddress, int link, std::string username="admin", std::string passwd="admin");
 	virtual ~HVSupply();
 	void Login();
-	bool IsLoginOk(){return (fRet_init == CAEN_OK);}
+	bool IsLoginOk(){return (fRet_init == CAENHV_OK);}
 
 	//Getters functions
 	std::string GetIPAddress() {return fIPAddress;}
 	std::string GetName() {return fName;}
 	int GetNumOfSlots() {return fNumOfSlots;}
 	int GetNumOfChannelPerSlot() {return fNumOfChannelPerSlot;}
-	float GetVoltage();//{return fVMon;}
-    float GetCurrent();//{return fIMon;}
-	int GetPowerStatus();//{return fPower;}
-	int GetSystemStatus();//{return fSystemStatus;}
+	float GetVoltage(int slot, ushort channel);//{return fVMon;}
+    float GetCurrent(int slot, ushort channel);//{return fIMon;}
+	int GetPowerStatus(int slot, ushort channel);//{return fPower;}
+	int GetSystemStatus(int slot, ushort channel);//{return fSystemStatus;}
 
 	//Setters functions
 	void SetV0();

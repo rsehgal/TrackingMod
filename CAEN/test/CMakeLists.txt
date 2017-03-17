@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 2.8.8)
-project(Gnuplot C CXX)
+project(CAENTest C CXX)
 
 #To put all the executables in build directory
 #SET(EXECUTABLE_OUTPUT_PATH ${CMAKE_BINARY_DIR}/bin) 
@@ -44,11 +44,14 @@ if(CCACHE_FOUND)
   set_property(GLOBAL PROPERTY RULE_LAUNCH_LINK ccache)
 endif(CCACHE_FOUND)
 
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/inc)
-file(GLOB headersGnuplot ${headersGnuplot} ${CMAKE_CURRENT_SOURCE_DIR}/inc/*.h )
-file(GLOB sourcesGnuplot ${sourcesGnuplot} ${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp )
+include_directories(${CMAKE_SOURCE_DIR}/CAEN/HVWrapper/inc)
+if(EMULATOR)
+include_directories(${CMAKE_SOURCE_DIR}/CAEN/Emulator/inc)
+else()
+find_package(CAEN REQUIRED)
+include_directories(${CAEN_INCLUDE_DIR})
+endif(EMULATOR)
 
-add_library(gnuplot SHARED ${headersGnuplot} ${sourcesGnuplot})
-add_executable(TestGnuplot ${CMAKE_CURRENT_SOURCE_DIR}/test/example.cc)
-target_link_libraries(TestGnuplot gnuplot)
+add_executable(TestHVSupplyEmulator ${CMAKE_CURRENT_SOURCE_DIR}/TestHVSupplyEmulator.cpp)
+target_link_libraries(TestHVSupplyEmulator HVWrapper)
 

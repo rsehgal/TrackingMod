@@ -56,7 +56,10 @@ option(ACCUMULATE_TRACK "All the tracks will be displayed" OFF)
 option(ANG_DIST "To calculate the angular distribution from tracks" OFF)
 option(CGAL "CGAL library for geometrical algorithms" OFF)
 option(EMULATOR "Building Emulator for HV Supply" OFF)
-option(CAENWRAPPER "Building Wrapper for CAEN Library" OFF)
+#option(CAENWRAPPER "Building Wrapper for CAEN Library" OFF)
+option(CAEN "Enabling CAEN Libraries" OFF)
+option(GNUPLOT "Enabling GnuPlot" OFF)
+option(QT "Enabling QtGui" OFF)
 
 if(CGAL)
 find_package(CGAL REQUIRED)
@@ -229,7 +232,7 @@ ${CMAKE_SOURCE_DIR}/TemplatizedInterface/test/core
 ${CMAKE_SOURCE_DIR}/TemplatizedInterface/test/plots
 ${CMAKE_SOURCE_DIR}/Simulations/MST/test
 ${CMAKE_SOURCE_DIR}/visualizer/test
-${CMAKE_SOURCE_DIR}/CAEN/test
+#${CMAKE_SOURCE_DIR}/CAEN/test
 #${CMAKE_SOURCE_DIR}/test
 )
 
@@ -267,37 +270,37 @@ macro(build_executables EXECUTABLES)
 endmacro()
 
 
-if(CAENWRAPPER)
-macro(collect_wrapper Wrappers)
-  foreach(Wrapper ${Wrappers})
-    file(GLOB wrappers ${wrappers} ${Wrapper}/*.cpp)
-  endforeach()
-endmacro()
+#if(CAENWRAPPER)
+#macro(collect_wrapper Wrappers)
+#  foreach(Wrapper ${Wrappers})
+#    file(GLOB wrappers ${wrappers} ${Wrapper}/*.cpp)
+#  endforeach()
+#endmacro()
 
-set(CAENWrapper ${CAENWrapper}
-${CMAKE_SOURCE_DIR}/CAEN/src
-)
+#set(CAENWrapper ${CAENWrapper}
+#${CMAKE_SOURCE_DIR}/CAEN/src
+#)
 
-set(INCLUDES ${INCLUDES}
-${CMAKE_SOURCE_DIR}/CAEN/inc
-)
-endif(CAENWRAPPER)
+#set(INCLUDES ${INCLUDES}
+#${CMAKE_SOURCE_DIR}/CAEN/inc
+#)
+#endif(CAENWRAPPER)
 
-if(EMULATOR)
-macro(collect_emulators Emulators)
-  foreach(Emulator ${Emulators})
-    file(GLOB emulators ${emulators} ${Emulator}/*.cpp)
-  endforeach()
-endmacro()
+#if(EMULATOR)
+#macro(collect_emulators Emulators)
+#  foreach(Emulator ${Emulators})
+#    file(GLOB emulators ${emulators} ${Emulator}/*.cpp)
+#  endforeach()
+#endmacro()
 
-set(HVEmulator ${HVEmulator}
-${CMAKE_SOURCE_DIR}/CAEN/Emulator/src
-)
+#set(HVEmulator ${HVEmulator}
+#${CMAKE_SOURCE_DIR}/CAEN/Emulator/src
+#)
 
-set(INCLUDES ${INCLUDES}
-${CMAKE_SOURCE_DIR}/CAEN/Emulator/inc
-)
-endif(EMULATOR)
+#set(INCLUDES ${INCLUDES}
+#${CMAKE_SOURCE_DIR}/CAEN/Emulator/inc
+#)
+#endif(EMULATOR)
 
 message(STATUS ${headers})
 include_dirs("${INCLUDES}")
@@ -306,13 +309,13 @@ collect_sources("${SOURCES}")
 collect_tests("${TESTSDIR}")
 collect_helpers("${HELPERS}")
 
-if(CAENWRAPPER)
-collect_wrapper("${CAENWrapper}")
-endif(CAENWRAPPER)
+#if(CAENWRAPPER)
+#collect_wrapper("${CAENWrapper}")
+#endif(CAENWRAPPER)
 
-if(EMULATOR)
-collect_emulators("${HVEmulator}")
-endif(EMULATOR)
+#if(EMULATOR)
+#collect_emulators("${HVEmulator}")
+#endif(EMULATOR)
 
 message(STATUS "--------- Following source file will be use for the creation of TOMO Shared library -----------")
 message(STATUS ${sources})
@@ -332,20 +335,33 @@ set(HELPERSLIB ${HELPERSLIB}
 Helpers
 )
 
-if(EMULATOR)
-message(STATUS "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@")
-add_library(HVEmulator SHARED ${emulators})
-set(EMULATORLIB ${EMULATORLIB}
-HVEmulator
-)
-endif(EMULATOR)
+#if(EMULATOR)
+#message(STATUS "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@")
+#add_library(HVEmulator SHARED ${emulators})
+#set(EMULATORLIB ${EMULATORLIB}
+#HVEmulator
+#)
+#endif(EMULATOR)
 
-if(CAENWRAPPER)
-add_library(CAENWrapper SHARED ${wrappers})
-set(WRAPPERLIB ${WRAPPERLIB}
-CAENWrapper
-)
-endif(CAENWRAPPER)
+if(GNUPLOT)
+add_subdirectory(gnuplot)
+endif(GNUPLOT)
+
+if(QT)
+add_subdirectory(Gui)
+endif(QT)
+
+if(CAEN)
+add_subdirectory(CAEN)
+endif(CAEN)
+
+
+#if(CAENWRAPPER)
+#add_library(CAENWrapper SHARED ${wrappers})
+#set(WRAPPERLIB ${WRAPPERLIB}
+#CAENWrapper
+#)
+#endif(CAENWRAPPER)
 
 link_directories(${CMAKE_SOURCE_DIR}/build)
 

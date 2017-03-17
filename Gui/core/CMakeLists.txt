@@ -45,10 +45,11 @@ if(CCACHE_FOUND)
 endif(CCACHE_FOUND)
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/inc)
-file(GLOB headers ${headers} ${CMAKE_CURRENT_SOURCE_DIR}/inc/*.h )
-file(GLOB sources ${sources} ${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp )
+file(GLOB headersGuicore ${headersGuicore} ${CMAKE_CURRENT_SOURCE_DIR}/inc/*.h )
+file(GLOB sourcesGuicore ${sourcesGuicore} ${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp )
 
-add_library(guicore SHARED ${headers} ${sources})
+add_library(guicore SHARED ${headersGuicore} ${sourcesGuicore})
+
 add_executable(TestInfo ${CMAKE_CURRENT_SOURCE_DIR}/test/TestInfo.cpp)
 target_link_libraries(TestInfo guicore)
 

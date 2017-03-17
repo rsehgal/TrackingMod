@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 2.8.8)
-project(Gnuplot C CXX)
+project(Emulator C CXX)
 
 #To put all the executables in build directory
 #SET(EXECUTABLE_OUTPUT_PATH ${CMAKE_BINARY_DIR}/bin) 
@@ -45,10 +45,13 @@ if(CCACHE_FOUND)
 endif(CCACHE_FOUND)
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/inc)
-file(GLOB headersGnuplot ${headersGnuplot} ${CMAKE_CURRENT_SOURCE_DIR}/inc/*.h )
-file(GLOB sourcesGnuplot ${sourcesGnuplot} ${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp )
+file(GLOB headersEmulator ${headersEmulator} ${CMAKE_CURRENT_SOURCE_DIR}/inc/*.h )
+file(GLOB sourcesEmulator ${sourcesEmulator} ${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp )
 
-add_library(gnuplot SHARED ${headersGnuplot} ${sourcesGnuplot})
-add_executable(TestGnuplot ${CMAKE_CURRENT_SOURCE_DIR}/test/example.cc)
-target_link_libraries(TestGnuplot gnuplot)
+message(STATUS "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@")
+message(STATUS "@@@@@@@@@@@@@@ FOUND @@@@@@@@@@@@@@@@@@@@@@@@")
+message(STATUS "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@")
+add_library(hvemulator SHARED ${headersEmulator} ${sourcesEmulator})
+#add_executable(TestEmulator TestEmulator.cpp)
+#target_link_libraries(TestEmulator hvemulator)
 

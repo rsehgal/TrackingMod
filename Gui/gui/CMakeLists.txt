@@ -55,5 +55,3 @@ INCLUDE(${QT_USE_FILE})
 add_executable(TestProg ${CMAKE_CURRENT_SOURCE_DIR}/test/TestProg.cpp)
 target_link_libraries(TestProg ${QT_LIBRARIES} guicore)
 
-#target_link_libraries(TestProg gui)
-

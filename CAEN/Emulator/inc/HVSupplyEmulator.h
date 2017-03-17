@@ -15,8 +15,10 @@
 #include "EmulatorConstants.h"
 namespace caen{
 
+CAENHVRESULT CAENHVInitSystem( const char *name, int link, const char *ipaddress,const char *username,const char *passwd);
+CAENHVRESULT CAENHVGetChParam( const char *Name, int slot, const char *paramname, int ch, ushort channel, float *param);
 
-
+#if(0)
 class HVSupplyEmulator{
 
    /* std::string fName;
@@ -43,6 +45,6 @@ public:
 
 
 };
-
+#endif
 } // end of caen namespace
 #endif /* CAEN_EMULATOR_INC_HVSUPPLYEMULATOR_H_ */

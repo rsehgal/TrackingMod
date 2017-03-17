@@ -9,7 +9,7 @@
 
 namespace caen {
 
-HVSupply::HVSupply(std::string name, std::string ipaddress, int link, std::string username="admin", std::string passwd="admin" ) {
+HVSupply::HVSupply(std::string name, std::string ipaddress, int link, std::string username, std::string passwd ) {
 	// TODO Auto-generated constructor stub
 	fName = name;
 	fIPAddress = ipaddress;
@@ -17,9 +17,9 @@ HVSupply::HVSupply(std::string name, std::string ipaddress, int link, std::strin
 	fUsername = username;
 	fPasswd = passwd;
 
-	param = malloc(sizeof(float));
-	param2 = malloc(sizeof(uint));
-	id_channel = malloc(sizeof(ushort));
+	param = new float; //malloc(sizeof(float));
+	param2 = new float; //malloc(sizeof(uint));
+	id_channel = new ushort; //malloc(sizeof(ushort));
 
 	fVMon = 0.;
 	fIMon = 0.;
@@ -30,7 +30,9 @@ HVSupply::HVSupply(std::string name, std::string ipaddress, int link, std::strin
 
 HVSupply::~HVSupply() {
 	// TODO Auto-generated destructor stub
-	fRet_init = CAENHVDeinitSystem(fName);
+
+	//This function is not yet there in HVSuppyEmulator
+	//fRet_init = CAENHVDeinitSystem(fName);
 }
 
 void HVSupply::Login(){
@@ -47,7 +49,7 @@ void HVSupply::Login(){
 
 float HVSupply::GetVoltage(int slot, ushort channel){
 
-	fRet = CAENHVGetChParam(fName, slot, "VMon", 1, channel, param);
+	fRet = CAENHVGetChParam(fName.c_str(), slot, "VMon", 1, channel, param);
 	if (fRet==CAENHV_OK) {
 	   fVMon = param[0];
 	}
@@ -57,7 +59,7 @@ float HVSupply::GetVoltage(int slot, ushort channel){
 
 float HVSupply::GetCurrent(int slot, ushort channel){
 
-	fRet = CAENHVGetChParam(fName, slot, "IMon", 1, channel, param);
+	fRet = CAENHVGetChParam(fName.c_str(), slot, "IMon", 1, channel, param);
 	if (fRet==CAENHV_OK) {
 	   fIMon = param[0];
 	}
@@ -67,7 +69,7 @@ float HVSupply::GetCurrent(int slot, ushort channel){
 
 int HVSupply::GetPowerStatus(int slot, ushort channel){
 
-	fRet = CAENHVGetChParam(fName, slot, "Pw", 1, channel, param2);
+	fRet = CAENHVGetChParam(fName.c_str(), slot, "Pw", 1, channel, param2);
 	if (fRet==CAENHV_OK) {
 	   fPower = param2[0];
 	}
@@ -77,7 +79,7 @@ int HVSupply::GetPowerStatus(int slot, ushort channel){
 
 int HVSupply::GetSystemStatus(int slot, ushort channel){
 
-	fRet = CAENHVGetChParam(fName, slot, "Status", 1, channel, param2);
+	fRet = CAENHVGetChParam(fName.c_str(), slot, "Status", 1, channel, param2);
 	if (fRet==CAENHV_OK) {
 	   fSystemStatus = param2[0];
 	}

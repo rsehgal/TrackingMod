@@ -61,8 +61,9 @@ include_directories(AFTER SYSTEM ${ROOT_INCLUDE_DIR})
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/inc)
 
 
-file(GLOB headers ${headers} ${CMAKE_CURRENT_SOURCE_DIR}/inc/*.h ${CMAKE_CURRENT_SOURCE_DIR}/inc/*.hh)
-file(GLOB sources ${sources} ${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp ${CMAKE_CURRENT_SOURCE_DIR}/src/*.cc)
+file(GLOB headersDaq ${headersDaq} ${CMAKE_CURRENT_SOURCE_DIR}/inc/*.h ${CMAKE_CURRENT_SOURCE_DIR}/inc/*.hh)
+file(GLOB sourcesDaq ${sourcesDaq} ${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp ${CMAKE_CURRENT_SOURCE_DIR}/src/*.cc)
 
-add_executable(daq904 ${CMAKE_CURRENT_SOURCE_DIR}/test/daq904.cc ${headers} ${sources})
-target_link_libraries(daq904 "${ROOT_LIBRARIES} -L${CAEN_LIBRARY_DIR} -lCAENVME")
+add_executable(daq904 ${CMAKE_CURRENT_SOURCE_DIR}/test/daq904.cc ${headersDaq} ${sourcesDaq})
+target_link_libraries(daq904 ${ROOT_LIBRARIES} "-L${CAEN_LIBRARY_DIR} -lCAENVME")
+#target_link_libraries(daq904 ${ROOT_LIBRARIES} CAENVME)
