@@ -44,14 +44,22 @@ if(CCACHE_FOUND)
   set_property(GLOBAL PROPERTY RULE_LAUNCH_LINK ccache)
 endif(CCACHE_FOUND)
 
-#include_directories(${CMAKE_CURRENT_SOURCE_DIR}/inc)
-#file(GLOB headers ${headers} ${CMAKE_CURRENT_SOURCE_DIR}/inc/*.h )
-#file(GLOB sources ${sources} ${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp )
-#add_library(gui SHARED ${headers} ${sources})
-
 include_directories(${CMAKE_SOURCE_DIR}/Gui/core/inc)
+include_directories(${CMAKE_SOURCE_DIR}/Gui/gui/inc)
+
+file(GLOB headersQtGui ${headersQtGui} ${CMAKE__SOURCE_DIR}/Gui/gui/inc/*.h )
+file(GLOB sourcesQtGui ${sourcesQtGui} ${CMAKE_SOURCE_DIR}/Gui/gui/src/*.cpp )
+
 FIND_PACKAGE(Qt4 REQUIRED)
 INCLUDE(${QT_USE_FILE})
+
+QT4_WRAP_CPP(MOCSrcs ${CMAKE_SOURCE_DIR}/Gui/gui/inc/HorizontalLayout.h)
+
+add_library(qtlib SHARED ${headerQtGui} ${sourcesQtGui} ${MOCSrcs})
+target_link_libraries(qtlib ${QT_LIBRARIES} guicore)
+
 add_executable(TestProg ${CMAKE_CURRENT_SOURCE_DIR}/test/TestProg.cpp)
 target_link_libraries(TestProg ${QT_LIBRARIES} guicore)
 
+add_executable(TestQt ${CMAKE_CURRENT_SOURCE_DIR}/test/TestQt.cpp)
+target_link_libraries(TestQt qtlib)
