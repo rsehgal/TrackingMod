@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<setup>
+    <rpc id="1">
+        <gaps>2</gaps>
+        <roplanes>2</roplanes>
+        <plane id="1" psslot="1" pschannel="1" tdcid="1" tdcchannelStart="32" tdcchannelEnd="64"></plane>
+        <plane id="2" psslot="1" pschannel="2" tdcid="1" tdcchannelStart="64" tdcchannelEnd="95"></plane>
+    </rpc>
+    
+
+    <rpc id="2">
+        <gaps>2</gaps>
+        <roplanes>2</roplanes>
+        <plane id="1" psslot="1" pschannel="3" tdcid="2" tdcchannelStart="32" tdcchannelEnd="64"></plane>
+        <plane id="2" psslot="1" pschannel="4" tdcid="2" tdcchannelStart="64" tdcchannelEnd="95"></plane>
+    </rpc>
+    
+    <rpc id="1">
+        <gaps>2</gaps>
+        <roplanes>2</roplanes>
+        <plane id="1" psslot="1" pschannel="5" tdcid="3" tdcchannelStart="32" tdcchannelEnd="64"></plane>
+        <plane id="2" psslot="1" pschannel="6" tdcid="3" tdcchannelStart="64" tdcchannelEnd="95"></plane>
+    </rpc>   
+</setup>
