@@ -29,8 +29,10 @@ int main(int argc, char *argv[]) {
 	Setup *s = new Setup(argv[1]);
 	std::vector<Detector*> detVect = s->GetDetectorVector();
 	for (int i = 0; i < detVect.size(); i++) {
+		//sleep(5);
 		detVect[i]->SetEfficiency();
 		detVect[i]->GetPlane(0)->SetEfficiency();
+		std::cout<< "Name : " << detVect[i]->GetPlane(0)->GetName() << std::endl;
 		detVect[i]->GetPlane(1)->SetEfficiency();
 		if (verbose) {
 			std::cout << "Eff of Det-1 : " << detVect[i]->GetEfficiency()

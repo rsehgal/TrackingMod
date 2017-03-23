@@ -51,6 +51,7 @@ public:
   ScintillatorPlane(int moduleId, int numOfScintillators, double zPos, double scintPlaneLength,
                       double scintPlaneBreadth, double scintPlaneHeight,double planeShift, bool xdir=true, std::string planeName = "Test-ScintillatorPlane"):
                       fLength(scintPlaneLength),fBreadth(scintPlaneBreadth), fHeight(scintPlaneHeight){
+	  fName = planeName;
       fNumOfScintillators=numOfScintillators;
       Tracking::Vector3D<double> scintPlacedLocation;
       for (int i = 0; i < numOfScintillators; i++) {

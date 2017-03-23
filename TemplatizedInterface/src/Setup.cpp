@@ -115,6 +115,7 @@ void Setup::FillInfo(){
 		int moduleId = 0;
 		int numOfStrips = 0;
 		int startId = 0;
+		std::string name;
 		value = fDoc->getChildAttribute("setup", 0, "rpc", i, "zpos");
 		int zPos = std::stoi(value);
 		value = fDoc->getChildAttribute("setup", 0, "rpc", i, "length");
@@ -136,6 +137,8 @@ void Setup::FillInfo(){
 		fDetectorVect[i]->SetLBH(length, breadth, height);
 		fDetectorVect[i]->Initialize();
 		for (int j = 0; j < fDoc->getChildCount("rpc", i, "plane"); j++) {
+			value = fDoc->getChildAttribute("rpc", i, "plane", j, "name");
+			name = value;
 			value = fDoc->getChildAttribute("rpc", i, "plane", j, "tdcid");
 			moduleId = std::stoi(value);
 			value = fDoc->getChildAttribute("rpc", i, "plane", j, "nofstrips");
@@ -150,13 +153,13 @@ void Setup::FillInfo(){
 						new ScintillatorPlane(moduleId, numOfStrips, zPos,
 								fDetectorVect[i]->GetLength(),
 								fDetectorVect[i]->GetBreadth(),
-								fDetectorVect[i]->GetHeight(), 0., false));
+								fDetectorVect[i]->GetHeight(), 0., false,name));
 			} else {
 				fDetectorVect[i]->InsertPlane(
 						new ScintillatorPlane(moduleId, numOfStrips, zPos,
 								fDetectorVect[i]->GetLength(),
 								fDetectorVect[i]->GetBreadth(),
-								fDetectorVect[i]->GetHeight(), 0., true));
+								fDetectorVect[i]->GetHeight(), 0., true,name));
 			}
 		}
 		fDetectorVect[i]->SetClusterSize(fClusterSize);

@@ -53,7 +53,12 @@ file(GLOB sourcesQtGui ${sourcesQtGui} ${CMAKE_SOURCE_DIR}/Gui/gui/src/*.cpp )
 FIND_PACKAGE(Qt4 REQUIRED)
 INCLUDE(${QT_USE_FILE})
 
-QT4_WRAP_CPP(MOCSrcs ${CMAKE_SOURCE_DIR}/Gui/gui/inc/HorizontalLayout.h)
+QT4_WRAP_CPP(MOCSrcs ${CMAKE_SOURCE_DIR}/Gui/gui/inc/HorizontalLayout.h 
+${CMAKE_SOURCE_DIR}/Gui/gui/inc/DetectorLayout.h 
+${CMAKE_SOURCE_DIR}/Gui/gui/inc/PlaneLayout.h
+${CMAKE_SOURCE_DIR}/Gui/gui/inc/AllPlaneLayout.h
+${CMAKE_SOURCE_DIR}/Gui/gui/inc/Run.h
+)
 
 add_library(qtlib SHARED ${headerQtGui} ${sourcesQtGui} ${MOCSrcs})
 target_link_libraries(qtlib ${QT_LIBRARIES} guicore)
@@ -63,3 +68,6 @@ target_link_libraries(TestProg ${QT_LIBRARIES} guicore)
 
 add_executable(TestQt ${CMAKE_CURRENT_SOURCE_DIR}/test/TestQt.cpp)
 target_link_libraries(TestQt qtlib)
+
+add_executable(TestQtXML ${CMAKE_CURRENT_SOURCE_DIR}/test/TestQtXML.cpp)
+target_link_libraries(TestQtXML qtlib ${ROOT_LIBRARIES} Tomo Helpers)
