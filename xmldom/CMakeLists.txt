@@ -48,8 +48,18 @@ find_package(XERCES REQUIRED)
 include_directories(${XERCES_INCLUDE_DIR})
 include_directories(.)
 
-add_executable(mainXml main.cpp XmlDomDocument.cpp XmlDomDocument.h)
-target_link_libraries(mainXml ${XERCES_LIBRARIES})
+#add_executable(mainXml main.cpp XmlDomDocument.cpp XmlDomDocument.h)
+#target_link_libraries(mainXml ${XERCES_LIBRARIES})
 
-add_executable(setup setup.cpp XmlDomDocument.cpp XmlDomDocument.h)
-target_link_libraries(setup ${XERCES_LIBRARIES})
+#add_executable(setup setup.cpp XmlDomDocument.cpp XmlDomDocument.h)
+#target_link_libraries(setup ${XERCES_LIBRARIES})
+
+add_library(xmldom SHARED XmlDomDocument.cpp XmlDomDocument.h)
+target_link_libraries(xmldom ${XERCES_LIBRARIES})
+
+add_executable(setup setup.cpp)
+target_link_libraries(setup xmldom)
+
+add_executable(mainXml main.cpp)
+target_link_libraries(mainXml xmldom)
+

@@ -61,6 +61,14 @@ option(CAEN "Enabling CAEN Libraries" OFF)
 option(GNUPLOT "Enabling GnuPlot" OFF)
 option(QT "Enabling QtGui" OFF)
 
+#For Xml Processing
+find_package(XERCES REQUIRED)
+include_directories(${XERCES_INCLUDE_DIR})
+add_subdirectory(xmldom)
+#include_directories(${CMAKE_SOURCE_DIR}/xmldom)
+find_package(XMLDOM REQUIRED)
+include_directories(${XMLDOM_INCLUDE_DIR})
+
 if(CGAL)
 find_package(CGAL REQUIRED)
 message(STATUS "************* Link CGAL **************")
@@ -330,10 +338,13 @@ message(STATUS "--------- Following source files will be use for the creation of
 message(STATUS ${helpers})
 message(STATUS "------------------------------------------------------------------------------------------")
 add_library(Helpers SHARED ${helpers})
+target_link_libraries(Helpers  ${XERCES_LIBRARIES})
 #target_link_libraries(Tomo ${EXTERNAL_LIBS})
 set(HELPERSLIB ${HELPERSLIB}
 Helpers
 )
+
+message(STATUS "HELPERS : ${HELPERSLIB}")
 
 #if(EMULATOR)
 #message(STATUS "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@")
@@ -364,6 +375,7 @@ endif(CAEN)
 #endif(CAENWRAPPER)
 
 link_directories(${CMAKE_SOURCE_DIR}/build)
+#link_directories(${CMAKE_SOURCE_DIR}/build/xmldom)
 
 build_executables("${tests}")
 message(STATUS ${headers})
