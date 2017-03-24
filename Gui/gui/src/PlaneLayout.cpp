@@ -28,9 +28,13 @@ void PlaneLayout::CreateLayout(QString planeStr, QString effStr){
 	fEffLabel->setSizePolicy(QSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed));
 	fHPlaneLayout->addWidget(fPlaneButton);
 	fHPlaneLayout->addWidget(fEffLabel);
-	//connect(fEffButton, SIGNAL (clicked(bool)), this, SLOT (slotButtonClicked(bool)));
+	connect(fPlaneButton, SIGNAL (clicked(bool)), this, SLOT (slotButtonClicked(bool)));
 }
 
+void PlaneLayout::CreateLayout(Tomography::ScintillatorPlane *plane){
+	fScintillatorPlane = plane;
+	CreateLayout(QString::fromStdString(plane->GetName()),"EFFICIENCY");
+}
 
 PlaneLayout::~PlaneLayout() {
 	// TODO Auto-generated destructor stub

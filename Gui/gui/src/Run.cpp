@@ -6,6 +6,7 @@
  */
 
 #include "Run.h"
+#include "Tree.h"
 
 Run::Run() {
 	// TODO Auto-generated constructor stub
@@ -33,4 +34,42 @@ void Run::CreateLayout(QString runNum, std::vector<Detector*> detectorVect){
 	}
 	fHRunLayout->addLayout(fVRunLayout);
 	setLayout(fHRunLayout);
+}
+
+void Run::CreateLayout2(QString runNum, std::vector<Detector*> detectorVect){
+
+	//fRunLabel = new QLabel(runNum);
+	//fHRunLayout->addWidget(fRunLabel);
+	fRunNum = runNum;
+	fRunNumRadioButton = new QRadioButton(runNum);
+	fRunNumCheckbox = new QCheckBox(runNum);
+	fHRunLayout->addWidget(fRunNumCheckbox);
+	fHRunLayout->addWidget((new VSeparator)->GetSeparator());
+	fVRunLayout->addWidget((new HSeparator)->GetSeparator());
+	for(int i=0;i<detectorVect.size();i++){
+
+		fVRunLayout->addLayout((new DetectorLayout(detectorVect[i]))->GetLayout());
+		fVRunLayout->addWidget((new HSeparator)->GetSeparator());
+	}
+	//fVRunLayout->addWidget(line);
+	fHRunLayout->addLayout(fVRunLayout);
+	connect(fRunNumCheckbox, SIGNAL (clicked(bool)), this, SLOT (slotCheckBoxClicked(bool)));
+	//setLayout(fHRunLayout);
+
+}
+
+/*void Run::CreateLayout3(std::vector<QString> runNumVect,std::vector<Detector*> detectorVect){
+	for(int i=0;i<runNumVect.size();i++){
+		CreateLayout2(runNumVect[i],detectorVect);
+		fVAllRunLayout->addLayout(fHRunLayout);
+	}
+	setLayout(fVAllRunLayout);
+}*/
+
+void Run::ReadData(QString runNum){
+	std::cout<<"----- Read Data Called ----- " << std::endl;
+	std::string temp_str = runNum.toUtf8().constData();
+	temp_str += ".root";
+	Tracking::Tree::instance()->ReadTree(temp_str.c_str(), "BSC_DATA_TREE", 0);
+
 }

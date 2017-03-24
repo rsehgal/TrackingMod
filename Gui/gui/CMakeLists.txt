@@ -58,6 +58,7 @@ ${CMAKE_SOURCE_DIR}/Gui/gui/inc/DetectorLayout.h
 ${CMAKE_SOURCE_DIR}/Gui/gui/inc/PlaneLayout.h
 ${CMAKE_SOURCE_DIR}/Gui/gui/inc/AllPlaneLayout.h
 ${CMAKE_SOURCE_DIR}/Gui/gui/inc/Run.h
+${CMAKE_SOURCE_DIR}/Gui/gui/inc/AllRunLayout.h
 )
 
 add_library(qtlib SHARED ${headerQtGui} ${sourcesQtGui} ${MOCSrcs})

@@ -22,6 +22,16 @@ void AllPlaneLayout::CreateLayout(std::vector<QString> planeStrVect){
 	}
 }
 
+void AllPlaneLayout::CreateLayout(std::vector<Tomography::ScintillatorPlane*> planeVect){
+	for(int i=0 ; i<planeVect.size() ; i++){
+		fVAllPlaneLayout->addLayout((new PlaneLayout(planeVect[i]))->GetLayout());
+	}
+	//Now doing this thing in Detectot itself
+	/*if(planeVect.size()==2){
+		fVAllPlaneLayout->addLayout((new PlaneLayout("BothXY","EFFICIENCY"))->GetLayout());
+	}*/
+}
+
 AllPlaneLayout::~AllPlaneLayout() {
 	// TODO Auto-generated destructor stub
 }
