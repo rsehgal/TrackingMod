@@ -129,6 +129,8 @@ public:
   void GetStripProfile();
   void GetX_Y_And_ClusterHistograms();
   void GetHitPlot();
+  void GetHitPlot3D();
+  void GetHitPlot3D_V2();
   Tracking::Vector3D<double> GetStripCoordinate(int x, int y, int z);
   //void FetchInfo(Tracking::Tree t);
   void InsertPlane(ScintillatorPlane *plane){

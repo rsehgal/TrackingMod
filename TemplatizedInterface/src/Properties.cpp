@@ -8,6 +8,8 @@
 #include "Properties.h"
 #include <TCanvas.h>
 #include <TH2F.h>
+#include <TH3F.h>
+#include <TStyle.h>
 namespace Tomography{
 
 //int Properties::fClusterSize = 10;
@@ -137,7 +139,7 @@ void Properties::GetHitPlot(){
   
   TCanvas *cHitPlot = new TCanvas(GetName().c_str(), GetName().c_str(), 600, 450);
   TH2F *h2dHitPlot = new TH2F("h2dHitPlot", "HitPlot", 500, -fLength, fLength, 500, -fBreadth, fBreadth);
-  h2dHitPlot->SetMarkerSize(0.5);
+  h2dHitPlot->SetMarkerSize(0.2);
   h2dHitPlot->SetMarkerStyle(20);
   int numOfEvents = Tracking::Tree::instance()->GetNumOfEvents();
   std::vector<int> topPlaneFiredStripVector;
@@ -173,6 +175,89 @@ void Properties::GetHitPlot(){
   h2dHitPlot->Draw();
   
 }
+
+void Properties::GetHitPlot3D(){
+	gStyle->SetPalette(1);
+  TCanvas *cHitPlot = new TCanvas(GetName().c_str(), GetName().c_str(), 600, 450);
+  TH3F *h3dHitPlot = new TH3F("h3dHitPlot", "3DHitPlot", 64, -fLength, fLength, 64, -fBreadth, fBreadth,10,fZPos, fZPos+10);
+  //h3dHitPlot->SetMarkerSize(0.5);
+  //h3dHitPlot->SetMarkerStyle(20);
+  int numOfEvents = Tracking::Tree::instance()->GetNumOfEvents();
+  std::vector<int> topPlaneFiredStripVector;
+  std::vector<int> bottomPlaneFiredStripVector;
+  std::vector<Tracking::Vector3D<double>> pixelVect;
+  int count=0;
+  for(int evNo = 0 ; evNo < numOfEvents ; evNo++){
+    pixelVect.clear();
+    SetEventDetected(evNo);
+    topPlaneFiredStripVector = GetPlane(0)->GetFiredStripsVector();
+    bottomPlaneFiredStripVector = GetPlane(1)->GetFiredStripsVector();
+    if(fEventDetected){
+    //if(topPlaneFiredStripVector.size() && bottomPlaneFiredStripVector.size()){
+      for(int xval = 0  ; xval < topPlaneFiredStripVector.size() ; xval++){
+        for(int yval = 0  ; yval < bottomPlaneFiredStripVector.size() ; yval++){
+          count++;
+          pixelVect.push_back(GetStripCoordinate(topPlaneFiredStripVector[xval],bottomPlaneFiredStripVector[yval],GetZPos()));
+        }
+      }
+    }
+    if(pixelVect.size()){
+      for(int i = 0 ;  i < pixelVect.size() ; i++){
+        h3dHitPlot->Fill(pixelVect[i].x(), pixelVect[i].y(),fZPos);
+        //pixelVect[i].Print();
+      }
+    }
+
+  }
+
+  std::cout<<"Total Num of Hit Point for Detector  : "<< GetName() << " : " << count << std::endl;
+  std::cout<<"==================================================================="<< std::endl;
+
+  h3dHitPlot->Draw("0lego1 PFC");
+
+}
+
+void Properties::GetHitPlot3D_V2(){
+	gStyle->SetPalette(1);
+  TCanvas *cHitPlot = new TCanvas(GetName().c_str(), GetName().c_str(), 600, 450);
+  TH2F *h3dHitPlot = new TH2F("h3dHitPlot", "3DHitPlot", 64, -fLength, fLength, 64, -fBreadth, fBreadth);
+  //h3dHitPlot->SetMarkerSize(0.5);
+  //h3dHitPlot->SetMarkerStyle(20);
+  int numOfEvents = Tracking::Tree::instance()->GetNumOfEvents();
+  std::vector<int> topPlaneFiredStripVector;
+  std::vector<int> bottomPlaneFiredStripVector;
+  std::vector<Tracking::Vector3D<double>> pixelVect;
+  int count=0;
+  for(int evNo = 0 ; evNo < numOfEvents ; evNo++){
+    pixelVect.clear();
+    SetEventDetected(evNo);
+    topPlaneFiredStripVector = GetPlane(0)->GetFiredStripsVector();
+    bottomPlaneFiredStripVector = GetPlane(1)->GetFiredStripsVector();
+    if(fEventDetected){
+    //if(topPlaneFiredStripVector.size() && bottomPlaneFiredStripVector.size()){
+      for(int xval = 0  ; xval < topPlaneFiredStripVector.size() ; xval++){
+        for(int yval = 0  ; yval < bottomPlaneFiredStripVector.size() ; yval++){
+          count++;
+          pixelVect.push_back(GetStripCoordinate(topPlaneFiredStripVector[xval],bottomPlaneFiredStripVector[yval],GetZPos()));
+        }
+      }
+    }
+    if(pixelVect.size()){
+      for(int i = 0 ;  i < pixelVect.size() ; i++){
+        h3dHitPlot->Fill(pixelVect[i].x(), pixelVect[i].y());//,fZPos);
+        //pixelVect[i].Print();
+      }
+    }
+
+  }
+
+  std::cout<<"Total Num of Hit Point for Detector  : "<< GetName() << " : " << count << std::endl;
+  std::cout<<"==================================================================="<< std::endl;
+
+  h3dHitPlot->Draw("0lego1 PFC");
+
+}
+
 
 void Properties::GetX_Y_And_ClusterHistograms()
 {
