@@ -112,10 +112,14 @@ void Setup::FillInfo(){
 
 	//Modifying default Detector
 	for (int i = 0; i < fDoc->getChildCount("setup", 0, "rpc"); i++) {
+
 		int moduleId = 0;
 		int numOfStrips = 0;
 		int startId = 0;
 		std::string name;
+		value = fDoc->getChildAttribute("setup", 0, "rpc", i, "name");
+		std::string detName = value;
+		std::cout<<"Creating detector : " <<  detName << std::endl;
 		value = fDoc->getChildAttribute("setup", 0, "rpc", i, "zpos");
 		int zPos = std::stoi(value);
 		value = fDoc->getChildAttribute("setup", 0, "rpc", i, "length");
@@ -124,8 +128,7 @@ void Setup::FillInfo(){
 		double breadth = std::stod(value);
 		value = fDoc->getChildAttribute("setup", 0, "rpc", i, "height");
 		double height = std::stod(value);
-		value = fDoc->getChildAttribute("setup", 0, "rpc", i, "name");
-		std::string detName = value;
+
 		value = fDoc->getChildAttribute("setup", 0, "rpc", i, "dettype");
 		std::string detType = value;
 		//Now modifying detector properties
@@ -146,20 +149,24 @@ void Setup::FillInfo(){
 			value = fDoc->getChildAttribute("rpc", i, "plane", j,
 					"tdcchannelStart");
 			startId = std::stoi(value);
+			//std::cout<<"Inserting " << (j+1) <<"st Plane" << std::endl;
 			if (j == 0) {
+
 				Scintillator::SetStartingId(startId);
 				Scintillator::SetStartingStripNum();
-				fDetectorVect[i]->InsertPlane(
-						new ScintillatorPlane(moduleId, numOfStrips, zPos,
-								fDetectorVect[i]->GetLength(),
-								fDetectorVect[i]->GetBreadth(),
-								fDetectorVect[i]->GetHeight(), 0., false,name));
-			} else {
+				//std::cout<<"Starting Channel num of plane : " << Scintillator::GetStartingId() << std::endl;
 				fDetectorVect[i]->InsertPlane(
 						new ScintillatorPlane(moduleId, numOfStrips, zPos,
 								fDetectorVect[i]->GetLength(),
 								fDetectorVect[i]->GetBreadth(),
 								fDetectorVect[i]->GetHeight(), 0., true,name));
+			} else {
+				//std::cout<<"Starting Channel num of plane : " << Scintillator::GetStartingId() << std::endl;
+				fDetectorVect[i]->InsertPlane(
+						new ScintillatorPlane(moduleId, numOfStrips, zPos,
+								fDetectorVect[i]->GetLength(),
+								fDetectorVect[i]->GetBreadth(),
+								fDetectorVect[i]->GetHeight(), 0., false,name));
 			}
 		}
 		fDetectorVect[i]->SetClusterSize(fClusterSize);

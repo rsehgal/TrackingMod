@@ -123,12 +123,31 @@ for(int i = 0 ; i < fNumOfPlanes ; i++) {
            fEfficiency = count/(double)numOfEvents*100;
    }
 
+#if(0)
 Tracking::Vector3D<double> Properties::GetStripCoordinate(int x, int y, int z) {
   Tracking::Vector3D<double> temp;
   double stripLength = GetPlane(0)->GetScintVector()[0]->GetLength()/GetPlane(0)->GetNumOfScintillators();
+  std::cout <<"GetPlane(0)->GetScintVector()[0]->GetLength() : " << GetPlane(0)->GetScintVector()[0]->GetLength() << std::endl;
+  std::cout<<"GetPlane(0)->GetNumOfScintillators() : " << GetPlane(0)->GetNumOfScintillators() << std::endl;
   double stripBreadth = GetPlane(1)->GetScintVector()[0]->GetBreadth()/GetPlane(0)->GetNumOfScintillators();
+  std::cout<<"GetPlane(1)->GetNumOfScintillators() : " << GetPlane(1)->GetNumOfScintillators() << std::endl;
   temp.SetX(-GetLength()/2. + (31-x) * stripLength + stripLength/2.);
   temp.SetY(-GetBreadth()/2. + y * stripBreadth + stripBreadth/2.);
+  temp.SetZ(z);
+
+  return temp;
+}
+#endif
+
+Tracking::Vector3D<double> Properties::GetStripCoordinate(int x, int y, int z) {
+  //std::cout<<"x : " << x <<" : y : " << y <<" : z : " << z << std::endl;
+
+  Tracking::Vector3D<double> temp(0.,0.,0.);
+  double pixelLength = GetPlane(0)->GetScintVector()[0]->GetLength()/GetPlane(0)->GetNumOfScintillators();
+  double pixelBreadth = GetPlane(1)->GetScintVector()[0]->GetBreadth()/GetPlane(0)->GetNumOfScintillators();
+  //std::cout<<"PixelLeng : " << pixelLength <<" : PixelBread : "<< pixelBreadth << std::endl;
+  temp.SetX(-GetLength()/2. + (x+0.5)*pixelLength);// (31-x) * stripLength + stripLength/2.);
+  temp.SetY(-GetBreadth()/2. + (y+0.5)*pixelBreadth); //y * stripBreadth + stripBreadth/2.);
   temp.SetZ(z);
 
   return temp;
@@ -228,26 +247,34 @@ void Properties::GetHitPlot3D_V2(){
   std::vector<int> bottomPlaneFiredStripVector;
   std::vector<Tracking::Vector3D<double>> pixelVect;
   int count=0;
+  std::cout<<"ClusterSize : " << fClusterSize << std::endl;
   for(int evNo = 0 ; evNo < numOfEvents ; evNo++){
     pixelVect.clear();
     SetEventDetected(evNo);
     topPlaneFiredStripVector = GetPlane(0)->GetFiredStripsVector();
     bottomPlaneFiredStripVector = GetPlane(1)->GetFiredStripsVector();
-    if(fEventDetected){
+
+    if(fEventDetected && topPlaneFiredStripVector.size()==fClusterSize && bottomPlaneFiredStripVector.size()==fClusterSize ){
     //if(topPlaneFiredStripVector.size() && bottomPlaneFiredStripVector.size()){
       for(int xval = 0  ; xval < topPlaneFiredStripVector.size() ; xval++){
         for(int yval = 0  ; yval < bottomPlaneFiredStripVector.size() ; yval++){
-          count++;
+
+        	//std::cout<< " topPlaneFiredStripVector : " << topPlaneFiredStripVector[xval] <<" : bottomPlaneFiredStripVector : " << bottomPlaneFiredStripVector[yval] << std::endl;
+
           pixelVect.push_back(GetStripCoordinate(topPlaneFiredStripVector[xval],bottomPlaneFiredStripVector[yval],GetZPos()));
+          //pixelVect[count].Print();
+		  count++;
         }
       }
     }
     if(pixelVect.size()){
       for(int i = 0 ;  i < pixelVect.size() ; i++){
         h3dHitPlot->Fill(pixelVect[i].x(), pixelVect[i].y());//,fZPos);
-        //pixelVect[i].Print();
+       // pixelVect[i].Print();
       }
     }
+    //if(pixelVect.size())
+    //pixelVect[0].Print();
 
   }
 

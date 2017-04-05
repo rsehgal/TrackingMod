@@ -20,6 +20,10 @@ class ScintillatorPlane {
   int fNumOfScintillators;
   std::string fName;
 
+  int fModuleId;
+  int fChannelStart;
+  int fChannelEnd;
+
   //Plane dimensions
   int fLength;
   int fBreadth;
@@ -37,6 +41,9 @@ class ScintillatorPlane {
   double fDTheta;
 
 public:
+  int GetModuleId(){return fModuleId;}
+  int GetStartChannelId(){return fChannelStart;}
+  int GetEndChannelId(){return fChannelEnd;}
   ScintillatorPlane();
   //ScintillatorPlane(int moduleId, int numOfScintillators, double zPos, double scintPlaneLength,
   //double scintPlaneBreadth, std::string planeName = "Test-ScintillatorPlane"){
@@ -51,6 +58,8 @@ public:
   ScintillatorPlane(int moduleId, int numOfScintillators, double zPos, double scintPlaneLength,
                       double scintPlaneBreadth, double scintPlaneHeight,double planeShift, bool xdir=true, std::string planeName = "Test-ScintillatorPlane"):
                       fLength(scintPlaneLength),fBreadth(scintPlaneBreadth), fHeight(scintPlaneHeight){
+	  fModuleId = moduleId;
+
 	  fName = planeName;
       fNumOfScintillators=numOfScintillators;
       Tracking::Vector3D<double> scintPlacedLocation;
@@ -80,6 +89,7 @@ public:
   ScintillatorPlane(int moduleId, int numOfScintillators, double xPos, double yPos, double zPos, double theta, double scintPlaneLength,
                         double scintPlaneBreadth, double scintPlaneHeight,double planeShift, bool xdir=true, std::string planeName = "Test-ScintillatorPlane"):
                         fLength(scintPlaneLength),fBreadth(scintPlaneBreadth), fHeight(scintPlaneHeight){
+	    fModuleId = moduleId;
         fNumOfScintillators=numOfScintillators;
         Tracking::Vector3D<double> scintPlacedLocation;
         for (int i = 0; i < numOfScintillators; i++) {

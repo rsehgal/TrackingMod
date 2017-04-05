@@ -88,6 +88,7 @@ public:
   ~Scintillator();
   static void SetStartingId(int sId){fId = sId;}
   static void SetStartingStripNum(){fSno = -1;}
+  static int GetStartingId(){return fId;}
 
   void SetPlacedLocation(Tracking::Vector3D<double> location){fPlacedLocation = location ;}
   void SetLength(double length){fLength = length;}

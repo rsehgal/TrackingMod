@@ -40,6 +40,6 @@ int main(int argc, char *argv[]) {
   MT1->GetHitPlot3D_V2();
   MT2->GetHitPlot3D_V2();
   MT3->GetHitPlot3D_V2();
-  //setup->GetHitPlot("GLASS");
+  setup->GetHitPlot("GLASS");
   fApp->Run();
 }

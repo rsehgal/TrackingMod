@@ -163,6 +163,20 @@ public:
 										fZPos);
   }
 
+#if(0)
+ void Print(){
+   std::cout<<"Name : "<< fName << std::endl;
+   std::cout<<"Num of Readout Planes : "<< fNumOfPlanes << std::endl;
+   for(int i = 0  ; i < fNumOfPlanes ; i++){
+   std::cout<<"-------------------------------------------------------" << std::endl;
+   std::cout<<"Plane num : " << (i+1) << std::endl;
+   std::cout<<"Connected to TDC no. : " << fScintillatorPlaneVector[i]->GetModuleId() << std::endl;
+   std::cout<<"StartChannel Id : "<< fScintillatorPlaneVector[i]->GetStartChannelId() << std::endl; 
+   std::cout<<"EndChannel Id : "<< fScintillatorPlaneVector[i]->GetEndChannelId() << std::endl; 
+   }
+ }
+#endif
+
 };
 
 } /* namespace Tomography */
