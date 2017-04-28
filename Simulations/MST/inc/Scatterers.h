@@ -23,7 +23,7 @@ public:
   BallsInABox(){
 G4NistManager* nist = G4NistManager::Instance();
 	G4Box *targetPb = new G4Box("TargetPb",10.*cm,10.*cm,10.*cm);
-  fLogicTargetPb = new G4LogicalVolume(targetPb,nist->FindOrBuildMaterial("G4_Fe"),"LogicalTargetPbBlock");
+  fLogicTargetPb = new G4LogicalVolume(targetPb,nist->FindOrBuildMaterial("G4_WATER"),"LogicalTargetPbBlock");
 /* fPhyTargetPbBlock = new G4PVPlacement(0,
                             //G4ThreeVector(),
                             G4ThreeVector(),
@@ -37,7 +37,7 @@ G4NistManager* nist = G4NistManager::Instance();
 bool checkOverlaps = true;
 G4Box *targetVac = new G4Box("TargetPb",9.*cm,9.*cm,9.*cm);
   //G4LogicalVolume *logicalLeadBlock = new G4LogicalVolume(leadBlock,nist->FindOrBuildMaterial("G4_Pb"),"LogicalLeadBlock");
-  G4LogicalVolume* fLogicTargetVac = new G4LogicalVolume(targetVac,nist->FindOrBuildMaterial("G4_Pb"),"LogicalTargetPbBlock");
+  G4LogicalVolume* fLogicTargetVac = new G4LogicalVolume(targetVac,nist->FindOrBuildMaterial("G4_Al"),"LogicalTargetPbBlock");
   G4VPhysicalVolume *phyTargetVacBlock = new G4PVPlacement(0,
                             //G4ThreeVector(),
                             G4ThreeVector(),

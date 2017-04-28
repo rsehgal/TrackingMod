@@ -3,16 +3,16 @@
 namespace Tomography {
 
 Voxelator::Voxelator(){
-fVoxelizedVolumeDim.Set(100,100,750); //Currently setting to values used in Simulations
-fEachVoxelDim.Set(1,1,1); // Ideally this should corresponds to strip size of detectors
+fVoxelizedVolumeDim.Set(1000,1000,150); //Currently setting to values used in Simulations
+fEachVoxelDim.Set(10,10,10); // Ideally this should corresponds to strip size of detectors
 			  // so setting it to 3
 
 fVoxelatorDim.Set(int(2*fVoxelizedVolumeDim.x()/fEachVoxelDim.x()),int(2*fVoxelizedVolumeDim.y()/fEachVoxelDim.y()), int(2*fVoxelizedVolumeDim.z()/fEachVoxelDim.z()) );
 
 //Create the required 3D Hist which corresponds to voxelized volume
-histVoxelValue = new  TH3F("histVoxelValue", "HistVoxelValue", fVoxelatorDim.x(), -fVoxelizedVolumeDim.x(), fVoxelizedVolumeDim.x(), fVoxelatorDim.x(), -fVoxelizedVolumeDim.y(), fVoxelizedVolumeDim.y(),fVoxelatorDim.x(), -fVoxelizedVolumeDim.z(), fVoxelizedVolumeDim.z()) ;
+histVoxelValue = new  TH3F("histVoxelValue", "HistVoxelValue", fVoxelatorDim.x(), -fVoxelizedVolumeDim.x(), fVoxelizedVolumeDim.x(), fVoxelatorDim.y(), -fVoxelizedVolumeDim.y(), fVoxelizedVolumeDim.y(),fVoxelatorDim.z(), -fVoxelizedVolumeDim.z(), fVoxelizedVolumeDim.z()) ;
 
-histVoxelCount = new TH3F("histVoxelCount", "HistVoxelCount", fVoxelatorDim.x(), -fVoxelizedVolumeDim.x(), fVoxelizedVolumeDim.x(), fVoxelatorDim.x(), -fVoxelizedVolumeDim.y(), fVoxelizedVolumeDim.y(),fVoxelatorDim.x(), -fVoxelizedVolumeDim.z(), fVoxelizedVolumeDim.z()) ;
+histVoxelCount = new TH3F("histVoxelCount", "HistVoxelCount", fVoxelatorDim.x(), -fVoxelizedVolumeDim.x(), fVoxelizedVolumeDim.x(), fVoxelatorDim.y(), -fVoxelizedVolumeDim.y(), fVoxelizedVolumeDim.y(),fVoxelatorDim.z(), -fVoxelizedVolumeDim.z(), fVoxelizedVolumeDim.z()) ;
 }
 
 Voxelator::~Voxelator(){

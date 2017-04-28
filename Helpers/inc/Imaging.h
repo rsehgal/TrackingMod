@@ -10,9 +10,9 @@
 
 #include "base/Vector3D.h"
 #include "base/Global.h"
-
+#include "Track.h"
 #define Vec_t Vector3D<Precision>
-
+using Tomography::Track;
 namespace Tracking{
 
 class ImageReconstruction{
@@ -25,6 +25,12 @@ public:
 
 	//Functions implementing Image reconstruction from projections
 	Vec_t POCA( Vec_t p,  Vec_t u,  Vec_t q,  Vec_t v, Vec_t &p1, Vec_t &q1);
+	//Vec_t POCA_Iterative( Vec_t p,  Vec_t u,  Vec_t q,  Vec_t v, Vec_t &p1, Vec_t &q1);
+	Vec_t POCA_Iterative(Track incoming,Track outgoing);
+	void GetIntPoints(Vec_t p, Vec_t q, Vec_t &intPt1, Vec_t &intPt2 );
+	Track GetNewTrack(Vec_t p, Vec_t q);
+  	Precision Distance(Vec_t p, Vec_t q);
+
 	void EM();
 
 	//TODO :  other sophisticated image reconstruction algorithm,

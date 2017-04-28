@@ -34,6 +34,8 @@ public:
   void AverageOut();
   TH3F* GetVoxelizedHist(){return histVoxelValue;}
   TH3F* GetVoxelizedCount(){return histVoxelCount;}
+  Vector3D<int> GetVoxelizedVolumeDim(){return fVoxelizedVolumeDim;}
+  Vector3D<int> GetEachVoxelDim(){return fEachVoxelDim;}
 
 };
 

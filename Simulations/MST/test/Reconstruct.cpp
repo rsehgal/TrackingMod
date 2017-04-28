@@ -21,11 +21,12 @@ const char* input_filename = (argc>1)?argv[1]:"tracks.txt";
     ft.open(input_filename);
     double x=0.,y=0.,z=0;
     int color=0;
+    Tomography::Slicer slicer(-500,500.,-100.,100.,-150.,150.);
     while(!ft.eof()){
     	ft >> x >> y >> z >> color;
     	pt.Set(x,y,z);
 	pt.SetColor(color);
-    	v.Register(pt);
+    	v.Register(slicer,pt);
     
     }
 	

@@ -140,10 +140,17 @@ void B1EventAction::GenerateOutgoingTrack(){
 
 void B1EventAction::CalculatePOCA(){
   Tracking::Vector3D<double> p1(0.,0.,0.), q1(0.,0.,0.);
+#if(0)
+  // Working logic
   fPocaPt = fIm.POCA(incoming.GetP1(),
                      incoming.GetDirCosine(),
                      outgoing.GetP1(),
                      outgoing.GetDirCosine(),p1,q1);
+#endif
+#if(1)
+//Trying to use POCA_Iterative
+ fPocaPt = fIm.POCA_Iterative(incoming,outgoing);
+#endif
 //  fPocaPt.SetColor((int(fScatteringAngle*1000)%6));
 //fPocaPt.SetColor((int(fScatteringAngle*1000)/10));
   fPocaPt.SetColor((int(fScatteringAngle*1000)));

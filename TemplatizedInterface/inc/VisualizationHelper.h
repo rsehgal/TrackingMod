@@ -31,16 +31,47 @@ typedef Tracking::Visualizer TomographyVisualizer;
 typedef Tomography::Properties Detector;
 namespace Tomography{
 
+class Slicer{
+
+double fXmin, fXmax;
+double fYmin, fYmax;
+double fZmin, fZmax;
+public:
+	bool fSlicingRequired;
+
+	Slicer():fSlicingRequired(false), fXmin(0.),fXmax(0.)
+								   , fYmin(0.),fYmax(0.)
+								   , fZmin(0.),fZmax(0.){}
+
+	Slicer(double xmin,double xmax,double ymin, double ymax, double zmin, double zmax):
+	fSlicingRequired(true),fXmin(xmin), fXmax(xmax)
+						  ,fYmin(ymin), fYmax(ymax)
+						  ,fZmin(zmin), fZmax(zmax) {
+
+	}
+
+	bool PointWithinSlice(Tracking::Vector3D<double> pt){
+		return pt.x() >= fXmin && pt.x() <= fXmax
+			&& pt.y() >= fYmin && pt.y() <= fYmax
+			&& pt.z() >= fZmin && pt.z() <= fZmax;
+	}
+
+	~Slicer(){}
+
+
+};
 
 class VisualizationHelper{
 
 TomographyVisualizer fVis;
+bool fSlicingRequired;
 
 public:
   VisualizationHelper(){
 #ifdef USE_EVE
     TEveManager::Create();
 #endif
+    fSlicingRequired = true;
 
   }
 
@@ -78,8 +109,21 @@ public:
   void RegisterLine(Tracking::Vector3D<double> p1, Tracking::Vector3D<double> p2){
 	  fVis.AddLine(p1,p2);
   }
+
+
   void Register(Tracking::Vector3D<double> pt){
 	  fVis.AddMarkers(pt);
+  }
+
+
+  //New overloaded version that also takes slices into consideration
+  //and will register the point only if it lie within the slice
+  void Register(Slicer slicer, Tracking::Vector3D<double> pt){
+	  if(slicer.fSlicingRequired){
+		if(slicer.PointWithinSlice(pt))
+			fVis.AddMarkers(pt);
+	  }
+
   }
 
   std::string GetFileName(std::string geomFile){
@@ -101,7 +145,7 @@ public:
    
   }
 
-
+#ifdef USE_EVE
   //Function to register directly from ROOT file
   void Register(std::string geomFile){
     std::string finalName = GetFileName(geomFile);
@@ -148,6 +192,7 @@ public:
     std::cout<<"W.r.t Local : "<< local[0] <<" , " << local[1] << " , " << local[2] << std::endl;
     std::cout<<"W.r.t Master : "<< master[0] <<" , " << master[1] << " , " << master[2] << std::endl;
   }
+#endif
 
   void Show(){
 #ifdef USE_EVE

@@ -10,12 +10,13 @@
 
 #define  Precision double
 #define  Vec_t Vector3D<Precision>
-
+using Tomography::Track;
 namespace Tracking{
 
 ImageReconstruction::ImageReconstruction(){}
 ImageReconstruction::~ImageReconstruction(){}
 
+//For normal POCA we are using we are using incoming point and direction cosine and outgoing point and direction cosine
 Vec_t ImageReconstruction::POCA(Vec_t p, Vec_t u, Vec_t q, Vec_t v, Vec_t &p1, Vec_t &q1){
 
 	  Precision pDotv=p.Dot(v);
@@ -52,6 +53,41 @@ Vec_t ImageReconstruction::POCA(Vec_t p, Vec_t u, Vec_t q, Vec_t v, Vec_t &p1, V
 	//return s;
 	}
 
+//Vec_t ImageReconstruction::POCA_Iterative(Vec_t p, Vec_t u, Vec_t q, Vec_t v, Vec_t &p1, Vec_t &q1){
+// For Iterative version we are using Track as input arguement
+Vec_t ImageReconstruction::POCA_Iterative(Track incoming,Track outgoing){
+std::cout<<"---- Entered ITERATIVE-POCA -----" << std::endl;
+	Vec_t p11(0.,0.,0.), q11(0.,0.,0.);
+	Vec_t pocaPt = POCA(incoming.GetP1(),incoming.GetDirCosine(),outgoing.GetP2(),outgoing.GetDirCosine(),p11,q11);
+#if(1)
+        Vec_t pn(0.,0.,0.),qn(0.,0.,0.);
+        while(Distance(p11,q11)> 1){
+	   GetIntPoints(p11,q11,pn,qn);
+	   Track trk1 = GetNewTrack(incoming.GetP2(),pn);
+	   Track trk2 = GetNewTrack(qn,outgoing.GetP1());
+	   pocaPt = POCA(trk1.GetP1(),trk1.GetDirCosine(),trk2.GetP2(),trk2.GetDirCosine(),p11,q11);
+	}
+#endif
+	return pocaPt;
+	
+
+}
+
+
+void ImageReconstruction::GetIntPoints(Vec_t p, Vec_t q, Vec_t &intPt1, Vec_t &intPt2 ){
+	Precision dist = Distance(p,q);
+	Vec_t dir = (p-q).Unit();
+	intPt1 = p+dir*dist/3;
+	intPt2 = q-dir*dist/3;
+}
+
+Track ImageReconstruction::GetNewTrack(Vec_t p, Vec_t q){
+ return Track(p,q);
+}
+
+Precision ImageReconstruction::Distance(Vec_t p, Vec_t q){
+ return (p-q).Mag(); 
+}
 
 void ImageReconstruction::EM(){}
 

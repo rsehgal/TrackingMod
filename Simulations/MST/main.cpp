@@ -44,8 +44,8 @@ int main(int argc, char *argv[]){
   //Physics List
   //runManager->SetUserInitialization(phyList);
   //runManager->SetUserInitialization(new PhysicsList);
-  runManager->SetUserInitialization(new MyPhysics);
-  //runManager->SetUserInitialization(new FTFP_BERT);
+  //runManager->SetUserInitialization(new MyPhysics);
+  runManager->SetUserInitialization(new FTFP_BERT);
 
   //Primary Generator Action
   //runManager->SetUserAction(new MyPrimaryGeneratorAction());
