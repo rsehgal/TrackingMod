@@ -162,6 +162,10 @@ public:
 
         }
 
+	static Type Distance(Vector3D<Type> vec1, Vector3D<Type> vec2){
+		return (vec1-vec2).Mag();
+	}
+
         BINARY_OP(+)
 	BINARY_OP(-)
 	SCALAR_OP(+)
