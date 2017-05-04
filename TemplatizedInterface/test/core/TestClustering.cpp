@@ -4,7 +4,7 @@
 #include <vector>
 #include <fstream>
 using Vec_t = Tracking::Vector3D<double>;
-double GetRandomNumber(int num);
+
 int main(int argc, char **argv){
 
 	Vec_t pt1(1.,0.,0.),pt2(2.,0.,0.),pt3(3.,0.,0.),pt4(4.,0.,0.);
@@ -66,8 +66,3 @@ int main(int argc, char **argv){
 
 }
 
-double GetRandomNumber(int num){
-	srand(time(NULL));
-	return (rand()%(num+1) + num);
-
-}
