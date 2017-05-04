@@ -15,7 +15,7 @@ Clustering::Clustering():fEpsilon(2) {
 
 }
 
-Clustering::Clustering(std::vector<Vec_t> ptVect):fEpsilon(2){
+Clustering::Clustering(std::vector<Vec_t> ptVect):fEpsilon(1.1){
 	//Call the required Clustering Algorithm, using DBSCAN by default
 	DBSCAN(ptVect);
 }
@@ -43,7 +43,7 @@ void Clustering::DBSCAN(std::vector<Vec_t> ptVect){
  *			     then declare it as noise and remove it from the list of clusters
  *
  */
-	bool verbose=false;
+	bool verbose=true;
 	int clusterNum = 0;
 	for(int i=0 ; i < ptVect.size() ; i++){
 		//std::cout<<"-------------------------------------" << std::endl;
@@ -70,16 +70,16 @@ void Clustering::DBSCAN(std::vector<Vec_t> ptVect){
 				//std::cout<<"Printing from ClusterVect : " ; (fClusterVect[k][0]->fPt).Print(); std::cout<<std::endl;
 				//std::cout<<"Looping of ClusterVector : " << k << std::endl;
 				//std::cout<<"Cluster Size : " << fClusterVect[k].size() << std::endl;
-
+				if(!pt->fVisited){
 				for(int j=0 ; j<fClusterVect[k].size() ; j++){
 					//std::cout<<"Looping of Cluster : " << j << std::endl;
 
-					//std::cout<<"Distance : " << Vector3D<double>::Distance(pt->fPt,fClusterVect[k][j]->fPt) << std::endl;
+				//	std::cout<<"Distance : " << Vector3D<double>::Distance(pt->fPt,fClusterVect[k][j]->fPt) << std::endl;
 
 			//		(pt->fPt).Print(); std::cout<<std::endl;
 			//		(fClusterVect[k][j]->fPt).Print(); std::cout<<std::endl;
 
-					if(Vector3D<double>::Distance(pt->fPt,fClusterVect[k][j]->fPt) < fEpsilon){
+					if(Vector3D<double>::Distance(pt->fPt,fClusterVect[k][j]->fPt) <= fEpsilon){
 						pt->fClusterNum = fClusterVect[k][j]->fClusterNum;
 						pt->fVisited=true;
 						fClusterVect[k].push_back(pt);
@@ -87,7 +87,8 @@ void Clustering::DBSCAN(std::vector<Vec_t> ptVect){
 					}
 
 				}
-				break;
+				}
+				//break;
 
 			}
 
