@@ -20,6 +20,10 @@ Clustering::Clustering(std::vector<Vec_t> ptVect):fEpsilon(1.1){
 	DBSCAN(ptVect);
 }
 
+Clustering::Clustering(std::vector<Vec_t> ptVect, double eps):fEpsilon(eps){
+	DBSCAN(ptVect);
+}
+
 Clustering::~Clustering() {
 	// TODO Auto-generated destructor stub
 }

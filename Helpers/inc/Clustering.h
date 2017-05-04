@@ -23,6 +23,8 @@ class Clustering {
 public:
 	Clustering();
 	Clustering(std::vector<Vec_t> ptVect);
+	Clustering(std::vector<Vec_t> ptVect, double eps);
+	void SetEplsilon(double eps){fEpsilon = eps;}
 	virtual ~Clustering();
 	ClusterVector GetClusterVector(){return fClusterVect;}
 	void DBSCAN(std::vector<Vec_t> ptVect);
