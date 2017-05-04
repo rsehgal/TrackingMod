@@ -18,15 +18,18 @@ using ClusterVector = std::vector<Cluster>;
 
 class Clustering {
 	ClusterVector fClusterVect;
+	ClusterVector fFilteredClusterVect;
 	double fEpsilon;
 	int fMinPtsInCluster;
 public:
 	Clustering();
 	Clustering(std::vector<Vec_t> ptVect);
 	Clustering(std::vector<Vec_t> ptVect, double eps);
+	void RemoveNoisyCluster();
 	void SetEplsilon(double eps){fEpsilon = eps;}
 	virtual ~Clustering();
 	ClusterVector GetClusterVector(){return fClusterVect;}
+	ClusterVector GetFilteredClusterVector(){return fFilteredClusterVect;}
 	void DBSCAN(std::vector<Vec_t> ptVect);
 	void KMeans(){}
 };

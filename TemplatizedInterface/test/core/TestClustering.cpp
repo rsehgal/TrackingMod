@@ -3,7 +3,12 @@
 #include "Coordinates.h"
 #include <vector>
 #include <fstream>
+
+#define PI 3.14159265359
 using Vec_t = Tracking::Vector3D<double>;
+
+void GenerateRandomDataOnCircle();
+void FindClusters(std::vector<Vec_t> ptVect, double);
 
 int main(int argc, char **argv){
 
@@ -24,6 +29,7 @@ int main(int argc, char **argv){
 
 	//Random number between 2 & 3
 
+#if(0)
 	Tomography::Coordinates crd;
 	for(int i = 0 ; i < 50 ; i++){
 	  double x = crd.GenRandom(2.,3.);
@@ -39,30 +45,75 @@ int main(int argc, char **argv){
 	  z = crd.GenRandom(8.,9.);
 	  ptVect.push_back(Vec_t(x,y,z));
 	}
-
-	std::ofstream clusterFile;
-	clusterFile.open("clusters.txt");
-
-	Tracking::ClusterVector clusterVect;
+	double epsilon = 1;
 	if(argc > 1)
-		clusterVect = (new Tracking::Clustering(ptVect,atof(argv[1])))->GetClusterVector();
-	else
-		clusterVect = (new Tracking::Clustering(ptVect))->GetClusterVector();
+		epsilon = atof(argv[1]);
 
-			for(int i = 0 ; i< clusterVect.size(); i++){
-		for(int j=0 ; j < clusterVect[i].size() ; j++){
-			(clusterVect[i][j]->fPt).SetColor(clusterVect[i][j]->fClusterNum);
-			clusterFile << (clusterVect[i][j]->fPt).x() << " " << (clusterVect[i][j]->fPt).y() << " " <<
-					       (clusterVect[i][j]->fPt).z() << " " << ((clusterVect[i][j]->fPt).GetColor()+1) << std::endl;
-		}
-	}
+		FindClusters(ptVect,epsilon);
 
-	clusterFile.close();
+#endif
 
-	std::cout<<"=========================================="<<std::endl;
-	std::cout<<"     Total Cluster Detected : " << clusterVect.size() << std::endl;
-	std::cout<<"=========================================="<<std::endl;
-	return 0;
+		GenerateRandomDataOnCircle();
+		return 0;
 
 }
 
+void GenerateRandomDataOnCircle(){
+	double radius=8.;
+	Tomography::Coordinates crd;
+	std::vector<Vec_t> ptVect;
+	for(int i=0 ; i< 1000 ; i++){
+	  double radMod = radius+(crd.GenRandom(-0.0002,0.0002));
+	  double theta = crd.GenRandom(0.,2*PI);
+	  double x = radMod * std::cos(theta);
+	  double y = radMod * std::sin(theta);
+	  double z=0.;
+	  ptVect.push_back(Vec_t(x,y,z));
+	}
+
+	//another smaller circle
+	for(int i=0 ; i< 1000 ; i++){
+		  radius = 5.;
+		  double radMod = radius+(crd.GenRandom(-0.0002,0.0002));
+		  double theta = crd.GenRandom(0.,2*PI);
+		  double x = radMod * std::cos(theta);
+		  double y = radMod * std::sin(theta);
+		  double z=0.;
+		  ptVect.push_back(Vec_t(x,y,z));
+		}
+
+	double epsilon = 1.;
+	FindClusters(ptVect,epsilon);
+
+
+}
+
+void FindClusters(std::vector<Vec_t> ptVect, double epsilon){
+	std::ofstream clusterFile;
+		clusterFile.open("clusters.txt");
+		Tracking::ClusterVector clusterVect;
+/*
+
+		if(argc > 1)
+			clusterVect = (new Tracking::Clustering(ptVect,atof(argv[1])))->GetClusterVector();
+		else
+*/
+			//clusterVect = (new Tracking::Clustering(ptVect,epsilon))->GetClusterVector();
+			clusterVect = (new Tracking::Clustering(ptVect,epsilon))->GetFilteredClusterVector();
+
+				for(int i = 0 ; i< clusterVect.size(); i++){
+			for(int j=0 ; j < clusterVect[i].size() ; j++){
+				(clusterVect[i][j]->fPt).SetColor(clusterVect[i][j]->fClusterNum);
+				clusterFile << (clusterVect[i][j]->fPt).x() << " " << (clusterVect[i][j]->fPt).y() << " " <<
+						       (clusterVect[i][j]->fPt).z() << " " << ((clusterVect[i][j]->fPt).GetColor()+1) << std::endl;
+			}
+		}
+
+		clusterFile.close();
+
+		std::cout<<"=========================================="<<std::endl;
+		std::cout<<"     Total Cluster Detected : " << clusterVect.size() << std::endl;
+		std::cout<<"=========================================="<<std::endl;
+
+
+}

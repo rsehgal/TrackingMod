@@ -15,17 +15,29 @@ Clustering::Clustering():fEpsilon(2) {
 
 }
 
-Clustering::Clustering(std::vector<Vec_t> ptVect):fEpsilon(1.1){
+Clustering::Clustering(std::vector<Vec_t> ptVect):fEpsilon(1.1),fMinPtsInCluster(20){
 	//Call the required Clustering Algorithm, using DBSCAN by default
 	DBSCAN(ptVect);
 }
 
-Clustering::Clustering(std::vector<Vec_t> ptVect, double eps):fEpsilon(eps){
+Clustering::Clustering(std::vector<Vec_t> ptVect, double eps):fEpsilon(eps),fMinPtsInCluster(20){
 	DBSCAN(ptVect);
 }
 
 Clustering::~Clustering() {
 	// TODO Auto-generated destructor stub
+}
+
+void Clustering::RemoveNoisyCluster(){
+	for(int i = 0 ; i < fClusterVect.size() ; i++){
+		if(fClusterVect[i].size() > fMinPtsInCluster){
+			Cluster clus;
+			for(int j = 0 ; j < fClusterVect[i].size() ; j++){
+				clus.push_back(fClusterVect[i][j]);
+			}
+			fFilteredClusterVect.push_back(clus);
+		}
+	}
 }
 
 void Clustering::DBSCAN(std::vector<Vec_t> ptVect){
@@ -111,6 +123,8 @@ void Clustering::DBSCAN(std::vector<Vec_t> ptVect){
 
 		//delete pt;
 	}
+
+	RemoveNoisyCluster();
 
 	if(verbose){
 	std::cout<<"------------ Final Printing----------------------" << std::endl;
