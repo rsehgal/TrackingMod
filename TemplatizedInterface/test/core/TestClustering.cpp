@@ -54,8 +54,8 @@ int main(int argc, char **argv){
 
 #endif
 
-		//GenerateRandomDataOnCircle();
-		ReadDataFromFile();
+		GenerateRandomDataOnCircle();
+		//ReadDataFromFile();
 		return 0;
 
 }
@@ -100,7 +100,7 @@ void GenerateRandomDataOnCircle(){
 		  ptVect.push_back(Vec_t(x,y,z));
 		}
 
-	double epsilon = 1.5;
+	double epsilon = 0.5;
 	FindClusters(ptVect,epsilon);
 
 

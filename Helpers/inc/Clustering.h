@@ -12,8 +12,11 @@
 
 namespace Tracking {
 class Point;
+class NewCluster;
+
 using Vec_t = Vector3D<double>;
 using Cluster = std::vector<Point*>;
+using Neighbors = Cluster;
 using ClusterVector = std::vector<Cluster>;
 
 class Clustering {
@@ -21,6 +24,7 @@ class Clustering {
 	ClusterVector fFilteredClusterVect;
 	double fEpsilon;
 	int fMinPtsInCluster;
+	std::vector<Point*> fPtVect;
 public:
 	Clustering();
 	Clustering(std::vector<Vec_t> ptVect);
@@ -30,7 +34,14 @@ public:
 	virtual ~Clustering();
 	ClusterVector GetClusterVector(){return fClusterVect;}
 	ClusterVector GetFilteredClusterVector(){return fFilteredClusterVect;}
-	void DBSCAN(std::vector<Vec_t> ptVect);
+
+	void DBSCAN(/*std::vector<Vec_t> ptVect*/);
+	Cluster AddClusters(Cluster c1, Cluster c2);
+	Neighbors FindNeighbors(Point *pt);
+	void ExpandCluster(Point *pt, Neighbors &neighborPts, NewCluster &C);
+
+
+	void SequentialClustering(std::vector<Vec_t> ptVect);
 	void KMeans(){}
 };
 
@@ -43,6 +54,15 @@ public:
 	int fClusterNum;
 	Vector3D<double> fPt;
 };
+
+class NewCluster{
+public:
+	NewCluster(){fClusterNum++; std::cout<<"=== New Cluster Created ===" << std::endl;}
+	Cluster fCluster;
+	static int fClusterNum;
+};
+
+int NewCluster::fClusterNum = -1;
 
 } /* namespace Tracking */
 
