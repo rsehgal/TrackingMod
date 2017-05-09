@@ -54,8 +54,9 @@ int main(int argc, char **argv){
 
 #endif
 
-		GenerateRandomDataOnCircle();
-		//ReadDataFromFile();
+
+		//GenerateRandomDataOnCircle();
+		ReadDataFromFile();
 		return 0;
 
 }
@@ -65,14 +66,14 @@ void ReadDataFromFile(){
 	input.open("ThreeD.txt");
 	std::vector<Vec_t> ptVect;
 	double x=0.,y=0.,z=0.,color=0.;
-	double deno=10.;
+	double deno=10000.;
 	if(input.is_open()){
 		while(!input.eof()){
 			input >> x >> y >> z >> color;
 			ptVect.push_back(Vec_t(x/deno,y/deno,z/deno));
 		}
 	}
-	double epsilon = 1.;
+	double epsilon = 1.0;
 	FindClusters(ptVect,epsilon);
 }
 
@@ -80,7 +81,8 @@ void GenerateRandomDataOnCircle(){
 	double radius=8.;
 	Tomography::Coordinates crd;
 	std::vector<Vec_t> ptVect;
-	for(int i=0 ; i< 10000 ; i++){
+
+	for(int i=0 ; i< 100 ; i++){
 	  double radMod = radius+(crd.GenRandom(-0.0002,0.0002));
 	  double theta = crd.GenRandom(0.,2*PI);
 	  double x = radMod * std::cos(theta);
@@ -89,18 +91,19 @@ void GenerateRandomDataOnCircle(){
 	  ptVect.push_back(Vec_t(x,y,z));
 	}
 
+#if(1)
 	//another smaller circle
-	for(int i=0 ; i< 10000 ; i++){
-		  radius = 8.;
+	for(int i=0 ; i< 99 ; i++){
+		  radius = 7.0;
 		  double radMod = radius+(crd.GenRandom(-0.0002,0.0002));
 		  double theta = crd.GenRandom(0.,2*PI);
-		  double x = radMod * std::cos(theta)+3;
+		  double x = radMod * std::cos(theta);
 		  double y = radMod * std::sin(theta);
 		  double z=0.;
 		  ptVect.push_back(Vec_t(x,y,z));
 		}
-
-	double epsilon = 0.5;
+#endif
+	double epsilon = 1.0;
 	FindClusters(ptVect,epsilon);
 
 

@@ -35,6 +35,8 @@ public:
 	ClusterVector GetClusterVector(){return fClusterVect;}
 	ClusterVector GetFilteredClusterVector(){return fFilteredClusterVect;}
 
+	void WriteClusterToFile(std::string fileName = "clusters.txt");
+
 	void DBSCAN(/*std::vector<Vec_t> ptVect*/);
 	Cluster AddClusters(Cluster c1, Cluster c2);
 	Neighbors FindNeighbors(Point *pt);
@@ -57,7 +59,7 @@ public:
 
 class NewCluster{
 public:
-	NewCluster(){fClusterNum++; std::cout<<"=== New Cluster Created ===" << std::endl;}
+	NewCluster(){fClusterNum++; std::cout<<"=== New Cluster Created : Cluster Number : " << (fClusterNum+1) << " ===" << std::endl;}
 	Cluster fCluster;
 	static int fClusterNum;
 };

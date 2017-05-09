@@ -6,6 +6,7 @@
  */
 
 #include "Clustering.h"
+#include <fstream>
 
 namespace Tracking {
 using Cluster = std::vector<Point*>;
@@ -15,13 +16,13 @@ Clustering::Clustering():fEpsilon(2) {
 
 }
 
-Clustering::Clustering(std::vector<Vec_t> ptVect):fEpsilon(1.1),fMinPtsInCluster(10){
+Clustering::Clustering(std::vector<Vec_t> ptVect):fEpsilon(1.1),fMinPtsInCluster(20){
 	//Call the required Clustering Algorithm, using DBSCAN by default
 	//DBSCAN(ptVect);
 	SequentialClustering(ptVect);
 }
 
-Clustering::Clustering(std::vector<Vec_t> ptVect, double eps):fEpsilon(eps),fMinPtsInCluster(10){
+Clustering::Clustering(std::vector<Vec_t> ptVect, double eps):fEpsilon(eps),fMinPtsInCluster(50){
 	//DBSCAN(ptVect);
 	for(int i=0 ; i <ptVect.size() ; i++){
 		fPtVect.push_back(new Point(ptVect[i])); //Filling vector of Points
@@ -46,6 +47,19 @@ void Clustering::RemoveNoisyCluster(){
 	}
 }
 
+void Clustering::WriteClusterToFile(std::string fileName){
+	std::ofstream clusterFile;
+	clusterFile.open(fileName);
+	for(int i=0 ; i < fPtVect.size() ; i++){
+		if(fPtVect[i]->fClusterNum >= 0){
+			Vec_t pt3d = fPtVect[i]->fPt;
+			clusterFile << pt3d.x() <<" " << pt3d.y() <<" " << pt3d.z() <<" " << (fPtVect[i]->fClusterNum + 1) << std::endl;
+		}
+	}
+	clusterFile.close();
+}
+
+
 void Clustering::DBSCAN(/*std::vector<Vec_t> ptVect*/){
 	/* For DBSCAN, We need following Subroutines
 	 * FindNeighbors() that will return a vector of all the  neighbors of the given point
@@ -67,9 +81,16 @@ void Clustering::DBSCAN(/*std::vector<Vec_t> ptVect*/){
 		}
 
 	}
+
+	for(int i=0; i < fPtVect.size() ; i++){
+		std::cout<<"ClusterNum : " << fPtVect[i]->fClusterNum << std::endl;
+	}
 	std::cout<<"========================================================" << std::endl;
-	std::cout<<"Total Number of Clusters Detected using DBSCAN : " << NewCluster::fClusterNum << std::endl;
+	std::cout<<"Total Number of Clusters Detected using DBSCAN : " << (NewCluster::fClusterNum+1) << std::endl;
 	std::cout<<"========================================================" << std::endl;
+
+	std::cout<<"Writing clusters to file ...." << std::endl;
+	WriteClusterToFile();
 }
 
 Cluster Clustering::AddClusters(Cluster c1, Cluster c2){
