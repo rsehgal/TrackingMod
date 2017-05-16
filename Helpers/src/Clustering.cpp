@@ -22,7 +22,7 @@ Clustering::Clustering(std::vector<Vec_t> ptVect):fEpsilon(1.1),fMinPtsInCluster
 	SequentialClustering(ptVect);
 }
 
-Clustering::Clustering(std::vector<Vec_t> ptVect, double eps):fEpsilon(eps),fMinPtsInCluster(50){
+Clustering::Clustering(std::vector<Vec_t> ptVect, double eps):fEpsilon(eps),fMinPtsInCluster(10){
 	//DBSCAN(ptVect);
 	for(int i=0 ; i <ptVect.size() ; i++){
 		fPtVect.push_back(new Point(ptVect[i])); //Filling vector of Points

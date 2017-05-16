@@ -63,17 +63,18 @@ int main(int argc, char **argv){
 
 void ReadDataFromFile(){
 	std::ifstream input;
-	input.open("ThreeD.txt");
+	//input.open("ThreeD.txt");
+	input.open("tracks.txt");
 	std::vector<Vec_t> ptVect;
 	double x=0.,y=0.,z=0.,color=0.;
-	double deno=10000.;
+	double deno=1;
 	if(input.is_open()){
 		while(!input.eof()){
 			input >> x >> y >> z >> color;
 			ptVect.push_back(Vec_t(x/deno,y/deno,z/deno));
 		}
 	}
-	double epsilon = 1.0;
+	double epsilon = 10.0;
 	FindClusters(ptVect,epsilon);
 }
 
