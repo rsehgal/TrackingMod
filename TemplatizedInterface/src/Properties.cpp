@@ -8,6 +8,8 @@
 #include "Properties.h"
 #include <TCanvas.h>
 #include <TH2F.h>
+#include <TH3F.h>
+#include <TStyle.h>
 namespace Tomography{
 
 //int Properties::fClusterSize = 10;
@@ -72,6 +74,7 @@ void Properties::SetEventDetected(int evNo) {
 
 for(int i = 0 ; i < fNumOfPlanes ; i++) {
 #ifdef EFF_AND
+
 #ifdef CLUSTER_SIZE
   if(i==0)
   fEventDetected = (GetPlane(i)->GetFiredStripsVector().size() > 0. && GetPlane(i)->GetFiredStripsVector().size() <= fClusterSize); // GetPlane(i)->GetClusterSize());
@@ -83,7 +86,9 @@ for(int i = 0 ; i < fNumOfPlanes ; i++) {
   else
   fEventDetected &= GetPlane(i)->GetFiredStripsVector().size();
 #endif
+
 #else
+
 #ifdef CLUSTER_SIZE
   if(i==0)
   fEventDetected = (GetPlane(i)->GetFiredStripsVector().size() > 0. && GetPlane(i)->GetFiredStripsVector().size() <= fClusterSize); // GetPlane(i)->GetClusterSize());
@@ -95,6 +100,7 @@ for(int i = 0 ; i < fNumOfPlanes ; i++) {
   else
   fEventDetected |= GetPlane(i)->GetFiredStripsVector().size();
 #endif
+
 #endif
 }
 }
@@ -121,12 +127,31 @@ for(int i = 0 ; i < fNumOfPlanes ; i++) {
            fEfficiency = count/(double)numOfEvents*100;
    }
 
+#if(0)
 Tracking::Vector3D<double> Properties::GetStripCoordinate(int x, int y, int z) {
   Tracking::Vector3D<double> temp;
   double stripLength = GetPlane(0)->GetScintVector()[0]->GetLength()/GetPlane(0)->GetNumOfScintillators();
+  std::cout <<"GetPlane(0)->GetScintVector()[0]->GetLength() : " << GetPlane(0)->GetScintVector()[0]->GetLength() << std::endl;
+  std::cout<<"GetPlane(0)->GetNumOfScintillators() : " << GetPlane(0)->GetNumOfScintillators() << std::endl;
   double stripBreadth = GetPlane(1)->GetScintVector()[0]->GetBreadth()/GetPlane(0)->GetNumOfScintillators();
+  std::cout<<"GetPlane(1)->GetNumOfScintillators() : " << GetPlane(1)->GetNumOfScintillators() << std::endl;
   temp.SetX(-GetLength()/2. + (31-x) * stripLength + stripLength/2.);
   temp.SetY(-GetBreadth()/2. + y * stripBreadth + stripBreadth/2.);
+  temp.SetZ(z);
+
+  return temp;
+}
+#endif
+
+Tracking::Vector3D<double> Properties::GetStripCoordinate(int x, int y, int z) {
+  //std::cout<<"x : " << x <<" : y : " << y <<" : z : " << z << std::endl;
+
+  Tracking::Vector3D<double> temp(0.,0.,0.);
+  double pixelLength = GetPlane(0)->GetScintVector()[0]->GetLength()/GetPlane(0)->GetNumOfScintillators();
+  double pixelBreadth = GetPlane(1)->GetScintVector()[0]->GetBreadth()/GetPlane(0)->GetNumOfScintillators();
+  //std::cout<<"PixelLeng : " << pixelLength <<" : PixelBread : "<< pixelBreadth << std::endl;
+  temp.SetX(-GetLength()/2. + (x+0.5)*pixelLength);// (31-x) * stripLength + stripLength/2.);
+  temp.SetY(-GetBreadth()/2. + (y+0.5)*pixelBreadth); //y * stripBreadth + stripBreadth/2.);
   temp.SetZ(z);
 
   return temp;
@@ -137,7 +162,7 @@ void Properties::GetHitPlot(){
   
   TCanvas *cHitPlot = new TCanvas(GetName().c_str(), GetName().c_str(), 600, 450);
   TH2F *h2dHitPlot = new TH2F("h2dHitPlot", "HitPlot", 500, -fLength, fLength, 500, -fBreadth, fBreadth);
-  h2dHitPlot->SetMarkerSize(0.5);
+  h2dHitPlot->SetMarkerSize(0.2);
   h2dHitPlot->SetMarkerStyle(20);
   int numOfEvents = Tracking::Tree::instance()->GetNumOfEvents();
   std::vector<int> topPlaneFiredStripVector;
@@ -174,6 +199,157 @@ void Properties::GetHitPlot(){
   
 }
 
+void Properties::GetHitPlot3D(){
+	gStyle->SetPalette(1);
+  TCanvas *cHitPlot = new TCanvas(GetName().c_str(), GetName().c_str(), 600, 450);
+  TH3F *h3dHitPlot = new TH3F("h3dHitPlot", "3DHitPlot", 64, -fLength, fLength, 64, -fBreadth, fBreadth,10,fZPos, fZPos+10);
+  //h3dHitPlot->SetMarkerSize(0.5);
+  //h3dHitPlot->SetMarkerStyle(20);
+  int numOfEvents = Tracking::Tree::instance()->GetNumOfEvents();
+  std::vector<int> topPlaneFiredStripVector;
+  std::vector<int> bottomPlaneFiredStripVector;
+  std::vector<Tracking::Vector3D<double>> pixelVect;
+  int count=0;
+  for(int evNo = 0 ; evNo < numOfEvents ; evNo++){
+    pixelVect.clear();
+    SetEventDetected(evNo);
+    topPlaneFiredStripVector = GetPlane(0)->GetFiredStripsVector();
+    bottomPlaneFiredStripVector = GetPlane(1)->GetFiredStripsVector();
+    if(fEventDetected){
+    //if(topPlaneFiredStripVector.size() && bottomPlaneFiredStripVector.size()){
+      for(int xval = 0  ; xval < topPlaneFiredStripVector.size() ; xval++){
+        for(int yval = 0  ; yval < bottomPlaneFiredStripVector.size() ; yval++){
+          count++;
+          pixelVect.push_back(GetStripCoordinate(topPlaneFiredStripVector[xval],bottomPlaneFiredStripVector[yval],GetZPos()));
+        }
+      }
+    }
+    if(pixelVect.size()){
+      for(int i = 0 ;  i < pixelVect.size() ; i++){
+        h3dHitPlot->Fill(pixelVect[i].x(), pixelVect[i].y(),fZPos);
+        //pixelVect[i].Print();
+      }
+    }
+
+  }
+
+  std::cout<<"Total Num of Hit Point for Detector  : "<< GetName() << " : " << count << std::endl;
+  std::cout<<"==================================================================="<< std::endl;
+
+  h3dHitPlot->Draw("0lego1 PFC");
+
+}
+
+void Properties::GetHitPlot3D_V2(){
+	gStyle->SetPalette(1);
+  TCanvas *cHitPlot = new TCanvas(GetName().c_str(), GetName().c_str(), 600, 450);
+  int numOfBinsX =   (GetPlane(0)->GetNumOfScintillators() * 2);
+  int numOfBinsY =   (GetPlane(1)->GetNumOfScintillators() * 2);
+  //std::cout<<"Num of Bins : " << numOfBinsX << " : fLength : "<< fLength <<" : fBreadth : " << fBreadth << std::endl;
+  TH2F *h3dHitPlot = new TH2F("h3dHitPlot", "3DHitPlot", numOfBinsX , -fLength, fLength, numOfBinsY, -fBreadth, fBreadth);
+  //TH2F *h3dHitPlot = new TH2F("h3dHitPlot", "3DHitPlot", 64, -fLength, fLength, 64, -fBreadth, fBreadth);
+
+  //h3dHitPlot->SetMarkerSize(0.5);
+  //h3dHitPlot->SetMarkerStyle(20);
+  int numOfEvents = Tracking::Tree::instance()->GetNumOfEvents();
+  std::vector<int> topPlaneFiredStripVector;
+  std::vector<int> bottomPlaneFiredStripVector;
+  std::vector<Tracking::Vector3D<double>> pixelVect;
+  int count=0;
+  std::cout<<"ClusterSize : " << fClusterSize << std::endl;
+  for(int evNo = 0 ; evNo < numOfEvents ; evNo++){
+    pixelVect.clear();
+    SetEventDetected(evNo);
+    topPlaneFiredStripVector = GetPlane(0)->GetFiredStripsVector();
+    bottomPlaneFiredStripVector = GetPlane(1)->GetFiredStripsVector();
+
+    if(fEventDetected && topPlaneFiredStripVector.size()==fClusterSize && bottomPlaneFiredStripVector.size()==fClusterSize ){
+    //if(topPlaneFiredStripVector.size() && bottomPlaneFiredStripVector.size()){
+      for(int xval = 0  ; xval < topPlaneFiredStripVector.size() ; xval++){
+        for(int yval = 0  ; yval < bottomPlaneFiredStripVector.size() ; yval++){
+
+        	//std::cout<< " topPlaneFiredStripVector : " << topPlaneFiredStripVector[xval] <<" : bottomPlaneFiredStripVector : " << bottomPlaneFiredStripVector[yval] << std::endl;
+
+          pixelVect.push_back(GetStripCoordinate(topPlaneFiredStripVector[xval],bottomPlaneFiredStripVector[yval],GetZPos()));
+          //pixelVect[count].Print();
+		  count++;
+        }
+      }
+    }
+    if(pixelVect.size()){
+      for(int i = 0 ;  i < pixelVect.size() ; i++){
+        h3dHitPlot->Fill(pixelVect[i].x(), pixelVect[i].y());//,fZPos);
+       // pixelVect[i].Print();
+      }
+    }
+    //if(pixelVect.size())
+    //pixelVect[0].Print();
+
+  }
+
+  std::cout<<"Total Num of Hit Point for Detector  : "<< GetName() << " : " << count << std::endl;
+  std::cout<<"==================================================================="<< std::endl;
+
+  h3dHitPlot->Draw("0lego1 PFC");
+
+}
+
+void Properties::GetStripsHitPlot3D(){
+	gStyle->SetPalette(1);
+  TCanvas *cHitPlot = new TCanvas(GetName().c_str(), GetName().c_str(), 600, 450);
+  int numOfBinsX =   (GetPlane(0)->GetNumOfScintillators() );
+  int numOfBinsY =   (GetPlane(1)->GetNumOfScintillators() );
+  //std::cout<<"Num of Bins : " << numOfBinsX << " : fLength : "<< fLength <<" : fBreadth : " << fBreadth << std::endl;
+  TH2F *h3dHitPlot = new TH2F("h3dHitPlot", "3DHitPlot", numOfBinsX , 0, GetPlane(0)->GetNumOfScintillators(), numOfBinsY, 0, GetPlane(1)->GetNumOfScintillators());
+  //TH2F *h3dHitPlot = new TH2F("h3dHitPlot", "3DHitPlot", 64, -fLength, fLength, 64, -fBreadth, fBreadth);
+
+  //h3dHitPlot->SetMarkerSize(0.5);
+  //h3dHitPlot->SetMarkerStyle(20);
+  int numOfEvents = Tracking::Tree::instance()->GetNumOfEvents();
+  std::vector<int> topPlaneFiredStripVector;
+  std::vector<int> bottomPlaneFiredStripVector;
+  std::vector<Tracking::Vector3D<double>> pixelVect;
+  int count=0;
+  std::cout<<"ClusterSize : " << fClusterSize << std::endl;
+  for(int evNo = 0 ; evNo < numOfEvents ; evNo++){
+    pixelVect.clear();
+    SetEventDetected(evNo);
+    topPlaneFiredStripVector = GetPlane(0)->GetFiredStripsVector();
+    bottomPlaneFiredStripVector = GetPlane(1)->GetFiredStripsVector();
+
+    if(fEventDetected && topPlaneFiredStripVector.size()<=fClusterSize && bottomPlaneFiredStripVector.size()<=fClusterSize ){
+    //if(topPlaneFiredStripVector.size() && bottomPlaneFiredStripVector.size()){
+      for(int xval = 0  ; xval < topPlaneFiredStripVector.size() ; xval++){
+        for(int yval = 0  ; yval < bottomPlaneFiredStripVector.size() ; yval++){
+
+        	//std::cout<< " topPlaneFiredStripVector : " << topPlaneFiredStripVector[xval] <<" : bottomPlaneFiredStripVector : " << bottomPlaneFiredStripVector[yval] << std::endl;
+
+          pixelVect.push_back(Tracking::Vector3D<double>(topPlaneFiredStripVector[xval],bottomPlaneFiredStripVector[yval],GetZPos()));
+          //pixelVect[count].Print();
+		  count++;
+        }
+      }
+    }
+    if(pixelVect.size()){
+      for(int i = 0 ;  i < pixelVect.size() ; i++){
+        h3dHitPlot->Fill(pixelVect[i].x(), pixelVect[i].y());//,fZPos);
+       // pixelVect[i].Print();
+      }
+    }
+    //if(pixelVect.size())
+    //pixelVect[0].Print();
+
+  }
+
+  std::cout<<"Total Num of Hit Point for Detector  : "<< GetName() << " : " << count << std::endl;
+  std::cout<<"==================================================================="<< std::endl;
+
+  //h3dHitPlot->Draw("0lego1 PFC");
+  h3dHitPlot->Draw("LEGO2");
+
+}
+
+
 void Properties::GetX_Y_And_ClusterHistograms()
 {
  // TApplication *fApp = new TApplication("Histograms", NULL, NULL);
@@ -196,7 +372,8 @@ void Properties::GetX_Y_And_ClusterHistograms()
  
   for (int evNo = 0; evNo < numOfEvents; evNo++) 
   {
-      SetFiredStripsVector(evNo);
+      //SetFiredStripsVector(evNo);
+	  SetEventDetected(evNo);
       histogram_x->Fill(GetPlane(0)->GetFiredStripsVector().size());
       histogram_y->Fill(GetPlane(1)->GetFiredStripsVector().size());
       histogram_pixel->Fill(GetPlane(0)->GetFiredStripsVector().size() * GetPlane(1)->GetFiredStripsVector().size());

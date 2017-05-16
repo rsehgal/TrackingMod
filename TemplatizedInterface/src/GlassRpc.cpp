@@ -29,6 +29,7 @@ GlassRpc::GlassRpc(std::string name, std::vector<int> channelDimVector):
   }*/
 }
 
+//Currently using this Constructor
 GlassRpc::GlassRpc(int moduleId, std::string rpcName, double zPos, int startId) {
   SetDetectorType("GLASS");
   Scintillator::SetStartingId(startId);

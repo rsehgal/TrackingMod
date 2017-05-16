@@ -33,7 +33,7 @@ void ScintillatorPlane::SetEfficiency(){
 	  int numOfEvents = Tracking::Tree::instance()->GetNumOfEvents();
 	  for(int i = 0 ; i <  numOfEvents ; i++){
 		  SetFiredStripsVector(i);
-		  if(GetFiredStripsVector().size()){
+		  if(GetFiredStripsVector().size() == fClusterSize){
 			  count++;
 		  }
 
@@ -51,6 +51,7 @@ void ScintillatorPlane::SetFiredStripsVector(int evNo) {
   fFiredStripsNameVector.clear();
   for (int i = 0; i < scintVectorSize; i++) {
   //  fScintVector[i]->DetectAndSetHit<true>(t, evNo);
+	//Scintillator::ResetBadEventCounter();
 	fScintVector[i]->DetectAndSetHit<true>(evNo);
     if(fScintVector[i]->GetScintHit()){
     	fFiredStripsVector.push_back(i);

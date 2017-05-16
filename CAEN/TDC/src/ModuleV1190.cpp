@@ -1,0 +1,627 @@
+#include  "ModuleV1190.h"
+
+#include <iostream>
+#include <iomanip>
+#include <time.h>     // needed for nanosleep
+
+ModuleV1190::ModuleV1190(){
+  _vmeInt = NULL;
+  _iniFile = NULL;
+  fBaseAddr = -1;
+  _nChannels = 0;
+  fTree = NULL;
+}
+
+BSCModule * ModuleV1190::Clone(){
+  std::cout << "V1190" << std::endl;
+  return new ModuleV1190();
+}
+
+ModuleV1190::~ModuleV1190(){
+
+}
+
+void ModuleV1190::Start(){
+  std::cout << "Starting "<< this->fName << std::endl;
+}
+
+void ModuleV1190::SetWindowWidth( int16_t aData ){
+  this->WriteMicro( OppCode_Set_Window_Width );
+  this->WriteMicro( aData );
+  this->MicroWait();
+}
+
+void ModuleV1190::SetWindowOffset( int16_t aData ){
+  this->WriteMicro( OppCode_Set_Window_Offset );
+  this->WriteMicro( aData );
+  this->MicroWait();
+}
+
+void ModuleV1190::SetExtraSearchMargin( int16_t aData ){
+        this->WriteMicro( OppCode_Set_Sw_Margin );
+        this->WriteMicro( aData );
+        this->MicroWait();
+}
+
+void ModuleV1190::SetRejectMargin( int16_t aData ){
+        this->WriteMicro( OppCode_Set_Reject_Margin );
+        this->WriteMicro( aData );
+        this->MicroWait();
+}
+
+
+void ModuleV1190::EnableTriggerTimeSubstraction(){
+  this->WriteMicro( OppCode_Enable_Trigger_Time_Substraction );
+        this->MicroWait();
+}
+
+void ModuleV1190::DisableTriggerTimeSubstraction(){
+  this->WriteMicro( OppCode_Disable_Trigger_Time_Substraction );
+        this->MicroWait();
+}
+
+void ModuleV1190::SetEdgeDetectMode( V1190EdgeMode aMode ){
+        this->WriteMicro( OppCode_Set_Edge_Detect_Mode );
+        this->WriteMicro( aMode );
+        this->MicroWait();
+}
+
+void ModuleV1190::EnableTDCEncapsulation(){
+        this->WriteMicro( OppCode_Enable_Header_Trailer );
+        this->MicroWait();
+}
+
+void ModuleV1190::SetIndividualLSB( V1190Resolution aResolution ){
+        this->WriteMicro( OppCode_Set_Trigger_Lead_LSB );
+        this->WriteMicro( aResolution );
+        this->MicroWait();
+}
+
+void ModuleV1190::SetDoubleHitResolution( V1190DeadTime aDeadTime ){
+        this->WriteMicro( OppCode_Set_Dead_Time );
+        this->WriteMicro( aDeadTime );
+        this->MicroWait();
+}
+
+void ModuleV1190::SetMaxHitsPerEvent( V1190EventsMax aEventsMax ){
+        this->WriteMicro( OppCode_Set_Event_Size );
+        this->WriteMicro( static_cast< unsigned short >( aEventsMax ) );
+        this->MicroWait();
+}
+
+void ModuleV1190::EnableErrorMark(){
+        this->WriteMicro( OppCode_Enable_Error_Mark );
+        this->MicroWait();
+}
+
+void ModuleV1190::SetErrorEnables( unsigned short aErrors ){
+        this->WriteMicro( OppCode_Set_Event_Size );
+        this->WriteMicro( aErrors );
+        this->MicroWait();
+}
+
+void ModuleV1190::EnableAllChannels(){
+  this->WriteMicro( OppCode_Enable_All_Channels );
+        this->MicroWait();
+}
+
+void ModuleV1190::SetTriggerMatchingMode(){
+  this->WriteMicro( OppCode_Set_Trigger_Matching_Mode );
+  this->MicroWait();
+}
+
+void ModuleV1190::SetTriggerContinuousMode(){
+    this->WriteMicro( OppCode_Set_Trigger_Continuous_Mode );
+    this->MicroWait();
+}
+
+
+bool ModuleV1190::IsEventFIFOFull(){
+  int16_t Data;
+  Data = this->_vmeInt->ReadW( this->fBaseAddr + V1190_WEvent_FIFO_Status );
+  if( this->_vmeInt->GetStatus() != cvSuccess ){
+    std::cerr << std::endl << "[ERR:ModuleV1190]: Cannot event FIFO register." << std::endl << this->_vmeInt->GetError() << std::endl;
+  }
+  return ( Data & V1190_Event_FIFO_Full ) != 0;
+}
+
+void ModuleV1190::Reset(){
+  unsigned short Data;
+  this->_vmeInt->WriteW( this->fBaseAddr + V1190_Module_Reset, Data );
+  if( this->_vmeInt->GetStatus() != cvSuccess ){
+    std::cerr << std::endl << "[ERR:ModuleV1190]: Cannot reset." << std::endl
+        << this->_vmeInt->GetError() << std::endl;
+  } else { std::cout << "Done." << std::endl; }
+
+}
+
+bool ModuleV1190::IsEventFIFOReady(){
+  int16_t Data;
+  Data = this->_vmeInt->ReadW( this->fBaseAddr + V1190_WEvent_FIFO_Status );
+  if( this->_vmeInt->GetStatus() != cvSuccess ){
+    std::cerr << std::endl << "[ERR:ModuleV1190]: Cannot event FIFO register." << std::endl << this->_vmeInt->GetError() << std::endl;
+  }
+  //std::cout << "Event FIFO Status: " << Data << std::endl;
+  return ( Data & V1190_Event_FIFO_Data_Ready ) != 0;
+}
+
+int ModuleV1190::Initialize(){
+//  int16_t Data = 1;
+  if( _vmeInt == NULL ){
+    std::cerr << "[ERR:ModuleV1190]: VME Interface not set!" << std::endl;
+    exit( -1 );
+  }
+
+  if( _iniFile == NULL ){
+    std::cout << "[Warning] ini file not set, setting all to defaults for module " << fName << std::endl;
+    _iniFile = new IniFile();
+  } /*else {
+    _iniFile->Read();
+}*/
+  //Set the base address from the ini file
+  std::cout << "BA:" << std::hex << this->fBaseAddr << std::dec << std::endl;
+  long long IniBA = _iniFile->Long( this->fName, "BaseAddress", -1 );
+  std::cout << "Ini BA = " << std::hex << IniBA<< std::dec << " " << IniBA << std::endl;
+  if( ( IniBA != -1 ) && ( this->fBaseAddr != IniBA ) ) this->SetBaseAddress( IniBA );
+//  if( this->fBaseAddr == -1 ) this->SetBaseAddress( ( long )  );
+  std::cout << "Initializing Module " << this->fName << std::endl
+            << "Type: V1190" << std::endl
+            << "Base Address: 0x" << std::setw( 8 ) << std::setfill( '0' )<< std::hex <<  this->fBaseAddr << std::dec << std::endl
+            << "Reseting module\t\t\t";
+  this->Reset();
+  if ( _vmeInt->GetStatus() != cvSuccess ) exit( -1 );
+  //  this->MicroWait();
+  this->ReadConfigurationROM();
+  _nChannels = 0;
+  if( this->_boardModel == 1190) {
+    if( this->_boardModelVersion == 0 ) {
+      this->_nChannels = 128;
+      this->_nChipCount =   4;
+    } else {
+      this->_nChannels =  64;
+      this->_nChipCount=   2;
+    }
+  }
+  else if( this->_boardModel == 1290 ){                        // 1290
+    if( this->_boardModelVersion == 0) {
+      this->_nChannels  = 32;
+      this->_nChipCount =  4;
+    }
+    else {
+      this->_nChannels  = 16;
+      this->_nChipCount =  2;
+    }
+  } else {
+    std::cerr << "[ERR:ModuleV1190]: Unrecognized board model ("<< this->_boardModel <<")!" << std::endl;
+    exit( -1 );
+  }
+
+  _hitsLE.resize( _nChannels );
+  std::cout << "Number of channels: " << this->_nChannels << std::endl;
+  //std::cout << "Control Register: " << this->ReadControlReg() << std::endl;
+  this->SetControlReg( 8 );//NEVENT_FIFO_ENABLE
+  this->UnsetControlReg( 5 );//Disable ALIGN64
+  //  this->SetControlReg( 9 );//External Trigger
+  //std::cout << "Control Register: " << this->ReadControlReg() << std::endl;
+
+    //Set trigger mode to trigger matching
+  if( ( long ) _iniFile->Int( this->fName, "TriggerMode", 1 ) == 1 ) this->SetTriggerMatchingMode();
+  if( ( long ) _iniFile->Int( this->fName, "TriggerMode", 1 ) == 0 ) this->SetTriggerContinuousMode();
+   
+  //Set the trigger window width
+  this->SetWindowWidth( ( unsigned short ) _iniFile->Int( this->fName, "TriggerWindowWidth", 2000 ) );
+
+    //Set the trigger window offset
+  this->SetWindowOffset( ( short ) _iniFile->Int( this->fName, "TriggerWindowOffset", -2 * 40 ) );
+ 
+    //Set trigger extra search margin
+  this->SetExtraSearchMargin( ( unsigned short ) _iniFile->Int( this->fName, "TriggerExtraSearchMargin", 1 ) );
+ 
+    //Set trigger reject margin
+  this->SetRejectMargin( ( unsigned short ) _iniFile->Int( this->fName, "TriggerRejectMargin", 1 ) );
+ 
+    //Enable/Disable Trigger time substraction
+  if( ( long ) _iniFile->Int( this->fName, "EnableTriggerTimeSubstraction", 1 ) == 1 ) this->EnableTriggerTimeSubstraction();
+  //this->DisableTriggerTimeSubstraction();  
+
+    //Set edge detection mode
+  this->SetEdgeDetectMode( ( V1190EdgeMode ) _iniFile->Int( this->fName, "EdgeDetectMode", ( int )EdgeMode_Leading ) );
+ 
+    //Set resolution
+  this->SetIndividualLSB(  ( V1190Resolution ) _iniFile->Int( this->fName, "IndividualLSB", ( int )Res_100ps ) );
+ 
+    //Set dead time resolution
+  this->SetDoubleHitResolution( ( V1190DeadTime ) _iniFile->Int( this->fName, "DoubleHitResolution", ( int ) Dead_Time_5ns ) );
+ 
+    //Set maximum hits per event
+  this->SetMaxHitsPerEvent( ( V1190EventsMax ) _iniFile->Int( this->fName, "MaxHitsPerEvent", ( int )Events_Max_Unlimited ) );
+ 
+    //Enable errors
+  this->EnableErrorMark();
+  this->SetErrorEnables( ERR_VERNIER | ERR_COARSE | ERR_SELECT |
+                  ERR_L1PARITY | ERR_TFIFOPARITY | ERR_MATCHERROR |
+                  ERR_RFIFOPARITY | ERR_RDOSTATE | ERR_SUPPARITY  |
+                  ERR_CTLPARITY | ERR_JTAGPARITY );
+  //Enable all channels
+  this->EnableAllChannels();
+  //std::cout << "Control Register: " << this->ReadControlReg() << std::endl;
+  //std::cout << "Status Register: " << this->ReadStatusReg() << std::endl;
+
+  //Create ROOT branches
+  if( fTree ){
+    //fData.resize( V1721Channels );// vector<int>( V1721SamplesN, 0 ) );
+    //unsigned ChNum = this->GetChannelNumber();
+    std::stringstream ss;
+    //unsigned NChannels = 128;
+
+    ss << fName << "_NUMBER_OF_CHANNELS";
+    std::string sNumCh = ss.str();
+    //std::cout << "Creating branch: " << ss.str() << std::endl << std::flush;
+    fTree->Branch( sNumCh.c_str(), &_nChannels, "_nChannels/I" );
+    ss.str( "" );
+
+    _hitsPerChannel.resize( _nChannels, 0 );
+    ss << fName << "_HITS_PER_CHANNEL";
+    //   TBranch * brSamples =
+    std::stringstream tmp;
+    std::cout << "Creating branch: " << ss.str() << std::endl << std::flush;
+
+    tmp << "_hitsPerChannel[" << fName << "_NUMBER_OF_CHANNELS]/I";
+    fTree->Branch( ss.str().c_str(), &_hitsPerChannel );//, tmp.str().c_str() );
+    /*
+    ss.str("");
+    ss << fName << "_HEADER1";
+    fTree->Branch( ss.str().c_str(), &fHeader1, "fHeader1/I" );
+    ss.str("");
+    ss << fName << "_HEADER2";
+    fTree->Branch( ss.str().c_str(), &fHeader2, "fHeader2/I" );
+    ss.str("");
+    ss << fName << "_HEADER3";
+    fTree->Branch( ss.str().c_str(), &fHeader3, "fHeader3/I" );
+    ss.str("");
+    ss << fName << "_HEADER4";
+    fTree->Branch( ss.str().c_str(), &fHeader4, "fHeader4/I" );
+    */
+    //fBranches.push_back( brSamples );
+    for( unsigned ch=0; ch < _nChannels; ++ch ){
+      ss.str( "" ); //Clear the stream
+      ss << fName << "_LE_CH" << ch;
+      string chName = ss.str();
+      ss.str( "" );
+      ss << "_hitsLE[" << ch << "][ _hitsPerChannel[" << ch << "] ]/I";
+      string chVar = ss.str();
+      _hitsLE[ ch ].resize( 0 );
+      //std::cout << "Creating Branch " << chName << " : " << chVar << std::endl;
+//      std::cout << "Creating branch: " << ss.str() << std::endl << std::flush;
+      fTree->Branch( chName.c_str(), &_hitsLE[ ch ] );
+      //fData[ ch ] = new unsigned[ V1721SamplesN ];
+      //fData[ ch ].resize( fSamplesPerCh, 0 );
+      //std::vector< unsigned > vec = &fData[ ch ];
+      //TBranch *brChan =
+//      fTree->Branch( chName.c_str(), &fData[ ch ] );
+      //fBranches.push_back( brChan );
+    }
+  }
+  if( _vmeInt->GetStatus() == cvSuccess )
+    return true;
+  else
+    return false;
+}
+
+void ModuleV1190::WriteMicro( int16_t aData ){
+  this->MicroWait();
+  this->_vmeInt->WriteW( this->fBaseAddr + V1190_Micro, aData );
+  if( this->_vmeInt->GetStatus() != cvSuccess ){
+    std::cerr << std::endl << "[ERR:ModuleV1190]: Cannot write microcontroller." << std::endl
+              << this->_vmeInt->GetError() << std::endl;
+  }
+}
+
+bool ModuleV1190::IsSetStatusReg( unsigned aBit ){
+  int16_t Data;
+  Data = this->_vmeInt->ReadW( this->fBaseAddr + V1190_Status_Register );
+  if( this->_vmeInt->GetStatus() != cvSuccess ){
+    std::cerr << std::endl << "[ERR:ModuleV1190]: Cannot read status register." << std::endl << this->_vmeInt->GetError() << std::endl;
+  }
+  return ( Data & ( 1 << aBit ) ) != 0;
+}
+
+unsigned short ModuleV1190::ReadStatusReg(){
+  unsigned short Data;
+  Data = this->_vmeInt->ReadW( this->fBaseAddr + V1190_Status_Register );
+  if( this->_vmeInt->GetStatus() != cvSuccess ){
+    std::cerr << std::endl << "[ERR:ModuleV1190]: Cannot read control register." << std::endl
+              << this->_vmeInt->GetError() << std::endl;
+  }
+  this->MicroWait();
+  return Data;
+}
+
+
+int16_t ModuleV1190::ReadControlReg(){
+  int16_t Data;
+  Data = this->_vmeInt->ReadW( this->fBaseAddr + V1190_Control_Register );
+  if( this->_vmeInt->GetStatus() != cvSuccess ){
+    std::cerr << std::endl << "[ERR:ModuleV1190]: Cannot read control register." << std::endl
+              << this->_vmeInt->GetError() << std::endl;
+  }
+  this->MicroWait();
+  return Data;
+}
+
+void ModuleV1190::SetControlReg( unsigned aBit ){
+  int16_t Data = this->ReadControlReg();
+  Data |= ( 1 << aBit );
+  this->_vmeInt->WriteW( this->fBaseAddr + V1190_Control_Register, Data );
+  if( this->_vmeInt->GetStatus() != cvSuccess ){
+    std::cerr << std::endl << "[ERR:ModuleV1190]: Cannot write control register." << std::endl
+              << this->_vmeInt->GetError() << std::endl;
+  }
+  this->MicroWait();
+}
+
+void ModuleV1190::UnsetControlReg( unsigned aBit ){
+  int16_t Data = this->ReadControlReg();
+  Data &= ~( 1 << aBit );
+  this->_vmeInt->WriteW( this->fBaseAddr + V1190_Control_Register, Data );
+  if( this->_vmeInt->GetStatus() != cvSuccess ){
+    std::cerr << std::endl << "[ERR:ModuleV1190]: Cannot write control register." << std::endl
+              << this->_vmeInt->GetError() << std::endl;
+  }
+  this->MicroWait();
+}
+
+bool ModuleV1190::IsSetControlReg( unsigned aBit ){
+  int16_t Data;
+  Data = this->_vmeInt->ReadW( this->fBaseAddr + V1190_Control_Register );
+  if( this->_vmeInt->GetStatus() != cvSuccess ){
+    std::cerr << std::endl << "[ERR:ModuleV1190]: Cannot read control register." << std::endl
+              << this->_vmeInt->GetError() << std::endl;
+  }
+  return ( Data & ( 1 << aBit ) ) != 0;
+}
+
+void ModuleV1190::PrintControlRegister(){
+
+}
+
+unsigned long ModuleV1190::ReadEventFIFO(){
+  unsigned long Data = 0;
+  if( this->IsEventFIFOReady()) {
+    Data = this->_vmeInt->ReadL( this->fBaseAddr + V1190_LEvent_FIFO );
+    if( this->_vmeInt->GetStatus() != cvSuccess ){
+      std::cerr << std::endl << "[ERR:ModuleV1190]: Cannot read event FIFO." << std::endl << this->_vmeInt->GetError() << std::endl;
+    }
+  }
+  return Data;
+}
+
+unsigned short ModuleV1190::FIFOWordCount( unsigned long aFIFOCounts ){
+  const unsigned long WORDCOUNT_MASK = 0x0000ffff;
+  const unsigned short WORDCOUNT_RSHIFT = 0;
+  return ( aFIFOCounts & WORDCOUNT_MASK) >> WORDCOUNT_RSHIFT;
+}
+
+unsigned short ModuleV1190::FIFOEventCount( unsigned long aFIFOCounts ){
+  const unsigned long EVENTCOUNT_MASK = 0xffff0000;
+  const unsigned short EVENTCOUNT_RSHIFT = 16;
+  return ( aFIFOCounts & EVENTCOUNT_MASK) >> EVENTCOUNT_RSHIFT;
+}
+
+unsigned ModuleV1190::ReadData( void* aBuffer, unsigned int nMaxLongs ){
+  if ( this->IsSetStatusReg( 3 ) ){
+    return ReadPacket( aBuffer, nMaxLongs );
+  } else {
+    return ReadValid( aBuffer, nMaxLongs) ;
+  }
+}
+
+bool ModuleV1190::IsGlobalTrailer( unsigned long aData ){
+  return ( ( aData & V1190_Data_Type_Mask ) == V1190_Data_Global_Trailer_Mask );
+}
+
+bool ModuleV1190::IsFiller( unsigned long aData ){
+  return ( ( aData & V1190_Data_Type_Mask ) == V1190_Data_Filler_Mask );
+}
+
+unsigned ModuleV1190::ReadPacket( void* aBuffer, unsigned int nMaxLongs ){
+  unsigned long* pPacket = ( unsigned long * ) aBuffer;
+  unsigned int   nRead   = 0;
+  // Loop over the read until we get a data word that has
+  // either the TDC_TRAILER or FILLER_LONG type  mask value.
+  // Note that if we run out of user buffer we just stop incrementing
+  // the counter/pointer.
+  bool done( false );
+  while(!done) {
+    unsigned long datum = this->_vmeInt->ReadL( this->fBaseAddr + V1190_Output_Buffer );
+    *pPacket            = datum;
+    if( this->IsGlobalTrailer( datum ) || this->IsFiller( datum ) ) {
+      done = true;              // Last read.
+    }
+    if( nRead < nMaxLongs ) {     // overwrite last word if output full.
+      pPacket++;
+      nRead++;
+    }
+  }
+  return nRead;
+}
+
+unsigned ModuleV1190::ReadValid( void* aBuffer, unsigned int nMaxLongs ){
+  unsigned long* pLongs = (unsigned long*)aBuffer;
+  unsigned int   nRead  = 0;
+  bool           done   = false;
+  while(!done) {
+    unsigned long datum = this->_vmeInt->ReadL( this->fBaseAddr + V1190_Output_Buffer );
+    *pLongs++          = datum;
+    nRead++;
+    if( this->IsGlobalTrailer( datum ) || this->IsFiller(datum)    || ( nRead == nMaxLongs) ) {
+      done = true;
+    }
+  }
+  return nRead;
+}
+
+unsigned long ModuleV1190::TriggerCounter(){
+  unsigned long Data = 0;
+  Data = this->_vmeInt->ReadL( this->fBaseAddr + V1190_Event_Counter );
+  if( this->_vmeInt->GetStatus() != cvSuccess ){
+    std::cerr << std::endl << "[ERR:ModuleV1190]: Cannot read trigger counter." << std::endl << this->_vmeInt->GetError() << std::endl;
+  }
+  return Data;
+}
+
+unsigned long ModuleV1190::EventStored(){
+  unsigned long Data = 0;
+  Data = this->_vmeInt->ReadL( this->fBaseAddr + V1190_Event_Stored );
+  if( this->_vmeInt->GetStatus() != cvSuccess ){
+    std::cerr << std::endl << "[ERR:ModuleV1190]: Cannot read event stored." << std::endl << this->_vmeInt->GetError() << std::endl;
+  }
+  return Data;
+}
+
+bool ModuleV1190::Read(){
+const unsigned TDC_WAITLOOP = 5000000;
+unsigned long TDCData[ 32768 ];
+//Is called to readout data on module
+  timespec rt1, at1;
+  rt1.tv_sec = 0;
+  rt1.tv_nsec = 5; // timeout in nsec
+  long count = 0;
+  while( !this->IsEventFIFOReady() && ( count < TDC_WAITLOOP ) ){
+    if ( nanosleep( &rt1, &at1 ) != 0 ) std::cout << "Nanosleep failed" << std::endl;
+    count += rt1.tv_nsec;
+  }
+        std::cout << "Cycles " << count << std::endl;
+/*
+  for( unsigned i =0; i < TDC_WAITLOOP; i++ ) {
+    if( this->IsEventFIFOReady()) {
+      break;
+    }
+  }
+    */
+  for( unsigned int i = 0; i< _nChannels; ++i ){
+    _hitsLE[ i ].clear();
+    _hitsPerChannel[ i ] = 0;
+  }
+//std::cout << "Trigger counter: " << this->TriggerCounter() << " Event stored: " << this->EventStored() << std::endl;
+  if( this->IsEventFIFOReady() ) {
+    unsigned long fifo = this->ReadEventFIFO();
+//    std::cout << "FIFO: " << fifo << std::endl;
+    unsigned nWords = this->FIFOWordCount( fifo );
+
+//    std::cout << "nWords: " << nWords << std::endl;
+//    std::cout << "FIFO events: " << this->FIFOEventCount( fifo ) << std::endl;
+    unsigned nRead = this->ReadData( TDCData, nWords);
+//    std::cout << "nRead: " << nRead << std::endl;
+    unsigned short tdc = 0;
+    long channel = -1;
+    unsigned long data = 0;
+    _hitsPerChannel.resize( _nChannels, 0 );
+    //TODO: Do unpacking here..
+    unsigned channelOffset = this->_nChannels / this->_nChipCount;
+    for( unsigned i = 0; i < nRead; ++i ){
+      //std::cout << i << " : " << TDCData[ i ] << std::endl;
+
+      ModuleV1190Data Decoder( TDCData[ i ] );
+      Decoder.Decode();
+      if( Decoder.IsTdcHeader() ){
+        tdc = Decoder.GetTdc();
+        //std::cout << "TDC = " << tdc << " Board Type = " << this->_boardModel << std::endl;
+      }
+      else if( Decoder.IsMeasurement() ){
+        unsigned ch = Decoder.GetChannel();
+        if( this->_boardModel == 1190 ){
+          channel = channelOffset * tdc + ch;
+        } else {
+          channel = ch;
+        }
+        data = Decoder.GetMeasurement();
+        std::cout << "Board Type = " << this->_boardModel << ", TDC = " << tdc << ", channel Offset = " << channelOffset
+            <<  ", ch = " << ch << ", Channel = " << channel << ", data = " << data << std::endl;
+        _hitsLE[ channel ].push_back( data );
+        ++_hitsPerChannel[ channel ];
+      }
+      //std::cout << "Type: " << std::hex << Decoder.GetDataType() << std::dec << std::endl;
+
+    }
+    //rBuf.CopyIn(TDCData, 0, nRead*2);
+    //rBuf += nRead*2;
+
+    //TODO: Write to root tree...
+
+  } else {
+    std::cout << "FIFO is not ready!" << std::endl;
+    //return false;
+  }
+  return true;
+}
+
+bool ModuleV1190::Write(){
+  return true;
+}
+
+void ModuleV1190::Stop(){}
+
+unsigned ModuleV1190::GetStatus(){
+  return 0;
+}
+
+void ModuleV1190::MicroWait(){
+  int16_t Data = V1190_Write_OK;
+  do{
+    Data = this->_vmeInt->ReadW( this->fBaseAddr + V1190_Micro_Handshake );
+    if( this->_vmeInt->GetStatus() != cvSuccess ){
+      std::cerr << std::endl << "[ERR:ModuleV1190]: Cannot read micro handshake." << std::endl
+                << this->_vmeInt->GetError() << std::endl;
+    }
+  } while ( ( Data &  V1190_Write_OK ) == 0 );
+}
+
+void ModuleV1190::ReadConfigurationROM(){
+
+  const unsigned V1190_Configuration_Rom = 0x4000;
+  /*const unsigned CR_CHECKSUM          = 0x00;
+  const unsigned CR_CHECKSUM_LENGTH2  = 0x04;
+  const unsigned CR_CHECKSUM_LENGTH1  = 0x08;
+  const unsigned CR_CHECKSUM_LENGTH0  = 0x0C;
+  const unsigned CR_CONSTANT2         = 0x10;
+  const unsigned CR_CONSTANT1         = 0x14;
+  const unsigned CR_CONSTANT0         = 0x18;
+  const unsigned CR_C_CODE            = 0x1C;
+  const unsigned CR_R_CODE            = 0x20;
+  const unsigned CR_OUI2              = 0x24;
+  const unsigned CR_OUI1              = 0x28;
+  const unsigned CR_OUI0              = 0x2C;
+  */
+  const unsigned CR_VERS              = 0x30;
+  const unsigned CR_BOARD2            = 0x34;
+  const unsigned CR_BOARD1            = 0x38;
+  const unsigned CR_BOARD0            = 0x3C;
+  /*
+  const unsigned CR_REVIS3            = 0x40;
+  const unsigned CR_REVIS2            = 0x44;
+  const unsigned CR_REVIS1            = 0x48;
+  const unsigned CR_REVIS0            = 0x4C;
+  const unsigned CR_SERNUM1           = 0x80;
+  const unsigned CR_SERNUM0           = 0x84;
+  */
+
+  unsigned long Data = 0;
+  unsigned long Addr = this->fBaseAddr + V1190_Configuration_Rom;
+  unsigned short Addr2 = CR_BOARD2 / sizeof(short);
+  //Data = this->_vmeInt->ReadW( Addr + CR_BOARD2 );
+  Data  = ( this->_vmeInt->ReadW( Addr + CR_BOARD2 ) & 0xff) << 16;
+  Data |= ( this->_vmeInt->ReadW( Addr + CR_BOARD1 ) & 0xff) <<  8;
+  Data |= ( this->_vmeInt->ReadW( Addr + CR_BOARD0 ) & 0xff);
+
+  this->_boardModel = Data;
+  this->_boardModelVersion = BoardModelVersion( this->_vmeInt->ReadW( Addr + CR_VERS ) & 0xff );
+
+  //Data = this->_vmeInt->ReadW( Addr + CR_CHECKSUM_LENGTH1 );
+  if( this->_vmeInt->GetStatus() != cvSuccess ){
+    std::cerr << std::endl << "[ERR:ModuleV1190]: Cannot read event stored." << std::endl << this->_vmeInt->GetError() << std::endl;
+  }
+  std::cout << std::endl << "Board Model: " << this->_boardModel << std::endl;
+  std::cout << "Board Version: " << this->_boardModelVersion << std::endl;
+  //return Data;
+}

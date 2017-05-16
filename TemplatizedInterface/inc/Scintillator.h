@@ -53,6 +53,7 @@ class Scintillator {
   double fDy;
   double fDTheta;
 
+ // static int badEventCounter;
 /*
 #ifndef USE_EVE
   Tracking::Visualizer v;
@@ -69,6 +70,9 @@ class Scintillator {
 
 public:
   Scintillator();
+
+  //static void ResetBadEventCounter(){badEventCounter=0;}
+  //static int GetBadEventCount(){return badEventCounter;}
 
   void SetDx(double val) { fDx = val; }
   void SetDy(double val) { fDy = val; }
@@ -88,6 +92,7 @@ public:
   ~Scintillator();
   static void SetStartingId(int sId){fId = sId;}
   static void SetStartingStripNum(){fSno = -1;}
+  static int GetStartingId(){return fId;}
 
   void SetPlacedLocation(Tracking::Vector3D<double> location){fPlacedLocation = location ;}
   void SetLength(double length){fLength = length;}
@@ -184,9 +189,13 @@ void Scintillator::DetectAndSetHit(int evNo) {
                 if (rpcData >= fStart && rpcData <= fEnd) {
                   fScintHit = true;
                   fValue = rpcData;
-                  break;
+                  return;
+                  //break;
                 }
+
         }
+    	//badEventCounter
+    	//std::cout<<"Event Number : " << evNo << " : Bad Event" << std::endl;
 /*
     	long rpcData = scintillator;
         //std::cout<< "Rpcdata : " << rpcData << std::endl;

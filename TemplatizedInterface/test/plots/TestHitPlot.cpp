@@ -15,7 +15,7 @@ using namespace Tomography;
 int main(int argc, char *argv[]) {
   std::string temp_str = std::to_string(atoi(argv[1]));
   temp_str += ".root";
-  int clusterSize = 1;
+  int clusterSize = 10;
   TApplication *fApp = new TApplication("Test", NULL, NULL);
   Tracking::Tree::instance()->ReadTree(temp_str.c_str(), "BSC_DATA_TREE", 0);
   Detector *ScintTop = new TriggeringPlane(2, "ScintTop", 105, -1);
@@ -25,15 +25,19 @@ int main(int argc, char *argv[]) {
 
   Detector *MT1 = new GlassRpc(4, "FirstGlassRpc", 45, 31);
   Detector *MT2 = new GlassRpc(2, "SecondGlassRpc", -75, 31);
+  Detector *MT3 = new GlassRpc(3, "ThirdGlassRpc", -45, 31);
   SetupManager *setup = SetupManager::instance();
   MT1->SetClusterSize(clusterSize);
   MT2->SetClusterSize(clusterSize);
+  MT3->SetClusterSize(clusterSize);
   setup->Register(ScintTop);
   setup->Register(ScintBottom);
   setup->Register(MT1);
   setup->Register(MT2);
+  setup->Register(MT3);
   MT1->GetHitPlot();
   MT2->GetHitPlot();
+  MT3->GetHitPlot();
   setup->GetHitPlot("GLASS");
   fApp->Run();
 }

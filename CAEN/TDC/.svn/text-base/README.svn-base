@@ -1,0 +1,5 @@
+To launch this software just write:
+
+./daq904 rpc.ini
+
+(Data will be saved into /home/user/re4data/TDC)

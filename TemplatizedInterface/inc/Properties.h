@@ -75,7 +75,10 @@ public:
   void SetDetectorType(std::string detType){fDetectorType = detType;}
   void SetEfficiency();
 
-  void SetClusterSize(int clusterSize){fClusterSize = clusterSize;}
+  void SetClusterSize(int clusterSize){fClusterSize = clusterSize;
+  for(int i=0 ; i < fScintillatorPlaneVector.size() ; i++)
+	  GetPlane(i)->SetClusterSize(fClusterSize);
+  }
   int GetClusterSize(){return fClusterSize;}
 
   //static void SetClusterSize(int clusterSize){fClusterSize = clusterSize;}
@@ -129,6 +132,9 @@ public:
   void GetStripProfile();
   void GetX_Y_And_ClusterHistograms();
   void GetHitPlot();
+  void GetHitPlot3D();
+  void GetHitPlot3D_V2();
+  void GetStripsHitPlot3D();
   Tracking::Vector3D<double> GetStripCoordinate(int x, int y, int z);
   //void FetchInfo(Tracking::Tree t);
   void InsertPlane(ScintillatorPlane *plane){
@@ -160,6 +166,20 @@ public:
 			                            Tracking::Global::GenRandomDet(-fLength/2.,fLength/2.),
 										fZPos);
   }
+
+#if(0)
+ void Print(){
+   std::cout<<"Name : "<< fName << std::endl;
+   std::cout<<"Num of Readout Planes : "<< fNumOfPlanes << std::endl;
+   for(int i = 0  ; i < fNumOfPlanes ; i++){
+   std::cout<<"-------------------------------------------------------" << std::endl;
+   std::cout<<"Plane num : " << (i+1) << std::endl;
+   std::cout<<"Connected to TDC no. : " << fScintillatorPlaneVector[i]->GetModuleId() << std::endl;
+   std::cout<<"StartChannel Id : "<< fScintillatorPlaneVector[i]->GetStartChannelId() << std::endl; 
+   std::cout<<"EndChannel Id : "<< fScintillatorPlaneVector[i]->GetEndChannelId() << std::endl; 
+   }
+ }
+#endif
 
 };
 
