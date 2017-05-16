@@ -301,6 +301,8 @@ void Properties::GetStripsHitPlot3D(){
   int numOfBinsY =   (GetPlane(1)->GetNumOfScintillators() );
   //std::cout<<"Num of Bins : " << numOfBinsX << " : fLength : "<< fLength <<" : fBreadth : " << fBreadth << std::endl;
   TH2F *h3dHitPlot = new TH2F("h3dHitPlot", "3DHitPlot", numOfBinsX , 0, GetPlane(0)->GetNumOfScintillators(), numOfBinsY, 0, GetPlane(1)->GetNumOfScintillators());
+  h3dHitPlot->GetXaxis()->SetTitle("TopPlane");
+  h3dHitPlot->GetYaxis()->SetTitle("BottomPlane");
   //TH2F *h3dHitPlot = new TH2F("h3dHitPlot", "3DHitPlot", 64, -fLength, fLength, 64, -fBreadth, fBreadth);
 
   //h3dHitPlot->SetMarkerSize(0.5);

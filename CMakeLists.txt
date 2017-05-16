@@ -60,6 +60,11 @@ option(EMULATOR "Building Emulator for HV Supply" OFF)
 option(CAEN "Enabling CAEN Libraries" OFF)
 option(GNUPLOT "Enabling GnuPlot" OFF)
 option(QT "Enabling QtGui" OFF)
+option(CRY "Enable CRY library for cosmic event generation" OFF)
+
+if(CRY)
+add_subdirectory(Cry)
+endif(CRY)
 
 #For Xml Processing
 find_package(XERCES REQUIRED)
