@@ -26,10 +26,13 @@ int main(int argc, char *argv[]) {
 	std::vector<Detector*> detVect = s->GetDetectorVector();
 	for (int i = 0; i < detVect.size(); i++) {
 		detVect[i]->SetClusterSize(clusterSize);
+		detVect[i]->GetPlane(0)->SetClusterSize(clusterSize);
+		detVect[i]->GetPlane(1)->SetClusterSize(clusterSize);
 		setup->Register(detVect[i]);
-		detVect[i]->GetHitPlot3D_V2();
+		//detVect[i]->GetHitPlot3D_V2();
+		detVect[i]->GetStripsHitPlot3D();
 	}
 
-	setup->GetHitPlot("GLASS");
+	//setup->GetHitPlot("GLASS");
 	fApp->Run();
 }

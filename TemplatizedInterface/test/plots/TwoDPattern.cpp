@@ -10,22 +10,30 @@
 typedef Tomography::Properties Detector;
 using namespace Tomography;
 
-void GenerateTimingHistogram();
+void GenerateTimingHistogram(std::string);
 
-int main() {
+int main(int argc, char **argv) {
 	TApplication *fApp = new TApplication("Test", NULL, NULL);
-	GenerateTimingHistogram();
-        fApp->Run();
+	std::string temp_str = std::to_string(atoi(argv[1]));
+	GenerateTimingHistogram(temp_str);
+    fApp->Run();
 }
 
-void GenerateTimingHistogram() {
+#if(0)
+void GenerateTimingHistogram(){
+
+}
+#endif
+
+#if(1) //Old Traditional way
+void GenerateTimingHistogram(std::string runNum) {
   Scintillator::SetStartingId(-1);
   // ScintillatorPlane topPlane(2,8,"Top-Plane");
   // ScintillatorPlane bottomPlane(2,8,"Bottom-Plane");
   Detector *topPlane = new TriggeringPlane(2, "TopPlane", -150, -1);
   Detector *bottomPlane = new TriggeringPlane(2, "BottomPlane", 150, 7);
   int nxbins = 1000;
-  int xlow = 19500;
+  int xlow = 19000;
   int xhigh = 23000;
   int nybins = 150;
   int ylow = -10;
@@ -37,7 +45,9 @@ void GenerateTimingHistogram() {
   c2->Divide(1, 1);
   c2->cd(1);
   // Tracking::Tree t("6742.root", "BSC_DATA_TREE");
-  Tracking::Tree::instance()->ReadTree("6853.root", "BSC_DATA_TREE", 0);
+  std::string temp_str = runNum;
+  temp_str += ".root";
+  Tracking::Tree::instance()->ReadTree(temp_str.c_str(), "BSC_DATA_TREE", 0);
   Tracking::Tree *t = Tracking::Tree::instance()->GetTree();
   int numOfEvents = t->GetNumOfEvents();
 
@@ -82,7 +92,7 @@ void GenerateTimingHistogram() {
 #define RPC
 #ifdef RPC
   // Now Creating Real RPC
-  Detector *rpc = new GlassRpc(4, "SecondGlassRpc", 120, 31);
+  Detector *rpc = new GlassRpc(3, "SecondGlassRpc", 120, 31);
   std::vector<std::string> firedNameVector;
   std::vector<int> firedIDVector;
   int count[]={0,0};
@@ -108,7 +118,8 @@ void GenerateTimingHistogram() {
     		for(int i = 0 ; i < firedNameVector.size() ; i++){
     			ch = t->GetEntry(firedNameVector[i], evNo);
     			if (ch->size()) {
-    				h2d->Fill(ch->at(0), firedIDVector[i]+plNum*32);
+    				//h2d->Fill(ch->at(0), firedIDVector[i]+plNum*32);
+    				h2d->Fill(ch->at(0), firedIDVector[i]);
     			}
     		}
     	}
@@ -147,6 +158,8 @@ void GenerateTimingHistogram() {
   c2->Modified();
   c2->Update();
 }
+
+#endif
 
 
 /*

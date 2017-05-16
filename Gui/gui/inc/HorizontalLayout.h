@@ -13,6 +13,7 @@ class QLabel;
 class QHBoxLayout;
 class QString;
 #include <QWidget>
+#include <QHBoxLayout>
 
 class HorizontalLayout: public QWidget {
 	Q_OBJECT
@@ -26,6 +27,7 @@ private slots:
 public:
 		//Added the required parameters to this constructor, and pass them to CreateLayout function
 	explicit HorizontalLayout(QString effStr, QString voltageStr, QWidget *parent = 0): QWidget(parent) {
+		fHLayout = new QHBoxLayout;
 		CreateLayout(effStr,voltageStr);
 
 	}

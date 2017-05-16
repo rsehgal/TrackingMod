@@ -29,6 +29,7 @@ explicit VerticalLayout(QWidget *parent = 0): QWidget(parent) {
 }
 	virtual ~VerticalLayout();
 	void CreateLayout();
+	QVBoxLayout* GetLayout(){return fVLayout;}
 };
 
 #endif /* GUI_GUI_INC_VERTICALLAYOUT_H_ */

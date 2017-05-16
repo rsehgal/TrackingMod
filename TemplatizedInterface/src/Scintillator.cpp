@@ -19,6 +19,7 @@ int Scintillator::fId = -1;
 int Scintillator::fSno = -1;
 long Scintillator::fStart = 19450;
 long Scintillator::fEnd = 21000;
+//int Scintillator::badEventCounter = 0;
 
 Scintillator::Scintillator(){}
 

@@ -38,6 +38,7 @@ class BSCDataReader{
   unsigned GetNumberOfModules(){ return fModules.size(); };
   void SetNumberOfSpills( unsigned aSpills );//{ fSpillNum = aSpills; };
   void Run();
+  void GetSkimmedData();
 
  private:
   vector< BSCModule * > fModules; 

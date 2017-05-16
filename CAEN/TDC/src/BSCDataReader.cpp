@@ -28,6 +28,10 @@ BSCDataReader::~BSCDataReader(){
 }
 
 void BSCDataReader::Initialize( string aIniFileName ){
+
+  //Added by Raman
+  GetSkimmedData();
+
   IniFile * ini = new IniFile( aIniFileName );
   ini->Read();
   this->SetNumberOfSpills( ini->Int( "General", "MaxEvents", 10 ) );
@@ -313,4 +317,95 @@ void BSCDataReader::Run(){
   strcat(execstring,".root > /dev/null 2>&1");
   //printf("%s\n", execstring);
   system(execstring);
+}
+
+void BSCDataReader::GetSkimmedData() {
+
+	int pressurezero = 990;
+
+	FILE *runnumberfile;
+	runnumberfile = fopen("/home/user/re4data/TDC/run", "r");
+	int run=0;
+	while (!feof(runnumberfile)) {
+		fscanf(runnumberfile, "%d\n", &run);
+	}
+	fclose(runnumberfile);
+
+	FILE *meteolog;
+	FILE *meteolog2;
+	meteolog = fopen("/home/user/meteolog", "r");
+	meteolog2 = fopen("/home/user/meteolog2", "r");
+
+	float var1, var2, var3, var4, var5, var6, var7, var8, var9;
+	float var10,var11,var12,var13,var14,var15,var16,var17;
+	fscanf(meteolog, "%f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f\n",
+			&var1, &var2, &var3, &var4, &var5, &var6, &var7, &var8, &var9,
+			&var10, &var11, &var12, &var13, &var14, &var15, &var16, &var17);
+
+	fscanf(meteolog2, "%f %f %f %f %f %f %f\n", &var1, &var2, &var3, &var4,
+			&var5, &var6, &var7);
+	fclose(meteolog);
+	fclose(meteolog2);
+
+	FILE *streamconf;
+	char temp1[25];
+	streamconf = fopen("conf.txt", "r");
+	fscanf(streamconf, "%s\n", &temp1);
+	fscanf(streamconf, "%s\n", &temp1);
+	int i = 3;
+
+//	char chambername[25];
+//	int slot, channel, tdc;
+	int slot_d, channel_d, stat, pwr, slot, channel, tdc, febtdc,
+			verbosefeb = 0;
+	float hvset, hvmon, currset, curr;
+	char chambername[25], temp2[25];
+
+	FILE *streamlog;
+	streamlog = fopen("daqinfoRaman","w");
+
+	FILE *streamdump;
+
+	while (!feof(streamconf)) {
+
+		if (i > 2) {
+			fscanf(streamconf, "%s %d %d %d\n", &chambername, &slot, &channel,
+					&tdc);
+
+			streamdump = fopen("/tmp/dump", "r");
+			while (!feof(streamdump)) {
+
+				fscanf(streamdump, "%d %d %f %f %f %f %d %d\n", &slot_d,
+						&channel_d, &hvset, &hvmon, &currset, &curr, &stat,
+						&pwr);
+				hvset = (hvset * pressurezero / var9) / 10;
+				hvset = int(hvset);
+				hvset = hvset / 10;
+				hvset = floor(hvset + 0.5);
+				hvset = hvset * 100;
+
+				if (slot_d == slot) {
+					if (channel_d == channel) {
+						//fprintf(streamlog, "%d %s %4.2f %4.0f %4.0f %d\n",run,chambername, curr, hvset, hvmon, tdc);
+						fprintf(streamlog, "%d %f %f %f %f %f\n",run, hvset, curr ,var6,var7, var9);
+					}
+				}
+			}
+			fclose(streamdump);
+
+
+		}
+
+	}
+	fclose(streamconf);
+	fclose(streamlog);
+
+//	char *mvcommand="mv daqinforRaman ";
+//	char *runInfo;
+//	sprintf(runInfo,"%i%s",run,".txt");
+//	char *finalMvCommand;
+//	strcpy(finalMvCommand,mvCommand);
+//	strcat(finalMvCommand,runInfo);
+//	system(mvcommand);
+
 }

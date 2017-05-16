@@ -1,0 +1,33 @@
+<setup>
+
+<rpc id="1">
+  <gaps>2</gaps>
+  <roplanes>2</roplanes>
+  
+  <plane id="1">
+  	<ps>
+  	<slot> </slot>
+  	<channel> </channel>
+  	</ps>
+  	<tdc id="2">
+  	  <channelStart> 32 </channelStart>
+  	  <channelEnd> 63 </channelEnd>
+  	</tdc>
+  
+  </plane>
+  	
+  <plane id="2">
+  	<ps>
+  	<slot> </slot>
+  	<channel> </channel>
+  	</ps>
+  	<tdc id="2">
+  	  <channelStart> 64 </channelStart>
+  	  <channelEnd> 95 </channelEnd>
+  	</tdc>
+  	
+  </plane>
+  
+</rpc>
+
+</setup>

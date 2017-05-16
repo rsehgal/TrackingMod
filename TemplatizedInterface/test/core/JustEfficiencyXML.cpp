@@ -20,16 +20,21 @@ using namespace Tomography;
 int main(int argc, char *argv[]) {
 
 	bool verbose = true;
+	int clusterSize=1;
 
-	std::string temp_str = std::to_string(atoi(argv[2]));
+	std::string temp_str = std::to_string(atoi(argv[1]));
 	temp_str += ".root";
 
 	Tracking::Tree::instance()->ReadTree(temp_str.c_str(), "BSC_DATA_TREE", 0);
 
-	Setup *s = new Setup(argv[1]);
+	Setup *s = new Setup(argv[2]);
 	std::vector<Detector*> detVect = s->GetDetectorVector();
+#if(0)
 	for (int i = 0; i < detVect.size(); i++) {
 		//sleep(5);
+		detVect[i]->SetClusterSize(clusterSize);
+
+
 		detVect[i]->SetEfficiency();
 		detVect[i]->GetPlane(0)->SetEfficiency();
 		std::cout<< "Name : " << detVect[i]->GetPlane(0)->GetName() << std::endl;
@@ -44,5 +49,12 @@ int main(int argc, char *argv[]) {
 			std::cout << "--------------------------------------" << std::endl;
 		}
 	}
+#endif
+	std::cout << "--------------------------------------" << std::endl;
+	std::vector<Detector*> trgPlaneVect = s->GetTriggeringPlaneVector();
+	for(int i=0;i<trgPlaneVect.size();i++){
+	  trgPlaneVect[i]->SetEfficiency();
+	  std::cout << "Eff of Det : " <<(i+1)<<" : " << trgPlaneVect[i]->GetEfficiency() << std::endl;
 
+	}
 }

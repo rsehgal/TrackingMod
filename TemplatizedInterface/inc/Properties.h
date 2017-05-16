@@ -75,7 +75,10 @@ public:
   void SetDetectorType(std::string detType){fDetectorType = detType;}
   void SetEfficiency();
 
-  void SetClusterSize(int clusterSize){fClusterSize = clusterSize;}
+  void SetClusterSize(int clusterSize){fClusterSize = clusterSize;
+  for(int i=0 ; i < fScintillatorPlaneVector.size() ; i++)
+	  GetPlane(i)->SetClusterSize(fClusterSize);
+  }
   int GetClusterSize(){return fClusterSize;}
 
   //static void SetClusterSize(int clusterSize){fClusterSize = clusterSize;}
@@ -131,6 +134,7 @@ public:
   void GetHitPlot();
   void GetHitPlot3D();
   void GetHitPlot3D_V2();
+  void GetStripsHitPlot3D();
   Tracking::Vector3D<double> GetStripCoordinate(int x, int y, int z);
   //void FetchInfo(Tracking::Tree t);
   void InsertPlane(ScintillatorPlane *plane){
