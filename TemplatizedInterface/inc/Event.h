@@ -29,7 +29,7 @@ public:
 	Event();
 	Event(int eventnum,bool valid,long toptime,long bottomtime):fEventNum(eventnum),fValid(valid),fTopPlaneTiming(toptime),fBottomPlaneTiming(bottomtime){
 		//std::cout<<"Event Num : " << fEventNum << " : Top : " << fTopPlaneTiming <<" :: Bottom : "<< fBottomPlaneTiming << std::endl;
-		fTopToBottom = (fBottomPlaneTiming > fTopPlaneTiming);
+		fTopToBottom = (fBottomPlaneTiming >= fTopPlaneTiming);
 	}
 	bool GetValidity(){return fValid;}
 	bool IsMovingTopToBottom(){return fTopToBottom;}
