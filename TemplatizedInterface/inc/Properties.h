@@ -23,12 +23,14 @@
 #include <TH1F.h>
 //#include <TApplication.h>
 
+#include "Event.h"
 //#include "Tree.h"
 namespace Tomography {
 
 class Properties {
 private:
 
+  std::vector<Event*> fEventVect;
   int fClusterSize;
   int fTotalNumOfChannels;
   std::string fName;
@@ -107,6 +109,8 @@ public:
 	  fDTheta = dTheta;
   }
 
+  std::vector<Event*> GetEventVector(){return fEventVect;}
+  void InsertEvent(Event *event){fEventVect.push_back(event);}
   double GetDx(){return fDx;}
   double GetDy(){return fDy;}
   double GetDTheta(){return fDTheta;}

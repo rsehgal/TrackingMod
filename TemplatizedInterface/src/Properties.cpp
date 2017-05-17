@@ -72,6 +72,7 @@ void Properties::SetEventDetected(int evNo) {
   SetFiredStripsVector(evNo);
   fEventDetected = false;
 
+
 for(int i = 0 ; i < fNumOfPlanes ; i++) {
 #ifdef EFF_AND
 
@@ -102,13 +103,28 @@ for(int i = 0 ; i < fNumOfPlanes ; i++) {
 #endif
 
 #endif
+
 }
+  if(!GetDetectorType().compare("TRG")){ //if detector type is equal to TRG then update the event vector
+	  long toptime=0,bottomtime=0;
+	  //Considering only one scintillator fired in each triggering plane
+	  int index = (GetPlane(0)->GetFiredStripsVector())[0];
+	  toptime = (GetPlane(0)->GetScintVector())[index]->GetValue();
+	  index = (GetPlane(1)->GetFiredStripsVector())[0];
+	  bottomtime = (GetPlane(1)->GetScintVector())[index]->GetValue();
+
+	  //std::cout<<"=========== Inserting Event No : " << evNo <<" =================" << std::endl;
+  	  InsertEvent(new Event(evNo,fEventDetected,toptime,bottomtime)); //NOT YET COMPLETED
+
+    }
+
 }
 
   void Properties::SetEfficiency()
    {
      int count = 0;
      int numOfEvents = Tracking::Tree::instance()->GetNumOfEvents();
+    // std::cout<<"DetectorType : " << GetDetectorType() << std::endl;
      for(int i = 0 ; i <  numOfEvents ; i++)
      {
          SetEventDetected(i);
