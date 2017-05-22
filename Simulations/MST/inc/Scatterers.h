@@ -15,6 +15,44 @@
 
 #define PI 3.14159265359
 
+G4NistManager* nist = G4NistManager::Instance();
+
+class Block{
+G4LogicalVolume* fLogicTarget;
+//G4VPhyscialVolume *physicalPlacedTarget;
+public : 
+  G4LogicalVolume *GetTarget(){return fLogicTarget;}
+  Block(){
+    
+  }
+
+  Block(float side,std::string nistMaterial){
+    G4Material *mat = nist->FindOrBuildMaterial(nistMaterial);
+    std::string objName = nistMaterial+"-Target";
+    G4Box *target = new G4Box(objName,side*cm,side*cm,side*cm);
+    std::string logicalObjectName = objName+"-Logical";
+    fLogicTarget = new G4LogicalVolume(target,mat,logicalObjectName);
+//    PlaceObject(position);
+    
+  }
+
+  void PlaceObject(G4ThreeVector position){
+/*
+  G4VPhyscialVolume  *physicalPlacedTarget = new G4PVPlacement(0,
+                            position,
+                            fLogicTarget,
+                            "PhysicalWorld",
+                            fLogicTarget,
+                            //logicWorld,
+                            false,
+                            0,
+                            checkOverlaps);
+*/
+
+  }
+
+};
+
 class BallsInABox{
    G4LogicalVolume* fLogicTargetPb;
 public:

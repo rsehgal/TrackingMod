@@ -502,7 +502,8 @@ G4VPhysicalVolume *phyTargetC3 = new G4PVPlacement(0,
                             checkOverlaps);
                             */
 
-BallsInABox *scatterer = new BallsInABox();
+//BallsInABox *scatterer = new BallsInABox();
+Block *scatterer = new Block(10.,"G4_Pb");
 G4VPhysicalVolume *phyTargetPbBlock = new G4PVPlacement(0,
                             //G4ThreeVector(),
                             G4ThreeVector(),
