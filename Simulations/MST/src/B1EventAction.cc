@@ -72,31 +72,16 @@ void B1EventAction::EndOfEventAction(const G4Event*)
     run->FillPhysicalTrackVector(hitVect);
   run->AddEdep(fEdep);
   CalcScatteringAngle();
-  run->FillScatteringAngleVector(fScatteringAngle);
+ // run->FillScatteringAngleVector(fScatteringAngle);
 
 
 
-if(verbose)
-{
-  for(int i=0 ; i<hitVect.size(); i++){
-     hitVect[i].Print();
-   }
-   //std::cout<<"Scattering Angle : " << fScatteringAngle << std::endl;
 
-/*   //if(fScatteringAngle*1000 > 20. && fScatteringAngle*1000 < 100.)
+ // if(fScatteringAngle*1000 > 20. && fScatteringAngle*1000 < 100.)
+ // if(fScatteringAngle*1000 > 5.)
    {
     //Generating incoming and outgoing track for image reconstruction
-  GenerateIncomingTrack();
-  GenerateOutgoingTrack();
-  run->FillIncomingTrackVector(incoming);
-  run->FillOutgoingTrackVector(outgoing);
-   }
-*/  //std::cout<<"---------------------------------------------------"<<std::endl;
-}
-
-   if(fScatteringAngle*1000 > 20. && fScatteringAngle*1000 < 100.)
-   {
-    //Generating incoming and outgoing track for image reconstruction
+	   run->FillScatteringAngleVector(fScatteringAngle);
   GenerateIncomingTrack();
   GenerateOutgoingTrack();
   run->FillIncomingTrackVector(incoming);
@@ -117,14 +102,14 @@ void B1EventAction::CalcScatteringAngle(){
 }
 
 void B1EventAction::GenerateIncomingTrack(){
-  std::cout<<"-----------------------------------------------------"<<std::endl;
+  //std::cout<<"-----------------------------------------------------"<<std::endl;
   int size = hitVect.size();
   //std::cout<<"Size : must be Six : " << size << std::endl;
   int hSize = size/2;
   incoming.SetP1(hitVect[0]);
   incoming.SetP2(hitVect[hSize-1]);
-  std::cout<<"INComing : "; hitVect[0].Print() ; std::cout<<" : ";  hitVect[hSize-1].Print();
-  std::cout<< std::endl;
+  //std::cout<<"INComing : "; hitVect[0].Print() ; std::cout<<" : ";  hitVect[hSize-1].Print();
+  //std::cout<< std::endl;
   
 }
 
@@ -133,8 +118,8 @@ void B1EventAction::GenerateOutgoingTrack(){
   int hSize = size/2;
   outgoing.SetP1(hitVect[hSize]);
   outgoing.SetP2(hitVect[size-1]);
-  std::cout<<"OUTGoing : "; hitVect[hSize].Print(); std::cout<< " : "; hitVect[size-1].Print();
-  std::cout<< std::endl;
+  //std::cout<<"OUTGoing : "; hitVect[hSize].Print(); std::cout<< " : "; hitVect[size-1].Print();
+  //std::cout<< std::endl;
 
 }
 
@@ -155,7 +140,7 @@ void B1EventAction::CalculatePOCA(){
 //fPocaPt.SetColor((int(fScatteringAngle*1000)/10));
   fPocaPt.SetColor((int(fScatteringAngle*1000)));
   
-  std::cout<<"PocaPt : "; fPocaPt.Print() ; std::cout<<" : ScatteringAngle : "<< fScatteringAngle <<  " : Color : "<< fPocaPt.GetColor() << std::endl;
+  //std::cout<<"PocaPt : "; fPocaPt.Print() ; std::cout<<" : ScatteringAngle : "<< fScatteringAngle <<  " : Color : "<< fPocaPt.GetColor() << std::endl;
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

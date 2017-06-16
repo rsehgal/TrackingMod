@@ -5,11 +5,11 @@
 #include "MyDetectorConstruction.h"
 #include "QBBC.hh"
 #include "FTFP_BERT.hh"
-#include "MyPhysics.h"
+//#include "MyPhysics.h"
 #include "B1ActionInitialization.hh"
 
 //#include "PhysicsList.h"
-#include "HodoScope.h"
+#include "HodoScope2.h"
 //#include "QGSP_BIC_EMY.hh"
 /*
 #include "G4UImanager.hh"
@@ -39,7 +39,7 @@ int main(int argc, char *argv[]){
 
   //Detector Construction
   //runManager->SetUserInitialization(new MyDetectorConstruction());
-  runManager->SetUserInitialization(new HodoScope());
+  runManager->SetUserInitialization(new HodoScope2());
 
   //Physics List
   //runManager->SetUserInitialization(phyList);

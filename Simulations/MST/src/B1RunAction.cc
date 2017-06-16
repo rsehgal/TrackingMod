@@ -31,7 +31,7 @@
 #include "B1RunAction.hh"
 #include "MyPrimaryGeneratorAction.h"
 //#include "MyDetectorConstruction.hh"
-#include "HodoScope.h"
+#include "HodoScope2.h"
 #include "B1Run.hh"
 
 #include "G4RunManager.hh"
@@ -40,6 +40,7 @@
 #include "G4UnitsTable.hh"
 #include "G4SystemOfUnits.hh"
 #include "TFile.h"
+#include "TROOT.h"
 
 #include "Voxelator.h"
 
@@ -93,7 +94,7 @@ void B1RunAction::BeginOfRunAction(const G4Run*)
 { 
   //inform the runManager to save random number seed
   G4RunManager::GetRunManager()->SetRandomNumberStore(false);
-  fScatteringHist = new TH1F("fScatteringHist","Scattering Histogram",1000,0.,100.);
+  fScatteringHist = new TH1F("fScatteringHist","Scattering Histogram",100,0.,100.);
   
   fs.open("run.txt", std::ios::app);
   ftrack.open("tracks.txt",std::ios::app);
@@ -131,8 +132,8 @@ void B1RunAction::EndOfRunAction(const G4Run* run)
   G4double rms = edep2 - edep*edep/nofEvents;
   if (rms > 0.) rms = std::sqrt(rms); else rms = 0.;
 
-  const HodoScope* detectorConstruction
-   = static_cast<const HodoScope*>
+  const HodoScope2* detectorConstruction
+   = static_cast<const HodoScope2*>
      (G4RunManager::GetRunManager()->GetUserDetectorConstruction());
   G4double mass = detectorConstruction->GetScoringVolume()->GetMass();
   G4double dose = edep/mass;
@@ -190,42 +191,26 @@ void B1RunAction::EndOfRunAction(const G4Run* run)
   for(int i = 0 ;i < b1Run->NumOfTracks() ; i++){
     if(verbose){
     G4cout << "----- Printing Event No : " << i+1 << "  --------" << G4endl;
+
     for(int j = 0 ; j < b1Run->GetPhysicalTrackVector()[i].size() ; j++){
       b1Run->GetPhysicalTrackVector()[i][j].Print();
     }
     std::cout<<"scattering Angle : " << b1Run->GetScatteringAngleVector()[i] << std::endl;
   }
 
-    //Logic to store the scattering angle of every event into "run.txt"
-    fs << b1Run->GetScatteringAngleVector()[i] << " " ;
-    
-    //std::cout<<"GetIncomingTrackVector Size : " << b1Run->GetIncomingTrackVector().size() << std::endl;
-
-if(1){
-    //fs << "Hello ";
-    Tracking::Vector3D<double> p1(0.,0.,0.), q1(0.,0.,0.);
-    //b1Run->GetIncomingTrackVector()[i].Print(); std::cout<<std::endl;
-    /*
-    Tracking::Vector3D<double>  pocaPt = im.POCA(b1Run->GetIncomingTrackVector()[i].GetP1(),
-                         b1Run->GetIncomingTrackVector()[i].GetDirCosine(),
-                         b1Run->GetOutgoingTrackVector()[i].GetP1(),
-                         b1Run->GetOutgoingTrackVector()[i].GetDirCosine(),p1,q1);
-    
-    //pocaPt.Print();
-    ftrack<< pocaPt.x() <<" "<<pocaPt.y() << " "<< pocaPt.z() << std::endl;
-    */
-
-    
   }
 
-    //v.Register(pocaPt);
-   
+  //Logic to store the scattering angle of every event into "run.txt"
+  std::cout<<"@@@@@@@@@@@ Scattering Angle Vector size : "<< b1Run->GetScatteringAngleVector().size() << " @@@@@@@@@@@@@@" << std::endl;
+   for(int i=0 ; i < b1Run->GetScatteringAngleVector().size() ; i++){
+   	fs << b1Run->GetScatteringAngleVector()[i] << " " ;
+   }
 
-  }
 
 for (auto &PocaPt : b1Run->GetPocaPtVector()){
 	ftrack<< PocaPt.x() <<" "<<PocaPt.y() << " "<< PocaPt.z() << " " << PocaPt.GetColor() << std::endl;
 	fScatteringHist->Fill(PocaPt.GetColor());
+	//fs << PocaPt.GetColor() << " " ;
     }
 
 //Now trying to voxelate PocaVector
@@ -252,10 +237,21 @@ for(int x = 0 ; x < voxelatorDim.x()-1 ; x++){
 voxTrack.close();
 
 
-TFile f("histos.root","new");
-fScatteringHist->Write();
-vox.GetVoxelizedHist()->Write();
+
+/*
+TFile *f = new TFile();//"histos.root","new");
+f->SetName("histos.root");
+f->SetOption("recreate");
+//fScatteringHist->Write();
+//vox.GetVoxelizedHist()->Write();
+f->Write();
+*/
+
 //f.close();
+
+//TFile f("histos.root","recreate");
+//fScatteringHist->Write();
+//f.Write();
 delete fScatteringHist;
 //auto xmax = max_element(std::begin(cloud), std::end(cloud)); // c++11
 

@@ -15,8 +15,11 @@
 /tracking/verbose 0
 
 #Run 1 on Aluminium
-/B2/det/setTargetMaterial G4_MATERIAL
-/B2/det/setTargetThickness THICKNESS cm
+#/B2/det/setTargetMaterial G4_U
+#/B2/det/setTargetThickness {thk} cm
+/process/inactivate muIoni
+/process/inactivate muBrems
+/process/inactivate muPairProd
 /gun/particle mu+
-/gun/energy ENERGY GeV
-/run/beamOn NUMEVENTS 
+/gun/energy 2 GeV
+/run/beamOn 50000 

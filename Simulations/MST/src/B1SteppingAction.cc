@@ -31,7 +31,7 @@
 #include "B1SteppingAction.hh"
 #include "B1EventAction.hh"
 //#include "MyDetectorConstruction.hh"
-#include "HodoScope.h"
+#include "HodoScope2.h"
 #include "G4Step.hh"
 #include "G4Event.hh"
 #include "G4RunManager.hh"
@@ -59,8 +59,8 @@ B1SteppingAction::~B1SteppingAction()
 void B1SteppingAction::UserSteppingAction(const G4Step* step)
 {
   if (!fScoringVolume) { 
-    const HodoScope* detectorConstruction
-      = static_cast<const HodoScope*>
+    const HodoScope2* detectorConstruction
+      = static_cast<const HodoScope2*>
         (G4RunManager::GetRunManager()->GetUserDetectorConstruction());
     fScoringVolume = detectorConstruction->GetScoringVolume();   
   }

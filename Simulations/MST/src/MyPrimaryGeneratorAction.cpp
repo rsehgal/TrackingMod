@@ -45,13 +45,13 @@ void MyPrimaryGeneratorAction::GeneratePrimaries(G4Event *event) {
                       Tracking::Global::GenRandomDet(-50.,50.),
                       -120);
   //std::cout<< pt.Unit().x() << pt.Unit().y() << pt.Unit().z() << std::endl;
-  double x = (pt2-pt1).Unit().x();
-  double y = (pt2-pt1).Unit().y();
-  double z = (pt2-pt1).Unit().z();
+  double x = (pt1-pt2).Unit().x();
+  double y = (pt1-pt2).Unit().y();
+  double z = (pt1-pt2).Unit().z();
 
   //fParticleGun->SetParticleMomentumDirection(G4ThreeVector(x,y,z));
   #ifdef RANDOM_GUN
-  fParticleGun->SetParticlePosition(G4ThreeVector(Tracking::Global::GenRandomDet(-50.,50.)*cm, Tracking::Global::GenRandomDet(-50.,50.)*cm, 120 * cm));
+  fParticleGun->SetParticlePosition(G4ThreeVector(Tracking::Global::GenRandomDet(-50.,50.)*cm, Tracking::Global::GenRandomDet(-50.,50.)*cm, -120 * cm));
   fParticleGun->SetParticleMomentumDirection(G4ThreeVector(x,y,z));
   #endif
   fParticleGun->GeneratePrimaryVertex(event);

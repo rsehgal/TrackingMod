@@ -19,9 +19,12 @@ G4NistManager* nist = G4NistManager::Instance();
 
 class Block{
 G4LogicalVolume* fLogicTarget;
+std::string fName;
 //G4VPhyscialVolume *physicalPlacedTarget;
 public : 
   G4LogicalVolume *GetTarget(){return fLogicTarget;}
+  G4LogicalVolume *GetLogicalVolume(){return fLogicTarget;}
+  std::string GetName(){return fName;}
   Block(){
     
   }
@@ -29,12 +32,45 @@ public :
   Block(float side,std::string nistMaterial){
     G4Material *mat = nist->FindOrBuildMaterial(nistMaterial);
     std::string objName = nistMaterial+"-Target";
-    G4Box *target = new G4Box(objName,side*cm,side*cm,side*cm);
+    G4Box *target = new G4Box(objName,side,side,side);
     std::string logicalObjectName = objName+"-Logical";
     fLogicTarget = new G4LogicalVolume(target,mat,logicalObjectName);
 //    PlaceObject(position);
     
   }
+
+  //This definition is required if we want to define target that can be changed from outside macro
+  Block(float side,G4Material *mat){
+      //G4Material *mat = nist->FindOrBuildMaterial(nistMaterial);
+      //std::string objName = nistMaterial+"-Target";
+	  std::string objName = "TestTarget";
+      G4Box *target = new G4Box(objName,side,side,side);
+      std::string logicalObjectName = objName+"-Logical";
+      fLogicTarget = new G4LogicalVolume(target,mat,logicalObjectName);
+  //    PlaceObject(position);
+
+    }
+
+  Block(std::string name, float side,std::string nistMaterial){
+    G4Material *mat = nist->FindOrBuildMaterial(nistMaterial);
+    fName = nistMaterial+"-"+name;
+    G4Box *target = new G4Box(fName,side,side,side);
+    std::string logicalObjectName = fName+"-Logical";
+    fLogicTarget = new G4LogicalVolume(target,mat,logicalObjectName);
+//    PlaceObject(position);
+
+  }
+
+  Block(std::string name, double halfX, double halfY, double halfZ,std::string nistMaterial){
+    G4Material *mat = nist->FindOrBuildMaterial(nistMaterial);
+    fName = nistMaterial+"-"+name;
+    G4Box *target = new G4Box(fName,halfX,halfY,halfZ);
+    std::string logicalObjectName = fName+"-Logical";
+    fLogicTarget = new G4LogicalVolume(target,mat,logicalObjectName);
+//    PlaceObject(position);
+
+  }
+
 
   void PlaceObject(G4ThreeVector position){
 /*

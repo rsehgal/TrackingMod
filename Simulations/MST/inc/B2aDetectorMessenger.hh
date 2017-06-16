@@ -35,7 +35,7 @@
 #include "G4UImessenger.hh"
 
 //class HodoScope;
-class HodoScope;
+class HodoScope2;
 class G4UIdirectory;
 class G4UIcmdWithAString;
 class G4UIcmdWithADoubleAndUnit;
@@ -52,14 +52,14 @@ class G4UIcmdWithADoubleAndUnit;
 class B2aDetectorMessenger: public G4UImessenger
 {
   public:
-    B2aDetectorMessenger(HodoScope* );
+    B2aDetectorMessenger(HodoScope2* );
     virtual ~B2aDetectorMessenger();
     
     virtual void SetNewValue(G4UIcommand*, G4String);
    // virtual void SetNewValue(G4UIcommand* command,double newValue);
     
   private:
-    HodoScope*  fDetectorConstruction;
+    HodoScope2*  fDetectorConstruction;
 
     G4UIdirectory*           fB2Directory;
     G4UIdirectory*           fDetDirectory;
