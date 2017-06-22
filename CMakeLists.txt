@@ -62,6 +62,9 @@ option(GNUPLOT "Enabling GnuPlot" OFF)
 option(QT "Enabling QtGui" OFF)
 option(CRY "Enable CRY library for cosmic event generation" OFF)
 
+find_package(MYSQL REQUIRED)
+include_directories(${MYSQL_INCLUDE_DIR})
+
 if(CRY)
 add_subdirectory(Cry)
 endif(CRY)
@@ -343,7 +346,7 @@ message(STATUS "--------- Following source files will be use for the creation of
 message(STATUS ${helpers})
 message(STATUS "------------------------------------------------------------------------------------------")
 add_library(Helpers SHARED ${helpers})
-target_link_libraries(Helpers  ${XERCES_LIBRARIES})
+target_link_libraries(Helpers  ${XERCES_LIBRARIES} ${MYSQL_LIBRARIES})
 #target_link_libraries(Tomo ${EXTERNAL_LIBS})
 set(HELPERSLIB ${HELPERSLIB}
 Helpers
