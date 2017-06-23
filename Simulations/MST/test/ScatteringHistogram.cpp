@@ -48,6 +48,10 @@ int main(int argc, char *argv[]){
     int thickness = 0;
     int n = 0;
     
+    //Creating connection to mysql database
+    Tomography::Database d;
+    d.Connect();
+
     while(n!=totalNumOfHist){
 	std::stringstream ss;
     	c->cd(n+1);
@@ -74,8 +78,7 @@ int main(int argc, char *argv[]){
     // Tring to create mysql query for table scattering data in tomo database
     //std::string query = "insert into scatteringdata values("+std::to_string(energy)+",'"+material+"',"+std::to_string(thickness)+","+std::to_string(fwhm)+")";
     std::string query = "insert into scatteringdata values("+ss.str()+",'"+material+"',"+std::to_string(thickness)+","+std::to_string(fwhm)+")";
-    Tomography::Database d;
-    d.Connect();
+    std::cout<<"Final Query : " << query << std::endl;
     d.Insert(query);
 
 
