@@ -10,6 +10,7 @@
 
 #include <string>
 #include <mysql.h>
+#include <iostream>
 
 namespace Tomography {
 
@@ -33,9 +34,37 @@ public:
 	Database();
 	virtual ~Database();
 	int Connect();
+
+	template<bool select=false>
 	int Query(std::string query);
+
+	int Insert(std::string query);
+	int Delete(std::string tablename);
+	int Select(std::string query);
+	int Count(std::string query);
+	int GetNumOfColumns(std::string tablename);
+	int GetNumOfRows(std::string tablename);
 	void PrintQueryOutput();
 };
+
+template<bool select>
+int Database::Query(std::string query){
+
+//	fQueryState = mysql_query(conn,fQuery.c_str());
+	fQueryState = mysql_query(conn,query.c_str());
+	if(fQueryState!=0)
+	   {
+	      std::cout << mysql_error(conn) << std::endl << std::endl;
+	      return 1;
+	   }
+	if(select){
+		res = mysql_store_result(conn);
+
+		if(fVerbose)
+			PrintQueryOutput();
+	}
+}
+
 
 } /* namespace Tomography */
 

@@ -7,7 +7,7 @@
 #include <algorithm>
 #include <cstring>
 #include <sstream>
-
+#include "Database.h"
 int main(int argc, char *argv[]){
 
     TApplication *fApp = new TApplication("Test", NULL, NULL);
@@ -54,6 +54,7 @@ int main(int argc, char *argv[]){
     int numOfEvents = std::atoi(argv[1]);
     runfile >> energy >> material >> thickness;
     ss << energy/1000.;
+
     std::string title = material+"_"+std::to_string(thickness)+"mm_"+ss.str()+"GeV";
     histogram[n]->SetTitle(title.c_str());
     histogram[n]->SetName(title.c_str());
@@ -69,6 +70,15 @@ int main(int argc, char *argv[]){
     int bin2 = histogram[n]->FindLastBinAbove(histogram[n]->GetMaximum()/2);
     double fwhm = histogram[n]->GetBinCenter(bin2) - histogram[n]->GetBinCenter(bin1);
     std::cout<<"FWHM for histogram : " << n <<" : " << fwhm <<std::endl;
+
+    // Tring to create mysql query for table scattering data in tomo database
+    //std::string query = "insert into scatteringdata values("+std::to_string(energy)+",'"+material+"',"+std::to_string(thickness)+","+std::to_string(fwhm)+")";
+    std::string query = "insert into scatteringdata values("+ss.str()+",'"+material+"',"+std::to_string(thickness)+","+std::to_string(fwhm)+")";
+    Tomography::Database d;
+    d.Connect();
+    d.Insert(query);
+
+
 
     histogram[n]->Fit("gaus");
     //if(n==0)
