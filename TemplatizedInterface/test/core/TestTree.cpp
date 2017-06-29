@@ -11,7 +11,7 @@ int main() {
   // reading it back
   Tracking::Tree::instance()->ReadTree("hello.root", "BSC_DATA_TREE", 0);
   Tracking::Tree *tr = Tracking::Tree::instance()->GetTree();
-  std::cout << tr->GetNumOfEvents() << std::endl;
+  std::cout << "Num of Events : "<< tr->GetNumOfEvents() << std::endl;
   Tracking::Channel *ch = tr->GetEntry("channel", 5);
   std::cout << ch->at(0) << std::endl;
   std::cout << ch->at(1) << std::endl;

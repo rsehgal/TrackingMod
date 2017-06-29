@@ -34,6 +34,8 @@
 #include "G4Event.hh"
 #include "G4RunManager.hh"
 #include "LinesAngle.h"
+#include "Tree.h"
+#include "TInterpreter.h"
 
 #include "Imaging.h"
 using Tracking::ImageReconstruction;
@@ -72,23 +74,41 @@ void B1EventAction::EndOfEventAction(const G4Event*)
     run->FillPhysicalTrackVector(hitVect);
   run->AddEdep(fEdep);
   CalcScatteringAngle();
- // run->FillScatteringAngleVector(fScatteringAngle);
 
-
-
-
- // if(fScatteringAngle*1000 > 20. && fScatteringAngle*1000 < 100.)
- // if(fScatteringAngle*1000 > 5.)
-   {
-    //Generating incoming and outgoing track for image reconstruction
-	   run->FillScatteringAngleVector(fScatteringAngle);
+  /* Put some cut condition IF Required
+  * if(fScatteringAngle*1000 > 20. && fScatteringAngle*1000 < 100.)
+  * if(fScatteringAngle*1000 > 5.)
+  */
+  {
   GenerateIncomingTrack();
   GenerateOutgoingTrack();
+  CalculatePOCA();
+
+  // Store data in ROOT Tree
+  //gInterpreter->GenerateDictionary("/home/rsehgal/Tomo/TrackingMod/Helpers/inc/Track.h","/home/rsehgal/Tomo/TrackingMod/Helpers/inc/Track.h");
+/*
+  Tracking::Tree *tree = Tracking::Tree::instance();
+  tree->SetTreeDefaultParameters();
+  tree->InitializeTreeForWriting();
+  tree->CreateBranch<Track>("InComingTracking", incoming);
+  tree->CreateBranch<Track>("OutGoingTracking", outgoing);
+*/
+  run->GetTreeInstance()->Fill();
+ // B1Run::GetTreeInstance()->WriteToFile();
+  }
+
+
+
+
+  /*
+   * Caching the above calculated values (IF REQUIRED) in stl vector defined in RUN
+   */
+  {
+  run->FillScatteringAngleVector(fScatteringAngle);
   run->FillIncomingTrackVector(incoming);
   run->FillOutgoingTrackVector(outgoing);
-  CalculatePOCA();
   run->FillPocaPtVector(fPocaPt);
-   }
+  }
 
   // 
 }

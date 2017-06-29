@@ -30,18 +30,26 @@
 
 #include "B1Run.hh"
 
+
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 B1Run::B1Run()
 : G4Run(),
   fEdep(0.), 
   fEdep2(0.)
-{} 
+{
+	std::cout<<"@@@@@@ RUN DEFAULT CONSTRUCTOR CALLED @@@@@@@@@@@@" << std::endl;
+	tree = Tracking::Tree::instance();
+	  tree->SetTreeDefaultParameters();
+	  tree->InitializeTreeForWriting();
+	  tree->CreateBranch<Track>("InComingTracking", incoming);
+	  tree->CreateBranch<Track>("OutGoingTracking", outgoing);
+}
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 B1Run::~B1Run()
-{} 
+{ tree->WriteToFile();}
  
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 

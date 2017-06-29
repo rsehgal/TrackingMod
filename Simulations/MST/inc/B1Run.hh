@@ -38,8 +38,9 @@
 #include <G4String.hh>
 #include <fstream>
 #include "Track.h"
+#include "Tree.h"
 using Tomography::Track;
-
+using Tracking::Tree;
 using Tracking::Vector3D;
 
 using PhysicalTrackVector = std::vector< std::vector<Vector3D<double>> > ;
@@ -56,6 +57,9 @@ class B1Run : public G4Run
      std::vector<Track> outgoingTrackVect;
      std::vector<Vector3D<double>> fPocaPtVect;
      
+     Tree *tree ;
+     Track incoming,outgoing;
+
   public:
     B1Run();
     virtual ~B1Run();
@@ -66,6 +70,7 @@ class B1Run : public G4Run
     void AddEdep (G4double edep); 
 
     // get methods
+    Tree* GetTreeInstance(){ return tree; }
     G4double GetEdep()  const { return fEdep; }
     G4double GetEdep2() const { return fEdep2; }
     PhysicalTrackVector GetPhysicalTrackVector() const {return phyTrackVect;}

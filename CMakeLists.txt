@@ -325,6 +325,8 @@ collect_sources("${SOURCES}")
 collect_tests("${TESTSDIR}")
 collect_helpers("${HELPERS}")
 
+ROOT_GENERATE_DICTIONARY(G__Tree Tree.h LINKDEF LinkDef.h)
+
 #if(CAENWRAPPER)
 #collect_wrapper("${CAENWrapper}")
 #endif(CAENWRAPPER)
@@ -345,8 +347,8 @@ Tomo
 message(STATUS "--------- Following source files will be use for the creation of HELPERS Shared library -----------")
 message(STATUS ${helpers})
 message(STATUS "------------------------------------------------------------------------------------------")
-add_library(Helpers SHARED ${helpers})
-target_link_libraries(Helpers  ${XERCES_LIBRARIES} ${MYSQL_LIBRARIES})
+add_library(Helpers SHARED ${helpers} ) #G__Tree.cxx)
+target_link_libraries(Helpers  ${XERCES_LIBRARIES} ${MYSQL_LIBRARIES} -L/home/rsehgal/Tomo/TrackingMod/build -lTrack)
 #target_link_libraries(Tomo ${EXTERNAL_LIBS})
 set(HELPERSLIB ${HELPERSLIB}
 Helpers

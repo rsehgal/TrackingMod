@@ -9,6 +9,7 @@
 #include <TObjArray.h>
 #include <iostream>
 #include <map>
+#include <TFile.h>
 namespace Tracking{
 
 struct Branch{
@@ -21,15 +22,11 @@ struct Branch{
 class Tree{
 	
 	private:
-		//static
 	    static Tree *s_instance;
 		int numOfEvents;
-		//Channel ch;
 		Channel ch;
 		std::string rootFile;
-		//std::string sRootFile;
 		TTree *t;
-		//TTree t("testTree","A Tree with STL vectors");
 		TFile *f;
 		std::string fTreeName;
 		Tree();
@@ -44,8 +41,21 @@ class Tree{
 		//Tree(std::string rootFl, std::string treeName="testTree",int rw=0);
 		~Tree();
 		void ReadTree(std::string rootFl, std::string treeName="testTree",int rw=0);
-		void TreeW();
-		void TreeW(std::string branchName, Channel ch);
+		void TreeW(); // This guy is currently used only for testing.
+
+		//Trying to templatized it so that it can be used to store single branch of any type
+		template<typename T>
+		void TreeW(std::string branchName, T ch);
+
+		template<typename T>
+		void CreateBranch(std::string branchName, T &br);
+
+		//Create branches from STL vector of Type T
+		template<typename T>
+		void CreateBranches(std::string branchName, std::vector<T> &br);
+
+		void Fill() { t->Fill(); }
+
 		void TreeR();
 		//static 
 		int GetNumOfEvents(){return numOfEvents;}
@@ -58,6 +68,13 @@ class Tree{
 			fTreeName = "BSC_DATA_TREE";
 			rootFile = "hello.root";
 		}
+
+		void InitializeTreeForWriting(){
+			f = TFile::Open(rootFile.c_str(), "RECREATE");
+			t = new TTree(fTreeName.c_str(),"A Tree with STL vectors");
+
+		}
+
 		void SetTreeName(std::string treeName){fTreeName = treeName;}
 		
 
@@ -70,6 +87,27 @@ class Tree{
 
 
 };
+
+template<typename T>
+void Tree::CreateBranch(std::string branchName, T &br){
+	t->Branch(branchName.c_str(),&br);
+}
+
+template<typename T>
+void Tree::CreateBranches(std::string branchName, std::vector<T> &br){
+	for(int i = 0 ; i < br.size() ; i++){
+		t->Branch(branchName.c_str(),&br[i]);
+	}
+}
+
+
+
+
+template<typename T>
+void Tree::TreeW(std::string branchName, T ch){
+
+
+}
 
 } /* end of Tomography namespace*/
 

@@ -91,6 +91,7 @@ Tree::~Tree(){ f->Close(); }
 void Tree::TreeW(){
 
 	//TFile f(rootFile.c_str(),"RECREATE");
+#if(0)
 	f = TFile::Open(rootFile.c_str(), "RECREATE");
 	Channel ch;
 	TTree t(fTreeName.c_str(),"A Tree with STL vectors");
@@ -107,14 +108,31 @@ void Tree::TreeW(){
     }
 
     f->Write();
+#endif
+
+    //Using modified tree
+    InitializeTreeForWriting();
+    Channel ch;
+    CreateBranch<Channel>("channel",ch);
+    numOfEvents =10;
+        for(int i= 0 ; i < numOfEvents ; i++){
+        	ch.clear(); // clearing the vector
+        	ch.push_back(1);
+        	ch.push_back(8);
+       		ch.push_back(3);
+       		Fill();
+        }
+
+     WriteToFile();
+
  
 }
 
-void Tree::TreeW(std::string branchName, Channel ch){
+/*void Tree::TreeW(std::string branchName, Channel ch){
 
 	t->Branch(branchName.c_str(),&ch);
     t->Fill();
-}
+}*/
 
 void Tree::WriteToFile(){
 	f->Write();
