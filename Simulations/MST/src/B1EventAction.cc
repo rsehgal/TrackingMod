@@ -84,6 +84,10 @@ void B1EventAction::EndOfEventAction(const G4Event*)
   GenerateOutgoingTrack();
   CalculatePOCA();
 
+  run->GetInComing() = incoming;
+  run->GetOutGoing() = outgoing;
+  run->SetScattering(fScatteringAngle*1000);
+
   // Store data in ROOT Tree
   //gInterpreter->GenerateDictionary("/home/rsehgal/Tomo/TrackingMod/Helpers/inc/Track.h","/home/rsehgal/Tomo/TrackingMod/Helpers/inc/Track.h");
 /*
@@ -93,6 +97,7 @@ void B1EventAction::EndOfEventAction(const G4Event*)
   tree->CreateBranch<Track>("InComingTracking", incoming);
   tree->CreateBranch<Track>("OutGoingTracking", outgoing);
 */
+
   run->GetTreeInstance()->Fill();
  // B1Run::GetTreeInstance()->WriteToFile();
   }

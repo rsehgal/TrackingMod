@@ -44,6 +44,8 @@ B1Run::B1Run()
 	  tree->InitializeTreeForWriting();
 	  tree->CreateBranch<Track>("InComingTracking", incoming);
 	  tree->CreateBranch<Track>("OutGoingTracking", outgoing);
+	  tree->CreateBranch<double>("ScatteringAngle", scattering);
+
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

@@ -59,6 +59,7 @@ class B1Run : public G4Run
      
      Tree *tree ;
      Track incoming,outgoing;
+     double scattering;
 
   public:
     B1Run();
@@ -71,6 +72,12 @@ class B1Run : public G4Run
 
     // get methods
     Tree* GetTreeInstance(){ return tree; }
+    Track GetInComing(){ return incoming; }
+    Track GetOutGoing(){ return outgoing; }
+    void SetScattering(double val){scattering = val;}
+    double GetScattering() {return scattering; }
+
+
     G4double GetEdep()  const { return fEdep; }
     G4double GetEdep2() const { return fEdep2; }
     PhysicalTrackVector GetPhysicalTrackVector() const {return phyTrackVect;}
