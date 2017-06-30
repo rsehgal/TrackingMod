@@ -1,0 +1,1 @@
+ccache /usr/bin/c++  -fPIC  -std=c++11 -O3 -DNDEBUG  -shared -Wl,-soname,libtrack.so -o libtrack.so CMakeFiles/track.dir/src/Track.cpp.o CMakeFiles/track.dir/inc/Track_rflx.cpp.o 
