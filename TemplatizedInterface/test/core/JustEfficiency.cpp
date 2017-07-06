@@ -20,7 +20,8 @@ int main(int argc, char *argv[]) {
 
   Detector *rpc1 = new GlassRpc(2, "FirstGlassRpc", 30, 31);
   Detector *rpc2 = new GlassRpc(4, "SecondGlassRpc", -30, 31);
-
+  rpc1->SetClusterSize(1);
+  rpc2->SetClusterSize(1);
   bool verbose = true;
 
   std::string temp_str = std::to_string(atoi(argv[1]));

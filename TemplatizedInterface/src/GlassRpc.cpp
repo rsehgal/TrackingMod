@@ -45,7 +45,7 @@ GlassRpc::GlassRpc(int moduleId, std::string rpcName, double zPos, int startId) 
   }*/
   InsertPlane(new ScintillatorPlane(moduleId,32,zPos,GetLength(),GetBreadth(),GetHeight(),0.,true));
   InsertPlane(new ScintillatorPlane(moduleId,32,zPos,GetLength(),GetBreadth(),GetHeight(),0.,false));
-  SetClusterSize(2);
+  //SetClusterSize(2);
 
 }
 

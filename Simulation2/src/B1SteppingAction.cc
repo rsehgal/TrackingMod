@@ -124,7 +124,7 @@ stepNum++;
 		  if(step->GetStepLength()){
 			  std::string hittedStripName = (touch1->GetVolume(2)->GetName()+ touch1->GetVolume()->GetName());
 			  std::cout<< "Hitted Strip : "<< hittedStripName << std::endl;
-			 (B1RunAction::brMap[hittedStripName]).push_back((int)Tracking::Global::GenRandomDet(19000, 24000));
+			 (B1RunAction::brMap[hittedStripName]).push_back((int)Tracking::Global::GenRandomDet(19450, 21000));
 
 			  //std::cout<<"Type : " << Tracking::Tree::instance()->GetTTree()->GetBranch(hittedStripName.c_str())->GetClassName() << std::endl;
 		  }
