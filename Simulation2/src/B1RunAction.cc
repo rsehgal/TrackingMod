@@ -108,8 +108,9 @@ void B1RunAction::BeginOfRunAction(const G4Run*)
 
   //Creating branch for Trigger
   brMap["Module2_LE_CH31"] = *(new Tracking::Channel());
+#ifdef STORE
   fTree->Branch("Module2_LE_CH31","Module2_LE_CH31",&brMap["Module2_LE_CH31"]);
-
+#endif
   counter = 0;
   for(int i = 2 ; i < 6 ; i++){
 
