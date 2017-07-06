@@ -61,9 +61,14 @@ option(CAEN "Enabling CAEN Libraries" OFF)
 option(GNUPLOT "Enabling GnuPlot" OFF)
 option(QT "Enabling QtGui" OFF)
 option(CRY "Enable CRY library for cosmic event generation" OFF)
+option(STORE "Store data to ROOT Tree" OFF)
 
 find_package(MYSQL REQUIRED)
 include_directories(${MYSQL_INCLUDE_DIR})
+
+if(STORE)
+add_definitions(-DSTORE)
+endif(STORE)
 
 if(CRY)
 add_subdirectory(Cry)
@@ -348,7 +353,7 @@ message(STATUS "--------- Following source files will be use for the creation of
 message(STATUS ${helpers})
 message(STATUS "------------------------------------------------------------------------------------------")
 add_library(Helpers SHARED ${helpers} ) #G__Tree.cxx)
-target_link_libraries(Helpers  ${XERCES_LIBRARIES} ${MYSQL_LIBRARIES} ${ROOT_LIBRARIES} )
+target_link_libraries(Helpers  ${XERCES_LIBRARIES} ${MYSQL_LIBRARIES} ${ROOT_LIBRARIES} -lTreePlayer)
 #target_link_libraries(Tomo ${EXTERNAL_LIBS})
 set(HELPERSLIB ${HELPERSLIB}
 Helpers
@@ -393,7 +398,7 @@ message(STATUS "====================================================")
 message(STATUS ${tests})
 message(STATUS "====================================================")
 add_subdirectory(Simulations/MST)
-
+add_subdirectory(SimpleGeant4Programs/Prog1)
 #Copying the test geom.root file to build directory for visualization testing
 file(GLOB ROOT_FILES ${PROJECT_SOURCE_DIR}/RootFiles/*)
 message(STATUS ${ROOT_FILES})
