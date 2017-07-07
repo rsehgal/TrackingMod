@@ -104,14 +104,15 @@ void B1EventAction::EndOfEventAction(const G4Event*)
 			  << " :: VertexEnergy : "<< vertexEnergy[1] <<" : Energy " << energy[1] << std::endl;
     }
 
-  G4ThreeVector incoming = position[1]-position[0];
-  G4ThreeVector outgoing = position[3]-position[2];
+  //std::cout<<"Position Vector Size : "<< position.size() << std::endl;
+  G4ThreeVector incoming = position[2]-position[0];
+  G4ThreeVector outgoing = position[7]-position[5];
 
   //Filling Tracks
   B1RunAction::fIncomingTrack.SetP1(Tracking::Vector3D<double>(position[0].x(),position[0].y(),position[0].z()));
-  B1RunAction::fIncomingTrack.SetP2(Tracking::Vector3D<double>(position[1].x(),position[1].y(),position[1].z()));
-  B1RunAction::fOutgoingTrack.SetP1(Tracking::Vector3D<double>(position[2].x(),position[2].y(),position[2].z()));
-  B1RunAction::fOutgoingTrack.SetP2(Tracking::Vector3D<double>(position[3].x(),position[3].y(),position[3].z()));
+  B1RunAction::fIncomingTrack.SetP2(Tracking::Vector3D<double>(position[2].x(),position[2].y(),position[2].z()));
+  B1RunAction::fOutgoingTrack.SetP1(Tracking::Vector3D<double>(position[5].x(),position[5].y(),position[5].z()));
+  B1RunAction::fOutgoingTrack.SetP2(Tracking::Vector3D<double>(position[7].x(),position[7].y(),position[7].z()));
 
   TVector3 incomingR(incoming.x(),incoming.y(),incoming.z());
   TVector3 outgoingR(outgoing.x(),outgoing.y(),outgoing.z());

@@ -94,6 +94,9 @@ stepNum++;
   G4ThreeVector hitPre = track->GetPosition();
   G4ThreeVector hitPost = track->GetPosition();
   G4ThreeVector hitBeginOfPost = track->GetPosition();
+
+  //std::cout<<"@@@@@@@@@@ : " << point1->GetPhysicalVolume()->GetName() << " @@@@@@@@@@@@@@" << std::endl;
+
   if(point1->GetPhysicalVolume()->GetName()!="World")// && point2->GetPhysicalVolume()->GetName()!="World")
   //if(point2->GetPhysicalVolume()->GetName()!="World")
   {
@@ -113,6 +116,19 @@ stepNum++;
 			  touch1->GetVolume(2)->GetName()=="Module5")
 			  && point1->GetStepStatus()==fGeomBoundary)
 */
+	  //std::cout<<"@@@@@@@@@@ : " << touch1->GetVolume()->GetName() << " @@@@@@@@@@@@@@" << std::endl;
+	  //Storing hit position where the step hits the module
+	  /*if((point1->GetPhysicalVolume()->GetName()=="Module2" ||
+			  point1->GetPhysicalVolume()->GetName()=="Module3" ||
+			  point1->GetPhysicalVolume()->GetName()=="Module4" ||
+			  point1->GetPhysicalVolume()->GetName()=="Module5")
+	  	  && point1->GetStepStatus()==fGeomBoundary){
+
+		 // std::cout<<"Entering .... " << touch1->GetVolume(1)->GetName() << std::endl;
+		  B1EventAction::position.push_back(point1->GetPosition());
+	  }*/
+
+
 	  if((touch1->GetVolume(2)->GetName()=="Module2" ||
 	  			  touch1->GetVolume(2)->GetName()=="Module3" ||
 	  			  touch1->GetVolume(2)->GetName()=="Module4" ||
@@ -130,8 +146,9 @@ stepNum++;
 			  std::string hittedStripName = (touch1->GetVolume(2)->GetName()+ touch1->GetVolume()->GetName());
 			 // std::cout<< "Hitted Strip : "<< hittedStripName << std::endl;
 			 (B1RunAction::brMap[hittedStripName]).push_back((int)Tracking::Global::GenRandomDet(19450, 21000));
-
+			 B1EventAction::position.push_back(point1->GetPosition());
 			  //std::cout<<"Type : " << Tracking::Tree::instance()->GetTTree()->GetBranch(hittedStripName.c_str())->GetClassName() << std::endl;
+			// std::cout<<"Entering .... " << touch1->GetVolume(1)->GetName() << std::endl;
 		  }
 
 
@@ -139,7 +156,7 @@ stepNum++;
 			  B1EventAction::volName.push_back(touch1->GetVolume(2)->GetName());
 		  B1EventAction::energy.push_back(track->GetKineticEnergy());
 		  B1EventAction::vertexEnergy.push_back(track->GetVertexKineticEnergy());
-		  B1EventAction::position.push_back(point1->GetPosition());
+//		  B1EventAction::position.push_back(point1->GetPosition());
 		//  std::cout<<"GrandMa : "<< touch1->GetVolume(2)->GetName() << " :: StepStatus : " << point1->GetStepStatus() << std::endl;
 
 
