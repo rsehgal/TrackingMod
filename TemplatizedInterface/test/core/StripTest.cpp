@@ -36,9 +36,10 @@ void GenerateCoordinates(std::vector<int> xVec, std::vector<int> yVec) {
 int main() {
 
   Detector *rpc = new GlassRpc(2, "GlassRpc", 120, 31);
-  Tracking::Tree::instance()->ReadTree("6742.root", "BSC_DATA_TREE", 0);
+  Tracking::Tree::instance()->ReadTree("1234.root", "BSC_DATA_TREE", 0);
+  //Tracking::Tree::instance()->ReadTree("6742.root", "BSC_DATA_TREE", 0);
   int numOfEvents = Tracking::Tree::instance()->GetNumOfEvents();
-  numOfEvents = 10;
+  //numOfEvents = 10;
   for (int evNo = 0; evNo < numOfEvents; evNo++) {
     std::cout << "======================================================" << std::endl;
     for (int plNum = 0; plNum < rpc->GetNumOfPlanes(); plNum++) {

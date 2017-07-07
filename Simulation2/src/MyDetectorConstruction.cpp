@@ -96,11 +96,11 @@ if(k==0 || k==3 || k==4 || k==7)
                            checkOverlaps);
 }
 
-
+G4Material *Pb=nist->FindOrBuildMaterial("G4_U");
 //Trying to create scattering of collection of bricks of dimension 10cm X 5cm X 3cm
-G4LogicalVolume *brickLane = GetBlock("brickLane",15*cm,2.5*cm,1.5*cm,Si,3,1.5*cm,1);
-G4LogicalVolume *brickLanePlane = GetBlock("brickLanePlane",15*cm,15*cm,1.5*cm,Si,brickLane,6,2);
-G4LogicalVolume *brickLanePlaneBlock = GetBlock("brickLanePlaneBlock",15*cm,15*cm,15*cm,Si,brickLanePlane,10,3);
+G4LogicalVolume *brickLane = GetBlock("brickLane",15*cm,2.5*cm,1.5*cm,Pb,3,1.5*cm,1);
+G4LogicalVolume *brickLanePlane = GetBlock("brickLanePlane",15*cm,15*cm,1.5*cm,Pb,brickLane,6,2);
+G4LogicalVolume *brickLanePlaneBlock = GetBlock("brickLanePlaneBlock",15*cm,15*cm,15*cm,Pb,brickLanePlane,10,3);
 G4VPhysicalVolume *brickLanePhy = new G4PVPlacement(0,
                             G4ThreeVector(0.,0.,0.),
                             brickLanePlaneBlock,
@@ -118,7 +118,7 @@ G4VPhysicalVolume *brickLanePhy = new G4PVPlacement(0,
 
 //Helper functions for Geometry creation.
 G4LogicalVolume* MyDetectorConstruction::GetBlock(std::string name,double halfX,double halfY, double halfZ,
-		G4Material *mat,int numOfStrips, double stripHalfZ,int dir){
+		G4Material *mat,int numOfStrips, double stripHalfZ,int dir,std::string defaultName){
 
   G4bool checkOverlaps = true;
   double stripLen = 2*halfX/numOfStrips;
@@ -137,7 +137,7 @@ G4LogicalVolume* MyDetectorConstruction::GetBlock(std::string name,double halfX,
 	G4VPhysicalVolume *blockPhy = new G4PVPlacement(0,//yRot,
 		            temp,		   
                             GetStrip("strip",stripHalfLen,halfY,stripHalfZ,mat),
-							"_LE_CH"+std::to_string(stripNum),
+							defaultName+std::to_string(stripNum),
                             //tempLogical->GetName()+"Strip"+std::to_string(i),
                             tempLogical,
                             false,
@@ -149,7 +149,7 @@ G4LogicalVolume* MyDetectorConstruction::GetBlock(std::string name,double halfX,
 	G4VPhysicalVolume *blockPhy = new G4PVPlacement(0,//yRot,
 		            temp,		   
                             GetStrip("strip",halfX,stripHalfLen,stripHalfZ,mat),
-							"_LE_CH"+std::to_string(stripNum),
+							defaultName+std::to_string(stripNum),
                             //tempLogical->GetName()+"Strip"+std::to_string(i),
                             tempLogical,
                             false,
@@ -190,7 +190,7 @@ G4LogicalVolume* MyDetectorConstruction::GetBlock(std::string name,double halfX,
 														0, //yRot,
 														temp,
 														logVol,
-														"brickLane"+std::to_string(i),
+														"brick"+std::to_string(i),
 														//"_LE_CH" + std::to_string(stripNum),
 														//tempLogical->GetName()+"Strip"+std::to_string(i),
 														tempLogical,

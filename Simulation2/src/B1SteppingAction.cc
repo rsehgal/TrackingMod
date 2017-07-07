@@ -113,7 +113,12 @@ stepNum++;
 			  touch1->GetVolume(2)->GetName()=="Module5")
 			  && point1->GetStepStatus()==fGeomBoundary)
 */
-	  if(point1->GetStepStatus()==fGeomBoundary)
+	  if((touch1->GetVolume(2)->GetName()=="Module2" ||
+	  			  touch1->GetVolume(2)->GetName()=="Module3" ||
+	  			  touch1->GetVolume(2)->GetName()=="Module4" ||
+	  			  touch1->GetVolume(2)->GetName()=="Module5")
+	  			  && point1->GetStepStatus()==fGeomBoundary)
+	  //if(point1->GetStepStatus()==fGeomBoundary)
 	  {
 		  B1EventAction::evMultiplicity++;
 
@@ -123,7 +128,7 @@ stepNum++;
 		   */
 		  if(step->GetStepLength()){
 			  std::string hittedStripName = (touch1->GetVolume(2)->GetName()+ touch1->GetVolume()->GetName());
-			  std::cout<< "Hitted Strip : "<< hittedStripName << std::endl;
+			 // std::cout<< "Hitted Strip : "<< hittedStripName << std::endl;
 			 (B1RunAction::brMap[hittedStripName]).push_back((int)Tracking::Global::GenRandomDet(19450, 21000));
 
 			  //std::cout<<"Type : " << Tracking::Tree::instance()->GetTTree()->GetBranch(hittedStripName.c_str())->GetClassName() << std::endl;

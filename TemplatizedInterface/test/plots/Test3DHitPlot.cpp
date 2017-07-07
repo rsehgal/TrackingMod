@@ -25,18 +25,22 @@ int main(int argc, char *argv[]) {
   Detector *ScintBottom = new TriggeringPlane(2, "ScintBottom", -105, 7);
   ScintBottom->SetClusterSize(1);
 
+  Detector *MT0 = new GlassRpc(5, "ZerothGlassRpc", 45, 31);
   Detector *MT1 = new GlassRpc(4, "FirstGlassRpc", 45, 31);
   Detector *MT2 = new GlassRpc(2, "SecondGlassRpc", -45, 31);
   Detector *MT3 = new GlassRpc(3, "ThirdGlassRpc", -85, 31);
   SetupManager *setup = SetupManager::instance();
+  MT0->SetClusterSize(clusterSize);
   MT1->SetClusterSize(clusterSize);
   MT2->SetClusterSize(clusterSize);
   MT3->SetClusterSize(clusterSize);
-  setup->Register(ScintTop);
-  setup->Register(ScintBottom);
+//  setup->Register(ScintTop);
+//  setup->Register(ScintBottom);
+  setup->Register(MT0);
   setup->Register(MT1);
   setup->Register(MT2);
   setup->Register(MT3);
+  MT0->GetHitPlot3D_V2();
   MT1->GetHitPlot3D_V2();
   MT2->GetHitPlot3D_V2();
   MT3->GetHitPlot3D_V2();

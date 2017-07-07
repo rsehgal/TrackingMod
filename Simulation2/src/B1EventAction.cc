@@ -35,6 +35,8 @@
 #include "G4RunManager.hh"
 //#include "Tree.h"
 #include "B1RunAction.hh"
+#include <TVector3.h>
+
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 int B1EventAction::evNo = 0;
@@ -67,8 +69,10 @@ void B1EventAction::BeginOfEventAction(const G4Event*)
   position.clear();
 
 
+  B1RunAction::fScatteringAngle = 0.;
   InitializeBranchMap();
   (B1RunAction::brMap["Module2_LE_CH31"]).push_back((int)Tracking::Global::GenRandomDet(19000, 24000));
+
 
 }
 
@@ -99,6 +103,14 @@ void B1EventAction::EndOfEventAction(const G4Event*)
 			  << " :: VertexEnergy : "<< vertexEnergy[0] <<" : Energy " << energy[0]
 			  << " :: VertexEnergy : "<< vertexEnergy[1] <<" : Energy " << energy[1] << std::endl;
     }
+
+  G4ThreeVector incoming = position[1]-position[0];
+  G4ThreeVector outgoing = position[3]-position[2];
+
+  TVector3 incomingR(incoming.x(),incoming.y(),incoming.z());
+  TVector3 outgoingR(outgoing.x(),outgoing.y(),outgoing.z());
+  B1RunAction::fScatteringAngle = outgoingR.Angle(incomingR);
+  //std::cout<<"Scattering Angle : " << B1RunAction::fScatteringAngle << std::endl;
 
 #ifdef STORE
   B1RunAction::fTree->Fill();

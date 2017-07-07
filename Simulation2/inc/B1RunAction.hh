@@ -56,6 +56,7 @@ class B1RunAction : public G4UserRunAction
   public:
    static ofstream *myfile;
    static std::map<std::string,Tracking::Channel> brMap;
+   static double fScatteringAngle;
    int counter;
 
 #ifdef STORE
