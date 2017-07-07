@@ -53,6 +53,8 @@ ofstream* B1RunAction::myfile=NULL;
 
 std::map<std::string,Tracking::Channel> B1RunAction::brMap;
 double B1RunAction::fScatteringAngle = 0;
+Tomography::Track B1RunAction::fIncomingTrack(Tracking::Vector3D<double>(0.,0.,0.),Tracking::Vector3D<double>(0.,0.,0.));
+Tomography::Track B1RunAction::fOutgoingTrack(Tracking::Vector3D<double>(0.,0.,0.),Tracking::Vector3D<double>(0.,0.,0.));
 
 #ifdef STORE
 TTree* B1RunAction::fTree=NULL;
@@ -110,6 +112,8 @@ void B1RunAction::BeginOfRunAction(const G4Run*)
   //Creating branch for Trigger
   brMap["Module2_LE_CH31"] = *(new Tracking::Channel());
 #ifdef STORE
+  fTree->Branch("IncomingTrack", &fIncomingTrack);
+  fTree->Branch("OutgoingTrack", &fOutgoingTrack);
   fTree->Branch("ScatteringAngle",&fScatteringAngle);
   fTree->Branch("Module2_LE_CH31","Module2_LE_CH31",&brMap["Module2_LE_CH31"]);
 #endif

@@ -107,6 +107,12 @@ void B1EventAction::EndOfEventAction(const G4Event*)
   G4ThreeVector incoming = position[1]-position[0];
   G4ThreeVector outgoing = position[3]-position[2];
 
+  //Filling Tracks
+  B1RunAction::fIncomingTrack.SetP1(Tracking::Vector3D<double>(position[0].x(),position[0].y(),position[0].z()));
+  B1RunAction::fIncomingTrack.SetP2(Tracking::Vector3D<double>(position[1].x(),position[1].y(),position[1].z()));
+  B1RunAction::fOutgoingTrack.SetP1(Tracking::Vector3D<double>(position[2].x(),position[2].y(),position[2].z()));
+  B1RunAction::fOutgoingTrack.SetP2(Tracking::Vector3D<double>(position[3].x(),position[3].y(),position[3].z()));
+
   TVector3 incomingR(incoming.x(),incoming.y(),incoming.z());
   TVector3 outgoingR(outgoing.x(),outgoing.y(),outgoing.z());
   B1RunAction::fScatteringAngle = outgoingR.Angle(incomingR);

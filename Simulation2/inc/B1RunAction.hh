@@ -41,6 +41,8 @@
 #include <TTree.h>
 #include <TFile.h>
 
+#include "Track.h"
+
 using namespace std;
 class G4Run;
 class G4LogicalVolume;
@@ -57,6 +59,8 @@ class B1RunAction : public G4UserRunAction
    static ofstream *myfile;
    static std::map<std::string,Tracking::Channel> brMap;
    static double fScatteringAngle;
+   static Tomography::Track fIncomingTrack;
+   static Tomography::Track fOutgoingTrack;
    int counter;
 
 #ifdef STORE
