@@ -82,8 +82,9 @@ G4VPhysicalVolume* MyDetectorConstruction::Construct(){
   G4LogicalVolume *planeE2Logical = GetBlock("planeE2",50*cm,50*cm,0.5*cm,Si,32,0.5*cm,2);
   G4LogicalVolume *planeE = CreateEBlock(planeE1Logical, planeE2Logical, 1.*cm, Si);
 
-for(int k=0; k < 4 ; k++){
-
+for(int k=0; k < 8 ; k++){
+if(k==0 || k==3 || k==4 || k==7)
+	continue;
  eBlockNum++;
  G4VPhysicalVolume *planeEPhy = new G4PVPlacement(0,
                             G4ThreeVector(0.,0.,(-105+30*k)*cm),
@@ -96,12 +97,28 @@ for(int k=0; k < 4 ; k++){
 }
 
 
+//Trying to create scattering of collection of bricks of dimension 10cm X 5cm X 3cm
+G4LogicalVolume *brickLane = GetBlock("brickLane",15*cm,2.5*cm,1.5*cm,Si,3,1.5*cm,1);
+G4LogicalVolume *brickLanePlane = GetBlock("brickLanePlane",15*cm,15*cm,1.5*cm,Si,brickLane,6,2);
+G4LogicalVolume *brickLanePlaneBlock = GetBlock("brickLanePlaneBlock",15*cm,15*cm,15*cm,Si,brickLanePlane,10,3);
+G4VPhysicalVolume *brickLanePhy = new G4PVPlacement(0,
+                            G4ThreeVector(0.,0.,0.),
+                            brickLanePlaneBlock,
+                            //"Module"+std::to_string(eBlockNum),
+							"LanePlaneBlock1",
+                            logicWorld,
+                            false,
+							//eBlockNum,
+							0,
+                           checkOverlaps);
+
 	return physWorld;
 }
 
 
 //Helper functions for Geometry creation.
-G4LogicalVolume* MyDetectorConstruction::GetBlock(std::string name,double halfX,double halfY, double halfZ, G4Material *mat,int numOfStrips, double stripHalfZ,int dir){
+G4LogicalVolume* MyDetectorConstruction::GetBlock(std::string name,double halfX,double halfY, double halfZ,
+		G4Material *mat,int numOfStrips, double stripHalfZ,int dir){
 
   G4bool checkOverlaps = true;
   double stripLen = 2*halfX/numOfStrips;
@@ -144,6 +161,45 @@ G4LogicalVolume* MyDetectorConstruction::GetBlock(std::string name,double halfX,
   }
 
   return tempLogical;
+}
+
+G4LogicalVolume* MyDetectorConstruction::GetBlock(std::string name,double halfX,double halfY, double halfZ, G4Material *mat,
+		G4LogicalVolume* logVol,int numOfLogVol,int dir){
+	G4bool checkOverlaps = true;
+	G4LogicalVolume *tempLogical =  new G4LogicalVolume( (new G4Box(name,halfX,halfY,halfZ)),mat, name+"Logical" );
+	for(int i = 0  ; i < numOfLogVol ; i++){
+		G4ThreeVector temp(0.,0.,0.);
+		if(dir==1){ //X Direction
+			double stripLen = 2*halfX/numOfLogVol;
+			double stripHalfLen = 0.5*stripLen;
+			temp.setX(-halfX + stripHalfLen + i*stripLen);
+
+		}else if(dir==2){
+			//Y Direction
+			double stripLen = 2*halfY/numOfLogVol;
+			double stripHalfLen = 0.5*stripLen;
+			temp.setY(-halfY + stripHalfLen + i*stripLen);
+
+		}else if(dir==3){
+			//Z Direction
+			double stripLen = 2*halfZ/numOfLogVol;
+			double stripHalfLen = 0.5*stripLen;
+			temp.setZ(-halfZ + stripHalfLen + i*stripLen);
+		}
+		G4VPhysicalVolume *blockPhy = new G4PVPlacement(
+														0, //yRot,
+														temp,
+														logVol,
+														"brickLane"+std::to_string(i),
+														//"_LE_CH" + std::to_string(stripNum),
+														//tempLogical->GetName()+"Strip"+std::to_string(i),
+														tempLogical,
+														false,
+														i,
+														checkOverlaps);
+	}
+
+	return tempLogical;
 }
 
 G4LogicalVolume* MyDetectorConstruction::GetStrip(std::string name,double halfX,double halfY, double halfZ, G4Material *mat){
