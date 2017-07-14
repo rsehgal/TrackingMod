@@ -57,11 +57,11 @@ double DeltaLinear(Track incoming, Track outgoing, double FirstBottomDetectorZ){
 
 
 	Track newIncoming(incoming.GetP1(), Vec_t(0.,0.,0.));
-	double L = (FirstBottomDetectorZ - incoming.GetP1().z())/incoming.GetDirection().z();
+	double L = (FirstBottomDetectorZ - incoming.GetP2().z())/incoming.GetDirection().z();
 	if(verbose)
 		std::cout << "DistaneTravelled : " << L << std::endl;
-	Vec_t p2(incoming.GetP1().x() + incoming.GetDirection().x() * L,
-			incoming.GetP1().y() + incoming.GetDirection().y() * L,
+	Vec_t p2(incoming.GetP2().x() + incoming.GetDirection().x() * L,
+			incoming.GetP2().y() + incoming.GetDirection().y() * L,
 			FirstBottomDetectorZ);
 	newIncoming.SetP2(p2);
 	return DeltaLinear<xdir>(newIncoming,outgoing);
