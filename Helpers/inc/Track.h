@@ -17,6 +17,7 @@ class Track {
 	Tracking::Vector3D<double> fP1;
 	Tracking::Vector3D<double> fP2;
 	Tracking::Vector3D<double> fDirCosine;
+	Tracking::Vector3D<double> fDirection;
 public:
   Track();
   Track(Tracking::Vector3D<double> p1,Tracking::Vector3D<double> p2);
@@ -26,6 +27,7 @@ public:
   void SetP1(Tracking::Vector3D<double> val){fP1 = val; CalculateDirCosine();}
   void SetP2(Tracking::Vector3D<double> val){fP2 = val; CalculateDirCosine();}
   Tracking::Vector3D<double> GetDirCosine(){return fDirCosine;}
+  Tracking::Vector3D<double> GetDirection(){return fDirection;}
   void Print(){fP1.Print(); std::cout<<" : " ; fP2.Print();}
 
   ~Track();

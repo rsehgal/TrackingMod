@@ -23,6 +23,10 @@ double LinesAngle::CalculateAngle(Tracking::Vector3D<double> p1, Tracking::Vecto
     return CalculateAngle(p1,temp ,p1,p2);
 }
 
+double LinesAngle::CalculateAngle(Track t1, Track t2){
+	return CalculateAngle(t1.GetP2(),t1.GetP1(),t2.GetP2(),t2.GetP1());
+}
+
 double LinesAngle::GetAngleRadian(double angleDegree)
 {
 	return (angleDegree * 3.14159265359) / 180;

@@ -53,6 +53,11 @@ Vec_t ImageReconstruction::POCA(Vec_t p, Vec_t u, Vec_t q, Vec_t v, Vec_t &p1, V
 	//return s;
 	}
 
+Vec_t ImageReconstruction::POCA( Track incoming, Track outgoing){
+	Vec_t p1(0.,0.,0.),q1(0.,0.,0.);
+	return POCA(incoming.GetP1(),incoming.GetDirCosine(),outgoing.GetP1(), outgoing.GetDirCosine(),p1,q1);
+}
+
 //Vec_t ImageReconstruction::POCA_Iterative(Vec_t p, Vec_t u, Vec_t q, Vec_t v, Vec_t &p1, Vec_t &q1){
 // For Iterative version we are using Track as input arguement
 Vec_t ImageReconstruction::POCA_Iterative(Track incoming,Track outgoing){

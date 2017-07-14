@@ -29,6 +29,9 @@ Track::Track(Tracking::Vector3D<double> p1, Tracking::Vector3D<double> p2){
 
 void Track::CalculateDirCosine(){
 	fDirCosine = (fP2-fP1).Unit();
+	fDirection = (fP2-fP1).Unit();
 }
+
+
 
 } /* namespace Tomography */

@@ -25,6 +25,7 @@ public:
 
 	//Functions implementing Image reconstruction from projections
 	Vec_t POCA( Vec_t p,  Vec_t u,  Vec_t q,  Vec_t v, Vec_t &p1, Vec_t &q1);
+	Vec_t POCA( Track incoming, Track outgoing);
 	//Vec_t POCA_Iterative( Vec_t p,  Vec_t u,  Vec_t q,  Vec_t v, Vec_t &p1, Vec_t &q1);
 	Vec_t POCA_Iterative(Track incoming,Track outgoing);
 	void GetIntPoints(Vec_t p, Vec_t q, Vec_t &intPt1, Vec_t &intPt2 );
