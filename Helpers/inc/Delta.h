@@ -11,9 +11,12 @@
 #include "Track.h"
 #include "base/Vector3D.h"
 #include "LinesAngle.h"
+#include <iostream>
 
 using Tomography::Track;
 using Vec_t = Tracking::Vector3D<double>;
+
+bool verbose = true;
 
 /* if xdir set to true then this will return the
  * displacement in X direction, otherwise in
@@ -52,8 +55,11 @@ double DeltaLinear(Track incoming, Track outgoing){
 template<bool xdir>
 double DeltaLinear(Track incoming, Track outgoing, double FirstBottomDetectorZ){
 
+
 	Track newIncoming(incoming.GetP1(), Vec_t(0.,0.,0.));
 	double L = (FirstBottomDetectorZ - incoming.GetP1().z())/incoming.GetDirection().z();
+	if(verbose)
+		std::cout << "DistaneTravelled : " << L << std::endl;
 	Vec_t p2(incoming.GetP1().x() + incoming.GetDirection().x() * L,
 			incoming.GetP1().y() + incoming.GetDirection().y() * L,
 			FirstBottomDetectorZ);
@@ -67,6 +73,7 @@ double DeltaLinear(Track incoming, Track outgoing, double FirstBottomDetectorZ){
  */
 template<bool xdir>
 double DeltaAngular(Track incoming, Track outgoing){
+
 	Track newIncoming(Vec_t(0.,0.,0.),Vec_t(0.,0.,0.));
 	Track newOutgoing(Vec_t(0.,0.,0.),Vec_t(0.,0.,0.));
 	Track refIncoming(Vec_t(0.,0.,0.),Vec_t(0.,0.,0.));
@@ -92,6 +99,8 @@ double DeltaAngular(Track incoming, Track outgoing){
 	LinesAngle la;
 	double thetaIncoming = la.CalculateAngle(newIncoming,refIncoming);
 	double thetaOutgoing = la.CalculateAngle(newOutgoing,refOutgoing);
+	if(verbose)
+		std::cout<<"ThetaIncoming : " <<  thetaIncoming <<" : ThetaOutgoing : " << thetaOutgoing << std::endl;
 	return (thetaOutgoing-thetaIncoming) ;
 }
 

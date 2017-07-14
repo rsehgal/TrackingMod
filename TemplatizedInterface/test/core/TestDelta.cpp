@@ -26,7 +26,7 @@ int main(){
 	std::cout<<"DeltaX : " << deltaX <<" : DeltaY : " << deltaY << std::endl;
 //	assert(deltaX==10. && deltaY==10.);
 
-	incoming.SetP2(Vec_t(10.,2.,-15.));
+	incoming.SetP2(Vec_t(10.,25.,-15.));
 	deltaX = DeltaLinear<true>(incoming,outgoing,FirstBottomDetectorZ);
     deltaY = DeltaLinear<false>(incoming,outgoing,FirstBottomDetectorZ);
 	std::cout<<"DeltaX : " << deltaX <<" : DeltaY : " << deltaY << std::endl;
