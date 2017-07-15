@@ -28,6 +28,7 @@ const char* input_filename = (argc>1)?argv[1]:"tracks.txt";
 	TApplication *fApp = new TApplication("Test", NULL, NULL);
 	VisualizationHelper v;
 #ifdef USE_EVE
+	v.Register("Hodoscope.gdml");
 	v.RegisterLine(Vector3D<double>(0.,0.,0.),Vector3D<double>(0.,0.,0.));
 #endif
 
@@ -40,8 +41,11 @@ const char* input_filename = (argc>1)?argv[1]:"tracks.txt";
     //TH1F *hist = new TH1F("test","Scattering",100,0.,100.);
 
     Tomography::Slicer slicer(-500,500.,-100.,100.,-150.,150.);
-    double deno=1.;
-    while(!ft.eof()){
+    double deno=10.;
+    int count = 1000;
+    //while(!ft.eof()){
+    while(count){
+	count--;
     	ft >> x >> y >> z >> color;
     //	hist->Fill(color);
     	pt.Set(x/deno,y/deno,z/deno);

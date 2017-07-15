@@ -44,7 +44,7 @@ Insert(x,y,z,double(w));
 
 //Very important. Used to set the average value in each voxel
 void Voxelator::AverageOut(){
-  for(int x = 0 ; x < fVoxelatorDim.x() ; x++){
+/*  for(int x = 0 ; x < fVoxelatorDim.x() ; x++){
     for(int y = 0 ; y < fVoxelatorDim.y() ; y++){
       for(int z = 0 ; z < fVoxelatorDim.z() ; z++){
 	if(histVoxelCount->GetBinContent(x,y,z)){
@@ -54,6 +54,10 @@ void Voxelator::AverageOut(){
       }
     }
   }
+  */
+
+  //Using Root histogram divide function
+  histVoxelValue->Divide(histVoxelCount);
 }
 
 void Voxelator::Insert(std::vector<Vector3D<double>> pocaPtVect){
