@@ -29,6 +29,7 @@ const char* input_filename = (argc>1)?argv[1]:"tracks.txt";
 	VisualizationHelper v;
 #ifdef USE_EVE
 	v.Register("Hodoscope.gdml");
+	//v.Register("VoxelizedVolume.gdml");
 	v.RegisterLine(Vector3D<double>(0.,0.,0.),Vector3D<double>(0.,0.,0.));
 #endif
 
@@ -48,6 +49,7 @@ const char* input_filename = (argc>1)?argv[1]:"tracks.txt";
 	count--;
     	ft >> x >> y >> z >> color;
     //	hist->Fill(color);
+    	//if((z/deno) > 15. || (z/deno) < 5.) continue;
     	pt.Set(x/deno,y/deno,z/deno);
 	pt.SetColor(color);
     	//v.Register(slicer,pt);

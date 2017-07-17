@@ -39,5 +39,6 @@ public:
     }
     double GetTargetThickness() const {return fTargetThickness;}
     G4String GetTargetMaterial() const {return fTargetMaterial->GetName();}
+    void WriteVoxelizedVolume(double halfXWidth, double halfYWidth, double halfZWidth, double posX = 0. ,double posY=0., double posZ=0.);
 };
 #endif

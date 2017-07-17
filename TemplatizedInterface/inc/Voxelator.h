@@ -12,6 +12,9 @@
 #include "base/Vector3D.h"
 #include "TH3F.h"
 
+using Slice = std::vector<std::vector<Tracking::Vector3D<double>>>;
+using VoxelCenters = std::vector<Slice>;
+
 using Tracking::Vector3D;
 namespace Tomography{
 class Voxelator{
@@ -21,9 +24,28 @@ private:
   Vector3D<int> fVoxelatorDim;
   TH3F *histVoxelValue; // = new TH3F("glvoxel", "glvoxel", 50, -500., 500., 50, -500., 500., 50, -500., 500.);
   TH3F *histVoxelCount;
+
+  //VoxelCenters fVoxelCenters;
+  std::vector<Tracking::Vector3D<double>> fVoxelCenters;
 public:
   Voxelator();
   ~Voxelator();
+  void SetVoxelizedVolumeDim(double halfX,double halfY, double halfZ);
+  void SetVoxelDim(double x,double y, double z);
+  void SetVoxelatorDim(double x,double y, double z);
+  void SetVoxelator(double voxelizedVolHalfX,double voxelizedVolHalfY, double voxelizedVolHalfZ,
+  							 double voxelX,double voxelY, double voxelZ);
+
+  //VoxelCenters
+  std::vector<Tracking::Vector3D<double>> GetVoxelCenters(){return fVoxelCenters; }
+
+
+  // This needs NOT to be called by user program
+  void CreateHistogram();
+  void CalculateVoxelCenters();
+
+  void PrintVoxelCenters();
+
   Vector3D<int> GetVoxelatorDim(){return fVoxelatorDim;}
   double GetAverageScatteringAngleInAVoxel(Vector3D<double> vox);
   double GetAverageScatteringAngleInAVoxel(double x, double y, double z);

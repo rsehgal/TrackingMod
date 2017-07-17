@@ -6,18 +6,82 @@ Voxelator::Voxelator(){
 fVoxelizedVolumeDim.Set(1000,1000,150); //Currently setting to values used in Simulations
 fEachVoxelDim.Set(10,10,10); // Ideally this should corresponds to strip size of detectors
 			  // so setting it to 3
+//fVoxelatorDim.Set(int(fVoxelizedVolumeDim.x()/fEachVoxelDim.x()),int(fVoxelizedVolumeDim.y()/fEachVoxelDim.y()),
+	//			      int(fVoxelizedVolumeDim.z()/fEachVoxelDim.z()) );
 
-fVoxelatorDim.Set(int(2*fVoxelizedVolumeDim.x()/fEachVoxelDim.x()),int(2*fVoxelizedVolumeDim.y()/fEachVoxelDim.y()), int(2*fVoxelizedVolumeDim.z()/fEachVoxelDim.z()) );
+fVoxelatorDim.Set((fVoxelizedVolumeDim.x()/fEachVoxelDim.x()),(fVoxelizedVolumeDim.y()/fEachVoxelDim.y()),
+				      (fVoxelizedVolumeDim.z()/fEachVoxelDim.z()) );
 
-//Create the required 3D Hist which corresponds to voxelized volume
-histVoxelValue = new  TH3F("histVoxelValue", "HistVoxelValue", fVoxelatorDim.x(), -fVoxelizedVolumeDim.x(), fVoxelizedVolumeDim.x(), fVoxelatorDim.y(), -fVoxelizedVolumeDim.y(), fVoxelizedVolumeDim.y(),fVoxelatorDim.z(), -fVoxelizedVolumeDim.z(), fVoxelizedVolumeDim.z()) ;
 
-histVoxelCount = new TH3F("histVoxelCount", "HistVoxelCount", fVoxelatorDim.x(), -fVoxelizedVolumeDim.x(), fVoxelizedVolumeDim.x(), fVoxelatorDim.y(), -fVoxelizedVolumeDim.y(), fVoxelizedVolumeDim.y(),fVoxelatorDim.z(), -fVoxelizedVolumeDim.z(), fVoxelizedVolumeDim.z()) ;
+CreateHistogram();
+
 }
 
 Voxelator::~Voxelator(){
 delete histVoxelValue;
 delete histVoxelCount;
+}
+
+void Voxelator::SetVoxelDim(double x, double y , double z){
+	fEachVoxelDim.Set(x,y,z);
+}
+
+void Voxelator::SetVoxelizedVolumeDim(double halfX, double halfY, double halfZ){
+	fVoxelizedVolumeDim.Set(halfX,halfY,halfZ);
+}
+
+void Voxelator::SetVoxelatorDim(double x, double y , double z){
+	//fVoxelatorDim.Set(int(2*fVoxelizedVolumeDim.x()/fEachVoxelDim.x()),int(2*fVoxelizedVolumeDim.y()/fEachVoxelDim.y()),
+		//			  int(2*fVoxelizedVolumeDim.z()/fEachVoxelDim.z()) );
+	fVoxelatorDim.Set((2*fVoxelizedVolumeDim.x()/fEachVoxelDim.x()),(2*fVoxelizedVolumeDim.y()/fEachVoxelDim.y()),
+						  (2*fVoxelizedVolumeDim.z()/fEachVoxelDim.z()) );
+}
+
+void Voxelator::SetVoxelator(double voxelizedVolHalfX,double voxelizedVolHalfY, double voxelizedVolHalfZ,
+							 double voxelX,double voxelY, double voxelZ){
+	fVoxelizedVolumeDim.Set(2*voxelizedVolHalfX,2*voxelizedVolHalfY,2*voxelizedVolHalfZ);
+	fEachVoxelDim.Set(voxelX,voxelY,voxelZ);
+	fVoxelatorDim.Set(int(fVoxelizedVolumeDim.x()/fEachVoxelDim.x()),int(fVoxelizedVolumeDim.y()/fEachVoxelDim.y()),
+			          int(fVoxelizedVolumeDim.z()/fEachVoxelDim.z()) );
+	CreateHistogram();
+}
+
+
+void Voxelator::CalculateVoxelCenters(){
+
+//	std::cout << fVoxelizedVolumeDim.x() << " : " << fVoxelatorDim.x() << std::endl;
+//	std::cout << fVoxelizedVolumeDim.y() << " : " << fVoxelatorDim.y() << std::endl;
+//	std::cout << fVoxelizedVolumeDim.z() << " : " << fVoxelatorDim.z() << std::endl;
+	//fVoxelizedVolumeDim.Print();
+	for(int k = 0 ; k < fVoxelatorDim.z() ; k++){
+		for(int j = 0 ; j < fVoxelatorDim.y() ; j++){
+			for(int i = 0 ; i < fVoxelatorDim.x() ; i++){
+				double x = -fVoxelizedVolumeDim.x()/2. + fEachVoxelDim.x()/2. + (fEachVoxelDim.x() * (i));
+				double y = -fVoxelizedVolumeDim.y()/2. + fEachVoxelDim.y()/2. + (fEachVoxelDim.y() * (j));
+				double z = -fVoxelizedVolumeDim.z()/2. + fEachVoxelDim.z()/2. + (fEachVoxelDim.z() * (k));
+				fVoxelCenters.push_back(Tracking::Vector3D<double>(x,y,z));
+			}
+		}
+	}
+}
+
+void Voxelator::PrintVoxelCenters(){
+	std::cout<<"Size of VoxelCenters : " << fVoxelCenters.size() << std::endl;
+	for(int i = 0 ; i < fVoxelCenters.size() ; i++){
+		fVoxelCenters[i].Print();
+	}
+}
+
+
+void Voxelator::CreateHistogram(){
+	//Create the required 3D Hist which corresponds to voxelized volume
+	histVoxelValue = new  TH3F("histVoxelValue", "HistVoxelValue", fVoxelatorDim.x(), -fVoxelizedVolumeDim.x(), fVoxelizedVolumeDim.x(),
+						                                           fVoxelatorDim.y(), -fVoxelizedVolumeDim.y(), fVoxelizedVolumeDim.y(),
+																   fVoxelatorDim.z(), -fVoxelizedVolumeDim.z(), fVoxelizedVolumeDim.z()) ;
+
+	histVoxelCount = new TH3F("histVoxelCount", "HistVoxelCount", fVoxelatorDim.x(), -fVoxelizedVolumeDim.x(), fVoxelizedVolumeDim.x(),
+																  fVoxelatorDim.y(), -fVoxelizedVolumeDim.y(), fVoxelizedVolumeDim.y(),
+																  fVoxelatorDim.z(), -fVoxelizedVolumeDim.z(), fVoxelizedVolumeDim.z()) ;
 }
 
 double Voxelator::GetAverageScatteringAngleInAVoxel(Vector3D<double> vox){

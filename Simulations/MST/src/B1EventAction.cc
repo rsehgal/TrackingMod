@@ -79,6 +79,7 @@ void B1EventAction::EndOfEventAction(const G4Event*)
   * if(fScatteringAngle*1000 > 20. && fScatteringAngle*1000 < 100.)
   * if(fScatteringAngle*1000 > 5.)
   */
+  if(fScatteringAngle*1000 > 5.)
   {
   GenerateIncomingTrack();
   GenerateOutgoingTrack();
@@ -108,6 +109,7 @@ void B1EventAction::EndOfEventAction(const G4Event*)
   /*
    * Caching the above calculated values (IF REQUIRED) in stl vector defined in RUN
    */
+  if(fScatteringAngle*1000 > 5.)
   {
   run->FillScatteringAngleVector(fScatteringAngle);
   run->FillIncomingTrackVector(incoming);

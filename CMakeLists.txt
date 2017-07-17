@@ -62,6 +62,11 @@ option(GNUPLOT "Enabling GnuPlot" OFF)
 option(QT "Enabling QtGui" OFF)
 option(CRY "Enable CRY library for cosmic event generation" OFF)
 option(STORE "Store data to ROOT Tree" OFF)
+option(VOXELIZE "Voxelize the Region" OFF)
+
+if(VOXELIZE)
+add_definitions(-DVOXELIZE)
+endif(VOXELIZE)
 
 find_package(MYSQL REQUIRED)
 include_directories(${MYSQL_INCLUDE_DIR})
