@@ -89,7 +89,7 @@ void B1EventAction::EndOfEventAction(const G4Event*)
   run->GetOutGoing() = outgoing;
   run->SetScattering(fScatteringAngle*1000);
 
-  // Store data in ROOT Tree
+   // Store data in ROOT Tree
   //gInterpreter->GenerateDictionary("/home/rsehgal/Tomo/TrackingMod/Helpers/inc/Track.h","/home/rsehgal/Tomo/TrackingMod/Helpers/inc/Track.h");
 /*
   Tracking::Tree *tree = Tracking::Tree::instance();
@@ -111,10 +111,10 @@ void B1EventAction::EndOfEventAction(const G4Event*)
    */
   if(fScatteringAngle*1000 > 5.)
   {
-  run->FillScatteringAngleVector(fScatteringAngle);
-  run->FillIncomingTrackVector(incoming);
-  run->FillOutgoingTrackVector(outgoing);
-  run->FillPocaPtVector(fPocaPt);
+//  run->FillScatteringAngleVector(fScatteringAngle);
+//  run->FillIncomingTrackVector(incoming);
+//  run->FillOutgoingTrackVector(outgoing);
+//  run->FillPocaPtVector(fPocaPt);
   }
 
   // 

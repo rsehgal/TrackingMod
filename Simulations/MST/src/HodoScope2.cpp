@@ -52,7 +52,7 @@ G4VPhysicalVolume* HodoScope2::Construct(){
   G4double world_sizeXYZ = 200*cm;
 
   //World
-  Block *world = new Block("World",0.75*world_sizeXYZ,"G4_AIR");
+  Block *world = new Block("World",0.75*world_sizeXYZ,"G4_Galactic");
   G4VPhysicalVolume* physWorld = 
     new G4PVPlacement(0,                     //no rotation
                       G4ThreeVector(),       //at (0,0,0)
@@ -82,9 +82,10 @@ G4VPhysicalVolume* HodoScope2::Construct(){
   }
 
   //6 Shelves starting from Bottom
-  Block *shelf = new Block("Shelf",0.250*world_sizeXYZ, 0.250*world_sizeXYZ, 0.5*mm,"G4_Galactic");
+ Block *shelf = new Block("Shelf",0.250*world_sizeXYZ, 0.250*world_sizeXYZ, 0.25*mm,"G4_Galactic");
   double bottomShelfZ = -75*cm;
   for(int i = -3 ; i < 3; i++ ){
+
 	  if(i==-1 || i==0) continue;
       //Now physically placing Six such shelves for Six Rpc's
 	  int shelfNum = i+3;
@@ -125,7 +126,7 @@ G4VPhysicalVolume *phyTargetPbBlock = new G4PVPlacement(0,
   G4VPhysicalVolume *phyTargetBlock = new G4PVPlacement(0,
                             //G4ThreeVector(),
                             G4ThreeVector(15*cm,15*cm,12*cm),
-                            fLogicTarget,
+                           fLogicTarget,
                             "TargetPhysical",
                             world->GetLogicalVolume(),//logicWorld,
                             false,
