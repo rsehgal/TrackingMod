@@ -111,10 +111,10 @@ void B1EventAction::EndOfEventAction(const G4Event*)
    */
   if(fScatteringAngle*1000 > 5.)
   {
-//  run->FillScatteringAngleVector(fScatteringAngle);
-//  run->FillIncomingTrackVector(incoming);
-//  run->FillOutgoingTrackVector(outgoing);
-//  run->FillPocaPtVector(fPocaPt);
+  run->FillScatteringAngleVector(fScatteringAngle);
+  run->FillIncomingTrackVector(incoming);
+  run->FillOutgoingTrackVector(outgoing);
+  run->FillPocaPtVector(fPocaPt);
   }
 
   // 

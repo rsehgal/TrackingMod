@@ -41,26 +41,22 @@ const char* input_filename = (argc>1)?argv[1]:"tracks.txt";
 
     //TH1F *hist = new TH1F("test","Scattering",100,0.,100.);
 
-   //Tomography::Slicer slicer(-1000,1000.,-1000.,1000.,-1000.,1000.);
-    v.Register("Hodoscope.gdml");
+    Tomography::Slicer slicer(-500,500.,-100.,100.,-150.,150.);
     double deno=10.;
-    int i = 10000;
+    int count = 1000;
     //while(!ft.eof()){
-    while(i){
-    	//std::cout << "Read Point : "<< i << std::endl;
+    while(count){
+	count--;
     	ft >> x >> y >> z >> color;
-    	std::cout << x <<"  " << y << "  " << z << "  " << color << std::endl;
     //	hist->Fill(color);
     	//if((z/deno) > 15. || (z/deno) < 5.) continue;
     	pt.Set(x/deno,y/deno,z/deno);
 	pt.SetColor(color);
-	//pt.Print();
     	//v.Register(slicer,pt);
 	v.Register(pt);
-	i--;
     
     }
- std::cout<<" ALL POINTS READ............" << std::endl;
+
 	//hist->Draw();
 	
 	v.Show();
