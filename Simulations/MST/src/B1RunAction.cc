@@ -215,7 +215,8 @@ for (auto &PocaPt : b1Run->GetPocaPtVector()){
 
 //Now trying to voxelate PocaVector
 
-Voxelator vox;
+Voxelator vox(500.,500.,450.,10.,10.,9.);
+TFile flVox("voxel.root","recreate");
 vox.Insert(b1Run->GetPocaPtVector()); //Voxelized Poca Ready
 std::ofstream voxTrack;
 voxTrack.open("VoxelizedTracks.txt");
@@ -234,6 +235,8 @@ for(int x = 0 ; x < voxelatorDim.x()-1 ; x++){
     }
   }
 
+vox.GetVoxelIn1D()->Write();
+flVox.Write();
 voxTrack.close();
 
 

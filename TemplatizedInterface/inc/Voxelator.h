@@ -24,11 +24,15 @@ private:
   Vector3D<int> fVoxelatorDim;
   TH3F *histVoxelValue; // = new TH3F("glvoxel", "glvoxel", 50, -500., 500., 50, -500., 500., 50, -500., 500.);
   TH3F *histVoxelCount;
+  TH1F *fVoxelsIn1D;
+
 
   //VoxelCenters fVoxelCenters;
   std::vector<Tracking::Vector3D<double>> fVoxelCenters;
 public:
   Voxelator();
+  Voxelator(double voxelizedVolHalfX,double voxelizedVolHalfY, double voxelizedVolHalfZ,
+			 double voxelX,double voxelY, double voxelZ);
   ~Voxelator();
   void SetVoxelizedVolumeDim(double halfX,double halfY, double halfZ);
   void SetVoxelDim(double x,double y, double z);
@@ -37,7 +41,15 @@ public:
   							 double voxelX,double voxelY, double voxelZ);
 
   //VoxelCenters
+  TH1F* GetVoxelIn1D(){return fVoxelsIn1D;}
   std::vector<Tracking::Vector3D<double>> GetVoxelCenters(){return fVoxelCenters; }
+  Tracking::Vector3D<double> GetVoxelCenter(double x, double y, double z);
+  Tracking::Vector3D<double> GetVoxelCenter(Tracking::Vector3D<double> vox);
+  int GetVoxelNumber(int x, int y, int z);
+  int GetVoxelNumber(double x,double y, double z);
+  int GetVoxelNumber(Tracking::Vector3D<double> vox);
+  int GetTotalNumberOfVoxels(){return fVoxelatorDim.x()*fVoxelatorDim.y()*fVoxelatorDim.z();}
+
 
 
   // This needs NOT to be called by user program
@@ -48,7 +60,8 @@ public:
 
   Vector3D<int> GetVoxelatorDim(){return fVoxelatorDim;}
   double GetAverageScatteringAngleInAVoxel(Vector3D<double> vox);
-  double GetAverageScatteringAngleInAVoxel(double x, double y, double z);
+  double GetAverageScatteringAngleInAVoxel(double x, double y, double z){}
+  double GetAverageScatteringAngleInAVoxel(int x, int y, int z);
   void Insert(double x, double y, double z, double w);
   void Insert(double x, double y, double z, int w);
   void Insert(Vector3D<double> vox);

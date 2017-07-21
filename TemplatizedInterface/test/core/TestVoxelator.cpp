@@ -7,6 +7,10 @@
 
 #include <iostream>
 #include "Voxelator.h"
+#include <cassert>
+
+#undef NDEBUG
+
 using Tomography::Voxelator;
 
 int main(){
@@ -15,7 +19,10 @@ int main(){
 	//v.SetVoxelator(4.5,4.5,4.5,3.,3.,3.);
 	v.SetVoxelator(50.,50.,50.,10.,10.,10.);
 	v.CalculateVoxelCenters();
-	v.PrintVoxelCenters();
+	//v.PrintVoxelCenters();
+
+
+	assert(v.GetTotalNumberOfVoxels() == 1000);
 
 
 	return 0;

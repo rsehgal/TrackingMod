@@ -3,8 +3,9 @@
 namespace Tomography {
 
 Voxelator::Voxelator(){
-fVoxelizedVolumeDim.Set(1000,1000,150); //Currently setting to values used in Simulations
-fEachVoxelDim.Set(10,10,10); // Ideally this should corresponds to strip size of detectors
+//fVoxelsIn1D = new TH1F();
+fVoxelizedVolumeDim.Set(500,500,400); //Currently setting to values used in Simulations
+fEachVoxelDim.Set(10,10,80); // Ideally this should corresponds to strip size of detectors
 			  // so setting it to 3
 //fVoxelatorDim.Set(int(fVoxelizedVolumeDim.x()/fEachVoxelDim.x()),int(fVoxelizedVolumeDim.y()/fEachVoxelDim.y()),
 	//			      int(fVoxelizedVolumeDim.z()/fEachVoxelDim.z()) );
@@ -15,6 +16,11 @@ fVoxelatorDim.Set((fVoxelizedVolumeDim.x()/fEachVoxelDim.x()),(fVoxelizedVolumeD
 
 CreateHistogram();
 
+}
+
+Voxelator::Voxelator(double voxelizedVolHalfX,double voxelizedVolHalfY, double voxelizedVolHalfZ,
+			 double voxelX,double voxelY, double voxelZ){
+	SetVoxelator(voxelizedVolHalfX,voxelizedVolHalfY,voxelizedVolHalfZ,voxelX,voxelY,voxelZ);
 }
 
 Voxelator::~Voxelator(){
@@ -46,6 +52,34 @@ void Voxelator::SetVoxelator(double voxelizedVolHalfX,double voxelizedVolHalfY, 
 	CreateHistogram();
 }
 
+int Voxelator::GetVoxelNumber(double x, double y, double z){
+	int onX = (int)x/fEachVoxelDim.x() + 1;
+	int onY = (int)y/fEachVoxelDim.y() + 1;
+	int onZ = (int)z/fEachVoxelDim.z() + 1;
+	return fVoxelatorDim.x()*fVoxelatorDim.y()*onZ +
+		   fVoxelatorDim.x()*onY + onX ;
+
+}
+
+int Voxelator::GetVoxelNumber(int x, int y, int z){
+
+	return fVoxelatorDim.x()*fVoxelatorDim.y()*z +
+		   fVoxelatorDim.x()*y + x ;
+
+}
+
+int Voxelator::GetVoxelNumber(Tracking::Vector3D<double> vox){
+	return GetVoxelNumber(vox.x(),vox.y(),vox.z());
+}
+
+Tracking::Vector3D<double> Voxelator::GetVoxelCenter(double x, double y, double z){
+
+	return fVoxelCenters[GetVoxelNumber(x,y,z)];
+}
+
+Tracking::Vector3D<double> Voxelator::GetVoxelCenter(Tracking::Vector3D<double> vox){
+	return GetVoxelCenter(vox.x(),vox.y(),vox.z());
+}
 
 void Voxelator::CalculateVoxelCenters(){
 
@@ -82,19 +116,23 @@ void Voxelator::CreateHistogram(){
 	histVoxelCount = new TH3F("histVoxelCount", "HistVoxelCount", fVoxelatorDim.x(), -fVoxelizedVolumeDim.x(), fVoxelizedVolumeDim.x(),
 																  fVoxelatorDim.y(), -fVoxelizedVolumeDim.y(), fVoxelizedVolumeDim.y(),
 																  fVoxelatorDim.z(), -fVoxelizedVolumeDim.z(), fVoxelizedVolumeDim.z()) ;
+
+	fVoxelsIn1D = new TH1F("IDHistOfVoxels","IDHistOfVoxels",GetTotalNumberOfVoxels(), 0, GetTotalNumberOfVoxels());
 }
 
 double Voxelator::GetAverageScatteringAngleInAVoxel(Vector3D<double> vox){
 return GetAverageScatteringAngleInAVoxel(vox.x(),vox.y(),vox.z());
 }
 
-double Voxelator::GetAverageScatteringAngleInAVoxel(double x, double y, double z){
-return histVoxelValue->GetBinContent(x,y,z);
+double Voxelator::GetAverageScatteringAngleInAVoxel(int x, int y, int z){
+//return histVoxelValue->GetBinContent(x,y,z);
+	return fVoxelsIn1D->GetBinContent(GetVoxelNumber(x,y,z));
 }
 
 void Voxelator::Insert(double x, double y, double z, double w){
 histVoxelCount->Fill(x,y,z);
 histVoxelValue->Fill(x,y,z,w);
+fVoxelsIn1D->Fill(GetVoxelNumber(x,y,z),w);
 
 }
 

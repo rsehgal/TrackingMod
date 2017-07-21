@@ -123,15 +123,46 @@ G4VPhysicalVolume *phyTargetPbBlock = new G4PVPlacement(0,
   G4Material *Pb=nist->FindOrBuildMaterial("G4_Pb");
   target = new G4Box("Target",5*cm,5*cm,4*cm);
   fLogicTarget = new G4LogicalVolume(target,Pb,"LogicalTargetBlock");
+
   G4VPhysicalVolume *phyTargetBlock = new G4PVPlacement(0,
                             //G4ThreeVector(),
-                            G4ThreeVector(15*cm,15*cm,12*cm),
+                            G4ThreeVector(15*cm,-15*cm,12*cm),
                            fLogicTarget,
                             "TargetPhysical",
                             world->GetLogicalVolume(),//logicWorld,
                             false,
                             0,
                             checkOverlaps);
+
+  G4VPhysicalVolume *phyTargetBlock2 = new G4PVPlacement(0,
+                              //G4ThreeVector(),
+                              G4ThreeVector(-15*cm,15*cm,12*cm),
+                             fLogicTarget,
+                              "TargetPhysical",
+                              world->GetLogicalVolume(),//logicWorld,
+                              false,
+                              0,
+                              checkOverlaps);
+
+  G4VPhysicalVolume *phyTargetBlock3 = new G4PVPlacement(0,
+                                //G4ThreeVector(),
+                                G4ThreeVector(-15*cm,-15*cm,12*cm),
+                               fLogicTarget,
+                                "TargetPhysical",
+                                world->GetLogicalVolume(),//logicWorld,
+                                false,
+                                0,
+                                checkOverlaps);
+
+  G4VPhysicalVolume *phyTargetBlock4 = new G4PVPlacement(0,
+                                  //G4ThreeVector(),
+                                  G4ThreeVector(25*cm,25*cm,12*cm),
+                                 fLogicTarget,
+                                  "TargetPhysical",
+                                  world->GetLogicalVolume(),//logicWorld,
+                                  false,
+                                  0,
+                                  checkOverlaps);
 
 
 
