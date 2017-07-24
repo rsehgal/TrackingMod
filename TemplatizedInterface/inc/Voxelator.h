@@ -11,6 +11,7 @@
 
 #include "base/Vector3D.h"
 #include "TH3F.h"
+#include "TH2F.h"
 
 using Slice = std::vector<std::vector<Tracking::Vector3D<double>>>;
 using VoxelCenters = std::vector<Slice>;
@@ -25,6 +26,10 @@ private:
   TH3F *histVoxelValue; // = new TH3F("glvoxel", "glvoxel", 50, -500., 500., 50, -500., 500., 50, -500., 500.);
   TH3F *histVoxelCount;
   TH1F *fVoxelsIn1D;
+  TH1F *fVoxelsIn1DCount;
+
+  std::vector<TH2F*> fHist2DVector; // used to store vector of 2D histogram, each of one Z slice
+  
 
 
   //VoxelCenters fVoxelCenters;
@@ -42,6 +47,7 @@ public:
 
   //VoxelCenters
   TH1F* GetVoxelIn1D(){return fVoxelsIn1D;}
+  TH1F* GetVoxelIn1DCount(){return fVoxelsIn1DCount;}
   std::vector<Tracking::Vector3D<double>> GetVoxelCenters(){return fVoxelCenters; }
   Tracking::Vector3D<double> GetVoxelCenter(double x, double y, double z);
   Tracking::Vector3D<double> GetVoxelCenter(Tracking::Vector3D<double> vox);

@@ -1,4 +1,5 @@
 #include "Voxelator.h"
+#include <cmath>
 
 namespace Tomography {
 
@@ -21,6 +22,8 @@ CreateHistogram();
 Voxelator::Voxelator(double voxelizedVolHalfX,double voxelizedVolHalfY, double voxelizedVolHalfZ,
 			 double voxelX,double voxelY, double voxelZ){
 	SetVoxelator(voxelizedVolHalfX,voxelizedVolHalfY,voxelizedVolHalfZ,voxelX,voxelY,voxelZ);
+	fVoxelizedVolumeDim.Print();
+	fVoxelatorDim.Print();
 }
 
 Voxelator::~Voxelator(){
@@ -53,11 +56,14 @@ void Voxelator::SetVoxelator(double voxelizedVolHalfX,double voxelizedVolHalfY, 
 }
 
 int Voxelator::GetVoxelNumber(double x, double y, double z){
-	int onX = (int)x/fEachVoxelDim.x() + 1;
-	int onY = (int)y/fEachVoxelDim.y() + 1;
-	int onZ = (int)z/fEachVoxelDim.z() + 1;
-	return fVoxelatorDim.x()*fVoxelatorDim.y()*onZ +
-		   fVoxelatorDim.x()*onY + onX ;
+	int onX = (int)(x+fVoxelizedVolumeDim.x()/2.)/fEachVoxelDim.x();// + 1;
+	int onY = (int)(y+fVoxelizedVolumeDim.y()/2.)/fEachVoxelDim.y();// + 1;
+	int onZ = (int)(z+fVoxelizedVolumeDim.z()/2.)/fEachVoxelDim.z();// + 1;
+
+	// std::cout<< onX <<" : "<< onY << " : " << onZ << std::endl;
+	// return fVoxelatorDim.x()*fVoxelatorDim.y()*(onZ+fVoxelizedVolumeDim.z()/2.) +
+	// 	   fVoxelatorDim.x()*(onY+fVoxelizedVolumeDim.y()/2.) + (onX+fVoxelizedVolumeDim.x()/2.) ;
+	return GetVoxelNumber(onX,onY,onZ);
 
 }
 
@@ -117,7 +123,16 @@ void Voxelator::CreateHistogram(){
 																  fVoxelatorDim.y(), -fVoxelizedVolumeDim.y(), fVoxelizedVolumeDim.y(),
 																  fVoxelatorDim.z(), -fVoxelizedVolumeDim.z(), fVoxelizedVolumeDim.z()) ;
 
+	std::cout << "Total num of voxel for simulations : " << GetTotalNumberOfVoxels() << std::endl;
 	fVoxelsIn1D = new TH1F("IDHistOfVoxels","IDHistOfVoxels",GetTotalNumberOfVoxels(), 0, GetTotalNumberOfVoxels());
+	fVoxelsIn1DCount = new TH1F("IDHistOfVoxelsCount","IDHistOfVoxelsCount",GetTotalNumberOfVoxels(), 0, GetTotalNumberOfVoxels());
+
+	//Creating 2D Histogram
+	for(int i = 0 ; i < fVoxelatorDim.z() ; i++){
+		std::string histName = "ZSlice_"+std::to_string(i);
+		fHist2DVector.push_back(new TH2F(histName.c_str(),histName.c_str(), fVoxelatorDim.x(), 0.,fVoxelatorDim.x(),
+																			fVoxelatorDim.y(),0.,fVoxelatorDim.y()));
+	}
 }
 
 double Voxelator::GetAverageScatteringAngleInAVoxel(Vector3D<double> vox){
@@ -132,8 +147,19 @@ double Voxelator::GetAverageScatteringAngleInAVoxel(int x, int y, int z){
 void Voxelator::Insert(double x, double y, double z, double w){
 histVoxelCount->Fill(x,y,z);
 histVoxelValue->Fill(x,y,z,w);
-fVoxelsIn1D->Fill(GetVoxelNumber(x,y,z),w);
+int voxelNumber = GetVoxelNumber(x,y,z);
+fVoxelsIn1D->Fill(voxelNumber,std::fabs(w));
+fVoxelsIn1DCount->Fill(voxelNumber);
+int numOfVoxelsInASlice = fVoxelatorDim.x()*fVoxelatorDim.y();
+int sliceNum = 0;
+if(voxelNumber % numOfVoxelsInASlice)
+	sliceNum = (voxelNumber/numOfVoxelsInASlice) + 1;
+else
+	sliceNum = (voxelNumber/numOfVoxelsInASlice);
 
+
+fHist2DVector[sliceNum]->Fill(x/fEachVoxelDim.x(),y/fEachVoxelDim.y());
+//fVoxelsIn1D->Divide(fVoxelsIn1DCount);
 }
 
 void Voxelator::Insert(Vector3D<double> vox){

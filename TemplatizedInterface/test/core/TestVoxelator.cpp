@@ -25,6 +25,15 @@ int main(){
 	assert(v.GetTotalNumberOfVoxels() == 1000);
 
 
+    std::cout<<" ---------------------------- " << std::endl;
+    Voxelator t;
+    t.SetVoxelator(50.,50.,45.,10.,10.,9.);
+    std::cout << "Total num of voxels : " << t.GetTotalNumberOfVoxels() << std::endl;
+    int voxNum = t.GetVoxelNumber(24.,15.,13.5);
+    std::cout<<"Voxel Number of target : " << voxNum << std::endl;
+
+
+
 	return 0;
 }
 
