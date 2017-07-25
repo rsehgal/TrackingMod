@@ -127,12 +127,6 @@ void Voxelator::CreateHistogram(){
 	fVoxelsIn1D = new TH1F("IDHistOfVoxels","IDHistOfVoxels",GetTotalNumberOfVoxels(), 0, GetTotalNumberOfVoxels());
 	fVoxelsIn1DCount = new TH1F("IDHistOfVoxelsCount","IDHistOfVoxelsCount",GetTotalNumberOfVoxels(), 0, GetTotalNumberOfVoxels());
 
-	//Creating 2D Histogram
-	for(int i = 0 ; i < fVoxelatorDim.z() ; i++){
-		std::string histName = "ZSlice_"+std::to_string(i);
-		fHist2DVector.push_back(new TH2F(histName.c_str(),histName.c_str(), fVoxelatorDim.x(), 0.,fVoxelatorDim.x(),
-																			fVoxelatorDim.y(),0.,fVoxelatorDim.y()));
-	}
 }
 
 double Voxelator::GetAverageScatteringAngleInAVoxel(Vector3D<double> vox){
@@ -150,16 +144,26 @@ histVoxelValue->Fill(x,y,z,w);
 int voxelNumber = GetVoxelNumber(x,y,z);
 fVoxelsIn1D->Fill(voxelNumber,std::fabs(w));
 fVoxelsIn1DCount->Fill(voxelNumber);
+
+#ifdef STORE_SLICE
 int numOfVoxelsInASlice = fVoxelatorDim.x()*fVoxelatorDim.y();
+//std::cout<<"NumofVoxelsInAslice : " << numOfVoxelsInASlice << std::endl;
 int sliceNum = 0;
 if(voxelNumber % numOfVoxelsInASlice)
 	sliceNum = (voxelNumber/numOfVoxelsInASlice) + 1;
 else
 	sliceNum = (voxelNumber/numOfVoxelsInASlice);
 
+if(sliceNum < 0 || sliceNum > fVoxelatorDim.z()){
+	std::cout<<"Unexpected slice : "<< sliceNum <<"  : For VoxelNum : "<< voxelNumber << ".... Skipping this guy....." << std::endl;
+	return;
+}
+std::string histName = "ZSlice_"+std::to_string(sliceNum);
+fObjChecker.CheckAndInsert(histName.c_str(),histName.c_str(),fVoxelatorDim.x(), -fVoxelatorDim.x()/2.,fVoxelatorDim.x()/2.,
+															 fVoxelatorDim.y(), -fVoxelatorDim.y()/2.,fVoxelatorDim.y()/2.,
+															 (x/fEachVoxelDim.x()),(y/fEachVoxelDim.y()),w);
+#endif
 
-fHist2DVector[sliceNum]->Fill(x/fEachVoxelDim.x(),y/fEachVoxelDim.y());
-//fVoxelsIn1D->Divide(fVoxelsIn1DCount);
 }
 
 void Voxelator::Insert(Vector3D<double> vox){

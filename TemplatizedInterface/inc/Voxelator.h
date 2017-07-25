@@ -12,6 +12,7 @@
 #include "base/Vector3D.h"
 #include "TH3F.h"
 #include "TH2F.h"
+#include "ObjectChecker.h"
 
 using Slice = std::vector<std::vector<Tracking::Vector3D<double>>>;
 using VoxelCenters = std::vector<Slice>;
@@ -28,16 +29,16 @@ private:
   TH1F *fVoxelsIn1D;
   TH1F *fVoxelsIn1DCount;
 
-  std::vector<TH2F*> fHist2DVector; // used to store vector of 2D histogram, each of one Z slice
-  
+  ObjectChecker fObjChecker;
 
-
-  //VoxelCenters fVoxelCenters;
   std::vector<Tracking::Vector3D<double>> fVoxelCenters;
 public:
+
+  ObjectChecker GetObjectChecker(){return fObjChecker;}
   Voxelator();
   Voxelator(double voxelizedVolHalfX,double voxelizedVolHalfY, double voxelizedVolHalfZ,
 			 double voxelX,double voxelY, double voxelZ);
+
   ~Voxelator();
   void SetVoxelizedVolumeDim(double halfX,double halfY, double halfZ);
   void SetVoxelDim(double x,double y, double z);

@@ -43,6 +43,7 @@
 #include "TROOT.h"
 
 #include "Voxelator.h"
+#include "ObjectChecker.h"
 
 
 #include <iostream>
@@ -215,7 +216,7 @@ for (auto &PocaPt : b1Run->GetPocaPtVector()){
 
 //Now trying to voxelate PocaVector
 
-Voxelator vox(500.,500.,450.,100.,100.,90.);
+Voxelator vox(500.,500.,450.,50.,50.,45.);
 TFile flVox("voxel.root","recreate");
 vox.Insert(b1Run->GetPocaPtVector()); //Voxelized Poca Ready
 std::ofstream voxTrack;
@@ -237,6 +238,14 @@ for(int x = 0 ; x < voxelatorDim.x()-1 ; x++){
 
 vox.GetVoxelIn1D()->Write();
 vox.GetVoxelIn1DCount()->Write();
+
+#ifdef STORE_SLICE
+std::set<Tomography::ObjectChecker> histSet = vox.GetObjectChecker().GetSet();
+for (std::set<Tomography::ObjectChecker>::iterator it=histSet.begin(); it!=histSet.end(); ++it){
+	(*it).GetHist()->Write();
+}
+#endif
+
 flVox.Write();
 voxTrack.close();
 

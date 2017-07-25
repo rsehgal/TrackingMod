@@ -63,6 +63,11 @@ option(QT "Enabling QtGui" OFF)
 option(CRY "Enable CRY library for cosmic event generation" OFF)
 option(STORE "Store data to ROOT Tree" OFF)
 option(VOXELIZE "Voxelize the Region" OFF)
+option(STORE_SLICE "Store 2D hist of eache Slice in Z direction" OFF)
+
+if(STORE_SLICE)
+add_definitions(-DSTORE_SLICE)
+endif(STORE_SLICE)
 
 if(VOXELIZE)
 add_definitions(-DVOXELIZE)
