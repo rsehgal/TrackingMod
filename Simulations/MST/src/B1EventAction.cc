@@ -123,9 +123,15 @@ void B1EventAction::EndOfEventAction(const G4Event*)
 void B1EventAction::CalcScatteringAngle(){
   int size = hitVect.size();
   int hSize = size/2;
+
   LinesAngle l;
 
-  fScatteringAngle = l.GetAngleRadian(l.CalculateAngle(hitVect[0],hitVect[hSize-1],hitVect[hSize],hitVect[size-1]));
+  if(size == 3){
+	  fScatteringAngle = l.GetAngleRadian(l.CalculateAngle(hitVect[0],hitVect[hSize],hitVect[hSize],hitVect[size-1]));
+  }else{
+	  fScatteringAngle = l.GetAngleRadian(l.CalculateAngle(hitVect[0],hitVect[hSize-1],hitVect[hSize],hitVect[size-1]));
+  }
+
 }
 
 void B1EventAction::GenerateIncomingTrack(){
@@ -133,8 +139,13 @@ void B1EventAction::GenerateIncomingTrack(){
   int size = hitVect.size();
   //std::cout<<"Size : must be Six : " << size << std::endl;
   int hSize = size/2;
+
   incoming.SetP1(hitVect[0]);
-  incoming.SetP2(hitVect[hSize-1]);
+  if(size == 3){
+	  incoming.SetP2(hitVect[hSize]);
+  }else{
+	  incoming.SetP2(hitVect[hSize-1]);
+  }
   //std::cout<<"INComing : "; hitVect[0].Print() ; std::cout<<" : ";  hitVect[hSize-1].Print();
   //std::cout<< std::endl;
   

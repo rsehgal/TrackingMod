@@ -154,6 +154,10 @@ if(voxelNumber % numOfVoxelsInASlice)
 else
 	sliceNum = (voxelNumber/numOfVoxelsInASlice);
 
+/*if(sliceNum != 6 && sliceNum != 7 && sliceNum != 8 ){
+	std::cout << "Not expected SliceNum : "<< sliceNum << std::endl;
+}*/
+
 if(sliceNum < 0 || sliceNum > fVoxelatorDim.z()){
 	std::cout<<"Unexpected slice : "<< sliceNum <<"  : For VoxelNum : "<< voxelNumber << ".... Skipping this guy....." << std::endl;
 	return;

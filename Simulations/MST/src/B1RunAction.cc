@@ -216,7 +216,7 @@ for (auto &PocaPt : b1Run->GetPocaPtVector()){
 
 //Now trying to voxelate PocaVector
 
-Voxelator vox(500.,500.,450.,50.,50.,45.);
+Voxelator vox(500.,500.,450.,100.,100.,90.);
 TFile flVox("voxel.root","recreate");
 vox.Insert(b1Run->GetPocaPtVector()); //Voxelized Poca Ready
 std::ofstream voxTrack;
