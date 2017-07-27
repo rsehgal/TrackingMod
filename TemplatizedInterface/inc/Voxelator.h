@@ -62,6 +62,7 @@ public:
   std::vector<Tracking::Vector3D<double>> GetVoxelCenters(){return fVoxelCenters; }
   Tracking::Vector3D<double> GetVoxelCenter(double x, double y, double z);
   Tracking::Vector3D<double> GetVoxelCenter(Tracking::Vector3D<double> vox);
+  Tracking::Vector3D<double> GetVoxelCenter(int voxelNum);
   int GetVoxelNumber(int x, int y, int z);
   int GetVoxelNumber(double x,double y, double z);
   int GetVoxelNumber(Tracking::Vector3D<double> vox);

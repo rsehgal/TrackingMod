@@ -103,6 +103,11 @@ int Voxelator::GetVoxelNumber(Tracking::Vector3D<double> vox){
 	return GetVoxelNumber(vox.x(),vox.y(),vox.z());
 }
 
+Tracking::Vector3D<double> Voxelator::GetVoxelCenter(int voxelNum){
+
+	return fVoxelCenters[voxelNum];
+}
+
 Tracking::Vector3D<double> Voxelator::GetVoxelCenter(double x, double y, double z){
 
 	return fVoxelCenters[GetVoxelNumber(x,y,z)];
