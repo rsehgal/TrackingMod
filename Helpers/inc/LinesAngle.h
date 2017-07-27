@@ -1,3 +1,6 @@
+#ifndef HELPERS_INC_LINESANGLE_H_
+#define HELPERS_INC_LINESANGLE_H_
+
 #include <iostream>
 #include "base/Vector3D.h"
 #include "Track.h"
@@ -21,3 +24,5 @@ public:
 
 };
 //}// end of namespace Tomography
+
+#endif

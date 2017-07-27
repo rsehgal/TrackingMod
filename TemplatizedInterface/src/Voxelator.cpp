@@ -24,11 +24,12 @@ Voxelator::Voxelator(double voxelizedVolHalfX,double voxelizedVolHalfY, double v
 	SetVoxelator(voxelizedVolHalfX,voxelizedVolHalfY,voxelizedVolHalfZ,voxelX,voxelY,voxelZ);
 	fVoxelizedVolumeDim.Print();
 	fVoxelatorDim.Print();
+
 }
 
 Voxelator::~Voxelator(){
-delete histVoxelValue;
-delete histVoxelCount;
+//delete histVoxelValue;
+//delete histVoxelCount;
 }
 
 void Voxelator::SetVoxelDim(double x, double y , double z){
@@ -54,6 +55,30 @@ void Voxelator::SetVoxelator(double voxelizedVolHalfX,double voxelizedVolHalfY, 
 			          int(fVoxelizedVolumeDim.z()/fEachVoxelDim.z()) );
 	CreateHistogram();
 }
+
+/*
+Vector3D<double> Voxelator::GetInsersection(Track t, double zVal, int select){
+	Vector3D<double> ptOfIntersection;
+	double x = 0.,y = 0., z = 0., dist = 0. ;
+
+	if(select == 1){
+		dist = (zVal - t.GetP2().z())/t.GetDirection().z();
+		ptOfIntersection = t.GetP2() + t.GetDirection()*dist;
+	}
+
+	if(select == 2){
+		dist = (zVal - t.GetP1().z())/(-t.GetDirection().z());
+		ptOfIntersection = t.GetP1() - t.GetDirection()*dist;
+	}
+
+	if(select == 3){
+		dist = (zVal - t.GetP1().z())/t.GetDirection().z();
+		ptOfIntersection = t.GetP1() + t.GetDirection()*dist;
+	}
+
+	return ptOfIntersection;
+}
+*/
 
 int Voxelator::GetVoxelNumber(double x, double y, double z){
 	int onX = (int)(x+fVoxelizedVolumeDim.x()/2.)/fEachVoxelDim.x();// + 1;

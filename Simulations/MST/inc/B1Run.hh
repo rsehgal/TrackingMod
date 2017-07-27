@@ -39,9 +39,13 @@
 #include <fstream>
 #include "Track.h"
 #include "Tree.h"
+#include "Voxelator.h"
+#include "G4SystemOfUnits.hh"
+
 using Tomography::Track;
 using Tracking::Tree;
 using Tracking::Vector3D;
+using Tomography::Voxelator;
 
 using PhysicalTrackVector = std::vector< std::vector<Vector3D<double>> > ;
 class G4Event;
@@ -61,6 +65,9 @@ class B1Run : public G4Run
      Track incoming,outgoing;
      double scattering;
 
+
+     Voxelator fVox;
+
   public:
     B1Run();
     virtual ~B1Run();
@@ -76,6 +83,7 @@ class B1Run : public G4Run
     Track GetOutGoing(){ return outgoing; }
     void SetScattering(double val){scattering = val;}
     double GetScattering() {return scattering; }
+    Voxelator GetVoxelator(){return fVox;}
 
 
     G4double GetEdep()  const { return fEdep; }

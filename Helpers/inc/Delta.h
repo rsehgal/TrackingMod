@@ -14,7 +14,9 @@
 #include <iostream>
 
 using Tomography::Track;
-using Vec_t = Tracking::Vector3D<double>;
+//using Vector3D<double> = Tracking::Vector3D<double>;
+using Tracking::Vector3D;//<double>;
+
 
 bool verbose = true;
 
@@ -56,11 +58,11 @@ template<bool xdir>
 double DeltaLinear(Track incoming, Track outgoing, double FirstBottomDetectorZ){
 
 
-	Track newIncoming(incoming.GetP1(), Vec_t(0.,0.,0.));
+	Track newIncoming(incoming.GetP1(), Vector3D<double>(0.,0.,0.));
 	double L = (FirstBottomDetectorZ - incoming.GetP2().z())/incoming.GetDirection().z();
 	if(verbose)
 		std::cout << "DistaneTravelled : " << L << std::endl;
-	Vec_t p2(incoming.GetP2().x() + incoming.GetDirection().x() * L,
+	Vector3D<double> p2(incoming.GetP2().x() + incoming.GetDirection().x() * L,
 			incoming.GetP2().y() + incoming.GetDirection().y() * L,
 			FirstBottomDetectorZ);
 	newIncoming.SetP2(p2);
@@ -74,27 +76,27 @@ double DeltaLinear(Track incoming, Track outgoing, double FirstBottomDetectorZ){
 template<bool xdir>
 double DeltaAngular(Track incoming, Track outgoing){
 
-	Track newIncoming(Vec_t(0.,0.,0.),Vec_t(0.,0.,0.));
-	Track newOutgoing(Vec_t(0.,0.,0.),Vec_t(0.,0.,0.));
-	Track refIncoming(Vec_t(0.,0.,0.),Vec_t(0.,0.,0.));
-	Track refOutgoing(Vec_t(0.,0.,0.),Vec_t(0.,0.,0.));
+	Track newIncoming(Vector3D<double>(0.,0.,0.),Vector3D<double>(0.,0.,0.));
+	Track newOutgoing(Vector3D<double>(0.,0.,0.),Vector3D<double>(0.,0.,0.));
+	Track refIncoming(Vector3D<double>(0.,0.,0.),Vector3D<double>(0.,0.,0.));
+	Track refOutgoing(Vector3D<double>(0.,0.,0.),Vector3D<double>(0.,0.,0.));
 	if(xdir){
-		newIncoming.SetP1(Vec_t(incoming.GetP1().x(),0.,incoming.GetP1().z()));
-		newIncoming.SetP2(Vec_t(incoming.GetP2().x(),0.,incoming.GetP2().z()));
-		newOutgoing.SetP1(Vec_t(outgoing.GetP1().x(),0.,outgoing.GetP1().z()));
-		newOutgoing.SetP2(Vec_t(outgoing.GetP2().x(),0.,outgoing.GetP2().z()));
+		newIncoming.SetP1(Vector3D<double>(incoming.GetP1().x(),0.,incoming.GetP1().z()));
+		newIncoming.SetP2(Vector3D<double>(incoming.GetP2().x(),0.,incoming.GetP2().z()));
+		newOutgoing.SetP1(Vector3D<double>(outgoing.GetP1().x(),0.,outgoing.GetP1().z()));
+		newOutgoing.SetP2(Vector3D<double>(outgoing.GetP2().x(),0.,outgoing.GetP2().z()));
 
 	}else{
-		newIncoming.SetP1(Vec_t(0.,incoming.GetP1().y(),incoming.GetP1().z()));
-		newIncoming.SetP2(Vec_t(0.,incoming.GetP2().y(),incoming.GetP2().z()));
-		newOutgoing.SetP1(Vec_t(0.,outgoing.GetP1().y(),outgoing.GetP1().z()));
-		newOutgoing.SetP2(Vec_t(0.,outgoing.GetP2().y(),outgoing.GetP2().z()));
+		newIncoming.SetP1(Vector3D<double>(0.,incoming.GetP1().y(),incoming.GetP1().z()));
+		newIncoming.SetP2(Vector3D<double>(0.,incoming.GetP2().y(),incoming.GetP2().z()));
+		newOutgoing.SetP1(Vector3D<double>(0.,outgoing.GetP1().y(),outgoing.GetP1().z()));
+		newOutgoing.SetP2(Vector3D<double>(0.,outgoing.GetP2().y(),outgoing.GetP2().z()));
 
 	}
-	refIncoming.SetP1(Vec_t(newIncoming.GetP2().x(),newIncoming.GetP2().y(),newIncoming.GetP1().z()));
+	refIncoming.SetP1(Vector3D<double>(newIncoming.GetP2().x(),newIncoming.GetP2().y(),newIncoming.GetP1().z()));
 	refIncoming.SetP2(newIncoming.GetP2());
 	refOutgoing.SetP1(newOutgoing.GetP1());
-	refOutgoing.SetP2(Vec_t(newOutgoing.GetP1().x(),newOutgoing.GetP1().y(),newOutgoing.GetP2().z()));
+	refOutgoing.SetP2(Vector3D<double>(newOutgoing.GetP1().x(),newOutgoing.GetP1().y(),newOutgoing.GetP2().z()));
 
 	LinesAngle la;
 	double thetaIncoming = la.CalculateAngle(newIncoming,refIncoming);
@@ -103,6 +105,42 @@ double DeltaAngular(Track incoming, Track outgoing){
 		std::cout<<"ThetaIncoming : " <<  thetaIncoming <<" : ThetaOutgoing : " << thetaOutgoing << std::endl;
 	return (thetaOutgoing-thetaIncoming) ;
 }
+
+//Functions to detect Candidate Voxels that influenced the Muon direction
+  /*
+   * @Input : Track
+   * @Input : Z value to detect the intersection at
+   * @Input : An integer defining following
+   * 		  1) Incoming Track (to detect incoming Hit Point at Voxelized Volume)
+   * 		  2) Outgoing Track (to detect outgoing Hit Point at Voxelized Volume)
+   * 		  3) Intersection with real Voxels
+   *
+   */
+
+
+Vector3D<double> GetIntersection(Track t, double zVal, int select){
+	Vector3D<double> ptOfIntersection;
+	double x = 0.,y = 0., z = 0., dist = 0. ;
+
+	if(select == 1){
+		dist = (zVal - t.GetP2().z())/t.GetDirection().z();
+		ptOfIntersection = t.GetP2() + t.GetDirection()*dist;
+	}
+
+	if(select == 2){
+		dist = (zVal - t.GetP1().z())/(-t.GetDirection().z());
+		ptOfIntersection = t.GetP1() - t.GetDirection()*dist;
+	}
+
+	if(select == 3){
+		dist = (zVal - t.GetP1().z())/t.GetDirection().z();
+		ptOfIntersection = t.GetP1() + t.GetDirection()*dist;
+	}
+
+	return ptOfIntersection;
+}
+
+
 
 
 

@@ -36,6 +36,7 @@
 #include "LinesAngle.h"
 #include "Tree.h"
 #include "TInterpreter.h"
+#include "Delta.h"
 
 #include "Imaging.h"
 using Tracking::ImageReconstruction;
@@ -101,6 +102,31 @@ void B1EventAction::EndOfEventAction(const G4Event*)
 
   run->GetTreeInstance()->Fill();
  // B1Run::GetTreeInstance()->WriteToFile();
+
+
+
+#ifdef FIND_CANDIDATE_VOXEL
+  //Detecting HitPoints in Voxelized Volume
+  Tracking::Vector3D<double> inComingHitPt = GetIntersection(incoming,-1.*(run->GetVoxelator().GetVoxelizedVolumeDim().z()/2.),1);
+  Tracking::Vector3D<double> outGoingHitPt = GetIntersection(incoming,run->GetVoxelator().GetVoxelizedVolumeDim().z()/2.,2);
+  std::cout << "InComingHitPoint : ";
+  inComingHitPt.Print();
+  std::cout << "OutgoingHitPoint : " ;
+  outGoingHitPt.Print();
+
+  Tomography::Track tr(inComingHitPt,outGoingHitPt);
+  for(int i = 0 ; i < (run->GetVoxelator().GetVoxelatorDim().z()) ; i++){
+	  Tracking::Vector3D<double> voxelHitPt = GetIntersection(tr,
+			  	  	  	  -1.*(run->GetVoxelator().GetVoxelizedVolumeDim().z()/2.)+(i*run->GetVoxelator().GetEachVoxelDim().z()),
+						  1);
+	  voxelHitPt.SetZ(voxelHitPt.z()+1);
+
+	  std::cout<<"Voxel Hit Point for Slice : " << i << " : VoxelNumber : " << run->GetVoxelator().GetVoxelNumber(voxelHitPt)
+				<< " : PocaPt_VoxelNumber : " << run->GetVoxelator().GetVoxelNumber(fPocaPt) << " : Voxel Point ";
+	  voxelHitPt.Print();
+  }
+#endif
+
   }
 
 

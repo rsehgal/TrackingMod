@@ -13,11 +13,15 @@
 #include "TH3F.h"
 #include "TH2F.h"
 #include "ObjectChecker.h"
+#include "Track.h"
 
 using Slice = std::vector<std::vector<Tracking::Vector3D<double>>>;
 using VoxelCenters = std::vector<Slice>;
 
 using Tracking::Vector3D;
+using Tomography::Track;
+
+
 namespace Tomography{
 class Voxelator{
 private:
@@ -32,6 +36,12 @@ private:
   ObjectChecker fObjChecker;
 
   std::vector<Tracking::Vector3D<double>> fVoxelCenters;
+
+
+  // Hit point to VoxelizedVolume
+  Vector3D<double> fHitPtInput;
+  Vector3D<double> fHitPtOutput;
+
 public:
 
   ObjectChecker GetObjectChecker(){return fObjChecker;}
@@ -79,8 +89,25 @@ public:
   Vector3D<int> GetVoxelizedVolumeDim(){return fVoxelizedVolumeDim;}
   Vector3D<int> GetEachVoxelDim(){return fEachVoxelDim;}
 
+
+
+  //Functions to detect Candidate Voxels that influenced the Muon direction
+  /*
+   * @Input : Track
+   * @Input : Z value to detect the intersection at
+   * @Input : An integer defining following
+   * 		  1) Incoming Track (to detect incoming Hit Point at Voxelized Volume)
+   * 		  2) Outgoing Track (to detect outgoing Hit Point at Voxelized Volume)
+   * 		  3) Intersection with real Voxels
+   *
+   */
+
+   //Curretnly
+   //Vector3D<double> GetInsersection(Track t, double zVal, int select);
+
 };
 
-#endif  // INC_VOXELATOR__
+
 } // end of Tomography namespace
+#endif  // INC_VOXELATOR__
 

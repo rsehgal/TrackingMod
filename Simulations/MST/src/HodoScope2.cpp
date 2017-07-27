@@ -86,7 +86,7 @@ G4VPhysicalVolume* HodoScope2::Construct(){
   double bottomShelfZ = -75*cm;
   for(int i = -3 ; i < 3; i++ ){
 
-	  if(i==-1 || i==0) continue;
+	  if(i==-1 || i==0 /*|| i==2*/) continue;
       //Now physically placing Six such shelves for Six Rpc's
 	  int shelfNum = i+3;
       G4VPhysicalVolume *phyFirstShelf = new G4PVPlacement(0,
@@ -137,7 +137,8 @@ G4VPhysicalVolume *phyTargetPbBlock = new G4PVPlacement(0,
 
   G4VPhysicalVolume *phyTargetBlock = new G4PVPlacement(0,
                             //G4ThreeVector(),
-                            G4ThreeVector(15*cm,-15*cm,12*cm),
+                            //G4ThreeVector(15*cm,-15*cm,12*cm),
+		  	  	  	  	    G4ThreeVector(15*cm,-15*cm,-39*cm),
                            fLogicTarget,
                             "TargetPhysical",
                             world->GetLogicalVolume(),//logicWorld,
@@ -147,7 +148,8 @@ G4VPhysicalVolume *phyTargetPbBlock = new G4PVPlacement(0,
 
   G4VPhysicalVolume *phyTargetBlock2 = new G4PVPlacement(0,
                               //G4ThreeVector(),
-                              G4ThreeVector(-15*cm,15*cm,12*cm),
+                              //G4ThreeVector(-15*cm,15*cm,12*cm),
+		  	  	  	  	  	  G4ThreeVector(-15*cm,15*cm,-39*cm),
                              fLogicTarget,
                               "TargetPhysical",
                               world->GetLogicalVolume(),//logicWorld,
@@ -157,7 +159,8 @@ G4VPhysicalVolume *phyTargetPbBlock = new G4PVPlacement(0,
 
   G4VPhysicalVolume *phyTargetBlock3 = new G4PVPlacement(0,
                                 //G4ThreeVector(),
-                                G4ThreeVector(-15*cm,-15*cm,12*cm),
+                                //G4ThreeVector(-15*cm,-15*cm,12*cm),
+		  	  	  	  	  	    G4ThreeVector(-15*cm,-15*cm,-39*cm),
                                fLogicTarget,
                                 "TargetPhysical",
                                 world->GetLogicalVolume(),//logicWorld,
@@ -167,7 +170,8 @@ G4VPhysicalVolume *phyTargetPbBlock = new G4PVPlacement(0,
 
   G4VPhysicalVolume *phyTargetBlock4 = new G4PVPlacement(0,
                                   //G4ThreeVector(),
-                                  G4ThreeVector(25*cm,25*cm,12*cm),
+                                  //G4ThreeVector(25*cm,25*cm,12*cm),
+		  	  	  	  	  	  	  G4ThreeVector(25*cm,25*cm,-39*cm),
                                  fLogicTarget,
                                   "TargetPhysical",
                                   world->GetLogicalVolume(),//logicWorld,
@@ -184,7 +188,7 @@ G4VPhysicalVolume *phyTargetPbBlock = new G4PVPlacement(0,
 #ifdef VOXELIZE
    //Trying to use Voxelator to visualize the VoxelizedVolume
    Tomography::Voxelator v;
-   v.SetVoxelator(50*cm,50*cm,40*cm,10*cm,10*cm,8*cm);
+   v.SetVoxelator(50*cm,50*cm,40*cm,20*cm,20*cm,16*cm);
    v.CalculateVoxelCenters();
    std::vector<Tracking::Vector3D<double>> voxelCenters = v.GetVoxelCenters();
    Tracking::Vector3D<int> voxDim = v.GetEachVoxelDim();

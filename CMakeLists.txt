@@ -64,6 +64,11 @@ option(CRY "Enable CRY library for cosmic event generation" OFF)
 option(STORE "Store data to ROOT Tree" OFF)
 option(VOXELIZE "Voxelize the Region" OFF)
 option(STORE_SLICE "Store 2D hist of eache Slice in Z direction" OFF)
+option(FIND_CANDIDATE_VOXEL "Does the calculation to find Candidate Voxels that influenced the track" OFF)
+
+if(FIND_CANDIDATE_VOXEL)
+add_definitions(-DFIND_CANDIDATE_VOXEL)
+endif(FIND_CANDIDATE_VOXEL)
 
 if(STORE_SLICE)
 add_definitions(-DSTORE_SLICE)

@@ -39,6 +39,7 @@ B1Run::B1Run()
   fEdep2(0.)
 {
 	std::cout<<"@@@@@@ RUN DEFAULT CONSTRUCTOR CALLED @@@@@@@@@@@@" << std::endl;
+	fVox.SetVoxelator(50*cm,50*cm,40*cm,20*cm,20*cm,16*cm);
 	tree = Tracking::Tree::instance();
 	  tree->SetTreeDefaultParameters();
 	  tree->InitializeTreeForWriting();
