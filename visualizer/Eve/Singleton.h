@@ -18,6 +18,7 @@ class Singleton
     int m_value;
     TEveElementList *fEveGeomList;
     TEveStraightLineSet *fLineSet;
+    TEvePointSet *fPointSet;
     //EveVisualizer *fEve;
     static Singleton *s_instance;
 
@@ -74,6 +75,17 @@ class Singleton
         	fLineSet = ls;
         	fEveGeomList->AddElement(fLineSet);
         }
+
+    void AddPointSet(TEvePointSet *ptSet){
+            	fPointSet = ptSet;
+            	fEveGeomList->AddElement(fPointSet);
+            }
+
+    void AddElement(TEvePointSet *ptSet){
+                	fPointSet = ptSet;
+                	fEveGeomList->AddElement(fPointSet);
+    }
+
 
     TEveStraightLineSet *GetLineSet(){
     	return fLineSet;

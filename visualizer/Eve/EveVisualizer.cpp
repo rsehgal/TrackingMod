@@ -20,6 +20,8 @@
 #include "TGeoManager.h"
 #include "TGLViewer.h"
 #include "TGeoShape.h"
+
+#include "TEvePointSet.h"
 namespace Tracking {
 
 //TEveElementList* EveVisualizer::fEveGeomList = 0;
@@ -41,9 +43,26 @@ void EveVisualizer::AddMarkers(Vector3D<double> pt) {
      /*for (int i = 0; i < c.GetLength(); i++) {
        ls->AddMarker(pt.x(), pt.y(), pt.z());
      }*/
+/*
 	ls->AddMarker(pt.x(), pt.y(), pt.z());
      ls->SetMarkerSize(1.3);
      ls->SetMarkerStyle(4);
+*/
+
+   }
+
+void EveVisualizer::AddMarkers(std::vector<TEvePointSet> pointSetVector) {
+
+	/*ls->AddMarker(pt.x(), pt.y(), pt.z());
+     ls->SetMarkerSize(1.3);
+     ls->SetMarkerStyle(4);*/
+
+	for(int i = 0 ; i < pointSetVector.size() ; i++){
+	  pointSetVector[i]->SetMarkerSize(1.3);
+	  pointSetVector[i]->SetMarkerStyle(4);
+	  pointSetVector[i]->SetMarkerColor(i+1); // need to be changed programmatically
+	}
+
    }
 
 
@@ -66,7 +85,7 @@ if(gEve){
   
 }
 
-void EveVisualizer::AddEveShape(std::string shapeName,TGeoBBox *shape, int color, TGeoHMatrix &mat){
+void EveVisualizer::AddEveShape(std::string shapeName,TGeoBBox *shape,  TGeoHMatrix &mat , int color){
 
 if(gEve){
   fEveShape = new TEveGeoShape(shapeName.c_str());
@@ -84,7 +103,7 @@ void EveVisualizer::AddEveShape(std::string shapeName,TGeoShape *shape, TGeoHMat
 if(gEve){
   fEveShape = new TEveGeoShape(shapeName.c_str());
   fEveShape->SetShape(shape);
-//  fEveShape->SetMainColor(kGreen);
+  fEveShape->SetMainColor(kRed);
   fEveShape->SetMainTransparency(60);
   fEveShape->SetTransMatrix(mat);
   //fEveGeomList->AddElement(fEveShape);

@@ -14,6 +14,7 @@
 #include "TEveManager.h"
 #include "TEveGeoShape.h"
 #include "TEveStraightLineSet.h"
+#include "TEvePointSet.h"
 #include <TGeoMatrix.h>
 typedef Tracking::EveVisualizer TomographyVisualizer;
 #else
