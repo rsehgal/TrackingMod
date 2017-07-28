@@ -52,7 +52,9 @@ B1Run::B1Run()
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 B1Run::~B1Run()
-{ tree->WriteToFile();}
+{ tree->WriteToFile();
+std::cout<<"Length of RunVoxelVector : "<< fVectorOfVoxelsForWholeRun.size() << std::endl;
+}
  
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 

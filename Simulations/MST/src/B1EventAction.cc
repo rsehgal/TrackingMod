@@ -40,6 +40,7 @@
 
 #include "Imaging.h"
 using Tracking::ImageReconstruction;
+using VectorOfVoxelsForAnEvent = std::vector<int>; // This represent std::vector of candidate voxel num which can influenced the muon track.
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
@@ -68,6 +69,7 @@ void B1EventAction::BeginOfEventAction(const G4Event*)
 
 void B1EventAction::EndOfEventAction(const G4Event*)
 {   
+
   // accumulate statistics in B1Run
   B1Run* run 
     = static_cast<B1Run*>(
@@ -90,22 +92,10 @@ void B1EventAction::EndOfEventAction(const G4Event*)
   run->GetOutGoing() = outgoing;
   run->SetScattering(fScatteringAngle*1000);
 
-   // Store data in ROOT Tree
-  //gInterpreter->GenerateDictionary("/home/rsehgal/Tomo/TrackingMod/Helpers/inc/Track.h","/home/rsehgal/Tomo/TrackingMod/Helpers/inc/Track.h");
-/*
-  Tracking::Tree *tree = Tracking::Tree::instance();
-  tree->SetTreeDefaultParameters();
-  tree->InitializeTreeForWriting();
-  tree->CreateBranch<Track>("InComingTracking", incoming);
-  tree->CreateBranch<Track>("OutGoingTracking", outgoing);
-*/
-
   run->GetTreeInstance()->Fill();
- // B1Run::GetTreeInstance()->WriteToFile();
-
-
 
 #ifdef FIND_CANDIDATE_VOXEL
+	VectorOfVoxelsForAnEvent vectOfVoxels;
   //Detecting HitPoints in Voxelized Volume
   Tracking::Vector3D<double> inComingHitPt = GetIntersection(incoming,-1.*(run->GetVoxelator().GetVoxelizedVolumeDim().z()/2.),1);
   Tracking::Vector3D<double> outGoingHitPt = GetIntersection(incoming,run->GetVoxelator().GetVoxelizedVolumeDim().z()/2.,2);
@@ -124,7 +114,12 @@ void B1EventAction::EndOfEventAction(const G4Event*)
 	  std::cout<<"Voxel Hit Point for Slice : " << i << " : VoxelNumber : " << run->GetVoxelator().GetVoxelNumber(voxelHitPt)
 				<< " : PocaPt_VoxelNumber : " << run->GetVoxelator().GetVoxelNumber(fPocaPt) << " : Voxel Point ";
 	  voxelHitPt.Print();
+	  vectOfVoxels.push_back(run->GetVoxelator().GetVoxelNumber(voxelHitPt));
   }
+  //std::cout<<"EventVoxelVectorSize : " << vectOfVoxels.size() << std::endl;
+  run->InsertVectorOfVoxels(vectOfVoxels);
+  //run->GetVectorOfVoxelForRun().push_back(vectOfVoxels);
+  //std::cout<<"RunVoxel-Vector-Size : "<< run->GetVectorOfVoxelForRun().size() << std::endl;
 #endif
 
   }

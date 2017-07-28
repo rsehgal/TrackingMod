@@ -48,6 +48,7 @@ using Tracking::Vector3D;
 using Tomography::Voxelator;
 
 using PhysicalTrackVector = std::vector< std::vector<Vector3D<double>> > ;
+using VectorOfVoxelsForAnEvent = std::vector<int>; // This represent std::vector of candidate voxel num which can influenced the muon track.
 class G4Event;
 
 /// Run class
@@ -67,6 +68,7 @@ class B1Run : public G4Run
 
 
      Voxelator fVox;
+     std::vector<VectorOfVoxelsForAnEvent> fVectorOfVoxelsForWholeRun;
 
   public:
     B1Run();
@@ -99,6 +101,9 @@ class B1Run : public G4Run
     std::vector<Track> GetOutgoingTrackVector() const {return outgoingTrackVect;}
     void FillPocaPtVector(Vector3D<double> pt) { fPocaPtVect.push_back(pt);}
     std::vector<Vector3D<double>> GetPocaPtVector()const {return fPocaPtVect;}
+    std::vector<VectorOfVoxelsForAnEvent> GetVectorOfVoxelForRun(){return fVectorOfVoxelsForWholeRun;}
+    void InsertVectorOfVoxels(VectorOfVoxelsForAnEvent vect){fVectorOfVoxelsForWholeRun.push_back(vect);}
+
 
 
   private:
