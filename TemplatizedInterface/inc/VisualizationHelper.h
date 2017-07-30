@@ -116,6 +116,14 @@ public:
 	  fVis.AddMarkers(pt);
   }
 
+  void Register_V2(Tracking::Vector3D<double> pt){
+    fVis.AddMarkers_V2(pt);
+  }
+
+  void CloseBins(){
+
+    fVis.CloseBins();
+  }
 
   //New overloaded version that also takes slices into consideration
   //and will register the point only if it lie within the slice

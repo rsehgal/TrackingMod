@@ -21,6 +21,7 @@ class TGeoMatrix;
 class TEveStraightLineSet;
 class TGeoShape;
 class TEvePointSet;
+class TEvePointSetArray;
 
 namespace Tracking {
 
@@ -31,6 +32,7 @@ private:
   TEveGeoShape *fEveShape;
   TEveStraightLineSet *ls;
   TEvePointSet *fPointSet;
+  TEvePointSetArray *fPointSetArray;
 
 
 
@@ -44,8 +46,10 @@ public:
   static void Show();
   static void UpdateScene();
   void AddMarkers(Vector3D<double> pt);
+  void AddMarkers_V2(Vector3D<double> pt);
   void AddMarkers(std::vector<TEvePointSet> pointSetVector);
   void ImportFromROOTFile(std::string geomFile);
+  void CloseBins();
 };
 
 } //end of Tracking namespace

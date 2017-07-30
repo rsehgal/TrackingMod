@@ -11,6 +11,7 @@
 #include "TEveElement.h"
 #include "TEveGeoShape.h"
 #include <TEveStraightLineSet.h>
+#include <TEvePointSet.h>
 //#include "Eve/EveVisualizer.h"
 namespace Tracking{
 class Singleton
@@ -18,7 +19,8 @@ class Singleton
     int m_value;
     TEveElementList *fEveGeomList;
     TEveStraightLineSet *fLineSet;
-    TEvePointSet *fPointSet;
+    TEvePointSetArray *fPointSetArray;
+    //TEvePointSet *fPointSet;
     //EveVisualizer *fEve;
     static Singleton *s_instance;
 
@@ -66,6 +68,11 @@ class Singleton
     	fEveGeomList->AddElement(fLineSet);
     }
 
+    void AddElement(TEvePointSetArray *pointSetArray){
+        fPointSetArray = pointSetArray;
+        fEveGeomList->AddElement(fPointSetArray);
+    }
+
     void RemoveElement(){ //TEveStraightLineSet *ls){
         	//fLineSet = ls;
         	fEveGeomList->RemoveElement(fLineSet);
@@ -76,16 +83,16 @@ class Singleton
         	fEveGeomList->AddElement(fLineSet);
         }
 
-    void AddPointSet(TEvePointSet *ptSet){
+/*    void AddPointSet(TEvePointSet *ptSet){
             	fPointSet = ptSet;
-            	fEveGeomList->AddElement(fPointSet);
+            	//fEveGeomList->AddElement(fPointSet);
             }
-
-    void AddElement(TEvePointSet *ptSet){
+*/
+/*    void AddElement(TEvePointSet *ptSet){
                 	fPointSet = ptSet;
-                	fEveGeomList->AddElement(fPointSet);
+                //	fEveGeomList->AddElement(fPointSet);
     }
-
+*/
 
     TEveStraightLineSet *GetLineSet(){
     	return fLineSet;

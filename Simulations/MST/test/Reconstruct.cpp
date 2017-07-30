@@ -53,9 +53,14 @@ const char* input_filename = (argc>1)?argv[1]:"tracks.txt";
     	pt.Set(x/deno,y/deno,z/deno);
 	pt.SetColor(color);
     	//v.Register(slicer,pt);
-	v.Register(pt);
+    //v.Register(pt);
+	v.Register_V2(pt);
     
     }
+#ifdef USE_EVE
+    //v.CloseBins();
+    //fPointSetArray->CloseBins();
+#endif
 
 	//hist->Draw();
 	
