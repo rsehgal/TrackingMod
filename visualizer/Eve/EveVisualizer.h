@@ -50,6 +50,8 @@ public:
   void AddMarkers(std::vector<TEvePointSet> pointSetVector);
   void ImportFromROOTFile(std::string geomFile);
   void CloseBins();
+  void CreatePointSetArray();
+  void InitializeVisualizer();
 };
 
 } //end of Tracking namespace

@@ -28,6 +28,37 @@ namespace Tracking {
 
 //TEveElementList* EveVisualizer::fEveGeomList = 0;
 
+  void EveVisualizer::InitializeVisualizer(){
+    CreatePointSetArray();
+    AddLine(Vector3D<double>(0.,0.,0.),Vector3D<double>(0.,0.,0.));
+  }
+
+  void EveVisualizer::CreatePointSetArray(){
+     if(gEve){
+  //  if(!fPointSetArray)
+  fPointSetArray = new TEvePointSetArray("points");
+
+  fPointSetArray->SetSourceCS(TEvePointSelectorConsumer::kTVT_RPhiZ);
+  fPointSetArray->SetMarkerColor(3);
+  fPointSetArray->SetMarkerStyle(4); // antialiased circle
+  fPointSetArray->SetMarkerSize(0.8);
+  
+  // fPointSetArray->CloseBins();
+  Singleton::instance()->AddElement(fPointSetArray);
+  fPointSetArray->InitBins("Scattering", 10, 0., 100.);
+
+   TColor::SetPalette(1, 0); 
+   const Int_t nCol = TColor::GetNumberOfColors();
+   for (Int_t i = 1; i <= 10; ++i)
+      fPointSetArray->GetBin(i)->SetMainColor(TColor::GetColorPalette(i * nCol / 10));
+
+   fPointSetArray->GetBin(0) ->SetMainColor(kGray);
+   fPointSetArray->GetBin(10)->SetMainColor(kWhite);
+
+}
+
+  }
+
 void EveVisualizer::AddLine(Vector3D<double>p1, Vector3D<double>p2){
   ls = new TEveStraightLineSet();
   
@@ -65,7 +96,7 @@ void EveVisualizer::AddMarkers(Vector3D<double> pt) {
 
 void EveVisualizer::AddMarkers_V2(Vector3D<double> pt){
 
-  if(gEve){
+ /* if(gEve){
   //  if(!fPointSetArray)
   fPointSetArray = new TEvePointSetArray("points");
 
@@ -86,10 +117,10 @@ void EveVisualizer::AddMarkers_V2(Vector3D<double> pt){
    fPointSetArray->GetBin(0) ->SetMainColor(kGray);
    fPointSetArray->GetBin(10)->SetMainColor(kWhite);
 
-}
+}*/
   if(gEve){
   fPointSetArray->Fill(pt.x(),pt.y(),pt.z(),pt.GetColor());
-  fPointSetArray->CloseBins();
+ // fPointSetArray->CloseBins();
 }
 }
 
@@ -116,6 +147,7 @@ void EveVisualizer::CloseBins(){
 }
 
 EveVisualizer::EveVisualizer(){
+ // CreatePointSetArray();
  // fPointSetArray = new TEvePointSetArray("points");
     //  Singleton::instance()->AddElement(fPointSetArray);
  
@@ -201,6 +233,9 @@ void EveVisualizer::Show(){
 
 
   //gEve->AddGlobalElement(fEveGeomList);
+  //CloseBins();
+
+
   if(gEve){
  
 

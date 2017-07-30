@@ -30,7 +30,9 @@ const char* input_filename = (argc>1)?argv[1]:"tracks.txt";
 #ifdef USE_EVE
 	v.Register("Hodoscope.gdml");
 	//v.Register("VoxelizedVolume.gdml");
-	v.RegisterLine(Vector3D<double>(0.,0.,0.),Vector3D<double>(0.,0.,0.));
+	// v.RegisterLine(Vector3D<double>(0.,0.,0.),Vector3D<double>(0.,0.,0.));
+ //    v.CreatePointSetArray();
+    v.InitializeVisualizer();
 #endif
 
     Vector3D<double> pt;
@@ -45,6 +47,9 @@ const char* input_filename = (argc>1)?argv[1]:"tracks.txt";
     double deno=10.;
     int count = 1000;
     //while(!ft.eof()){
+
+   
+
     while(count){
 	count--;
     	ft >> x >> y >> z >> color;
@@ -58,7 +63,7 @@ const char* input_filename = (argc>1)?argv[1]:"tracks.txt";
     
     }
 #ifdef USE_EVE
-    //v.CloseBins();
+    v.Lock();
     //fPointSetArray->CloseBins();
 #endif
 

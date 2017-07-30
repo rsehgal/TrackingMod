@@ -103,6 +103,12 @@ public:
 #endif
   }
 
+
+  void CreatePointSetArray(){
+
+    fVis.CreatePointSetArray();
+  }
+
   void Register(Track *t){
 	  fVis.AddLine(t->GetP1(),t->GetP2());
   }
@@ -120,7 +126,7 @@ public:
     fVis.AddMarkers_V2(pt);
   }
 
-  void CloseBins(){
+  void Lock(){
 
     fVis.CloseBins();
   }
@@ -153,6 +159,10 @@ public:
    }}
    
   }
+
+void InitializeVisualizer(){
+  fVis.InitializeVisualizer();
+}
 
 #ifdef USE_EVE
   //Function to register directly from ROOT file
