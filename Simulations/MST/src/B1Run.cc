@@ -30,18 +30,31 @@
 
 #include "B1Run.hh"
 
+
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 B1Run::B1Run()
 : G4Run(),
   fEdep(0.), 
   fEdep2(0.)
-{} 
+{
+	std::cout<<"@@@@@@ RUN DEFAULT CONSTRUCTOR CALLED @@@@@@@@@@@@" << std::endl;
+	fVox.SetVoxelator(50*cm,50*cm,40*cm,20*cm,20*cm,16*cm);
+	tree = Tracking::Tree::instance();
+	  tree->SetTreeDefaultParameters();
+	  tree->InitializeTreeForWriting();
+	  tree->CreateBranch<Track>("InComingTracking", incoming);
+	  tree->CreateBranch<Track>("OutGoingTracking", outgoing);
+	  tree->CreateBranch<double>("ScatteringAngle", scattering);
+
+}
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 B1Run::~B1Run()
-{} 
+{ tree->WriteToFile();
+std::cout<<"Length of RunVoxelVector : "<< fVectorOfVoxelsForWholeRun.size() << std::endl;
+}
  
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 

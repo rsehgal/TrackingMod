@@ -31,7 +31,7 @@
 #include "B1RunAction.hh"
 #include "MyPrimaryGeneratorAction.h"
 //#include "MyDetectorConstruction.hh"
-#include "HodoScope.h"
+#include "HodoScope2.h"
 #include "B1Run.hh"
 
 #include "G4RunManager.hh"
@@ -39,10 +39,26 @@
 #include "G4LogicalVolume.hh"
 #include "G4UnitsTable.hh"
 #include "G4SystemOfUnits.hh"
+#include "TFile.h"
+#include "TROOT.h"
+
+#include "Voxelator.h"
+#include "ObjectChecker.h"
+
 
 #include <iostream>
 #include <fstream>
+// #ifdef USE_EVE
+// #include "VisualizationHelper.h"
+// #include "Imaging.h"
+// #endif
+//#include <TROOT.h>
+//#include <TApplication.h>
 
+//using Tomography::VisualizationHelper;
+#include "Imaging.h"
+using Tracking::ImageReconstruction;
+using Tomography::Voxelator;
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 B1RunAction::B1RunAction()
@@ -79,8 +95,15 @@ void B1RunAction::BeginOfRunAction(const G4Run*)
 { 
   //inform the runManager to save random number seed
   G4RunManager::GetRunManager()->SetRandomNumberStore(false);
+  fScatteringHist = new TH1F("fScatteringHist","Scattering Histogram",100,0.,100.);
+  
   fs.open("run.txt", std::ios::app);
+  ftrack.open("tracks.txt",std::ios::app);
+  /*#ifdef USE_EVE
+  VisualizationHelper v;
+  #endif*/
 
+// TApplication *fApp = new TApplication("Test", NULL, NULL);
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -89,6 +112,14 @@ void B1RunAction::EndOfRunAction(const G4Run* run)
 {
   // std::ofstream fs;
   // fs.open("run.txt", std::ios::app);
+
+//TApplication *fApp = new TApplication("Test", NULL, NULL);
+/*
+#ifdef USE_EVE
+  VisualizationHelper v;
+#endif
+*/  
+  ImageReconstruction im;
 
   G4int nofEvents = run->GetNumberOfEvent();
   if (nofEvents == 0) return;
@@ -102,8 +133,8 @@ void B1RunAction::EndOfRunAction(const G4Run* run)
   G4double rms = edep2 - edep*edep/nofEvents;
   if (rms > 0.) rms = std::sqrt(rms); else rms = 0.;
 
-  const HodoScope* detectorConstruction
-   = static_cast<const HodoScope*>
+  const HodoScope2* detectorConstruction
+   = static_cast<const HodoScope2*>
      (G4RunManager::GetRunManager()->GetUserDetectorConstruction());
   G4double mass = detectorConstruction->GetScoringVolume()->GetMass();
   G4double dose = edep/mass;
@@ -157,26 +188,96 @@ void B1RunAction::EndOfRunAction(const G4Run* run)
 
   if(verbose)
   G4cout << "------ Printing Tracking info at the end of Run ------- " << G4endl;
-  fs << particleEnergy << " " << detectorConstruction->GetTargetMaterial() << " ";
+  fs << particleEnergy << " " << detectorConstruction->GetTargetMaterial() << " " << detectorConstruction->GetTargetThickness() << " ";
   for(int i = 0 ;i < b1Run->NumOfTracks() ; i++){
     if(verbose){
     G4cout << "----- Printing Event No : " << i+1 << "  --------" << G4endl;
+
     for(int j = 0 ; j < b1Run->GetPhysicalTrackVector()[i].size() ; j++){
       b1Run->GetPhysicalTrackVector()[i][j].Print();
     }
     std::cout<<"scattering Angle : " << b1Run->GetScatteringAngleVector()[i] << std::endl;
   }
 
-    //Logic to store the scattering angle of every event into "run.txt"
-    
-    fs << b1Run->GetScatteringAngleVector()[i] << " " ;
-    //fs << "Hello ";
-
   }
+
+  //Logic to store the scattering angle of every event into "run.txt"
+  std::cout<<"@@@@@@@@@@@ Scattering Angle Vector size : "<< b1Run->GetScatteringAngleVector().size() << " @@@@@@@@@@@@@@" << std::endl;
+   for(int i=0 ; i < b1Run->GetScatteringAngleVector().size() ; i++){
+   	fs << b1Run->GetScatteringAngleVector()[i] << " " ;
+   }
+
+
+for (auto &PocaPt : b1Run->GetPocaPtVector()){
+	ftrack<< PocaPt.x() <<" "<<PocaPt.y() << " "<< PocaPt.z() << " " << PocaPt.GetColor() << std::endl;
+	fScatteringHist->Fill(PocaPt.GetColor());
+	//fs << PocaPt.GetColor() << " " ;
+    }
+
+//Now trying to voxelate PocaVector
+
+Voxelator vox(500.,500.,450.,100.,100.,90.);
+TFile flVox("voxel.root","recreate");
+vox.Insert(b1Run->GetPocaPtVector()); //Voxelized Poca Ready
+std::ofstream voxTrack;
+voxTrack.open("VoxelizedTracks.txt");
+Vector3D<int> voxelatorDim = vox.GetVoxelatorDim();
+std::cout<< " -+-+-+-+--+-+-+--+--+-+--+-------+---++- " << std::endl;
+voxelatorDim.Print();
+Vector3D<int> voxelizedVolumeDim = vox.GetVoxelizedVolumeDim();
+Vector3D<int> voxelDim = vox.GetEachVoxelDim();
+for(int x = 0 ; x < voxelatorDim.x()-1 ; x++){
+    for(int y = 0 ; y < voxelatorDim.y()-1 ; y++){
+      for(int z = 0 ; z < voxelatorDim.z()-1 ; z++){
+	if(vox.GetVoxelizedCount()->GetBinContent(x,y,z))
+	//voxTrack << x << " " << y << " " << z << " " <<  vox.GetVoxelizedHist()->GetBinContent(x,y,z) << std::endl;
+	voxTrack << (-voxelizedVolumeDim.x()+x*voxelDim.x()) << " " << (-voxelizedVolumeDim.y()+y*voxelDim.y())  << " " << (-voxelizedVolumeDim.z()+z*voxelDim.z())  << " " <<  vox.GetVoxelizedHist()->GetBinContent(x,y,z) << std::endl;
+      }
+    }
+  }
+
+vox.GetVoxelIn1D()->Write();
+vox.GetVoxelIn1DCount()->Write();
+
+#ifdef STORE_SLICE
+std::set<Tomography::ObjectChecker> histSet = vox.GetObjectChecker().GetSet();
+for (std::set<Tomography::ObjectChecker>::iterator it=histSet.begin(); it!=histSet.end(); ++it){
+	(*it).GetHist()->Write();
+}
+#endif
+
+flVox.Write();
+voxTrack.close();
+
+
+
+/*
+TFile *f = new TFile();//"histos.root","new");
+f->SetName("histos.root");
+f->SetOption("recreate");
+//fScatteringHist->Write();
+//vox.GetVoxelizedHist()->Write();
+f->Write();
+*/
+
+//f.close();
+
+//TFile f("histos.root","recreate");
+//fScatteringHist->Write();
+//f.Write();
+delete fScatteringHist;
+//auto xmax = max_element(std::begin(cloud), std::end(cloud)); // c++11
+
+
+
+  //v.Show();
+  //gEve->DoRedraw3D();
+//  fApp->Run();
 
   fs << std::endl;
 
   fs.close();
+  ftrack.close();
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

@@ -29,6 +29,7 @@ GlassRpc::GlassRpc(std::string name, std::vector<int> channelDimVector):
   }*/
 }
 
+//Currently using this Constructor
 GlassRpc::GlassRpc(int moduleId, std::string rpcName, double zPos, int startId) {
   SetDetectorType("GLASS");
   Scintillator::SetStartingId(startId);
@@ -44,7 +45,7 @@ GlassRpc::GlassRpc(int moduleId, std::string rpcName, double zPos, int startId) 
   }*/
   InsertPlane(new ScintillatorPlane(moduleId,32,zPos,GetLength(),GetBreadth(),GetHeight(),0.,true));
   InsertPlane(new ScintillatorPlane(moduleId,32,zPos,GetLength(),GetBreadth(),GetHeight(),0.,false));
-  SetClusterSize(2);
+  //SetClusterSize(2);
 
 }
 

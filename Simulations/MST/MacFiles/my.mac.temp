@@ -16,6 +16,7 @@
 
 #Run 1 on Aluminium
 /B2/det/setTargetMaterial G4_MATERIAL
+/B2/det/setTargetThickness THICKNESS cm
 /gun/particle mu+
 /gun/energy ENERGY GeV
-/run/beamOn 1000 
+/run/beamOn NUMEVENTS 

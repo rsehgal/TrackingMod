@@ -54,7 +54,8 @@ void Visualizer::Show(){
   std::cout<<"========= Inside Expected SHOW() ============="<<std::endl;
   std::cout<<"=============================================="<<std::endl;
 
-  TGeoVolume *top = gGeoManager->MakeBox("Top", NULL, kInfinity, kInfinity, kInfinity);
+  //TGeoVolume *top = gGeoManager->MakeBox("Top", NULL, kInfinity, kInfinity, kInfinity);
+TGeoVolume *top = gGeoManager->MakeBox("Top", NULL, 1000., 1000., 1000.);
   gGeoManager->SetTopVolume(top);
   for(int i = 0 ; i < fVolumes.size() ; i++){
   top->AddNode(std::get<0>(fVolumes[i]), 1 , std::get<1>(fVolumes[i]));
@@ -65,6 +66,14 @@ void Visualizer::Show(){
   gGeoManager->CloseGeometry();
   #ifndef USE_OGL
   top->Draw();
+  for (auto &line : fLines) {
+      line->Draw();
+  }
+
+  for (auto &marker : fMarkers) {
+      marker->Draw();   
+  }
+   
   #else
   top->Draw("ogl"); //to display the geometry using openGL
   #endif
@@ -76,13 +85,42 @@ void Visualizer::Show(){
 }
 
 void Visualizer::Show(TGeoVolume *vol){
-  TGeoVolume *top = gGeoManager->MakeBox("Top", NULL, kInfinity, kInfinity, kInfinity);
+//  TGeoVolume *top = gGeoManager->MakeBox("Top", NULL, kInfinity, kInfinity, kInfinity);
+  TGeoVolume *top = gGeoManager->MakeBox("Top", NULL, 100, 100, 100);
   gGeoManager->SetTopVolume(top);
   //TGeoVolume *vol = fGeoManager->MakeSphere("SPHERE", NULL, 30, 40, 0, 180, 0, 360);
   top->AddNode(vol, 1);
   gGeoManager->CloseGeometry();
   top->Draw();
   //fApp->Run();
+}
+
+void Visualizer::AddMarkers(Tracking::Vector3D<double> pt,int color){
+  TPolyMarker3D *marker = new TPolyMarker3D(1); 
+  //pt.SetColor(2); //done just for testing of color change
+  //std::cout<<"Color as Seen by visualizer : "<< pt.GetColor() << std::endl;
+  marker->SetMarkerColor(pt.GetColor()); 
+  marker->SetMarkerSize(1);
+  marker->SetMarkerStyle(7); 
+  marker->SetNextPoint(pt.x(), pt.y(), pt.z());  
+  fMarkers.push_back(marker);
+}
+
+void Visualizer::AddLine(Tracking::Vector3D<double> p0,Tracking::Vector3D<double> p1){
+TPolyLine3D *line = new TPolyLine3D(2);  
+ line->SetPoint(0, p0.x(), p0.y(), p0.z());
+   line->SetPoint(1, p1.z(), p1.z(), p1.z());
+   line->SetLineColor(kBlue);   
+  fLines.push_back(line); 
+  /*
+  if (fVerbosity > 0) 
+  {     std::cout << "Added line " << p0 << "--" << p1 << " to Visualizer.\n";   
+  }
+  */
+}
+
+void Visualizer::AddLine(TPolyLine3D const &line){
+
 }
 
 void Visualizer::AddVolume( TGeoVolume *rootVolume) {
@@ -115,5 +153,10 @@ TGeoVolume* Visualizer::CreateTGeoVolume(TGeoShape *shape){
 TGeoVolume* Visualizer::CreateTGeoVolume(std::string name,TGeoShape *shape){
   return (new TGeoVolume(name.c_str(), shape, Vacuum));
 }
+
+void AddLine(Tracking::Vector3D<double> pt1,Tracking::Vector3D<double> pt2){
+
+}
+
 
 } //end of Tracking namespace

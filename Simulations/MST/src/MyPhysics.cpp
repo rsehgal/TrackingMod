@@ -52,7 +52,7 @@ void MyPhysics::ConstructProcess(){
 }
 
 void MyPhysics::ConstructEM(){
-
+#if(0)
   G4PhysicsListHelper *ph = G4PhysicsListHelper::GetPhysicsListHelper();
 
   theParticleIterator->reset();
@@ -83,5 +83,5 @@ void MyPhysics::ConstructEM(){
           }
     }
 
-
+#endif
 }

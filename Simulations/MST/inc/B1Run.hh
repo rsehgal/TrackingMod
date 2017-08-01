@@ -37,10 +37,18 @@
 #include "base/Vector3D.h"
 #include <G4String.hh>
 #include <fstream>
+#include "Track.h"
+#include "Tree.h"
+#include "Voxelator.h"
+#include "G4SystemOfUnits.hh"
 
+using Tomography::Track;
+using Tracking::Tree;
 using Tracking::Vector3D;
+using Tomography::Voxelator;
 
 using PhysicalTrackVector = std::vector< std::vector<Vector3D<double>> > ;
+using VectorOfVoxelsForAnEvent = std::vector<int>; // This represent std::vector of candidate voxel num which can influenced the muon track.
 class G4Event;
 
 /// Run class
@@ -50,6 +58,18 @@ class B1Run : public G4Run
 {
      PhysicalTrackVector phyTrackVect;
      std::vector<double> scatteringAngleVect;
+     std::vector<Track> incomingTrackVect;
+     std::vector<Track> outgoingTrackVect;
+     std::vector<Vector3D<double>> fPocaPtVect;
+     
+     Tree *tree ;
+     Track incoming,outgoing;
+     double scattering;
+
+
+     Voxelator fVox;
+     std::vector<VectorOfVoxelsForAnEvent> fVectorOfVoxelsForWholeRun;
+
   public:
     B1Run();
     virtual ~B1Run();
@@ -60,6 +80,14 @@ class B1Run : public G4Run
     void AddEdep (G4double edep); 
 
     // get methods
+    Tree* GetTreeInstance(){ return tree; }
+    Track GetInComing(){ return incoming; }
+    Track GetOutGoing(){ return outgoing; }
+    void SetScattering(double val){scattering = val;}
+    double GetScattering() {return scattering; }
+    Voxelator GetVoxelator(){return fVox;}
+
+
     G4double GetEdep()  const { return fEdep; }
     G4double GetEdep2() const { return fEdep2; }
     PhysicalTrackVector GetPhysicalTrackVector() const {return phyTrackVect;}
@@ -67,6 +95,15 @@ class B1Run : public G4Run
     void FillPhysicalTrackVector(std::vector<Vector3D<double>> hitVect);
     void FillScatteringAngleVector(double scatteringAngle){scatteringAngleVect.push_back(scatteringAngle);}
     std::vector<double> GetScatteringAngleVector()const {return scatteringAngleVect;}
+    void FillIncomingTrackVector(Track trk){incomingTrackVect.push_back(trk);}
+    void FillOutgoingTrackVector(Track trk){outgoingTrackVect.push_back(trk);}
+    std::vector<Track> GetIncomingTrackVector() const {return incomingTrackVect;}
+    std::vector<Track> GetOutgoingTrackVector() const {return outgoingTrackVect;}
+    void FillPocaPtVector(Vector3D<double> pt) { fPocaPtVect.push_back(pt);}
+    std::vector<Vector3D<double>> GetPocaPtVector()const {return fPocaPtVect;}
+    std::vector<VectorOfVoxelsForAnEvent> GetVectorOfVoxelForRun(){return fVectorOfVoxelsForWholeRun;}
+    void InsertVectorOfVoxels(VectorOfVoxelsForAnEvent vect){fVectorOfVoxelsForWholeRun.push_back(vect);}
+
 
 
   private:

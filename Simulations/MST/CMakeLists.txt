@@ -26,13 +26,21 @@ else()
 endif()
 
 #----------------------------------------------------------------------------
+option(USE_RND "Shooting particles in random direction" OFF)
+if(USE_RND)
+add_definitions(-DRANDOM_GUN)
+endif(USE_RND)
 
-
-file(GLOB MAC_FILES ${PROJECT_SOURCE_DIR}/MacFiles/*)
+file(GLOB MAC_FILES ${CMAKE_CURRENT_SOURCE_DIR}/MacFiles/*)
+message(STATUS "@@@@@@@@@@@@@@@@@@@@@@@ Following .mac file will be copied to your build directory @@@@@@@@@@@@@@@@@@@@@@@@")
 message(STATUS ${MAC_FILES})
-file(COPY ${MAC_FILES} DESTINATION ${PROJECT_SOURCE_DIR}/build)
+message(STATUS "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@")
+message(STATUS "Copying .mac files in : "${CMAKE_BINARY_DIR})
+message(STATUS "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@")
+#file(COPY ${MAC_FILES} DESTINATION ${PROJECT_SOURCE_DIR}/build)
+file(COPY ${MAC_FILES} DESTINATION ${CMAKE_BINARY_DIR}) 
 
-set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${PROJECT_SOURCE_DIR}/cmake/modules)
+#set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${PROJECT_SOURCE_DIR}/cmake/modules)
 
 #find_package(Geant4 REQUIRED)
 include(${Geant4_USE_FILE})
@@ -42,4 +50,4 @@ file(GLOB sources ${PROJECT_SOURCE_DIR}/src/*.cpp ${PROJECT_SOURCE_DIR}/src/*.cc
 file(GLOB headers ${PROJECT_SOURCE_DIR}/inc/*.h ${PROJECT_SOURCE_DIR}/inc/*.hh ../../base/Vector3D.h) 
 
 add_executable(main main.cpp ${sources} ${headers})
-target_link_libraries(main ${Geant4_LIBRARIES} Tomo)
+target_link_libraries(main ${Geant4_LIBRARIES} Helpers ${ROOT_LIBRARIES} Tomo)

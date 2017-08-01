@@ -1,0 +1,9 @@
+{ decls }
+namespace Tracking {  }
+namespace Tracking { template <typename Type> class Vector3D; }
+namespace Tomography {  }
+
+[ libtrack.so ]
+# List of selected classes
+class Tomography::Track
+class Tracking::Vector3D<double>

@@ -1,0 +1,225 @@
+//Program tested on Microsoft Visual Studio 2010 - Zahid Ghadialy
+//Example demonstrates creating an XML file 
+//Based on example at: http://www.codeproject.com/Articles/32762/Xerces-for-C-Using-Visual-C-Part-2
+//Xerces is xerces-c-3.1.1-x86-windows-vc-10.0
+
+ 
+#include <iostream>
+#include <string>
+#include <sstream>
+//Mandatory for using any feature of Xerces.
+#include <xercesc/util/PlatformUtils.hpp>
+//Use the Document Object Model (DOM) API
+#include <xercesc/dom/DOM.hpp>
+//Required for outputing a Xerces DOMDocument to a standard output stream (Also see: XMLFormatTarget)
+#include <xercesc/framework/StdOutFormatTarget.hpp>
+//Required for outputing a Xerces DOMDocument to the file system (Also see: XMLFormatTarget)
+#include <xercesc/framework/LocalFileFormatTarget.hpp>
+
+ 
+ 
+using namespace std;
+//XERCES_CPP_NAMESPACE_USE
+ 
+void DoOutput2Stream(DOMDocument* pmyDOMDocument);
+void DoOutput2File(DOMDocument* pmyDOMDocument, const wchar_t * FullFilePath );
+ 
+int main()
+{
+  // Initilize Xerces.
+  XMLPlatformUtils::Initialize();
+ 
+  // Pointer to our DOMImplementation.
+  DOMImplementation*    p_DOMImplementation = NULL;
+  p_DOMImplementation = DOMImplementationRegistry::getDOMImplementation(XMLString::transcode("core"));
+ 
+  // Pointer to our DOMDocument.
+  DOMDocument*        p_DOMDocument = NULL;
+ 
+  p_DOMDocument = p_DOMImplementation->createDocument(0, L"Hello_World", 0);
+ 
+  DOMElement * p_RootElement = NULL;
+  p_RootElement = p_DOMDocument->getDocumentElement();
+ 
+  //Fill in the DOM document - different parts
+  //Create a Comment node, and then append this to the root element.
+  DOMComment * p_DOMComment = NULL;
+  p_DOMComment = p_DOMDocument->createComment(L"Dates are formatted mm/dd/yy." 
+                                            L" Don't forget XML is case-sensitive.");
+  p_RootElement->appendChild(p_DOMComment);
+ 
+  //Create an Element node, then fill in some attributes, and then append this to the root element.
+  DOMElement * p_DataElement = NULL;
+  p_DataElement = p_DOMDocument->createElement(L"data");
+ 
+  //Copy the current system date to a buffer, then set/create the attribute.
+  wchar_t wcharBuffer[128];
+  _wstrdate_s(wcharBuffer, 9);
+  p_DataElement->setAttribute(L"date", wcharBuffer);
+ 
+  //Convert an integer to a string, then set/create the attribute.
+  _itow_s(65536, wcharBuffer, 128, 10);
+  p_DataElement->setAttribute(L"integer", wcharBuffer);
+ 
+  //Convert a floating-point number to a wstring, then set/create the attribute.
+  std::wstringstream    myStream;
+  myStream.precision(8);
+  myStream.setf(std::ios_base::fixed, std::ios_base::floatfield);
+  myStream << 3.1415926535897932384626433832795;
+  const std::wstring ws(myStream.str());
+  p_DataElement->setAttribute(L"float", ws.c_str());
+  p_RootElement->appendChild(p_DataElement);
+ 
+  // Create an Element node, then fill in some attributes, add some text,
+  // then append this to the 'pDataElement' element.
+  DOMElement * p_Row = NULL;
+  p_Row = p_DOMDocument->createElement(L"row");
+ 
+  // Create some sample data.
+  _itow_s(1, wcharBuffer, 128, 10);
+  p_Row->setAttribute(L"index", wcharBuffer);
+ 
+  /*
+  Create a text node and append this as well. Some people 
+  prefer to place their data in the text node
+  which is perfectly valid, others prefer to use 
+  the attributes. A combination of the two is quite common.
+  */
+  DOMText* p_TextNode = NULL;
+  p_TextNode = p_DOMDocument->createTextNode(L"Comments and" 
+              L" data can also go in text nodes.");
+  p_Row->appendChild(p_TextNode);
+ 
+  p_DataElement->appendChild(p_Row);
+ 
+ 
+  // Create another row (this time putting data and descriptions into different places).
+  p_Row = p_DOMDocument->createElement(L"row");
+  p_Row->setAttribute(L"description", L"The value of PI");
+  p_TextNode = p_DOMDocument->createTextNode(L"3.1415926535897932384626433832795");
+  p_Row->appendChild(p_TextNode);
+  p_DataElement->appendChild(p_Row);
+ 
+  // Create another row.
+  p_Row = p_DOMDocument->createElement(L"row");
+  p_Row->setAttribute(L"website", L"http://www.3g4g.co.uk/");
+  p_TextNode = p_DOMDocument->createTextNode(L"3G and 4G Wireless Resources");
+  p_Row->appendChild(p_TextNode);
+  p_DataElement->appendChild(p_Row);
+ 
+  //Output on console
+  DoOutput2Stream(p_DOMDocument);
+ 
+  //Output to a file
+  DoOutput2File(p_DOMDocument, XMLString::transcode("..\\..\\XML\\Test.xml"));
+ 
+  // Cleanup.
+  p_DOMDocument->release();
+  XMLPlatformUtils::Terminate();
+ 
+  return 0;
+}
+ 
+ 
+void DoOutput2Stream(DOMDocument* pmyDOMDocument)
+{
+  DOMImplementation    *pImplement    = NULL;
+  DOMLSSerializer      *pSerializer   = NULL;
+  XMLFormatTarget      *pTarget       = NULL;
+ 
+  /*
+  Return the first registered implementation that has
+  the desired features. In this case, we are after
+  a DOM implementation that has the LS feature... or Load/Save.
+  */
+  pImplement = DOMImplementationRegistry::getDOMImplementation(L"LS");
+ 
+  /*
+  From the DOMImplementation, create a DOMWriter.
+  DOMWriters are used to serialize a DOM tree [back] into an XML document.
+  */
+  pSerializer = ((DOMImplementationLS*)pImplement)->createLSSerializer();
+ 
+  /*
+  This line is optional. It just sets a feature
+  of the Serializer to make the output
+  more human-readable by inserting line-feeds and tabs, 
+  without actually inserting any new nodes
+  into the DOM tree. (There are many different features to set.) 
+  Comment it out and see the difference.
+  */
+ 
+  //The end-of-line sequence of characters to be used in the XML being written out. 
+  pSerializer->setNewLine(XMLString::transcode("\n"));
+ 
+  DOMConfiguration* pDomConfiguration = pSerializer->getDomConfig();
+  pDomConfiguration->setParameter(XMLUni::fgDOMWRTFormatPrettyPrint, true);
+ 
+ 
+  /*
+  Choose a location for the serialized output. The 3 options are:
+      1) StdOutFormatTarget     (std output stream -  good for debugging)
+      2) MemBufFormatTarget     (to Memory)
+      3) LocalFileFormatTarget  (save to file)
+      (Note: You'll need a different header file for each one)
+  */
+  pTarget = new StdOutFormatTarget();
+  DOMLSOutput* pDomLsOutput = ((DOMImplementationLS*)pImplement)->createLSOutput();
+  pDomLsOutput->setByteStream(pTarget);
+  
+  // Write the serialized output to the target.
+  pSerializer->write(pmyDOMDocument, pDomLsOutput);
+}
+ 
+void DoOutput2File(DOMDocument* pmyDOMDocument, const wchar_t * FullFilePath )
+{
+ 
+  DOMImplementation    *pImplement     = NULL;
+  DOMLSSerializer      *pSerializer    = NULL;
+  XMLFormatTarget      *pTarget        = NULL;
+ 
+  /*
+  Return the first registered implementation that 
+  has the desired features. In this case, we are after
+  a DOM implementation that has the LS feature... or Load/Save.
+  */
+  pImplement = DOMImplementationRegistry::getDOMImplementation(L"LS");
+ 
+  /*
+  From the DOMImplementation, create a DOMWriter.
+  DOMWriters are used to serialize a DOM tree [back] into an XML document.
+  */
+  pSerializer = ((DOMImplementationLS*)pImplement)->createLSSerializer();
+ 
+ 
+  /*
+  This line is optional. It just sets a feature 
+  of the Serializer to make the output
+  more human-readable by inserting line-feeds, 
+  without actually inserting any new elements/nodes
+  into the DOM tree. (There are many different features to set.) 
+  Comment it out and see the difference.
+  */
+  DOMConfiguration* pDomConfiguration = pSerializer->getDomConfig();
+  pDomConfiguration->setParameter(XMLUni::fgDOMWRTFormatPrettyPrint, true);
+ 
+ 
+  /*
+  Choose a location for the serialized output. The 3 options are:
+      1) StdOutFormatTarget     (std output stream -  good for debugging)
+      2) MemBufFormatTarget     (to Memory)
+      3) LocalFileFormatTarget  (save to file)
+      (Note: You'll need a different header file for each one)
+      Don't forget to escape file-paths with a backslash character, or
+      just specify a file to be saved in the exe directory.
+        
+        eg. c:\\example\\subfolder\\pfile.xml
+ 
+  */
+  pTarget = new LocalFileFormatTarget(FullFilePath);
+  // Write the serialized output to the target.
+  DOMLSOutput* pDomLsOutput = ((DOMImplementationLS*)pImplement)->createLSOutput();
+  pDomLsOutput->setByteStream(pTarget);
+ 
+  pSerializer->write(pmyDOMDocument, pDomLsOutput);
+}

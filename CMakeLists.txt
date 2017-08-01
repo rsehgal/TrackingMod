@@ -55,8 +55,56 @@ option(CLUSTER_SIZE "Allow to restrict the Cluster Size cut, default value will 
 option(ACCUMULATE_TRACK "All the tracks will be displayed" OFF)
 option(ANG_DIST "To calculate the angular distribution from tracks" OFF)
 option(CGAL "CGAL library for geometrical algorithms" OFF)
+option(EMULATOR "Building Emulator for HV Supply" OFF)
+#option(CAENWRAPPER "Building Wrapper for CAEN Library" OFF)
+option(CAEN "Enabling CAEN Libraries" OFF)
+option(GNUPLOT "Enabling GnuPlot" OFF)
+option(QT "Enabling QtGui" OFF)
+option(CRY "Enable CRY library for cosmic event generation" OFF)
+option(STORE "Store data to ROOT Tree" OFF)
+option(VOXELIZE "Voxelize the Region" OFF)
+option(STORE_SLICE "Store 2D hist of eache Slice in Z direction" OFF)
+option(FIND_CANDIDATE_VOXEL "Does the calculation to find Candidate Voxels that influenced the track" OFF)
 
-#find_package(CGAL REQUIRED)
+if(FIND_CANDIDATE_VOXEL)
+add_definitions(-DFIND_CANDIDATE_VOXEL)
+endif(FIND_CANDIDATE_VOXEL)
+
+if(STORE_SLICE)
+add_definitions(-DSTORE_SLICE)
+endif(STORE_SLICE)
+
+if(VOXELIZE)
+add_definitions(-DVOXELIZE)
+endif(VOXELIZE)
+
+find_package(MYSQL REQUIRED)
+include_directories(${MYSQL_INCLUDE_DIR})
+
+if(STORE)
+add_definitions(-DSTORE)
+endif(STORE)
+
+if(CRY)
+add_subdirectory(Cry)
+endif(CRY)
+
+#For Xml Processing
+find_package(XERCES REQUIRED)
+include_directories(${XERCES_INCLUDE_DIR})
+add_subdirectory(xmldom)
+#include_directories(${CMAKE_SOURCE_DIR}/xmldom)
+find_package(XMLDOM REQUIRED)
+include_directories(${XMLDOM_INCLUDE_DIR})
+
+if(CGAL)
+find_package(CGAL REQUIRED)
+message(STATUS "************* Link CGAL **************")
+include(${CGAL_USE_FILE})
+set(EXTERNAL_LIBS ${EXTERNAL_LIBS}
+${CGAL_LIBRARIES}
+)
+endif(CGAL)
 
 
 if(ANG_DIST)
@@ -67,6 +115,10 @@ set(ACCUMULATE_TRACK ON)
 endif(ACCUMULATE_TRACK)
 add_definitions(-DANG_DIST)
 endif(ANG_DIST)
+
+if(EMULATOR)
+add_definitions(-DUSE_EMULATOR)
+endif(EMULATOR)
 
 if(ACCUMULATE_TRACK)
 add_definitions(-DACCUMULATE_TRACK)
@@ -155,6 +207,7 @@ file(COPY ${CFG_FILES} DESTINATION ${PROJECT_SOURCE_DIR}/build)
 set(INCLUDES ${INCLUDES}
 ${CMAKE_SOURCE_DIR}/CoordinateGenerator/inc
 ${CMAKE_SOURCE_DIR}/TemplatizedInterface/inc
+${CMAKE_SOURCE_DIR}/Helpers/inc
 #${PROJECT_SOURCE_DIR}/visualizer
 ${CMAKE_SOURCE_DIR}/inc
 ${CMAKE_SOURCE_DIR}
@@ -196,6 +249,17 @@ macro(collect_sources SOURCES)
   endforeach()
 endmacro()
 
+#COLLECTING ALL HELPERS FILES
+set(HELPERS ${HELPERS}
+${CMAKE_SOURCE_DIR}/Helpers/src
+)
+
+macro(collect_helpers HELPERS)
+  foreach(HELPER ${HELPERS})
+    file(GLOB helpers ${helpers} ${HELPER}/*.cpp)
+  endforeach()
+endmacro()
+
 
 SET(TESTSDIR ${TESTSDIR}
 ${CMAKE_SOURCE_DIR}/CoordinateGenerator/test
@@ -203,8 +267,17 @@ ${CMAKE_SOURCE_DIR}/TemplatizedInterface/test
 ${CMAKE_SOURCE_DIR}/TemplatizedInterface/test/core
 ${CMAKE_SOURCE_DIR}/TemplatizedInterface/test/plots
 ${CMAKE_SOURCE_DIR}/Simulations/MST/test
+${CMAKE_SOURCE_DIR}/visualizer/test
+#${CMAKE_SOURCE_DIR}/CAEN/test
 #${CMAKE_SOURCE_DIR}/test
 )
+
+if(CGAL)
+SET(TESTSDIR ${TESTSDIR} 
+${CMAKE_SOURCE_DIR}/TemplatizedInterface/test/cgal
+)
+endif(CGAL)
+
 
 if(EVE)
 SET(TESTSDIR ${TESTSDIR}
@@ -223,7 +296,7 @@ macro(build_executables EXECUTABLES)
   foreach(EXECUTABLE ${EXECUTABLES})
     get_filename_component(TARGET_NAME ${EXECUTABLE} NAME_WE)
     add_executable(${TARGET_NAME} ${EXECUTABLE} ${headers})
-    target_link_libraries(${TARGET_NAME} ${TOMOLIB})
+    target_link_libraries(${TARGET_NAME} ${TOMOLIB} ${HELPERSLIB} ${EMULATORLIB})
 #  if(EVE)
 #    target_link_libraries(${TARGET_NAME} ${ROOT_LIBRARIES} Geom Eve)
 #  else()
@@ -232,13 +305,57 @@ macro(build_executables EXECUTABLES)
   endforeach()
 endmacro()
 
+
+#if(CAENWRAPPER)
+#macro(collect_wrapper Wrappers)
+#  foreach(Wrapper ${Wrappers})
+#    file(GLOB wrappers ${wrappers} ${Wrapper}/*.cpp)
+#  endforeach()
+#endmacro()
+
+#set(CAENWrapper ${CAENWrapper}
+#${CMAKE_SOURCE_DIR}/CAEN/src
+#)
+
+#set(INCLUDES ${INCLUDES}
+#${CMAKE_SOURCE_DIR}/CAEN/inc
+#)
+#endif(CAENWRAPPER)
+
+#if(EMULATOR)
+#macro(collect_emulators Emulators)
+#  foreach(Emulator ${Emulators})
+#    file(GLOB emulators ${emulators} ${Emulator}/*.cpp)
+#  endforeach()
+#endmacro()
+
+#set(HVEmulator ${HVEmulator}
+#${CMAKE_SOURCE_DIR}/CAEN/Emulator/src
+#)
+
+#set(INCLUDES ${INCLUDES}
+#${CMAKE_SOURCE_DIR}/CAEN/Emulator/inc
+#)
+#endif(EMULATOR)
+
 message(STATUS ${headers})
 include_dirs("${INCLUDES}")
 collect_headers("${INCLUDES}")
 collect_sources("${SOURCES}")
 collect_tests("${TESTSDIR}")
+collect_helpers("${HELPERS}")
 
-message(STATUS "--------- Following source file will be use for the creation of Shared library -----------")
+ROOT_GENERATE_DICTIONARY(G__Tree Tree.h LINKDEF LinkDef.h)
+
+#if(CAENWRAPPER)
+#collect_wrapper("${CAENWrapper}")
+#endif(CAENWRAPPER)
+
+#if(EMULATOR)
+#collect_emulators("${HVEmulator}")
+#endif(EMULATOR)
+
+message(STATUS "--------- Following source file will be use for the creation of TOMO Shared library -----------")
 message(STATUS ${sources})
 message(STATUS "------------------------------------------------------------------------------------------")
 add_library(Tomo SHARED ${sources})
@@ -247,7 +364,48 @@ set(TOMOLIB ${TOMOLIB}
 Tomo
 )
 
+message(STATUS "--------- Following source files will be use for the creation of HELPERS Shared library -----------")
+message(STATUS ${helpers})
+message(STATUS "------------------------------------------------------------------------------------------")
+add_library(Helpers SHARED ${helpers} ) #G__Tree.cxx)
+target_link_libraries(Helpers  ${XERCES_LIBRARIES} ${MYSQL_LIBRARIES} ${ROOT_LIBRARIES} -lTreePlayer)
+#target_link_libraries(Tomo ${EXTERNAL_LIBS})
+set(HELPERSLIB ${HELPERSLIB}
+Helpers
+)
+
+message(STATUS "HELPERS : ${HELPERSLIB}")
+
+#if(EMULATOR)
+#message(STATUS "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@")
+#add_library(HVEmulator SHARED ${emulators})
+#set(EMULATORLIB ${EMULATORLIB}
+#HVEmulator
+#)
+#endif(EMULATOR)
+
+if(GNUPLOT)
+add_subdirectory(gnuplot)
+endif(GNUPLOT)
+
+if(QT)
+add_subdirectory(Gui)
+endif(QT)
+
+if(CAEN)
+add_subdirectory(CAEN)
+endif(CAEN)
+
+
+#if(CAENWRAPPER)
+#add_library(CAENWrapper SHARED ${wrappers})
+#set(WRAPPERLIB ${WRAPPERLIB}
+#CAENWrapper
+#)
+#endif(CAENWRAPPER)
+
 link_directories(${CMAKE_SOURCE_DIR}/build)
+#link_directories(${CMAKE_SOURCE_DIR}/build/xmldom)
 
 build_executables("${tests}")
 message(STATUS ${headers})
@@ -255,3 +413,8 @@ message(STATUS "====================================================")
 message(STATUS ${tests})
 message(STATUS "====================================================")
 add_subdirectory(Simulations/MST)
+add_subdirectory(Simulation2)
+#Copying the test geom.root file to build directory for visualization testing
+file(GLOB ROOT_FILES ${PROJECT_SOURCE_DIR}/RootFiles/*)
+message(STATUS ${ROOT_FILES})
+file(COPY ${ROOT_FILES} DESTINATION ${PROJECT_SOURCE_DIR}/build)

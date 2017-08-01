@@ -1,0 +1,96 @@
+#include "Tree.h"
+#include <TFile.h>
+#include <TBranch.h>
+#include <iostream>
+
+namespace Tracking{
+
+
+
+
+
+
+
+/*void Tree::TreeW(std::string branchName, Channel ch){
+
+	t->Branch(branchName.c_str(),&ch);
+    t->Fill();
+}*/
+
+
+void Tree::TreeR(){
+
+	Channel *ch;
+	f = new TFile(rootFile.c_str());
+	t = (TTree*)f->Get("testTree");
+	TBranch *b = t->GetBranch("channel");
+	t->SetBranchAddress("channel",&ch,&b);
+	Int_t nentries = t->GetEntries();
+	for(Int_t i = 0 ; i < nentries ; i++){
+		b->GetEntry(i);
+		std::cout<<"val : "<<ch->at(1)<<std::endl;
+	}
+
+
+}
+
+void Tree::TreeR_V2(std::string bName, int entry){
+//TFile *
+//   f = TFile::Open(rootFile.c_str(),"READ");
+//   if (!f) { return; }
+//   f->GetObject("testTree",t);
+   Channel *vpx = 0;
+   TBranch *bvpx = 0;
+   t->SetBranchAddress(bName.c_str(),&vpx,&bvpx);
+   Long64_t tentry = t->LoadTree(entry);
+   bvpx->GetEntry(tentry);
+   for (UInt_t j = 0; j < vpx->size(); ++j) {
+         std::cout<<"value : "<<vpx->at(j)<<" , ";         
+   }
+   std::cout<<std::endl;
+   t->ResetBranchAddresses();
+
+}
+
+/*
+ * Previous Version
+Channel* Tree::GetEntry(std::string bName, int evNo){
+
+  Channel *vpx = 0;
+  TBranch *bvpx = 0;
+  t->SetBranchAddress(bName.c_str(),&vpx,&bvpx);
+  Long64_t tentry = t->LoadTree(evNo);
+  bvpx->GetEntry(tentry);
+  t->ResetBranchAddresses();
+  return vpx;
+
+}
+*/
+/*
+ * Idea is to Initialize the tree first.
+ *
+ * Then get the value for particular event using branch name
+ */
+Channel* Tree::GetEntry(std::string bName, int evNo){
+
+	fBranchMap[bName].tentry = t->LoadTree(evNo);
+	fBranchMap[bName].bvpx->GetEntry(fBranchMap[bName].tentry);
+	return fBranchMap[bName].vpx;
+
+}
+
+void Tree::FillBranchNamesVector(){
+  TObjArray *listOfBranches = t->GetListOfBranches();
+  TIter iObj(listOfBranches);
+  while (TObject *obj = iObj()) {
+	  std::string name = (std::string)obj->GetName();
+      fBranchNamesVector.push_back(name);
+  }
+}
+
+void Tree::PrintBranchNames() {
+  for (int i = 0; i < fBranchNamesVector.size(); i++) {
+    std::cout << fBranchNamesVector[i] << std::endl;
+  }
+}
+} /*end of Tomography namespace*/

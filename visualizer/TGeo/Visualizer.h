@@ -35,6 +35,8 @@ private:
  // TApplication *fApp;       // ROOT application used for visualization
   TGeoManager *fGeoManager; // ROOT geometry manager
   std::vector<std::tuple<TGeoVolume*, TGeoTranslation*> > fVolumes;
+  std::vector<TPolyMarker3D*> fMarkers;
+  std::vector<TPolyLine3D*> fLines;
   TGeoMaterial *matVacuum; //= new TGeoMaterial("Vacuum", 0,0,0);
   TGeoMedium *Vacuum;// = new TGeoMedium("Vacuum",1, matVacuum);
   
@@ -46,11 +48,15 @@ public:
   void AddVolume();
   void AddPoint();
   void AddLine();
+  void AddMarkers(Tracking::Vector3D<double> pt,int color=1);
+  void AddLine(Tracking::Vector3D<double> pt1,Tracking::Vector3D<double> pt2);
+  void AddLine(TPolyLine3D const &line);
   void AddVolume( TGeoVolume *rootVolume);
   void AddVolume( TGeoVolume *rootVolume, Vector3D<Precision> p);
   void AddVolume( TGeoShape *shape, Vector3D<Precision> p);
   TGeoVolume* CreateTGeoVolume(TGeoShape *shape);
   TGeoVolume* CreateTGeoVolume(std::string name,TGeoShape *shape);
+
 
 };
 

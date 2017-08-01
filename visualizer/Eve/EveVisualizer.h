@@ -19,8 +19,9 @@ class TApplication;
 class TGeoBBox;
 class TGeoMatrix;
 class TEveStraightLineSet;
-
-
+class TGeoShape;
+class TEvePointSet;
+class TEvePointSetArray;
 
 namespace Tracking {
 
@@ -30,18 +31,28 @@ private:
   TEveElementList *fEveGeomList;
   TEveGeoShape *fEveShape;
   TEveStraightLineSet *ls;
+  TEvePointSet *fPointSet;
+  TEvePointSetArray *fPointSetArray;
+
 
 
 public:
   EveVisualizer();
   void AddEveShape(std::string shapeName,TGeoBBox *shape, TGeoHMatrix &mat);
-  void AddEveShape(std::string shapeName,TGeoBBox *shape, int color, TGeoHMatrix &mat);
+  void AddEveShape(std::string shapeName,TGeoBBox *shape, TGeoHMatrix &mat,int color);
   void AddEveShape(TEveGeoShape *eveShape, TGeoHMatrix &mat);
+  void AddEveShape(std::string shapeName,TGeoShape *shape, TGeoHMatrix &mat, int color);
+  void AddEveShape(std::string shapeName,TGeoShape *shape, TGeoHMatrix &mat);
   void AddLine(Vector3D<double>p1, Vector3D<double>p2);
   static void Show();
   static void UpdateScene();
   void AddMarkers(Vector3D<double> pt);
-
+  void AddMarkers_V2(Vector3D<double> pt);
+  void AddMarkers(std::vector<TEvePointSet> pointSetVector);
+  void ImportFromROOTFile(std::string geomFile);
+  void CloseBins();
+  void CreatePointSetArray();
+  void InitializeVisualizer();
 };
 
 } //end of Tracking namespace

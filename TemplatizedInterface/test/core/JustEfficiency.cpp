@@ -20,7 +20,8 @@ int main(int argc, char *argv[]) {
 
   Detector *rpc1 = new GlassRpc(2, "FirstGlassRpc", 30, 31);
   Detector *rpc2 = new GlassRpc(4, "SecondGlassRpc", -30, 31);
-
+  rpc1->SetClusterSize(1);
+  rpc2->SetClusterSize(1);
   bool verbose = true;
 
   std::string temp_str = std::to_string(atoi(argv[1]));
@@ -44,4 +45,16 @@ int main(int argc, char *argv[]) {
     std::cout << "Eff w.r.t Plane 1 : " << rpc2->GetPlane(0)->GetEfficiency() << std::endl;
     std::cout << "Eff w.r.t Plane 2 : " << rpc2->GetPlane(1)->GetEfficiency() << std::endl;
   }
+
+
+/*
+  std::cout << "--------------------------------------" << std::endl;
+  Detector *topPlane = new TriggeringPlane(2, "TopPlane", -150, -1);
+  Detector *bottomPlane = new TriggeringPlane(2, "BottomPlane", 150, 7);
+  topPlane->SetEfficiency();
+  bottomPlane->SetEfficiency();
+  std::cout << "Eff of Plane 1 : " << topPlane->GetEfficiency() << std::endl;
+  std::cout << "Eff of Plane-2 : " << bottomPlane->GetEfficiency() << std::endl;
+*/
+
 }
