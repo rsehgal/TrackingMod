@@ -121,8 +121,15 @@ G4VPhysicalVolume *phyTargetPbBlock = new G4PVPlacement(0,
   //target = new G4Box("Target",0.250*world_sizeXYZ, 0.250*world_sizeXYZ,fTargetThickness);
   G4NistManager* nist = G4NistManager::Instance();
   G4Material *Pb=nist->FindOrBuildMaterial("G4_Pb");
+  G4Material *Fe=nist->FindOrBuildMaterial("G4_Fe");
+  G4Material *Al=nist->FindOrBuildMaterial("G4_Al");
+  G4Material *U=nist->FindOrBuildMaterial("G4_U");
   target = new G4Box("Target",5*cm,5*cm,4.5*cm);
+
   fLogicTarget = new G4LogicalVolume(target,Pb,"LogicalTargetBlock");
+  G4LogicalVolume *fLogicTargetFe = new G4LogicalVolume(target,Fe,"LogicalTargetFeBlock");
+  G4LogicalVolume *fLogicTargetAl = new G4LogicalVolume(target,Al,"LogicalTargetAlBlock");
+  G4LogicalVolume *fLogicTargetU = new G4LogicalVolume(target,U,"LogicalTargetUBlock");
 
 /*G4VPhysicalVolume *phyTargetBlock = new G4PVPlacement(0,
                             //G4ThreeVector(),
@@ -150,7 +157,7 @@ G4VPhysicalVolume *phyTargetPbBlock = new G4PVPlacement(0,
                               //G4ThreeVector(),
                               //G4ThreeVector(-15*cm,15*cm,12*cm),
 		  	  	  	  	  	  G4ThreeVector(-15*cm,15*cm,-39*cm),
-                             fLogicTarget,
+                             fLogicTargetFe,
                               "TargetPhysical",
                               world->GetLogicalVolume(),//logicWorld,
                               false,
@@ -161,7 +168,7 @@ G4VPhysicalVolume *phyTargetPbBlock = new G4PVPlacement(0,
                                 //G4ThreeVector(),
                                 //G4ThreeVector(-15*cm,-15*cm,12*cm),
 		  	  	  	  	  	    G4ThreeVector(-15*cm,-15*cm,-39*cm),
-                               fLogicTarget,
+                               fLogicTargetAl,
                                 "TargetPhysical",
                                 world->GetLogicalVolume(),//logicWorld,
                                 false,
@@ -172,7 +179,7 @@ G4VPhysicalVolume *phyTargetPbBlock = new G4PVPlacement(0,
                                   //G4ThreeVector(),
                                   //G4ThreeVector(25*cm,25*cm,12*cm),
 		  	  	  	  	  	  	  G4ThreeVector(25*cm,25*cm,-39*cm),
-                                 fLogicTarget,
+                                 fLogicTargetU,
                                   "TargetPhysical",
                                   world->GetLogicalVolume(),//logicWorld,
                                   false,

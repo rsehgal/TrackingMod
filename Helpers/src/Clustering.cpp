@@ -7,6 +7,7 @@
 
 #include "Clustering.h"
 #include <fstream>
+#include <TFile.h>
 
 namespace Tracking {
 using Cluster = std::vector<Point*>;
@@ -14,6 +15,46 @@ using Cluster = std::vector<Point*>;
 Clustering::Clustering():fEpsilon(2) {
 	// TODO Auto-generated constructor stub
 
+}
+
+void Clustering::FillHistogram(){
+	//TFile clusterFile("clusterCount.root","recreate");
+	fHist1DOfClusterNum = new TH1F("Cluster_1d_Hist","Cluster_1d_Hist",(NewCluster::fClusterNum),0,(NewCluster::fClusterNum));
+	fHist1DOfScatterigInClusterNum = new TH1F("Scattering_Cluster_1d_Hist","Scattering_Cluster_1d_Hist",(NewCluster::fClusterNum),0,(NewCluster::fClusterNum));
+	for(int i = 0 ; i < fPtVect.size() ; i++){
+		fHist1DOfClusterNum->Fill(fPtVect[i]->fClusterNum);
+		fHist1DOfScatterigInClusterNum->Fill(fPtVect[i]->fClusterNum, (fPtVect[i]->fPt).GetColor());
+	}
+	fHist1DOfScatterigInClusterNum->Divide(fHist1DOfClusterNum);
+
+/*
+	for(int i = 0  ; i < (NewCluster::fClusterNum+1) ; i++){
+		std::cout << "Bin Content : " << fHist1DOfScatterigInClusterNum->GetBinContent(i) << std::endl;
+	}
+*/
+
+	//fHist1DOfClusterNum->Write();
+	//fHist1DOfScatterigInClusterNum->Write();
+	//clusterFile.Write();
+//	/return;
+
+}
+
+void Clustering::NormalizeScatteringValue(){
+	std::cout<<"----------- Entered NOrmalizedScatteringValue --------------" << std::endl;
+	for(int i = 0  ; i < (NewCluster::fClusterNum+1) ; i++){
+			std::cout << "Bin Content : " << fHist1DOfScatterigInClusterNum->GetBinContent(i) << std::endl;
+	}
+	for(int i = 0 ; i < fPtVect.size() ; i++){
+		int clusterNum = fPtVect[i]->fClusterNum ;
+		if(clusterNum >= 0){
+		//std::cout << "ClusterNum : "<< clusterNum << std::endl;
+		//std::cout << fHist1DOfScatterigInClusterNum->GetBinContent(clusterNum) << std::endl;
+			std::cout<<"Color : "<< fHist1DOfScatterigInClusterNum->GetBinContent(clusterNum) << std::endl;
+			(fPtVect[i]->fPt).SetColor(fHist1DOfScatterigInClusterNum->GetBinContent(clusterNum));
+		}
+		//(fPtVect[i]->fPt).SetColor(fHist1DOfScatterigInClusterNum->GetBinContent(fPtVect[i]->fClusterNum + 1));
+	}
 }
 
 Clustering::Clustering(std::vector<Vec_t> ptVect):fEpsilon(1.1),fMinPtsInCluster(20){
@@ -24,11 +65,21 @@ Clustering::Clustering(std::vector<Vec_t> ptVect):fEpsilon(1.1),fMinPtsInCluster
 
 Clustering::Clustering(std::vector<Vec_t> ptVect, double eps):fEpsilon(eps),fMinPtsInCluster(10){
 	//DBSCAN(ptVect);
+	//fClusterRootFile = new TFile("clusterCount.root","recreate");
 	for(int i=0 ; i <ptVect.size() ; i++){
 		fPtVect.push_back(new Point(ptVect[i])); //Filling vector of Points
 	}
 	//SequentialClustering(ptVect); //currently calling SequentialClustering with vector of Vec_t
 	DBSCAN(); //trying DBSCAN algo
+}
+
+void Clustering::WriteFile(){
+	TFile clusterFile("clusterCount.root","recreate");
+	fHist1DOfClusterNum->Write();
+	fHist1DOfScatterigInClusterNum->Write();
+	clusterFile.Write();
+
+
 }
 
 Clustering::~Clustering() {
@@ -53,10 +104,12 @@ void Clustering::WriteClusterToFile(std::string fileName){
 	for(int i=0 ; i < fPtVect.size() ; i++){
 		if(fPtVect[i]->fClusterNum >= 0){
 			Vec_t pt3d = fPtVect[i]->fPt;
-			clusterFile << pt3d.x() <<" " << pt3d.y() <<" " << pt3d.z() <<" " << (fPtVect[i]->fClusterNum + 1) << std::endl;
+			//clusterFile << pt3d.x() <<" " << pt3d.y() <<" " << pt3d.z() <<" " << (fPtVect[i]->fClusterNum + 1) << std::endl;
+			clusterFile << pt3d.x() <<" " << pt3d.y() <<" " << pt3d.z() <<" " << pt3d.GetColor() << std::endl;
 		}
 	}
 	clusterFile.close();
+	WriteFile();
 }
 
 
@@ -83,14 +136,17 @@ void Clustering::DBSCAN(/*std::vector<Vec_t> ptVect*/){
 	}
 
 	for(int i=0; i < fPtVect.size() ; i++){
-		std::cout<<"ClusterNum : " << fPtVect[i]->fClusterNum << std::endl;
+		//std::cout<<"ClusterNum : " << fPtVect[i]->fClusterNum << std::endl;
 	}
 	std::cout<<"========================================================" << std::endl;
 	std::cout<<"Total Number of Clusters Detected using DBSCAN : " << (NewCluster::fClusterNum+1) << std::endl;
 	std::cout<<"========================================================" << std::endl;
 
 	std::cout<<"Writing clusters to file ...." << std::endl;
+	FillHistogram();
+	NormalizeScatteringValue();
 	WriteClusterToFile();
+	RemoveNoisyCluster();
 }
 
 Cluster Clustering::AddClusters(Cluster c1, Cluster c2){

@@ -103,11 +103,12 @@ public:
 #endif
   }
 
-
+#ifdef USE_EVE
   void CreatePointSetArray(){
 
     fVis.CreatePointSetArray();
   }
+#endif
 
   void Register(Track *t){
 	  fVis.AddLine(t->GetP1(),t->GetP2());
@@ -122,14 +123,18 @@ public:
 	  fVis.AddMarkers(pt);
   }
 
+#ifdef USE_EVE
   void Register_V2(Tracking::Vector3D<double> pt){
     fVis.AddMarkers_V2(pt);
   }
+#endif
 
+#ifdef USE_EVE
   void Lock(){
 
     fVis.CloseBins();
   }
+#endif
 
   //New overloaded version that also takes slices into consideration
   //and will register the point only if it lie within the slice
@@ -160,10 +165,11 @@ public:
    
   }
 
+#ifdef USE_EVE
 void InitializeVisualizer(){
   fVis.InitializeVisualizer();
 }
-
+#endif
 #ifdef USE_EVE
   //Function to register directly from ROOT file
   void Register(std::string geomFile){

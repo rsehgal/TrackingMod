@@ -71,7 +71,7 @@ void ReadDataFromFile(){
 	if(input.is_open()){
 		while(!input.eof()){
 			input >> x >> y >> z >> color;
-			ptVect.push_back(Vec_t(x/deno,y/deno,z/deno));
+			ptVect.push_back(Vec_t(x/deno,y/deno,z/deno,color));
 		}
 	}
 	double epsilon = 10.0;
@@ -104,7 +104,7 @@ void GenerateRandomDataOnCircle(){
 		  ptVect.push_back(Vec_t(x,y,z));
 		}
 #endif
-	double epsilon = 1.0;
+	double epsilon = 0.1;
 	FindClusters(ptVect,epsilon);
 
 
@@ -122,9 +122,12 @@ void FindClusters(std::vector<Vec_t> ptVect, double epsilon){
 */
 			//clusterVect = (new Tracking::Clustering(ptVect,epsilon))->GetClusterVector();
 			clusterVect = (new Tracking::Clustering(ptVect,epsilon))->GetFilteredClusterVector();
+			std::cout<<" @@@@@@@@ ClusterVector Size : " << clusterVect.size() << "   @@@@@@@@@@@" << std::endl;
 
 				for(int i = 0 ; i< clusterVect.size(); i++){
+					std::cout<<"Raman : " << std::endl;
 			for(int j=0 ; j < clusterVect[i].size() ; j++){
+
 				(clusterVect[i][j]->fPt).SetColor(clusterVect[i][j]->fClusterNum);
 				clusterFile << (clusterVect[i][j]->fPt).x() << " " << (clusterVect[i][j]->fPt).y() << " " <<
 						       (clusterVect[i][j]->fPt).z() << " " << ((clusterVect[i][j]->fPt).GetColor()+1) << std::endl;

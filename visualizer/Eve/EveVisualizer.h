@@ -41,6 +41,7 @@ public:
   void AddEveShape(std::string shapeName,TGeoBBox *shape, TGeoHMatrix &mat);
   void AddEveShape(std::string shapeName,TGeoBBox *shape, TGeoHMatrix &mat,int color);
   void AddEveShape(TEveGeoShape *eveShape, TGeoHMatrix &mat);
+  void AddEveShape(std::string shapeName,TGeoShape *shape, TGeoHMatrix &mat, int color);
   void AddEveShape(std::string shapeName,TGeoShape *shape, TGeoHMatrix &mat);
   void AddLine(Vector3D<double>p1, Vector3D<double>p2);
   static void Show();

@@ -45,12 +45,13 @@ namespace Tracking {
   
   // fPointSetArray->CloseBins();
   Singleton::instance()->AddElement(fPointSetArray);
-  fPointSetArray->InitBins("Scattering", 10, 0., 100.);
+  int bins = 100;
+  fPointSetArray->InitBins("Scattering", bins, 0., 100.);
 
    TColor::SetPalette(1, 0); 
    const Int_t nCol = TColor::GetNumberOfColors();
-   for (Int_t i = 1; i <= 10; ++i)
-      fPointSetArray->GetBin(i)->SetMainColor(TColor::GetColorPalette(i * nCol / 10));
+   for (Int_t i = 1; i <= bins; ++i)
+      fPointSetArray->GetBin(i)->SetMainColor(TColor::GetColorPalette(i * nCol / bins));
 
    fPointSetArray->GetBin(0) ->SetMainColor(kGray);
    fPointSetArray->GetBin(10)->SetMainColor(kWhite);
@@ -206,10 +207,29 @@ if(gEve){
 void EveVisualizer::AddEveShape(std::string shapeName,TGeoShape *shape, TGeoHMatrix &mat){
 
 if(gEve){
+  std::string substr = shapeName.substr(0,5);
   fEveShape = new TEveGeoShape(shapeName.c_str());
   fEveShape->SetShape(shape);
-  fEveShape->SetMainColor(kRed);
-  fEveShape->SetMainTransparency(60);
+  if(substr == "Voxel")
+	  fEveShape->SetMainColor(18);
+  if(substr == "Targe"){
+  	  fEveShape->SetMainColor(50);
+  	  fEveShape->SetMainTransparency(50);
+  }else
+	  fEveShape->SetMainTransparency(65);
+  fEveShape->SetTransMatrix(mat);
+  //fEveGeomList->AddElement(fEveShape);
+  Singleton::instance()->AddElement(fEveShape);
+ }
+}
+
+void EveVisualizer::AddEveShape(std::string shapeName,TGeoShape *shape, TGeoHMatrix &mat, int color){
+
+if(gEve){
+  fEveShape = new TEveGeoShape(shapeName.c_str());
+  fEveShape->SetShape(shape);
+  fEveShape->SetMainColor(color);
+  fEveShape->SetMainTransparency(65);
   fEveShape->SetTransMatrix(mat);
   //fEveGeomList->AddElement(fEveShape);
   Singleton::instance()->AddElement(fEveShape);

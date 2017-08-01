@@ -45,7 +45,7 @@ const char* input_filename = (argc>1)?argv[1]:"tracks.txt";
 
     Tomography::Slicer slicer(-500,500.,-100.,100.,-150.,150.);
     double deno=10.;
-    int count = 1000;
+    int count = 10000;
     //while(!ft.eof()){
 
    
@@ -59,7 +59,11 @@ const char* input_filename = (argc>1)?argv[1]:"tracks.txt";
 	pt.SetColor(color);
     	//v.Register(slicer,pt);
     //v.Register(pt);
+#ifdef USE_EVE
 	v.Register_V2(pt);
+#else
+	v.Register(pt);
+#endif
     
     }
 #ifdef USE_EVE

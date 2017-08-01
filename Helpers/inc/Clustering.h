@@ -9,7 +9,7 @@
 #define HELPERS_INC_CLUSTERING_H_
 #include <vector>
 #include "base/Vector3D.h"
-
+#include "TH1F.h"
 namespace Tracking {
 class Point;
 class NewCluster;
@@ -25,6 +25,9 @@ class Clustering {
 	double fEpsilon;
 	int fMinPtsInCluster;
 	std::vector<Point*> fPtVect;
+	TH1F *fHist1DOfClusterNum;
+	TH1F *fHist1DOfScatterigInClusterNum;
+	//TFile *fClusterRootFile;
 public:
 	Clustering();
 	Clustering(std::vector<Vec_t> ptVect);
@@ -41,6 +44,9 @@ public:
 	Cluster AddClusters(Cluster c1, Cluster c2);
 	Neighbors FindNeighbors(Point *pt);
 	void ExpandCluster(Point *pt, Neighbors &neighborPts, NewCluster &C);
+	void FillHistogram();
+	void NormalizeScatteringValue();
+	void WriteFile();
 
 
 	void SequentialClustering(std::vector<Vec_t> ptVect);
