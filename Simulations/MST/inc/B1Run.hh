@@ -41,11 +41,13 @@
 #include "Tree.h"
 #include "Voxelator.h"
 #include "G4SystemOfUnits.hh"
+#include "Voxel.h"
 
 using Tomography::Track;
 using Tracking::Tree;
 using Tracking::Vector3D;
 using Tomography::Voxelator;
+using Tomography::Voxel;
 
 using PhysicalTrackVector = std::vector< std::vector<Vector3D<double>> > ;
 using VectorOfVoxelsForAnEvent = std::vector<int>; // This represent std::vector of candidate voxel num which can influenced the muon track.
@@ -70,7 +72,12 @@ class B1Run : public G4Run
      Voxelator fVox;
      std::vector<VectorOfVoxelsForAnEvent> fVectorOfVoxelsForWholeRun;
 
+
+
+
   public:
+    std::vector<Voxel*> fVoxelVector;
+
     B1Run();
     virtual ~B1Run();
 

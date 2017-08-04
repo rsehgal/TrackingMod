@@ -105,6 +105,8 @@ for(int i = 0 ; i < fNumOfPlanes ; i++) {
 #endif
 
 }
+
+#if(0)
   if(!GetDetectorType().compare("TRG")){ //if detector type is equal to TRG then update the event vector
 	  long toptime=0,bottomtime=0;
 	  //Considering only one scintillator fired in each triggering plane
@@ -117,6 +119,7 @@ for(int i = 0 ; i < fNumOfPlanes ; i++) {
   	  InsertEvent(new Event(evNo,fEventDetected,toptime,bottomtime)); //NOT YET COMPLETED
 
     }
+#endif
 
 }
 
@@ -324,17 +327,29 @@ void Properties::GetStripsHitPlot3D(){
   //h3dHitPlot->SetMarkerSize(0.5);
   //h3dHitPlot->SetMarkerStyle(20);
   int numOfEvents = Tracking::Tree::instance()->GetNumOfEvents();
+  std::cout<<"Num of Events : " << numOfEvents << std::endl;
   std::vector<int> topPlaneFiredStripVector;
   std::vector<int> bottomPlaneFiredStripVector;
   std::vector<Tracking::Vector3D<double>> pixelVect;
-  int count=0;
+  int count1=0;
   std::cout<<"ClusterSize : " << fClusterSize << std::endl;
+  int count = 0 ;
   for(int evNo = 0 ; evNo < numOfEvents ; evNo++){
     pixelVect.clear();
     SetEventDetected(evNo);
     topPlaneFiredStripVector = GetPlane(0)->GetFiredStripsVector();
     bottomPlaneFiredStripVector = GetPlane(1)->GetFiredStripsVector();
-
+/*
+    for(int i = 0 ; i < topPlaneFiredStripVector.size() ; i++){
+    	if(topPlaneFiredStripVector[i])
+    		std::cout<<"FiredStrip Num  : " << topPlaneFiredStripVector[i] << "\t";
+    	if(topPlaneFiredStripVector[i] == 3)count1++;
+    std::cout << "Event Num : " << evNo <<"  :: FiredStripVector Size : "
+    		  << topPlaneFiredStripVector.size() <<" : " << bottomPlaneFiredStripVector.size() << std::endl;
+    }
+*/
+    std::cout << "Event Num : " << evNo <<"  :: FiredStripVector Size : "
+        		  << topPlaneFiredStripVector.size() <<" : " << bottomPlaneFiredStripVector.size() << std::endl;
     if(fEventDetected && topPlaneFiredStripVector.size()<=fClusterSize && bottomPlaneFiredStripVector.size()<=fClusterSize ){
     //if(topPlaneFiredStripVector.size() && bottomPlaneFiredStripVector.size()){
       for(int xval = 0  ; xval < topPlaneFiredStripVector.size() ; xval++){
@@ -358,6 +373,8 @@ void Properties::GetStripsHitPlot3D(){
     //pixelVect[0].Print();
 
   }
+
+  std::cout<< "Count : " << count1 << std::endl;
 
   std::cout<<"Total Num of Hit Point for Detector  : "<< GetName() << " : " << count << std::endl;
   std::cout<<"==================================================================="<< std::endl;

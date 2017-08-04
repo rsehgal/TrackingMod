@@ -53,6 +53,7 @@ void ScintillatorPlane::SetFiredStripsVector(int evNo) {
   //  fScintVector[i]->DetectAndSetHit<true>(t, evNo);
 	//Scintillator::ResetBadEventCounter();
 	fScintVector[i]->DetectAndSetHit<true>(evNo);
+//	std::cout << "\t" << fScintVector[i]->GetScintHit();
     if(fScintVector[i]->GetScintHit()){
     	fFiredStripsVector.push_back(i);
     	fFiredStripsIDVector.push_back(fScintVector[i]->GetScintId());
@@ -60,6 +61,7 @@ void ScintillatorPlane::SetFiredStripsVector(int evNo) {
     }
 
   }
+  std::cout << std::endl;
 }
 
 } /* namespace Tomography */

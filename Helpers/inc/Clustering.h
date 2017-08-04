@@ -10,6 +10,8 @@
 #include <vector>
 #include "base/Vector3D.h"
 #include "TH1F.h"
+#include <fstream>
+
 namespace Tracking {
 class Point;
 class NewCluster;
@@ -51,6 +53,10 @@ public:
 
 	void SequentialClustering(std::vector<Vec_t> ptVect);
 	void KMeans(){}
+
+
+	//Function to export data for individual cluster to txt, so that it can be easily analyzed in R
+	void ExportClustersData();
 };
 
 class Point{
@@ -71,6 +77,19 @@ public:
 };
 
 int NewCluster::fClusterNum = -1;
+
+class File{
+public:
+	File(){}
+	File(std::string fileName){
+		fHandle.open(fileName,std::ios::out);
+	}
+	void Close() {
+		fHandle.close();
+	}
+	std::ofstream fHandle;
+
+};
 
 } /* namespace Tracking */
 

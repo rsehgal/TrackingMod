@@ -45,7 +45,7 @@ const char* input_filename = (argc>1)?argv[1]:"tracks.txt";
 
     Tomography::Slicer slicer(-500,500.,-100.,100.,-150.,150.);
     double deno=10.;
-    int count = 10000;
+    int count = 20000;
     //while(!ft.eof()){
 
    

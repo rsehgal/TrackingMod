@@ -231,7 +231,8 @@ for(int x = 0 ; x < voxelatorDim.x()-1 ; x++){
       for(int z = 0 ; z < voxelatorDim.z()-1 ; z++){
 	if(vox.GetVoxelizedCount()->GetBinContent(x,y,z))
 	//voxTrack << x << " " << y << " " << z << " " <<  vox.GetVoxelizedHist()->GetBinContent(x,y,z) << std::endl;
-	voxTrack << (-voxelizedVolumeDim.x()+x*voxelDim.x()) << " " << (-voxelizedVolumeDim.y()+y*voxelDim.y())  << " " << (-voxelizedVolumeDim.z()+z*voxelDim.z())  << " " <<  vox.GetVoxelizedHist()->GetBinContent(x,y,z) << std::endl;
+	voxTrack << (-voxelizedVolumeDim.x()+x*voxelDim.x()) << " " << (-voxelizedVolumeDim.y()+y*voxelDim.y())
+			 << " " << (-voxelizedVolumeDim.z()+z*voxelDim.z())  << " " <<  vox.GetVoxelizedHist()->GetBinContent(x,y,z) << std::endl;
       }
     }
   }
