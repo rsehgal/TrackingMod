@@ -38,6 +38,8 @@
 #include "TInterpreter.h"
 #include "Delta.h"
 
+#include "Voxel.h"
+
 #include "Imaging.h"
 using Tracking::ImageReconstruction;
 using VectorOfVoxelsForAnEvent = std::vector<int>; // This represent std::vector of candidate voxel num which can influenced the muon track.
@@ -67,6 +69,24 @@ void B1EventAction::BeginOfEventAction(const G4Event*)
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
+int B1EventAction::IfVoxelExist(int voxelNum){
+	B1Run* run
+	    = static_cast<B1Run*>(
+	        G4RunManager::GetRunManager()->GetNonConstCurrentRun());
+	std::cout<< "VoxelVectorSize : " << run->fVoxelVector.size() << std::endl;
+	if(run->fVoxelVector.size()){
+		for(int i = 0 ; i < run->fVoxelVector.size() ; i++){
+			if(run->fVoxelVector[i]->GetVoxelNum() == voxelNum){
+				std::cout<<"Voxel Hit.........Found previously created Voxel... :  "  << run->fVoxelVector[i]->GetVoxelNum() << std::endl;
+				return i;
+			}
+		}
+		return -1;
+	}else{
+		return -1;
+	}
+}
+
 void B1EventAction::EndOfEventAction(const G4Event*)
 {   
 
@@ -93,6 +113,18 @@ void B1EventAction::EndOfEventAction(const G4Event*)
   run->SetScattering(fScatteringAngle*1000);
 
   run->GetTreeInstance()->Fill();
+
+  int val = IfVoxelExist(run->GetVoxelator().GetVoxelNumber(fPocaPt));
+  std::cout << "Initial Voxel Number : " << run->GetVoxelator().GetVoxelNumber(fPocaPt) << std::endl;
+  std::cout<<"Val : " << val << std::endl;
+  if(val < 0.)
+	  (run->fVoxelVector).push_back(new Voxel(fPocaPt,run->GetVoxelator().GetVoxelNumber(fPocaPt)));
+  else
+	  (run->fVoxelVector)[val]->Insert(fPocaPt,run->GetVoxelator().GetVoxelNumber(fPocaPt));
+  if(val >= 0)
+	  std::cout<<"Voxel Exist.......... : VoxelNum : " << val <<  std::endl;
+
+
 
 #ifdef FIND_CANDIDATE_VOXEL
 	VectorOfVoxelsForAnEvent vectOfVoxels;

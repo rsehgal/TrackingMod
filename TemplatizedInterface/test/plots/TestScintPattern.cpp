@@ -20,7 +20,7 @@ using namespace Tomography;
 int main(int argc, char *argv[]) {
   std::string temp_str = std::to_string(atoi(argv[1]));
   temp_str += ".root";
-  int clusterSize = 1;
+  int clusterSize = 6;
   TApplication *fApp = new TApplication("Test", NULL, NULL);
   //gStyle->SetPalette(1);
   Tracking::Tree::instance()->ReadTree(temp_str.c_str(), "BSC_DATA_TREE", 0);

@@ -124,12 +124,16 @@ G4VPhysicalVolume *phyTargetPbBlock = new G4PVPlacement(0,
   G4Material *Fe=nist->FindOrBuildMaterial("G4_Fe");
   G4Material *Al=nist->FindOrBuildMaterial("G4_Al");
   G4Material *U=nist->FindOrBuildMaterial("G4_U");
-  target = new G4Box("Target",5*cm,5*cm,4.5*cm);
+  target = new G4Box("Target",5*cm,5*cm,8*cm);
 
   fLogicTarget = new G4LogicalVolume(target,Pb,"LogicalTargetBlock");
   G4LogicalVolume *fLogicTargetFe = new G4LogicalVolume(target,Fe,"LogicalTargetFeBlock");
-  G4LogicalVolume *fLogicTargetAl = new G4LogicalVolume(target,Al,"LogicalTargetAlBlock");
+
+  G4Box *targetAl = new G4Box("Target",5*cm,5*cm,18*cm);
+  G4Box *subtargetU = new G4Box("Target",3*cm,3*cm,7*cm);
+  G4LogicalVolume *fLogicTargetAl = new G4LogicalVolume(targetAl,Al,"LogicalTargetAlBlock");
   G4LogicalVolume *fLogicTargetU = new G4LogicalVolume(target,U,"LogicalTargetUBlock");
+  G4LogicalVolume *fLogicSubTargetU = new G4LogicalVolume(subtargetU,U,"LogicalSubTargetUBlock");
 
 /*G4VPhysicalVolume *phyTargetBlock = new G4PVPlacement(0,
                             //G4ThreeVector(),
@@ -145,9 +149,9 @@ G4VPhysicalVolume *phyTargetPbBlock = new G4PVPlacement(0,
   G4VPhysicalVolume *phyTargetBlock = new G4PVPlacement(0,
                             //G4ThreeVector(),
                             //G4ThreeVector(15*cm,-15*cm,12*cm),
-		  	  	  	  	    G4ThreeVector(15*cm,-15*cm,-39*cm),
+		  	  	  	  	    G4ThreeVector(15*cm,-15*cm,0*cm),//-39*cm),
                            fLogicTarget,
-                            "TargetPhysical",
+                            "TargetPhysical_Pb",
                             world->GetLogicalVolume(),//logicWorld,
                             false,
                             0,
@@ -156,9 +160,9 @@ G4VPhysicalVolume *phyTargetPbBlock = new G4PVPlacement(0,
   G4VPhysicalVolume *phyTargetBlock2 = new G4PVPlacement(0,
                               //G4ThreeVector(),
                               //G4ThreeVector(-15*cm,15*cm,12*cm),
-		  	  	  	  	  	  G4ThreeVector(-15*cm,15*cm,-39*cm),
-                             fLogicTargetFe,
-                              "TargetPhysical",
+		  	  	  	  	  	  G4ThreeVector(-15*cm,15*cm,0*cm),//-39*cm),
+                             fLogicTargetU,
+                              "TargetPhysical_U",
                               world->GetLogicalVolume(),//logicWorld,
                               false,
                               0,
@@ -167,9 +171,9 @@ G4VPhysicalVolume *phyTargetPbBlock = new G4PVPlacement(0,
   G4VPhysicalVolume *phyTargetBlock3 = new G4PVPlacement(0,
                                 //G4ThreeVector(),
                                 //G4ThreeVector(-15*cm,-15*cm,12*cm),
-		  	  	  	  	  	    G4ThreeVector(-15*cm,-15*cm,-39*cm),
+		  	  	  	  	  	    G4ThreeVector(-15*cm,-15*cm,0*cm),//-39*cm),
                                fLogicTargetAl,
-                                "TargetPhysical",
+                                "TargetPhysical_Al",
                                 world->GetLogicalVolume(),//logicWorld,
                                 false,
                                 0,
@@ -178,14 +182,40 @@ G4VPhysicalVolume *phyTargetPbBlock = new G4PVPlacement(0,
   G4VPhysicalVolume *phyTargetBlock4 = new G4PVPlacement(0,
                                   //G4ThreeVector(),
                                   //G4ThreeVector(25*cm,25*cm,12*cm),
-		  	  	  	  	  	  	  G4ThreeVector(25*cm,25*cm,-39*cm),
-                                 fLogicTargetU,
-                                  "TargetPhysical",
+		  	  	  	  	  	  	  G4ThreeVector(25*cm,25*cm,0*cm),//-39*cm),
+                                 fLogicTargetFe,
+                                  "TargetPhysical_Fe",
                                   world->GetLogicalVolume(),//logicWorld,
                                   false,
                                   0,
                                   checkOverlaps);
 
+  G4VPhysicalVolume *phySubTargetBlockU = new G4PVPlacement(0,
+                                  //G4ThreeVector(),
+                                  //G4ThreeVector(-15*cm,-15*cm,12*cm),
+  		  	  	  	  	  	    G4ThreeVector(0*cm,0*cm,0*cm),//-39*cm),
+								fLogicSubTargetU,
+                                  "TargetSubPhysical_U",
+                                  //world->GetLogicalVolume(),//logicWorld,
+								  fLogicTargetAl,
+
+                                  false,
+                                  0,
+                                  checkOverlaps);
+
+
+  G4VPhysicalVolume *phySubTargetBlockU2 = new G4PVPlacement(0,
+                                    //G4ThreeVector(),
+                                    //G4ThreeVector(-15*cm,-15*cm,12*cm),
+    		  	  	  	  	  	    G4ThreeVector(0*cm,0*cm,0*cm),//-39*cm),
+  								fLogicSubTargetU,
+                                    "TargetSubPhysical_U",
+                                    //world->GetLogicalVolume(),//logicWorld,
+  								  fLogicTarget,
+
+                                    false,
+                                    0,
+                                    checkOverlaps);
 
 
 	//fScoringVolume = logicalLeadBlock;

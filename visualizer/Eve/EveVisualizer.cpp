@@ -45,8 +45,8 @@ namespace Tracking {
   
   // fPointSetArray->CloseBins();
   Singleton::instance()->AddElement(fPointSetArray);
-  int bins = 100;
-  fPointSetArray->InitBins("Scattering", bins, 0., 100.);
+  int bins = 200;
+  fPointSetArray->InitBins("Scattering", bins, 0., 200.);
 
    TColor::SetPalette(1, 0); 
    const Int_t nCol = TColor::GetNumberOfColors();
