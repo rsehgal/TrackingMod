@@ -29,6 +29,7 @@
 /// \brief Implementation of the B1Run class
 
 #include "B1Run.hh"
+#include <fstream>
 
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -39,7 +40,7 @@ B1Run::B1Run()
   fEdep2(0.)
 {
 	std::cout<<"@@@@@@ RUN DEFAULT CONSTRUCTOR CALLED @@@@@@@@@@@@" << std::endl;
-	fVox.SetVoxelator(50*cm,50*cm,40*cm,20*cm,20*cm,16*cm);
+	fVox.SetVoxelator(50*cm,50*cm,40*cm,10*cm,10*cm,8*cm);
 	tree = Tracking::Tree::instance();
 	  tree->SetTreeDefaultParameters();
 	  tree->InitializeTreeForWriting();
@@ -54,6 +55,20 @@ B1Run::B1Run()
 B1Run::~B1Run()
 { tree->WriteToFile();
 std::cout<<"Length of RunVoxelVector : "<< fVectorOfVoxelsForWholeRun.size() << std::endl;
+
+//Logic to Remove outlier base on voxel
+std::ofstream filter("filtered.txt");
+for(int i= 0 ; i < fVoxelVector.size() ; i++){
+	if(!fVoxelVector[i]->IsOutlier()){
+		std::vector<Tracking::Vector3D<double>> ptVect = fVoxelVector[i]->GetPointsVector();
+		for(int j = 0 ; j < ptVect.size() ; j++){
+			filter << ptVect[j].x() << " " << ptVect[j].y() << " " <<  ptVect[j].z() << " " << ptVect[j].GetColor() << std::endl;
+		}
+
+	}
+}
+filter.close();
+
 }
  
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
