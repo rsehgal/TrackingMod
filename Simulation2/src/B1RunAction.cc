@@ -41,6 +41,9 @@
 #include <G4FastStep.hh>
 #include <string.h>
 #include "B1EventAction.hh"
+
+//Trying to use Evolved Voxelator
+#include "Voxelator_Evolution.h"
 //#include "Data.h"
 #include <vector>
 
@@ -102,6 +105,7 @@ void B1RunAction::BeginOfRunAction(const G4Run*)
   fTree = new TTree ("BSC_DATA_TREE","My GEANT4 simulation") ;
 #endif
 
+  Tomography::Voxelator::Create(50*cm,50*cm,45*cm,20*cm,20*cm,18*cm);
 
   //Tracking::Channel b;
   //InitializeTree();
@@ -224,6 +228,15 @@ void B1RunAction::EndOfRunAction(const G4Run* run)
  // Tracking::Tree::instance()->WriteToFile();
  // Tracking::Tree::instance()->Close();
 
+  //Writing run.txt file
+  ofstream fs("run.txt");
+  fs << 3000 << " " << "G4_Fe" << " " << 100 << " ";
+  for(int i = 0 ; i < b1Run->GetScatteringAngleVector().size() ; i++){
+	  fs << b1Run->GetScatteringAngleVector()[i] << " " ;
+  }
+  fs.close();
+
+
 #ifdef STORE
   fTree->Write();
   fRootFile->Close();
@@ -231,6 +244,8 @@ void B1RunAction::EndOfRunAction(const G4Run* run)
 
  std::cout << "Total number of branches : " << brMap.size() << " : counter  : "<< counter << std::endl;
   myfile->close();
+
+  std::cout << "ScatteringAngleVector Size : " << b1Run->GetScatteringAngleVector().size() << std::endl;
     delete myfile;
 }
 

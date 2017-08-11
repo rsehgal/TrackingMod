@@ -117,17 +117,37 @@ G4VPhysicalVolume *phyTargetPbBlock = new G4PVPlacement(0,
                             checkOverlaps);
 */
 
+
+
+  G4Material *Pb=nist->FindOrBuildMaterial("G4_Pb");
+    G4Material *Fe=nist->FindOrBuildMaterial("G4_Fe");
+    G4Material *Al=nist->FindOrBuildMaterial("G4_Al");
+    G4Material *U=nist->FindOrBuildMaterial("G4_U");
+
+
+    G4Box *targetKnown = new G4Box("Target",50*cm,50*cm,5*cm);
+    G4LogicalVolume *fLogicTargetKnown = new G4LogicalVolume(targetKnown,Fe,"LogicalKnownBlock");
+    G4VPhysicalVolume *phyKnownTargetBlock = new G4PVPlacement(0,
+                                G4ThreeVector(),
+                                //G4ThreeVector(15*cm,-15*cm,12*cm),
+    		  	  	  	  	    //G4ThreeVector(15*cm,-15*cm,0*cm),//-39*cm),
+                               fLogicTargetKnown,
+                                "TargetPhysical_Known",
+                                world->GetLogicalVolume(),//logicWorld,
+                                false,
+                                0,
+                                checkOverlaps);
+
+
+
 //Generalized target which can be changed from UI, default material is set to Aluminium
   //target = new G4Box("Target",0.250*world_sizeXYZ, 0.250*world_sizeXYZ,fTargetThickness);
+#if(0)
   G4NistManager* nist = G4NistManager::Instance();
-  G4Material *Pb=nist->FindOrBuildMaterial("G4_Pb");
-  G4Material *Fe=nist->FindOrBuildMaterial("G4_Fe");
-  G4Material *Al=nist->FindOrBuildMaterial("G4_Al");
-  G4Material *U=nist->FindOrBuildMaterial("G4_U");
   target = new G4Box("Target",5*cm,5*cm,8*cm);
 
   fLogicTarget = new G4LogicalVolume(target,Pb,"LogicalTargetBlock");
-  G4LogicalVolume *fLogicTargetFe = new G4LogicalVolume(target,Fe,"LogicalTargetFeBlock");
+  G4LogicalVolume *fLogicTargetFe = new G4LogicalVolume(target,Pb,"LogicalTargetFeBlock");
 
   G4Box *targetAl = new G4Box("Target",5*cm,5*cm,18*cm);
   G4Box *subtargetU = new G4Box("Target",3*cm,3*cm,7*cm);
@@ -216,6 +236,7 @@ G4VPhysicalVolume *phyTargetPbBlock = new G4PVPlacement(0,
                                     false,
                                     0,
                                     checkOverlaps);
+#endif
 
 
 	//fScoringVolume = logicalLeadBlock;

@@ -32,6 +32,11 @@ void Track::CalculateDirCosine(){
 	fDirection = (fP2-fP1).Unit();
 }
 
-
+void Track::operator = (const Track &newVal){
+	this->fP1 = newVal.fP1;
+	this->fP2 = newVal.fP2;
+	this->fDirCosine = newVal.fDirCosine;
+	this->fDirection = newVal.fDirection;
+}
 
 } /* namespace Tomography */
