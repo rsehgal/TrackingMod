@@ -1,7 +1,35 @@
-#include "Voxelator.h"
+#include "Voxelator_Evolution.h"
 #include <cmath>
 
 namespace Tomography {
+
+Voxelator *Voxelator::s_instance = 0;
+Voxelator* Voxelator::instance(double voxelizedVolHalfX,double voxelizedVolHalfY, double voxelizedVolHalfZ,
+			 double voxelX,double voxelY, double voxelZ) {
+        if (!s_instance)
+          s_instance = new Voxelator(voxelizedVolHalfX,voxelizedVolHalfY, voxelizedVolHalfZ,voxelX, voxelY, voxelZ);
+        return s_instance;
+    }
+
+
+Voxelator* Voxelator::instance() {
+        if (s_instance)
+          return s_instance;
+        else{
+        	std::cout<<"@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@" << std::endl;
+        	std::cout<<"@@ Instance of Voxelator does not exist in Memory, please create it first....@@" << std::endl;
+        	std::cout<<"@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@" << std::endl;
+        }
+    }
+
+Voxelator* Voxelator::Create(double voxelizedVolHalfX,double voxelizedVolHalfY, double voxelizedVolHalfZ,
+			 double voxelX,double voxelY, double voxelZ) {
+        if (!s_instance)
+          s_instance = new Voxelator(voxelizedVolHalfX,voxelizedVolHalfY, voxelizedVolHalfZ,voxelX, voxelY, voxelZ);
+        return s_instance;
+    }
+
+
 
 Voxelator::Voxelator(){
 //fVoxelsIn1D = new TH1F();
@@ -244,5 +272,6 @@ for (auto &pocaPt : pocaPtVect) {
   }
 AverageOut();
 }
+
 
 } // end of Tomography namespace

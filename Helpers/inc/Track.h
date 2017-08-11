@@ -30,6 +30,9 @@ public:
   Tracking::Vector3D<double> GetDirection(){return fDirection;}
   void Print(){fP1.Print(); std::cout<<" : " ; fP2.Print();}
 
+  //Overloading operator
+  void operator = (const Track &newVal);
+
   ~Track();
 };
 

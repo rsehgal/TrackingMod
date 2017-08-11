@@ -37,6 +37,10 @@
 #include "B1RunAction.hh"
 #include <TVector3.h>
 
+//Trying to use new Architecture
+#include "EventHelper.h"
+#include "Voxelator_Evolution.h"
+
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 int B1EventAction::evNo = 0;
@@ -114,10 +118,17 @@ void B1EventAction::EndOfEventAction(const G4Event*)
   B1RunAction::fOutgoingTrack.SetP1(Tracking::Vector3D<double>(position[5].x(),position[5].y(),position[5].z()));
   B1RunAction::fOutgoingTrack.SetP2(Tracking::Vector3D<double>(position[7].x(),position[7].y(),position[7].z()));
 
+
+//  /Tomography::EventHelper u(B1RunAction::fIncomingTrack,B1RunAction::fOutgoingTrack);
+  Tomography::EventHelper u(B1RunAction::fIncomingTrack,B1RunAction::fOutgoingTrack);
+
   TVector3 incomingR(incoming.x(),incoming.y(),incoming.z());
   TVector3 outgoingR(outgoing.x(),outgoing.y(),outgoing.z());
   B1RunAction::fScatteringAngle = outgoingR.Angle(incomingR);
   //std::cout<<"Scattering Angle : " << B1RunAction::fScatteringAngle << std::endl;
+  if(B1RunAction::fScatteringAngle > 0.)
+	  run->FillScatteringAngleVector(B1RunAction::fScatteringAngle);
+	  //(run->GetScatteringAngleVector()).push_back(B1RunAction::fScatteringAngle);
 
 #ifdef STORE
   B1RunAction::fTree->Fill();

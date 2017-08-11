@@ -18,24 +18,8 @@ int main(int argc, char *argv[]){
 
     TApplication *fApp = new TApplication("Test", NULL, NULL);
 	TCanvas *c = new TCanvas("TestCanvas", "ScatteringAngleCanvas", 800, 600);
-	c->Divide(4,4);
-	std::vector<TH1F*> histogram;
-	int numOfEnergies = 1;
-	int numOfMaterials = 1;
-    int numOfSteps = 1;
-	int nxbins = 80;
-	
- 	histogram.resize(numOfSteps*numOfMaterials);
- 	for(int i = 0 ; i < histogram.size() ; i++){
- 		std::stringstream ss;
- 		ss << i;
- 		//std::cout<<"ss.str() : " << ss.str() << std::endl;
- 		std::string str = "hist";
- 		str += ss.str();
- 		//std::cout<< "STR : " << str <<std::endl;
-	  histogram[i] = new TH1F(str.c_str(), "Data", nxbins, -50, 250);
+	TH1F  *histogram = new TH1F("SD", "Data", 1000, -0.001, 0.1);
       
-    }
 
 
     //Stuff of reading from run.txt and filling the histogram
@@ -46,47 +30,36 @@ int main(int argc, char *argv[]){
     double scatteringAngle = 0.;
     int n = 0;
 
-    //Opening a file to store Standard deviation for histograms
-    std::ofstream sd;
-    sd.open("sd.txt",std::ios::app);
-    
-    
-    while(n!=numOfSteps*numOfMaterials){
-	std::stringstream ss,tk;
-    	c->cd(n+1);
     int numOfEvents = std::atoi(argv[1]);
     runfile >> energy >> material >> thickness;
-    ss << energy/1000.;
-    tk << thickness;
-    std::string title = material+"_"+tk.str()+"_mm_"+ss.str()+"GeV";
-    histogram[n]->SetTitle(title.c_str());
-    histogram[n]->SetName(title.c_str());
-
-    sd << ss.str()+"GeV" << " " << material << " " << thickness/10. << " " ;
-    
     std::cout<<"Energy : " << energy << ":: material : " << material << std::endl;
     while(numOfEvents){
     	runfile >> scatteringAngle;
-    	histogram[n]->Fill(scatteringAngle*1000.);
-
+    	std::cout << "Scattering Angle : " << scatteringAngle << std::endl;
+    	histogram->Fill(scatteringAngle);
     	numOfEvents--;
     }
 
-    sd << histogram[n]->GetStdDev() << std::endl;
-    //if(n==0)
-    histogram[n]->Draw();
-    //else	
-    //histogram[n]->Draw("same");
-
-	std::cout<<"Material Num : " << n << std::endl;
-    n++;
-    }
-
-
-    sd.close();
     std::cout<<"--- Execution Completed ----" << std::endl;
-    GenerateGraph();
-	fApp->Run();
+    double sd = histogram->GetStdDev();
+    std::cout << "SD : " << sd << std::endl;
+    //sd = 0.01704;
+    //sd/=2.8;
+
+
+    int bin1 = histogram->FindFirstBinAbove(histogram->GetMaximum()/2);
+    int bin2 = histogram->FindLastBinAbove(histogram->GetMaximum()/2);
+    double fwhm = histogram->GetBinCenter(bin2) - histogram->GetBinCenter(bin1);
+    std::cout<<"FWHM for histogram : " << n <<" : " << fwhm <<std::endl;
+
+    //sd = fwhm;
+    //sd = .0092901;
+    //double radLen = 0.0136*0.0136*10./(sd*sd);
+    double radLen = ((15.*15.)/(3000*3000))*(10/(sd*sd));//(fwhm*fwhm);
+    //double radLen = ((13.6*13.6)/(3000*3000))*(10/(fwhm*fwhm));
+    std::cout << "RadLength : " << radLen << std::endl;
+    histogram->Draw();
+    fApp->Run();
 
 	return 0;
 }

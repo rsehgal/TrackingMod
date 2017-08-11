@@ -45,6 +45,11 @@
 #include "Voxelator.h"
 #include "ObjectChecker.h"
 
+#include "Voxelator_Evolution.h"
+
+
+#include <TGraph.h>
+
 
 #include <iostream>
 #include <fstream>
@@ -96,6 +101,9 @@ void B1RunAction::BeginOfRunAction(const G4Run*)
   //inform the runManager to save random number seed
   G4RunManager::GetRunManager()->SetRandomNumberStore(false);
   fScatteringHist = new TH1F("fScatteringHist","Scattering Histogram",100,0.,100.);
+
+  //Using Evolved Voxelator
+//  Tomography::Voxelator::Create(50*cm,50*cm,45*cm,20*cm,20*cm,18*cm);
   
   fs.open("run.txt", std::ios::app);
   ftrack.open("tracks.txt",std::ios::app);
@@ -105,6 +113,23 @@ void B1RunAction::BeginOfRunAction(const G4Run*)
 
 // TApplication *fApp = new TApplication("Test", NULL, NULL);
 }
+
+/*
+
+void B1RunAction::CreateSDGraph(){
+	std::vector<int> x;
+	const B1Run* b1Run = static_cast<const B1Run*>(run);
+	std::vector<Voxel*> voxelVector = b1Run->GetVoxelVector();
+	int numOfVoxels = voxelVector.size();
+	std::vector<double> y;
+	for(int i = 0 ; i < numOfVoxels ; i++){
+		x.push_back(i);
+		y.push_back(voxelVector[i]->GetStandardDeviation);
+	}
+	fGraphSD = new TGraph(numOfVoxels, &x[0],&y[0]);
+}
+*/
+
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
@@ -247,7 +272,7 @@ for (std::set<Tomography::ObjectChecker>::iterator it=histSet.begin(); it!=histS
 }
 #endif
 
-flVox.Write();
+//flVox.Write();
 voxTrack.close();
 
 
@@ -279,6 +304,25 @@ delete fScatteringHist;
 
   fs.close();
   ftrack.close();
+ // CreateSDGraph();
+
+
+
+
+
+  std::vector<double> x;
+  //	const B1Run* b1Run = static_cast<const B1Run*>(run);
+  	std::vector<Voxel*> voxelVector = b1Run->GetVoxelVector();
+  	int numOfVoxels = voxelVector.size();
+  	std::vector<double> y;
+  	for(int i = 0 ; i < numOfVoxels ; i++){
+  		x.push_back(i);
+  		y.push_back(voxelVector[i]->GetStandardDeviation());
+  	}
+  	TGraph *graphSD = new TGraph(numOfVoxels,&x[0],&y[0]);
+  	// TGraph* gr = new TGraph(numOfVoxels,x,y);
+  	 graphSD->Write();
+  flVox.Write();
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

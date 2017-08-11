@@ -70,12 +70,14 @@ class B1Run : public G4Run
 
 
      Voxelator fVox;
+     //Vector < Vector of candidate Voxel for each event>
      std::vector<VectorOfVoxelsForAnEvent> fVectorOfVoxelsForWholeRun;
 
 
 
 
   public:
+     //Vector of Voxel required
     std::vector<Voxel*> fVoxelVector;
 
     B1Run();
@@ -112,6 +114,7 @@ class B1Run : public G4Run
     void InsertVectorOfVoxels(VectorOfVoxelsForAnEvent vect){fVectorOfVoxelsForWholeRun.push_back(vect);}
 
 
+    std::vector<Voxel*> GetVoxelVector()const{return fVoxelVector;}
 
   private:
     G4double  fEdep;

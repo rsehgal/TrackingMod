@@ -38,6 +38,7 @@
 #include "TInterpreter.h"
 #include "Delta.h"
 
+#include "CommonFunc.h"
 #include "Voxel.h"
 
 #include "Imaging.h"
@@ -102,7 +103,8 @@ void B1EventAction::EndOfEventAction(const G4Event*)
   * if(fScatteringAngle*1000 > 20. && fScatteringAngle*1000 < 100.)
   * if(fScatteringAngle*1000 > 5.)
   */
-  if(fScatteringAngle*1000 > 5.)
+  //if(fScatteringAngle*1000 > 5.)
+  if(fScatteringAngle > 0.)
   {
   GenerateIncomingTrack();
   GenerateOutgoingTrack();
@@ -110,7 +112,7 @@ void B1EventAction::EndOfEventAction(const G4Event*)
 
   run->GetInComing() = incoming;
   run->GetOutGoing() = outgoing;
-  run->SetScattering(fScatteringAngle*1000);
+  run->SetScattering(fScatteringAngle);//*1000);
 
   run->GetTreeInstance()->Fill();
 
@@ -162,7 +164,8 @@ void B1EventAction::EndOfEventAction(const G4Event*)
   /*
    * Caching the above calculated values (IF REQUIRED) in stl vector defined in RUN
    */
-  if(fScatteringAngle*1000 > 5.)
+  //if(fScatteringAngle*1000 > 5.)
+  if(fScatteringAngle > 0.)
   {
   run->FillScatteringAngleVector(fScatteringAngle);
   run->FillIncomingTrackVector(incoming);
@@ -180,9 +183,11 @@ void B1EventAction::CalcScatteringAngle(){
   LinesAngle l;
 
   if(size == 3){
-	  fScatteringAngle = l.GetAngleRadian(l.CalculateAngle(hitVect[0],hitVect[hSize],hitVect[hSize],hitVect[size-1]));
+	  //fScatteringAngle = l.GetAngleRadian(l.CalculateAngle(hitVect[0],hitVect[hSize],hitVect[hSize],hitVect[size-1]));
+	  fScatteringAngle = CommonFunc::Functions::GetAngleInRadian(hitVect[0],hitVect[hSize],hitVect[hSize],hitVect[size-1]);
   }else{
-	  fScatteringAngle = l.GetAngleRadian(l.CalculateAngle(hitVect[0],hitVect[hSize-1],hitVect[hSize],hitVect[size-1]));
+	  //fScatteringAngle = l.GetAngleRadian(l.CalculateAngle(hitVect[0],hitVect[hSize-1],hitVect[hSize],hitVect[size-1]));
+	  fScatteringAngle = CommonFunc::Functions::GetAngleInRadian(hitVect[0],hitVect[hSize-1],hitVect[hSize],hitVect[size-1]);
   }
 
 }

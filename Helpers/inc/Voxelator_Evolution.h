@@ -6,8 +6,8 @@
 ** average Scattering angle of PocaPoint in each voxel.
 */
 
-#ifndef TEMPLATIZEDINTERFACE_INC_VOXELATOR_H_
-#define TEMPLATIZEDINTERFACE_INC_VOXELATOR_H_
+#ifndef HELPERS_INC_VOXELATOR_EVOLUTION_H_
+#define HELPERS_INC_VOXELATOR_EVOLUTION_H_
 
 #include "base/Vector3D.h"
 #include "TH3F.h"
@@ -24,6 +24,7 @@ using Tomography::Track;
 
 
 namespace Tomography{
+
 class Voxelator{
 private:
   Vector3D<int> fVoxelizedVolumeDim; // This should be set using the detector size
@@ -45,13 +46,24 @@ private:
   Vector3D<double> fHitPtInput;
   Vector3D<double> fHitPtOutput;
 
-public:
-
-  ObjectChecker GetObjectChecker(){return fObjChecker;}
+  static Voxelator *s_instance;
   Voxelator();
   Voxelator(double voxelizedVolHalfX,double voxelizedVolHalfY, double voxelizedVolHalfZ,
-			 double voxelX,double voxelY, double voxelZ);
+  			 double voxelX,double voxelY, double voxelZ);
 
+
+public:
+  static Voxelator *instance(double voxelizedVolHalfX,double voxelizedVolHalfY, double voxelizedVolHalfZ,
+			 double voxelX,double voxelY, double voxelZ);
+  static Voxelator *Create(double voxelizedVolHalfX,double voxelizedVolHalfY, double voxelizedVolHalfZ,
+  			 double voxelX,double voxelY, double voxelZ);
+  static Voxelator *instance();
+
+  ObjectChecker GetObjectChecker(){return fObjChecker;}
+  /*Voxelator();
+  Voxelator(double voxelizedVolHalfX,double voxelizedVolHalfY, double voxelizedVolHalfZ,
+			 double voxelX,double voxelY, double voxelZ);
+*/
   ~Voxelator();
   void SetVoxelizedVolumeDim(double halfX,double halfY, double halfZ);
   void SetVoxelDim(double x,double y, double z);

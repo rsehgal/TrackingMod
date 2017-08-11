@@ -41,6 +41,8 @@ class G4Event;
 
 class B1Run : public G4Run
 {
+	std::vector<double> fScatteringAngleVect;
+
   public:
     B1Run();
     virtual ~B1Run();
@@ -53,6 +55,12 @@ class B1Run : public G4Run
     // get methods
     G4double GetEdep()  const { return fEdep; }
     G4double GetEdep2() const { return fEdep2; }
+    std::vector<double> GetScatteringAngleVector() const{
+    	//std::cout << "GetScatteringAngleVector Called ........" << std::endl;
+    	return fScatteringAngleVect;
+
+    }
+    void FillScatteringAngleVector(double scatteringAngle){fScatteringAngleVect.push_back(scatteringAngle);}
 
   private:
     G4double  fEdep;

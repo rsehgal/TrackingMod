@@ -5,11 +5,12 @@
  *      Author: rsehgal
  */
 
-#ifndef TEMPLATIZEDINTERFACE_INC_VOXEL_H_
-#define TEMPLATIZEDINTERFACE_INC_VOXEL_H_
+#ifndef HELPERS_INC_VOXEL_H_
+#define HELPERS_INC_VOXEL_H_
 
 #include "base/Vector3D.h"
 #include <vector>
+//#include "CommonFunc.h"
 
 namespace Tomography {
 
@@ -19,6 +20,9 @@ class Voxel {
 	std::vector<Tracking::Vector3D<double>> fVectPointsInVoxel;
 	int fPointCount;
 	bool fOutlier;
+	static std::vector<int> fVisitedVoxelNumVector ;
+	static std::vector<Voxel*> fVoxelVector ;
+
 
 
 	//Minimum num of point in a Voxel to make it genuine voxel
@@ -33,11 +37,27 @@ public:
 	virtual ~Voxel();
 	bool IsOutlier(){return fOutlier;}
 	int GetNumOfPoints(){return fPointCount;}
-	std::vector<Tracking::Vector3D<double>> GetPointsVector(){return fVectPointsInVoxel;}
+	std::vector<Tracking::Vector3D<double>> GetPocaPointsVector(){return fVectPointsInVoxel;}
 	int GetVoxelNum(){return fVoxelNum;}
 	Tracking::Vector3D<double> GetVoxelDimensions(){return fDim;}
+
 	void Insert(Tracking::Vector3D<double>, int voxelNum);
+/*
+	static void InsertVoxel(Voxel *vox, int voxelNum){
+		fVoxelVector.push_back(vox);
+		fVisitedVoxelNumVector.push_back(voxelNum);
+	}
+*/
+
+	std::vector<double> GetScatteringVector();
+	double GetStandardDeviation();
+
+	static int IfVoxelExist(int voxelNum);
+	static std::vector<Voxel*> GetVoxelVector() {return fVoxelVector;}
 };
+
+//std::vector<Voxel*> Voxel::fVoxelVector = {0};
+
 
 } /* namespace Tomography */
 
