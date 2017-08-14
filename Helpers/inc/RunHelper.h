@@ -22,6 +22,7 @@ class RunHelper {
  	std::vector<double> fScatteringAngleVector;
 	std::vector<Vector3D<double>> fPocaPtVector;
 	std::vector<double> fSDOfVoxelsVector;
+	std::vector<double> fRLOfVoxelsVector;
 	std::vector<Voxel*> fVoxelVector;
 
 #ifdef VOXELIZE
@@ -45,6 +46,8 @@ public:
 	void FillPocaVector();
 	void FillSDVector();
 	void CalcSDOfEachVoxel();
+	void CalcRLOfEachVoxel();
+	void FillRLVector();
 	void WriteToFile();
 
 #ifdef VOXELIZE

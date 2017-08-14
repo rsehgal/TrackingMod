@@ -90,7 +90,7 @@ static void WriteToFile(std::string fileName, std::vector<Vector3D<double>> ptVe
    fileHandle.close();
 }
 
-static void WriteToFile(std::string fileName,std::vector<Tomography::Voxel*> voxelsVector){
+/*static void WriteToFile(std::string fileName,std::vector<Tomography::Voxel*> voxelsVector){
    std::ofstream fileHandle(fileName);
    for(int i = 0 ; i < voxelsVector.size() ; i++){
       Tracking::Vector3D<double> voxCenter = voxelsVector[i]->GetVoxelCenter();
@@ -107,6 +107,29 @@ static void WriteToFile(std::string fileName,std::vector<Tomography::Voxel*> vox
    }
 
    fileHandle.close();
+}*/
+
+static void WriteToFile(std::string fileName,std::vector<Tomography::Voxel*> voxelsVector){
+   std::ofstream fileHandle(fileName);
+   for(int i = 0 ; i < voxelsVector.size() ; i++){
+      Tracking::Vector3D<double> voxCenter = voxelsVector[i]->GetVoxelCenter();
+      if(i==0){
+         Tracking::Vector3D<int> dim = Tomography::Voxelator::instance()->GetEachVoxelDim();
+         fileHandle << dim.x() << " " << dim.y() << " " << dim.z() << std::endl;
+         fileHandle << voxCenter.x() << " " << voxCenter.y() << " " << voxCenter.z()
+                    << " " << voxelsVector[i]->GetRadiationLength() <<  std::endl;
+      }else{
+      fileHandle << voxCenter.x() << " " << voxCenter.y() << " " << voxCenter.z()
+                 << " " << voxelsVector[i]->GetRadiationLength() <<  std::endl;
+   }
+
+   }
+
+   fileHandle.close();
+}
+
+static double RadiationLength(double sd){
+	return ((15.*15.)/(3000.*3000.))*(10./(sd*sd));
 }
 
 };

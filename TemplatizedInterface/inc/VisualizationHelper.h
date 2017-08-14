@@ -133,6 +133,8 @@ public:
   //To Read from txt file
   void Register(Tracking::Vector3D<double> voxDim,Tracking::Vector3D<double> voxCenter, double color ){
 
+	//std::cout << "Vox Dim : " ; voxDim.Print();
+	//std::cout << "Vox Center : " ;  voxCenter.Print();
     TGeoHMatrix m;
     Double_t trans[3] = { 0., 0., 0. };
     m.SetTranslation(trans);
@@ -141,6 +143,7 @@ public:
     m.SetDy(voxCenter.y());
     m.SetDz(voxCenter.z());
     fVis.AddEveShape("Voxel",box,m,color);
+    std::cout << "Set Color : "<< color << std::endl;
 
   }
 

@@ -108,7 +108,7 @@ void B1RunAction::BeginOfRunAction(const G4Run*)
   fTree = new TTree ("BSC_DATA_TREE","My GEANT4 simulation") ;
 #endif
 
-  Tomography::Voxelator::Create(50*cm,50*cm,45*cm,10*cm,10*cm,9*cm);
+  Tomography::Voxelator::Create(50*cm,50*cm,45*cm,5*cm,5*cm,4.5*cm);
 
   //Tracking::Channel b;
   //InitializeTree();

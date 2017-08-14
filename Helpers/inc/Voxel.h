@@ -24,6 +24,7 @@ class Voxel {
 	static std::vector<Voxel*> fVoxelVector ;
 	Tracking::Vector3D<double> fVoxelCenter;
 	double fSD;
+	double fRL;
 
 
 	//Minimum num of point in a Voxel to make it genuine voxel
@@ -53,6 +54,8 @@ public:
 
 	std::vector<double> GetScatteringVector();
 	void CalcSD();
+	void CalcRadiationLength();
+	double GetRadiationLength();
 	double GetStandardDeviation();
 
 	static int IfVoxelExist(int voxelNum);

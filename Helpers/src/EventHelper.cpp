@@ -44,7 +44,7 @@ void EventHelper::CalculateScatterAngle(){
 void EventHelper::CalculateVoxel(){
 	int voxelNum = GetVoxelNum();
 	int voxNum = Voxel::IfVoxelExist(voxelNum);
-    std::cout<<"VoxNum : " << voxNum << std::endl;
+    //std::cout<<"VoxNum : " << voxNum << std::endl;
 	if(voxNum < 0.){
 		fVoxel = new Voxel(fPocaPt,voxelNum);
 		//oxel::InsertVoxel(new Voxel(fPocaPt,voxelNum),voxelNum);

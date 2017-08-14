@@ -66,7 +66,8 @@ B1EventAction::~B1EventAction()
 
 void B1EventAction::BeginOfEventAction(const G4Event*)
 { evNo++;
-  //std::cout << "======== Event no : "<< evNo << "  started =======" << std::endl;
+if(!(evNo%1000))
+  std::cout << "======== Event no : "<< evNo << "  started =======" << std::endl;
   fEdep = 0.;
   evMultiplicity=0;
   volName.clear();
