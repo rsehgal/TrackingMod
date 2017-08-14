@@ -97,12 +97,14 @@ if(k==0 || k==3 || k==4 || k==7)
                            checkOverlaps);
 }
 
-G4Material *Pb=nist->FindOrBuildMaterial("G4_Pb");
-//Trying to create scattering of collection of bricks of dimension 10cm X 5cm X 3cm
 
-G4LogicalVolume *brickLane = GetBlock("brickLane",15*cm,2.5*cm,1.5*cm,Pb,3,1.5*cm,1);
-G4LogicalVolume *brickLanePlane = GetBlock("brickLanePlane",15*cm,15*cm,1.5*cm,Pb,brickLane,6,2);
-G4LogicalVolume *brickLanePlaneBlock = GetBlock("brickLanePlaneBlock",15*cm,15*cm,15*cm,Pb,brickLanePlane,10,3);
+G4Material *Pb=nist->FindOrBuildMaterial("G4_Pb");
+G4Material *Fe=nist->FindOrBuildMaterial("G4_Fe");
+//Trying to create scattering of collection of bricks of dimension 10cm X 5cm X 3cm
+/*
+G4LogicalVolume *brickLane = GetBlock("brickLane",15*cm,2.5*cm,1.5*cm,Fe,3,1.5*cm,1);
+G4LogicalVolume *brickLanePlane = GetBlock("brickLanePlane",15*cm,15*cm,1.5*cm,Fe,brickLane,6,2);
+G4LogicalVolume *brickLanePlaneBlock = GetBlock("brickLanePlaneBlock",15*cm,15*cm,15*cm,Fe,brickLanePlane,10,3);
 G4VPhysicalVolume *brickLanePhy = new G4PVPlacement(0,
                             G4ThreeVector(0.,0.,0.),
                             brickLanePlaneBlock,
@@ -113,7 +115,19 @@ G4VPhysicalVolume *brickLanePhy = new G4PVPlacement(0,
 							//eBlockNum,
 							0,
                            checkOverlaps);
+*/
 
+G4LogicalVolume *leadStrip = GetStrip("PbStrip", 10*cm,10*cm,10*cm,Pb);
+G4VPhysicalVolume *PbStripPhy = new G4PVPlacement(0,
+                            G4ThreeVector(0.,0.,0.),
+                            leadStrip,
+                            //"Module"+std::to_string(eBlockNum),
+							"PbStripPhysical",
+                            logicWorld,
+                            false,
+							//eBlockNum,
+							0,
+                           checkOverlaps);
 
 /*
 G4LogicalVolume *unusedblock1 = GetStrip("GrandParentOfTarget",50*cm,50*cm,7*cm,world_mat);

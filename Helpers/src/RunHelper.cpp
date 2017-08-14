@@ -24,6 +24,9 @@ RunHelper::RunHelper() {
     FillScatteringAngleVector();
     CalcSDOfEachVoxel();
     FillSDVector();
+    CalcRLOfEachVoxel();
+    FillRLVector();
+
     WriteToFile();
      
 
@@ -36,10 +39,24 @@ void RunHelper::FillSDVector(){
      }
 }
 
+void RunHelper::FillRLVector(){
+
+     for(int i = 0 ; i < fVoxelVector.size() ; i++){
+        fRLOfVoxelsVector.push_back(fVoxelVector[i]->GetRadiationLength());
+     }
+}
+
 void RunHelper::CalcSDOfEachVoxel(){
     
      for(int i = 0 ; i < fVoxelVector.size() ; i++){
         fVoxelVector[i]->CalcSD();
+     }
+}
+
+void RunHelper::CalcRLOfEachVoxel(){
+
+     for(int i = 0 ; i < fVoxelVector.size() ; i++){
+        fVoxelVector[i]->CalcRadiationLength();
      }
 }
 

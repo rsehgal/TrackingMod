@@ -45,10 +45,11 @@ Voxel::Voxel(Tracking::Vector3D<double> pocaPt, int voxelNum):fVoxelNum(-100){
 	fVectPointsInVoxel.push_back(pocaPt);
 	fPointCount = fVectPointsInVoxel.size();
 	fOutlier = fPointCount < fMinPointsInVoxel;*/
-
-	fMinPointsInVoxel = 50;
+	fSD = 0.;
+	fRL = 0.;
+	fMinPointsInVoxel = 100;
 	fTotalVoxelsCreated++;
-	std::cout << "New Voxel Created ........ " << std::endl;
+	//std::cout << "New Voxel Created ........ " << std::endl;
 	fVoxelNum = voxelNum;
 	fVectPointsInVoxel.push_back(pocaPt);
 	fPointCount = fVectPointsInVoxel.size();
@@ -60,7 +61,7 @@ Voxel::Voxel(Tracking::Vector3D<double> pocaPt, int voxelNum):fVoxelNum(-100){
 }
 
 void Voxel::Insert(Tracking::Vector3D<double> pocaPt, int voxelNum){
-	std::cout<<"Inserted Point in the found voxel........." << std::endl;
+	//std::cout<<"Inserted Point in the found voxel........." << std::endl;
 	this->fVoxelNum = voxelNum;
 	this->fVectPointsInVoxel.push_back(pocaPt);
 	this->fPointCount = fVectPointsInVoxel.size();
@@ -73,7 +74,7 @@ int Voxel::IfVoxelExist(int voxelNum){
 	if(fVisitedVoxelNumVector.size()){
 		for(int i = 0 ; i < fVisitedVoxelNumVector.size() ; i++){
 			if(fVisitedVoxelNumVector[i] == voxelNum){
-				std::cout<<"Voxel Hit.........Found previously created Voxel... :  "  << fVisitedVoxelNumVector[i] << std::endl;
+				//std::cout<<"Voxel Hit.........Found previously created Voxel... :  "  << fVisitedVoxelNumVector[i] << std::endl;
 				//return fVisitedVoxelNumVector[i];
 				return i;
 			}
@@ -88,7 +89,7 @@ int Voxel::IfVoxelExist(int voxelNum){
 std::vector<double> Voxel::GetScatteringVector(){
 	std::vector<double> scatteringVect;
 	for(int i = 0  ; i < fPointCount ; i++){
-		scatteringVect.push_back(fVectPointsInVoxel[i].GetColor()/1000.);
+		scatteringVect.push_back(fVectPointsInVoxel[i].GetColor());///1000.);
 	}
 	return scatteringVect;
 }
@@ -96,6 +97,15 @@ std::vector<double> Voxel::GetScatteringVector(){
 double Voxel::GetStandardDeviation(){
 
 	return fSD;
+}
+
+double Voxel::GetRadiationLength(){
+	return fRL;
+}
+
+void Voxel::CalcRadiationLength(){
+	fRL = CommonFunc::Functions::RadiationLength(fSD);
+	//std::cout << "Setting RL : " << fRL << std::endl;
 }
 
 void Voxel::CalcSD(){
