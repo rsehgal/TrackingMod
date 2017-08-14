@@ -66,8 +66,8 @@ B1EventAction::~B1EventAction()
 
 void B1EventAction::BeginOfEventAction(const G4Event*)
 { evNo++;
-if(!(evNo%1000))
-  std::cout << "======== Event no : "<< evNo << "  started =======" << std::endl;
+if(!(evNo%10000))
+  std::cout << "========  " << evNo << "  Events over... =======" << std::endl;
   fEdep = 0.;
   evMultiplicity=0;
   volName.clear();
@@ -121,8 +121,10 @@ void B1EventAction::EndOfEventAction(const G4Event*)
   B1RunAction::fOutgoingTrack.SetP1(Tracking::Vector3D<double>(position[5].x(),position[5].y(),position[5].z()));
   B1RunAction::fOutgoingTrack.SetP2(Tracking::Vector3D<double>(position[7].x(),position[7].y(),position[7].z()));
 
+  //std::cout << "Incoming Track : " ; B1RunAction::fIncomingTrack.Print();
+  //std::cout << "Outgoing Track : " ; B1RunAction::fOutgoingTrack.Print();
   //std::cout <<"======================================================================" << std::endl;
-  Tomography::EventHelper u(B1RunAction::fIncomingTrack,B1RunAction::fOutgoingTrack);
+//  Tomography::EventHelper u(B1RunAction::fIncomingTrack,B1RunAction::fOutgoingTrack);
   // Tomography::EventHelper u(B1RunAction::fIncomingTrack,B1RunAction::fOutgoingTrack);
   //std::cout<<"-----------------------------------------------------------------------" << std::endl;
 
@@ -130,12 +132,14 @@ void B1EventAction::EndOfEventAction(const G4Event*)
   TVector3 outgoingR(outgoing.x(),outgoing.y(),outgoing.z());
   B1RunAction::fScatteringAngle = outgoingR.Angle(incomingR);
   //std::cout<<"Scattering Angle : " << B1RunAction::fScatteringAngle << std::endl;
-  if(B1RunAction::fScatteringAngle > 0.)
+  if(B1RunAction::fScatteringAngle > 0.002){
 	  run->FillScatteringAngleVector(B1RunAction::fScatteringAngle);
+	  Tomography::EventHelper u(B1RunAction::fIncomingTrack,B1RunAction::fOutgoingTrack);
+  }
   //std::cout<<"ScatteringAngle from EventAction : " << B1RunAction::fScatteringAngle << std::endl;
 	  //(run->GetScatteringAngleVector()).push_back(B1RunAction::fScatteringAngle);
-  Tracking::ImageReconstruction fIm;
-  Vector3D<double> fPocaPt = fIm.POCA(B1RunAction::fIncomingTrack,B1RunAction::fOutgoingTrack);
+  //Tracking::ImageReconstruction fIm;
+  //Vector3D<double> fPocaPt = fIm.POCA(B1RunAction::fIncomingTrack,B1RunAction::fOutgoingTrack);
   //std::cout<< "POCA from EventAction : " ; fPocaPt.Print();
 #ifdef STORE
   B1RunAction::fTree->Fill();

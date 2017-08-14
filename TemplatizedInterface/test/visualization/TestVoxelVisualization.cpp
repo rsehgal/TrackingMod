@@ -34,7 +34,7 @@ while(numOfEvents){
     filehandle >> x >> y >> z >> color;
     //voxCenter.Set(x*1.,y*1.,z*1.);
     Vec_t voxCenter(x,y,z);
-    v.Register(voxDim,voxCenter,color);
+    v.Register(voxDim,voxCenter,color*10);
     numOfEvents--;
 }
 

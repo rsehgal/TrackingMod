@@ -143,7 +143,7 @@ public:
     m.SetDy(voxCenter.y());
     m.SetDz(voxCenter.z());
     fVis.AddEveShape("Voxel",box,m,color);
-    std::cout << "Set Color : "<< color << std::endl;
+    //std::cout << "Set Color : "<< color << std::endl;
 
   }
 
