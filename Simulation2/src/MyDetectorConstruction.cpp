@@ -17,6 +17,7 @@
 #include "G4UnitsTable.hh"
 #include <cmath>
 #include <iostream>
+#include "G4GDMLParser.hh"
 
 
 int MyDetectorConstruction::stripNum = 0;
@@ -154,7 +155,8 @@ G4VPhysicalVolume *leadBlockPhy = new G4PVPlacement(0,
                            checkOverlaps);
 */
 
-
+G4GDMLParser parser;
+parser.Write("Hodoscope.gdml", physWorld);
 	return physWorld;
 }
 

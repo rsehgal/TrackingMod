@@ -7,6 +7,7 @@
 
 #include "Voxel.h"
 #include "CommonFunc.h"
+#include "Voxelator_Evolution.h"
 
 namespace Tomography {
 #if(1)
@@ -45,7 +46,7 @@ Voxel::Voxel(Tracking::Vector3D<double> pocaPt, int voxelNum):fVoxelNum(-100){
 	fPointCount = fVectPointsInVoxel.size();
 	fOutlier = fPointCount < fMinPointsInVoxel;*/
 
-	fMinPointsInVoxel = 10;
+	fMinPointsInVoxel = 50;
 	fTotalVoxelsCreated++;
 	std::cout << "New Voxel Created ........ " << std::endl;
 	fVoxelNum = voxelNum;
@@ -54,6 +55,7 @@ Voxel::Voxel(Tracking::Vector3D<double> pocaPt, int voxelNum):fVoxelNum(-100){
 	fOutlier = fPointCount < fMinPointsInVoxel;
 	fVisitedVoxelNumVector.push_back(fVoxelNum);
 	fVoxelVector.push_back(this);
+	fVoxelCenter = Tomography::Voxelator::instance()->GetVoxelCenter(fVoxelNum);
 
 }
 
@@ -93,7 +95,11 @@ std::vector<double> Voxel::GetScatteringVector(){
 
 double Voxel::GetStandardDeviation(){
 
-	return CommonFunc::Functions::StandardDeviation(GetScatteringVector());
+	return fSD;
+}
+
+void Voxel::CalcSD(){
+	fSD = CommonFunc::Functions::StandardDeviation(GetScatteringVector());
 }
 
 Voxel::~Voxel() {

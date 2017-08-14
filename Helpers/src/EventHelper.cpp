@@ -31,10 +31,14 @@ EventHelper::EventHelper(Track incoming, Track outgoing){
 
 void EventHelper::CalculatePOCA(){
 	fPocaPt = fIm.POCA(fIncoming,fOutgoing);
+	//std::cout << "Scattering NewArch : " << fScatteringAngle << std::endl;
+	fPocaPt.SetColor(fScatteringAngle);
+	//std::cout<< "POCA from EventHELPER : " ; fPocaPt.Print();
 }
 
 void EventHelper::CalculateScatterAngle(){
 	fScatteringAngle = CommonFunc::Functions::GetAngleInRadian(fIncoming,fOutgoing);
+	//std::cout << "ScatteringAngle from EventHELPER : " << fScatteringAngle << std::endl;
 }
 
 void EventHelper::CalculateVoxel(){
