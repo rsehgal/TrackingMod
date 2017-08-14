@@ -10,6 +10,7 @@
 
 #include <vector>
 #include "base/Vector3D.h"
+#include "Voxel.h"
 //#include "Voxel.h"
 
 using Tracking::Vector3D;
@@ -20,6 +21,8 @@ class RunHelper {
 
  	std::vector<double> fScatteringAngleVector;
 	std::vector<Vector3D<double>> fPocaPtVector;
+	std::vector<double> fSDOfVoxelsVector;
+	std::vector<Voxel*> fVoxelVector;
 
 #ifdef VOXELIZE
 	//std::vector<Voxel*> fVoxelVector;
@@ -38,6 +41,11 @@ public:
 
 	void Insert(double scatteringAngle){ fScatteringAngleVector.push_back(scatteringAngle);}
 	void Insert(Vector3D<double> pocaPt) { fPocaPtVector.push_back(pocaPt);}
+	void FillScatteringAngleVector();
+	void FillPocaVector();
+	void FillSDVector();
+	void CalcSDOfEachVoxel();
+	void WriteToFile();
 
 #ifdef VOXELIZE
 	//void Insert(Voxel *obj){ fVoxelVector.push_back(obj); }

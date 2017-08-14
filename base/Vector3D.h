@@ -48,7 +48,7 @@ template <class Type>
 class Vector3D{
 private:
 	Type vec[3];
-        int fColor;
+        double fColor;
 public:
 	Vector3D(){
 		vec[0]=0.;
@@ -92,8 +92,12 @@ public:
         void SetColor(int color){
 		fColor=color;
  	}
+
+ 	void SetColor(double color){
+		fColor=color;
+ 	}
 	TRACKING_INLINE
-	int GetColor()const {return fColor;}
+	double GetColor()const {return fColor;}
 	TRACKING_INLINE
 	Type* GetArr(){return vec;}
 	TRACKING_INLINE

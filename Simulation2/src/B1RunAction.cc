@@ -47,6 +47,9 @@
 //#include "Data.h"
 #include <vector>
 
+//Trying to use RunHelper
+#include "RunHelper.h"
+
 //#include "Tree.h"
 
 using namespace std;
@@ -105,7 +108,7 @@ void B1RunAction::BeginOfRunAction(const G4Run*)
   fTree = new TTree ("BSC_DATA_TREE","My GEANT4 simulation") ;
 #endif
 
-  Tomography::Voxelator::Create(50*cm,50*cm,45*cm,20*cm,20*cm,18*cm);
+  Tomography::Voxelator::Create(50*cm,50*cm,45*cm,10*cm,10*cm,9*cm);
 
   //Tracking::Channel b;
   //InitializeTree();
@@ -247,6 +250,8 @@ void B1RunAction::EndOfRunAction(const G4Run* run)
 
   std::cout << "ScatteringAngleVector Size : " << b1Run->GetScatteringAngleVector().size() << std::endl;
     delete myfile;
+
+  new Tomography::RunHelper();
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

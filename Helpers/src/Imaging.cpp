@@ -55,6 +55,8 @@ Vec_t ImageReconstruction::POCA(Vec_t p, Vec_t u, Vec_t q, Vec_t v, Vec_t &p1, V
 
 Vec_t ImageReconstruction::POCA( Track incoming, Track outgoing){
 	Vec_t p1(0.,0.,0.),q1(0.,0.,0.);
+	//std::cout<<"INComing Track : "; incoming.Print();
+	//std::cout<<"OUTGoing Track : "; outgoing.Print();
 	return POCA(incoming.GetP1(),incoming.GetDirCosine(),outgoing.GetP1(), outgoing.GetDirCosine(),p1,q1);
 }
 

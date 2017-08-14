@@ -22,7 +22,8 @@ class Voxel {
 	bool fOutlier;
 	static std::vector<int> fVisitedVoxelNumVector ;
 	static std::vector<Voxel*> fVoxelVector ;
-
+	Tracking::Vector3D<double> fVoxelCenter;
+	double fSD;
 
 
 	//Minimum num of point in a Voxel to make it genuine voxel
@@ -40,6 +41,7 @@ public:
 	std::vector<Tracking::Vector3D<double>> GetPocaPointsVector(){return fVectPointsInVoxel;}
 	int GetVoxelNum(){return fVoxelNum;}
 	Tracking::Vector3D<double> GetVoxelDimensions(){return fDim;}
+	Tracking::Vector3D<double> GetVoxelCenter(){return fVoxelCenter;}
 
 	void Insert(Tracking::Vector3D<double>, int voxelNum);
 /*
@@ -50,10 +52,12 @@ public:
 */
 
 	std::vector<double> GetScatteringVector();
+	void CalcSD();
 	double GetStandardDeviation();
 
 	static int IfVoxelExist(int voxelNum);
 	static std::vector<Voxel*> GetVoxelVector() {return fVoxelVector;}
+
 };
 
 //std::vector<Voxel*> Voxel::fVoxelVector = {0};

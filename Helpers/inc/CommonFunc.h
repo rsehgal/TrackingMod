@@ -12,6 +12,10 @@
 #include <TVector3.h>
 #include "base/Vector3D.h"
 #include "Track.h"
+#include <fstream>
+#include "Voxel.h"
+#include "Voxelator_Evolution.h"
+//#include <G4ThreeVector.hh>
 using Tracking::Vector3D;
 
 namespace CommonFunc{
@@ -24,6 +28,11 @@ static double FWHM(TH1F *histogram){
 	return fwhm;
 }
 
+/*static double GetAngleInRadian(G4ThreeVector incoming, G4ThreeVector outgoing){
+   TVector3 TIncoming(incoming.x(),incoming.y(),incoming.z());
+   TVector3 TOutgoing(outgoing.x(),outgoing.y(),outgoing.z());
+   return TIncoming.Angle(TOutgoing);
+}*/
 
 static double GetAngleInRadian(Vector3D<double>In1, Vector3D<double>In2, Vector3D<double>In3, Vector3D<double>In4){
 	TVector3 tvect1(In1.x(),In1.y(),In1.z());
@@ -63,6 +72,41 @@ static double StandardDeviation(std::vector<double> scatteringVect){
    }
    mean = Mean(scatteringVect);
    return std::sqrt(mean);
+}
+
+static void WriteToFile(std::string fileName, std::vector<double> scatteringVect){
+   std::ofstream fileHandle(fileName);
+   for( int i = 0 ; i < scatteringVect.size() ; i++){
+      fileHandle << scatteringVect[i] << " ";
+   }
+   fileHandle.close();
+}
+
+static void WriteToFile(std::string fileName, std::vector<Vector3D<double>> ptVect){
+   std::ofstream fileHandle(fileName);
+   for(int i =0  ; i < ptVect.size() ; i++){
+      fileHandle << ptVect[i].x() << " " << ptVect[i].y() << " " << ptVect[i].z() <<  " " << ptVect[i].GetColor() <<std::endl;
+   }
+   fileHandle.close();
+}
+
+static void WriteToFile(std::string fileName,std::vector<Tomography::Voxel*> voxelsVector){
+   std::ofstream fileHandle(fileName);
+   for(int i = 0 ; i < voxelsVector.size() ; i++){
+      Tracking::Vector3D<double> voxCenter = voxelsVector[i]->GetVoxelCenter();
+      if(i==0){
+         Tracking::Vector3D<int> dim = Tomography::Voxelator::instance()->GetEachVoxelDim();
+         fileHandle << dim.x() << " " << dim.y() << " " << dim.z() << std::endl;
+         fileHandle << voxCenter.x() << " " << voxCenter.y() << " " << voxCenter.z() 
+                    << " " << voxelsVector[i]->GetStandardDeviation()*10000. <<  std::endl;
+      }else{
+      fileHandle << voxCenter.x() << " " << voxCenter.y() << " " << voxCenter.z() 
+                 << " " << voxelsVector[i]->GetStandardDeviation()*10000. <<  std::endl;
+   }
+
+   }
+
+   fileHandle.close();
 }
 
 };

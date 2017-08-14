@@ -29,6 +29,7 @@ typedef Tracking::Visualizer TomographyVisualizer;
 #include "Properties.h"
 #include "Track.h"
 #include "TGeoManager.h"
+#include "Voxel.h"
 typedef Tomography::Properties Detector;
 namespace Tomography{
 
@@ -110,6 +111,39 @@ public:
   }
 #endif
 
+// This is for visualization during simulation or data analysis
+  void Register(Voxel * voxel){
+    Tracking::Vector3D<double> voxDim = voxel->GetVoxelDimensions();
+    //Tracking::Vector3D<double> voxCenter = voxel->GetVoxelCenter();
+    double color = voxel->GetStandardDeviation();
+    //Register(voxDim,voxCenter,color);
+  }
+
+  
+  //To Read from txt file
+  void Register(double voxDimX,double voxDimY,double voxDimZ, double voxCenterX,
+                double voxCenterY,double voxCenterZ, double color ){
+
+    Register(Tracking::Vector3D<double>(voxDimX,voxDimY,voxDimZ),
+            Tracking::Vector3D<double>(voxCenterX,voxCenterY,voxCenterZ),
+            color);
+
+  }  
+
+  //To Read from txt file
+  void Register(Tracking::Vector3D<double> voxDim,Tracking::Vector3D<double> voxCenter, double color ){
+
+    TGeoHMatrix m;
+    Double_t trans[3] = { 0., 0., 0. };
+    m.SetTranslation(trans);
+    TGeoBBox *box = new TGeoBBox("Voxel",voxDim.x()/2.,voxDim.y()/2.,voxDim.z()/2.);
+    m.SetDx(voxCenter.x());
+    m.SetDy(voxCenter.y());
+    m.SetDz(voxCenter.z());
+    fVis.AddEveShape("Voxel",box,m,color);
+
+  }
+
   void Register(Track *t){
 	  fVis.AddLine(t->GetP1(),t->GetP2());
   }
@@ -120,7 +154,11 @@ public:
 
 
   void Register(Tracking::Vector3D<double> pt){
-	  fVis.AddMarkers(pt);
+  #ifdef USE_EVE
+	  fVis.AddMarkers_V2(pt);
+  #else
+    fVis.AddMarkers(pt);
+  #endif
   }
 
 #ifdef USE_EVE
