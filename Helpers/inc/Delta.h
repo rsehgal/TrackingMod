@@ -36,8 +36,10 @@ bool verbose = true;
  * means Z is already known, which is Z position first bottom
  * detector
  */
+class Delta{
+public:
 template<bool xdir>
-double DeltaLinear(Track incoming, Track outgoing){
+static double DeltaLinear(Track incoming, Track outgoing){
 	if(xdir){
 		return outgoing.GetP1().x() - incoming.GetP2().x();
 	}else{
@@ -55,7 +57,7 @@ double DeltaLinear(Track incoming, Track outgoing){
  */
 
 template<bool xdir>
-double DeltaLinear(Track incoming, Track outgoing, double FirstBottomDetectorZ){
+static double DeltaLinear(Track incoming, Track outgoing, double FirstBottomDetectorZ){
 
 
 	Track newIncoming(incoming.GetP1(), Vector3D<double>(0.,0.,0.));
@@ -74,7 +76,7 @@ double DeltaLinear(Track incoming, Track outgoing, double FirstBottomDetectorZ){
  * Y direction
  */
 template<bool xdir>
-double DeltaAngular(Track incoming, Track outgoing){
+static double DeltaAngular(Track incoming, Track outgoing){
 
 	Track newIncoming(Vector3D<double>(0.,0.,0.),Vector3D<double>(0.,0.,0.));
 	Track newOutgoing(Vector3D<double>(0.,0.,0.),Vector3D<double>(0.,0.,0.));
@@ -118,7 +120,7 @@ double DeltaAngular(Track incoming, Track outgoing){
    */
 
 
-Vector3D<double> GetIntersection(Track t, double zVal, int select){
+static Vector3D<double> GetIntersection(Track t, double zVal, int select){
 	Vector3D<double> ptOfIntersection;
 	double x = 0.,y = 0., z = 0., dist = 0. ;
 
@@ -140,7 +142,7 @@ Vector3D<double> GetIntersection(Track t, double zVal, int select){
 	return ptOfIntersection;
 }
 
-
+};
 
 
 
