@@ -37,7 +37,7 @@ void EventHelper::CalculatePOCA(){
 }
 
 void EventHelper::CalculateScatterAngle(){
-	fScatteringAngle = CommonFunc::Functions::GetAngleInRadian(fIncoming,fOutgoing);
+	fScatteringAngle = CommonFunc::Functions::instance()->GetAngleInRadian(fIncoming,fOutgoing);
 	//std::cout << "ScatteringAngle from EventHELPER : " << fScatteringAngle << std::endl;
 }
 

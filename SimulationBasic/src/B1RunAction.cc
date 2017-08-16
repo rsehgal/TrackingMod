@@ -42,6 +42,9 @@
 #include <string.h>
 #include "B1EventAction.hh"
 #include <vector>
+#include "CommonFunc.h"
+#include "Voxelator_Evolution.h"
+#include "RunHelper.h"
 
 
 using namespace std;
@@ -82,6 +85,7 @@ void B1RunAction::BeginOfRunAction(const G4Run*)
 {
   //inform the runManager to save random number seed
   G4RunManager::GetRunManager()->SetRandomNumberStore(false);
+  Tomography::Voxelator::Create(50*cm,50*cm,45*cm,1*cm,1*cm,1*cm);
 
 
 }
@@ -128,20 +132,31 @@ void B1RunAction::EndOfRunAction(const G4Run* run)
   for(int i = 0 ; i < b1Run->GetScatteringAngleVector().size() ; i++){
 	  fs << b1Run->GetScatteringAngleVector()[i] << " " ;
   }
+//  std::cout<<"@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@" << std::endl;
+//  std::cout<<"@@@@@@@@@@@ SD : " << CommonFunc::Functions::instance()->StandardDeviation(b1Run->GetScatteringAngleVector()) << "@@@@@@@@@@@@@" << std::endl;
+//  std::cout<<"@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@" << std::endl;
+
   fs.close();
 
+  ofstream fIncoming("incoming.txt");
+  fIncoming << 3000 << " " << "G4_Fe" << " " << 100 << " ";
+  for(int i = 0 ; i < b1Run->GetIncomingAngleVector().size() ; i++){
+	  fIncoming << b1Run->GetIncomingAngleVector()[i] << " " ;
+  }
+  fIncoming.close();
 
 
 
-/*
   Tomography::RunHelper *runHelper = new Tomography::RunHelper();
   //Now trying to calculate Radiation for the whole run
   std::cout<<"@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@" << std::endl;
-  std::cout<<"                              SD : " << CommonFunc::Functions::StandardDeviation(runHelper->GetScatteringAngleVector()) << std::endl;
+  //std::cout<<"                              SD : " << CommonFunc::Functions::instance()->StandardDeviation(runHelper->GetScatteringAngleVector()) << std::endl;
+  std::cout<<"\033[1;31m                            SD : " << CommonFunc::Functions::instance()->StandardDeviation(b1Run->GetScatteringAngleVector()) << "  radians for 2 sigma  \033[0m\n" << std::endl;
   std::cout<<"@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@" << std::endl;
-  std::cout<<"                              RL : " << CommonFunc::Functions::RadiationLength(runHelper->GetScatteringAngleVector(),10) << std::endl;
+  //std::cout<<"                              RL : " << CommonFunc::Functions::instance()->RadiationLength(runHelper->GetScatteringAngleVector(),10) << std::endl;
+  std::cout<<"\033[1;31m                              RL : " << CommonFunc::Functions::instance()->RadiationLength(b1Run->GetScatteringAngleVector(),10) << "  cms \033[0m\n" << std::endl;
   std::cout<<"@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@" << std::endl;
-*/
+
 
 }
 

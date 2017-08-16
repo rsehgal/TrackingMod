@@ -41,5 +41,5 @@ file(GLOB sourcesSim ${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp ${CMAKE_CURRENT_SOURC
 file(GLOB headersSim ${CMAKE_CURRENT_SOURCE_DIR}/inc/*.h ${CMAKE_CURRENT_SOURCE_DIR}/inc/*.hh ../../base/Vector3D.h) 
 
 add_executable(mainBasic mainBasic.cpp ${sourcesSim} ${headersSim})
-target_link_libraries(mainBasic ${Geant4_LIBRARIES})
+target_link_libraries(mainBasic ${Geant4_LIBRARIES} Helpers)
 #target_link_libraries(main ${Geant4_LIBRARIES} Tomo)

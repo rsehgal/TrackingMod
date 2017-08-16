@@ -42,6 +42,7 @@ class G4Event;
 class B1Run : public G4Run
 {
 	std::vector<double> fScatteringAngleVect;
+	std::vector<double> fMuonInitialAngles;
 
   public:
     B1Run();
@@ -61,6 +62,8 @@ class B1Run : public G4Run
 
     }
     void FillScatteringAngleVector(double scatteringAngle){fScatteringAngleVect.push_back(scatteringAngle);}
+    void FillInComingAngleVector(double incomingAngle){fMuonInitialAngles.push_back(incomingAngle);}
+    std::vector<double> GetIncomingAngleVector() const {return fMuonInitialAngles;}
 
   private:
     G4double  fEdep;

@@ -84,8 +84,8 @@ stepNum++;
 			  && point1->GetStepStatus()==fGeomBoundary &&
 			  track->GetDefinition()->GetParticleName().substr(0,2)=="mu"){
 			 B1EventAction::position.push_back(point1->GetPosition());
-			 std::cout << step->GetTrack()->GetDefinition()->GetParticleName() << std::endl;
-			 std::cout<<"Muon Hit the : " << touch1->GetVolume()->GetName() << std::endl;
+			 //std::cout << step->GetTrack()->GetDefinition()->GetParticleName() << std::endl;
+			// std::cout<<"Muon Hit the : " << touch1->GetVolume()->GetName() << std::endl;
 	  }
  
   }

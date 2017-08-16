@@ -35,12 +35,14 @@
 #include "G4RunManager.hh"
 //#include "Tree.h"
 #include "B1RunAction.hh"
+#include "Track.h"
+#include "CommonFunc.h"
 //#include <TVector3.h>
 
 //Trying to use new Architecture
-//#include "EventHelper.h"
-//#include "Voxelator_Evolution.h"
-//#include "Imaging.h"
+#include "EventHelper.h"
+#include "Voxelator_Evolution.h"
+#include "Imaging.h"
 
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -81,9 +83,22 @@ void B1EventAction::EndOfEventAction(const G4Event*)
         G4RunManager::GetRunManager()->GetNonConstCurrentRun());
   run->AddEdep(fEdep);
  // Tracking::Tree::instance()->Fill();
- std::cout << "======== Event no : "<< evNo << "  ended  =======" << std::endl;
 
-  std::cout<<"-----------------------------------------------------" << std::endl;
+  Tomography::Track ref(G4ThreeVector(0.,0.,0.),G4ThreeVector(0.,0.,1.));
+ Tomography::Track incoming(position[0],position[1]);
+ Tomography::Track outgoing(position[2],position[3]);
+ double angleIncoming = CommonFunc::Functions::instance()->GetAngleInRadian(incoming,ref);
+ double angleOutgoing = CommonFunc::Functions::instance()->GetAngleInRadian(outgoing,ref);
+ double diff = angleOutgoing-angleIncoming;
+ //if(diff < 0.)
+	// std::cout<<"Negative comes............" << std::endl;
+ run->FillScatteringAngleVector(diff);//angleOutgoing-angleIncoming);
+ run->FillInComingAngleVector(angleIncoming);
+ Tomography::EventHelper u(incoming,outgoing);
+ //run->FillScatteringAngleVector(CommonFunc::Functions::GetAngleInRadian(incoming,outgoing));
+ //std::cout << "======== Event no : "<< evNo << "  ended  =======" << std::endl;
+
+  //std::cout<<"-----------------------------------------------------" << std::endl;
 
 }
 

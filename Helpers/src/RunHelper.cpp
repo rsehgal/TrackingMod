@@ -82,9 +82,9 @@ void RunHelper::FillPocaVector(){
 }
 
 void RunHelper::WriteToFile(){
-    CommonFunc::Functions::WriteToFile("scattering.txt",fScatteringAngleVector);
-    CommonFunc::Functions::WriteToFile("PocaPt.txt",fPocaPtVector);
-    CommonFunc::Functions::WriteToFile("Voxels.txt",Tomography::Voxel::GetVoxelVector());
+    CommonFunc::Functions::instance()->WriteToFile("scattering.txt",fScatteringAngleVector);
+    CommonFunc::Functions::instance()->WriteToFile("PocaPt.txt",fPocaPtVector);
+    CommonFunc::Functions::instance()->WriteToFile("Voxels.txt",Tomography::Voxel::GetVoxelVector());
 
 
 }

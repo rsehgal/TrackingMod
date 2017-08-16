@@ -364,11 +364,14 @@ set(TOMOLIB ${TOMOLIB}
 Tomo
 )
 
+find_package(Geant4 REQUIRED)
+include(${Geant4_USE_FILE})
+
 message(STATUS "--------- Following source files will be use for the creation of HELPERS Shared library -----------")
 message(STATUS ${helpers})
 message(STATUS "------------------------------------------------------------------------------------------")
 add_library(Helpers SHARED ${helpers} ) #G__Tree.cxx)
-target_link_libraries(Helpers  ${XERCES_LIBRARIES} ${MYSQL_LIBRARIES} ${ROOT_LIBRARIES} -lTreePlayer)
+target_link_libraries(Helpers  ${XERCES_LIBRARIES} ${MYSQL_LIBRARIES} ${ROOT_LIBRARIES} ${Geant4_LIBRARIES} -lTreePlayer)
 #target_link_libraries(Tomo ${EXTERNAL_LIBS})
 set(HELPERSLIB ${HELPERSLIB}
 Helpers

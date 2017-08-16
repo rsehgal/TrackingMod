@@ -104,12 +104,12 @@ double Voxel::GetRadiationLength(){
 }
 
 void Voxel::CalcRadiationLength(){
-	fRL = CommonFunc::Functions::RadiationLength(fSD);
+	fRL = CommonFunc::Functions::instance()->RadiationLength(fSD);
 	//std::cout << "Setting RL : " << fRL << std::endl;
 }
 
 void Voxel::CalcSD(){
-	fSD = CommonFunc::Functions::StandardDeviation(GetScatteringVector());
+	fSD = CommonFunc::Functions::instance()->StandardDeviation(GetScatteringVector());
 }
 
 Voxel::~Voxel() {
