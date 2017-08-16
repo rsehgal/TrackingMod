@@ -15,13 +15,25 @@
 #include <fstream>
 #include "Voxel.h"
 #include "Voxelator_Evolution.h"
-//#include <G4ThreeVector.hh>
+#include <G4ThreeVector.hh>
+#include <algorithm>
+#include <TF1.h>
 using Tracking::Vector3D;
 
 namespace CommonFunc{
 class Functions{
+	static Functions *finstance;
+	Functions(){}
 public:
-static double FWHM(TH1F *histogram){
+
+static Functions *instance(){
+	if(!finstance){
+		finstance = new Functions;
+	}
+	return finstance;
+}
+
+double FWHM(TH1F *histogram){
 	int bin1 = histogram->FindFirstBinAbove(histogram->GetMaximum()/2);
 	int bin2 = histogram->FindLastBinAbove(histogram->GetMaximum()/2);
 	double fwhm = histogram->GetBinCenter(bin2) - histogram->GetBinCenter(bin1);
@@ -34,7 +46,7 @@ static double FWHM(TH1F *histogram){
    return TIncoming.Angle(TOutgoing);
 }*/
 
-static double GetAngleInRadian(Vector3D<double>In1, Vector3D<double>In2, Vector3D<double>In3, Vector3D<double>In4){
+double GetAngleInRadian(Vector3D<double>In1, Vector3D<double>In2, Vector3D<double>In3, Vector3D<double>In4){
 	TVector3 tvect1(In1.x(),In1.y(),In1.z());
 	TVector3 tvect2(In2.x(),In2.y(),In2.z());
 	TVector3 tvect3(In3.x(),In3.y(),In3.z());
@@ -42,18 +54,18 @@ static double GetAngleInRadian(Vector3D<double>In1, Vector3D<double>In2, Vector3
 	return (tvect2-tvect1).Angle(tvect4-tvect3);
 }
 
-static double GetAngleInRadian(Vector3D<double>InComing, Vector3D<double>Outgoing){
+double GetAngleInRadian(Vector3D<double>InComing, Vector3D<double>Outgoing){
 	TVector3 incoming(InComing.x(),InComing.y(),InComing.z());
 	TVector3 outgoing(Outgoing.x(),Outgoing.y(),Outgoing.z());
 	return incoming.Angle(outgoing);
 }
 
-static double GetAngleInRadian(Tomography::Track InComing, Tomography::Track Outgoing){
+double GetAngleInRadian(Tomography::Track InComing, Tomography::Track Outgoing){
 	return GetAngleInRadian(InComing.GetDirection(),Outgoing.GetDirection());
 }
 
 
-static double Mean(std::vector<double> scatteringVect){
+double Mean(std::vector<double> scatteringVect){
    double sum = 0.;
    for(int i = 0 ; i < scatteringVect.size() ; i++){
      sum += scatteringVect[i];
@@ -61,8 +73,10 @@ static double Mean(std::vector<double> scatteringVect){
    return sum/scatteringVect.size();
 }
 
-static double StandardDeviation(std::vector<double> scatteringVect){
+#if(0)
+double StandardDeviation(std::vector<double> scatteringVect){
    double mean = Mean(scatteringVect);
+   std::cout<<"Mean : " << mean << std::endl;
    for(int i = 0 ; i < scatteringVect.size() ; i++){
    scatteringVect[i] -= mean;
    }
@@ -73,8 +87,28 @@ static double StandardDeviation(std::vector<double> scatteringVect){
    mean = Mean(scatteringVect);
    return std::sqrt(mean);
 }
+#endif
 
-static void WriteToFile(std::string fileName, std::vector<double> scatteringVect){
+
+double StandardDeviation(std::vector<double> scatteringVect, int numOfBins = 1000){
+	double max = *std::max_element(scatteringVect.begin(),scatteringVect.end());
+	double min = *std::min_element(scatteringVect.begin(),scatteringVect.end());
+	TH1F *histogram = new TH1F("Hist","Hist",numOfBins,min,max);
+	for(int i = 0 ; i < scatteringVect.size() ; i++)
+		histogram->Fill(scatteringVect[i]);
+	double sd = histogram->GetStdDev();
+	return sd;
+	delete histogram;
+	std::cout<<"SD from hist : " << sd << std::endl;
+	histogram->Fit("gaus","","",-2*sd, 2*sd);
+	TF1 *fit = histogram->GetFunction("gaus");
+	double chi2 = fit->GetChisquare();
+	double p1 = fit->GetParameter(2);
+	return p1;
+}
+
+
+void WriteToFile(std::string fileName, std::vector<double> scatteringVect){
    std::ofstream fileHandle(fileName);
    for( int i = 0 ; i < scatteringVect.size() ; i++){
       fileHandle << scatteringVect[i] << " ";
@@ -82,7 +116,7 @@ static void WriteToFile(std::string fileName, std::vector<double> scatteringVect
    fileHandle.close();
 }
 
-static void WriteToFile(std::string fileName, std::vector<Vector3D<double>> ptVect){
+void WriteToFile(std::string fileName, std::vector<Vector3D<double>> ptVect){
    std::ofstream fileHandle(fileName);
    for(int i =0  ; i < ptVect.size() ; i++){
       fileHandle << ptVect[i].x() << " " << ptVect[i].y() << " " << ptVect[i].z() <<  " " << ptVect[i].GetColor() <<std::endl;
@@ -109,7 +143,7 @@ static void WriteToFile(std::string fileName, std::vector<Vector3D<double>> ptVe
    fileHandle.close();
 }*/
 
-static void WriteToFile(std::string fileName,std::vector<Tomography::Voxel*> voxelsVector){
+void WriteToFile(std::string fileName,std::vector<Tomography::Voxel*> voxelsVector){
    std::ofstream fileHandle(fileName);
    int count=-1;;
    for(int i = 0 ; i < voxelsVector.size() ; i++){
@@ -132,18 +166,22 @@ static void WriteToFile(std::string fileName,std::vector<Tomography::Voxel*> vox
    fileHandle.close();
 }
 
-static double RadiationLength(double sd){
+double RadiationLength(double sd){
 	//std::cout << "Voxel Depth : " << (Tomography::Voxelator::instance()->GetEachVoxelDim()).z() << std::endl;
 	return ((15.*15.)/(3000.*3000.))*((Tomography::Voxelator::instance()->GetEachVoxelDim()).z()/(sd*sd));
 }
 
-static double RadiationLength(std::vector<double> scatteringAngleVector, double depth){
+double RadiationLength(std::vector<double> scatteringAngleVector, double depth){
 	std::cout << "Voxel Depth : " << depth << std::endl;
 	double sd = StandardDeviation(scatteringAngleVector);
 	return ((15.*15.)/(3000.*3000.))*(depth/(sd*sd));
 }
 
+Tracking::Vector3D<double> ConvertToVector3D(G4ThreeVector g4vect3d){
+		return Tracking::Vector3D<double>(g4vect3d.x(),g4vect3d.y(),g4vect3d.z());
+}
 };
+
 
 }
 

@@ -14,6 +14,7 @@
 #include "G4Element.hh"
 #include "G4Material.hh"
 #include "G4UnitsTable.hh"
+#include "G4GDMLParser.hh"
 
 MyDetectorConstruction::MyDetectorConstruction(){
 
@@ -84,8 +85,8 @@ G4VPhysicalVolume* MyDetectorConstruction::Construct(){
 
 
   //Lets try to build material from NIST database
-  G4Box *leadBlock = new G4Box("LeadBlock",5.*cm,5.*cm,15.*cm);
-  G4Material *Pb=nist->FindOrBuildMaterial("G4_Pb");
+  G4Box *leadBlock = new G4Box("LeadBlock",15.*cm,15.*cm,5.*cm);
+  G4Material *Pb=nist->FindOrBuildMaterial("G4_Fe");
   G4LogicalVolume *logicalLeadBlock = new G4LogicalVolume(leadBlock,Pb,"LogicalLeadBlock");
   G4VPhysicalVolume *phyLeadBlock = new G4PVPlacement(0,
                             //G4ThreeVector(),
@@ -97,6 +98,8 @@ G4VPhysicalVolume* MyDetectorConstruction::Construct(){
                             0,
                             checkOverlaps);
 
+  G4GDMLParser parser;
+  parser.Write("Hodoscope.gdml", physWorld);
 
 
 
