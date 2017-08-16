@@ -414,6 +414,7 @@ message(STATUS ${tests})
 message(STATUS "====================================================")
 add_subdirectory(Simulations/MST)
 add_subdirectory(Simulation2)
+add_subdirectory(SimulationBasic)
 #Copying the test geom.root file to build directory for visualization testing
 file(GLOB ROOT_FILES ${PROJECT_SOURCE_DIR}/RootFiles/*)
 message(STATUS ${ROOT_FILES})
