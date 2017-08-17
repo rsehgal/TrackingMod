@@ -147,8 +147,8 @@ public:
 
   }
 
-  void Register(Track *t){
-	  fVis.AddLine(t->GetP1(),t->GetP2());
+  void Register(Track *t,double color=5){
+	  fVis.AddLine(t->GetP1(),t->GetP2(),color);
   }
 
   void RegisterLine(Tracking::Vector3D<double> p1, Tracking::Vector3D<double> p2){

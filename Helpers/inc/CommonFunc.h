@@ -91,6 +91,8 @@ double StandardDeviation(std::vector<double> scatteringVect){
 
 
 double StandardDeviation(std::vector<double> scatteringVect, int numOfBins = 1000){
+	if(scatteringVect.size() <= 1)
+		return 0;
 	double max = *std::max_element(scatteringVect.begin(),scatteringVect.end());
 	double min = *std::min_element(scatteringVect.begin(),scatteringVect.end());
 	TH1F *histogram = new TH1F("Hist","Hist",numOfBins,min,max);
@@ -123,6 +125,8 @@ void WriteToFile(std::string fileName, std::vector<Vector3D<double>> ptVect){
    }
    fileHandle.close();
 }
+
+
 
 /*static void WriteToFile(std::string fileName,std::vector<Tomography::Voxel*> voxelsVector){
    std::ofstream fileHandle(fileName);

@@ -1,5 +1,6 @@
 #include "Voxelator_Evolution.h"
 #include <cmath>
+#include "Delta.h"
 
 namespace Tomography {
 
@@ -83,6 +84,33 @@ void Voxelator::SetVoxelator(double voxelizedVolHalfX,double voxelizedVolHalfY, 
 	fVoxelatorDim.Set(int(fVoxelizedVolumeDim.x()/fEachVoxelDim.x()),int(fVoxelizedVolumeDim.y()/fEachVoxelDim.y()),
 			          int(fVoxelizedVolumeDim.z()/fEachVoxelDim.z()) );
 	CreateHistogram();
+}
+
+
+std::vector<int> Voxelator::FindCandidateVoxels(Track incoming, Track outgoing,
+												Tracking::Vector3D<double> &inComingHitPt,
+												Tracking::Vector3D<double> &outGoingHitPt){
+	std::vector<int> vectOfVoxels;
+	inComingHitPt = Delta::GetIntersection(incoming,-1.*(GetVoxelizedVolumeDim().z()/2.),1);
+	outGoingHitPt = Delta::GetIntersection(outgoing,GetVoxelizedVolumeDim().z()/2.,2);
+	  std::cout << "InComingHitPoint : ";
+	  inComingHitPt.Print();
+	  std::cout << "OutgoingHitPoint : " ;
+	  outGoingHitPt.Print();
+
+	  Tomography::Track tr(inComingHitPt,outGoingHitPt);
+	  for(int i = 0 ; i < GetVoxelatorDim().z() ; i++){
+		  Tracking::Vector3D<double> voxelHitPt = Delta::GetIntersection(tr,
+				  	  	  	  -1.*(GetVoxelizedVolumeDim().z()/2.)+(i*GetEachVoxelDim().z()),
+							  3);
+		  voxelHitPt.SetZ(voxelHitPt.z()+1);
+
+		  std::cout<<"Voxel Hit Point for Slice : " << i << " : VoxelNumber : " << GetVoxelNumber(voxelHitPt) << std::endl;
+					//<< " : PocaPt_VoxelNumber : " << GetVoxelNumber(fPocaPt) << " : Voxel Point ";
+		  voxelHitPt.Print();
+		  vectOfVoxels.push_back(GetVoxelNumber(voxelHitPt));
+	  }
+	  return vectOfVoxels;
 }
 
 /*

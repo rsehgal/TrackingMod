@@ -43,7 +43,7 @@ public:
   void AddEveShape(TEveGeoShape *eveShape, TGeoHMatrix &mat);
   void AddEveShape(std::string shapeName,TGeoShape *shape, TGeoHMatrix &mat, int color);
   void AddEveShape(std::string shapeName,TGeoShape *shape, TGeoHMatrix &mat);
-  void AddLine(Vector3D<double>p1, Vector3D<double>p2);
+  void AddLine(Vector3D<double>p1, Vector3D<double>p2,double color=5);
   static void Show();
   static void UpdateScene();
   void AddMarkers(Vector3D<double> pt);

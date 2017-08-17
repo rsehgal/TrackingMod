@@ -9,6 +9,7 @@
 #include "base/Vector3D.h"
 #include <iostream>
 #include <fstream>
+#include "Track.h"
 
 using Tomography::VisualizationHelper;
 using Vec_t = Tracking::Vector3D<double>;
@@ -25,16 +26,37 @@ std::ifstream filehandle(argv[1]);
 int numOfEvents = atoi(argv[2]);
 double x = 0., y = 0., z = 0.;
 double color = 0.;
-filehandle >> x >> y >> z;
+filehandle >> x >> y >> z >> color;
 Vec_t voxDim(x,y,z);
+
+filehandle >> x >> y >> z >> color;
+Vec_t incomingHitPoint(x,y,z,color);
+
+
+filehandle >> x >> y >> z >> color;
+Vec_t outgoingHitPoint(x,y,z,color);
+
+filehandle >> x >> y >> z >> color;
+Vec_t pocaPt(x,y,z,color);
+pocaPt.SetColor(6.);
+
+
+Tomography::Track tr(incomingHitPoint,outgoingHitPoint);
+v.Register(incomingHitPoint);
+v.Register(outgoingHitPoint);
+v.Register(&tr,3);
+v.Register(pocaPt);
+
+
 int i = 0 ;
 
 while(numOfEvents){
     i++;
     filehandle >> x >> y >> z >> color;
+    std::cout << x << " , " << y << " , " << z << " , " << color << std::endl;
     //voxCenter.Set(x*1.,y*1.,z*1.);
     Vec_t voxCenter(x,y,z);
-    v.Register(voxDim,voxCenter,color*10);
+    v.Register(voxDim,voxCenter,color);
     numOfEvents--;
 }
 

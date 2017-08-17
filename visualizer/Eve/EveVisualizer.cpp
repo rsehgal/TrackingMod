@@ -60,7 +60,7 @@ namespace Tracking {
 
   }
 
-void EveVisualizer::AddLine(Vector3D<double>p1, Vector3D<double>p2){
+void EveVisualizer::AddLine(Vector3D<double>p1, Vector3D<double>p2,double color){
   ls = new TEveStraightLineSet();
   
   /*fPointSetArray = new TEvePointSetArray("points");
@@ -76,6 +76,7 @@ void EveVisualizer::AddLine(Vector3D<double>p1, Vector3D<double>p2){
 		       p2.x(),p2.y(),p2.z());
   AddMarkers(p1);
   AddMarkers(p2);
+  ls->SetMainColor(color);
   //ls->SetMarkerSize(1.5);
   //ls->SetMarkerStyle(4);
   Singleton::instance()->AddLineSet(ls);
@@ -91,6 +92,7 @@ void EveVisualizer::AddMarkers(Vector3D<double> pt) {
 	ls->AddMarker(pt.x(), pt.y(), pt.z());
      ls->SetMarkerSize(1.3);
      ls->SetMarkerStyle(4);
+
 
 
    }
@@ -120,6 +122,7 @@ void EveVisualizer::AddMarkers_V2(Vector3D<double> pt){
 
 }*/
   if(gEve){
+	  std::cout<<"Color of POCA : " << pt.GetColor() << std::endl;
   fPointSetArray->Fill(pt.x(),pt.y(),pt.z(),pt.GetColor());
  // fPointSetArray->CloseBins();
 }
