@@ -119,8 +119,24 @@ public:
    *
    */
 
-   //Curretnly
+
    //Vector3D<double> GetInsersection(Track t, double zVal, int select);
+
+
+  std::vector<int> FindCandidateVoxels(Track incoming, Track outgoing,
+			Tracking::Vector3D<double> &inComingHitPt,
+			Tracking::Vector3D<double> &outGoingHitPt);
+/*
+	VectorOfVoxelsForAnEvent vectOfVoxels;
+  //Detecting HitPoints in Voxelized Volume
+  Tracking::Vector3D<double> inComingHitPt = GetIntersection(incoming,-1.*(run->GetVoxelator().GetVoxelizedVolumeDim().z()/2.),1);
+  Tracking::Vector3D<double> outGoingHitPt = GetIntersection(incoming,run->GetVoxelator().GetVoxelizedVolumeDim().z()/2.,2);
+  std::cout << "InComingHitPoint : ";
+  inComingHitPt.Print();
+  std::cout << "OutgoingHitPoint : " ;
+  outGoingHitPt.Print();
+*/
+
 
 };
 

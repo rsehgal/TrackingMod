@@ -45,6 +45,8 @@ public:
 	Tracking::Vector3D<double> GetVoxelCenter(){return fVoxelCenter;}
 
 	void Insert(Tracking::Vector3D<double>, int voxelNum);
+
+	static Voxel* GetVoxel(int voxelNum){return fVoxelVector[voxelNum];}
 /*
 	static void InsertVoxel(Voxel *vox, int voxelNum){
 		fVoxelVector.push_back(vox);

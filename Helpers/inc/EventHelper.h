@@ -24,6 +24,9 @@ class EventHelper {
 	Vector3D<double> fPocaPt;
 	double fScatteringAngle;
 	ImageReconstruction fIm;
+	std::vector<int> fCandidateVoxelNumVector;
+	Tracking::Vector3D<double> fIncomingHitPoint;
+	Tracking::Vector3D<double> fOutgoingHitPoint;
 
 //#ifdef VOXELIZE
 	Voxel *fVoxel;
@@ -39,6 +42,7 @@ public:
 	Track GetOutgoingVector() const {return fOutgoing;}
 	Vector3D<double> GetPocaPt() const {return fPocaPt;}
 	double GetScatteringAngle() const {return fScatteringAngle;}
+	std::vector<int> GetCandidateVoxels()const{return fCandidateVoxelNumVector;}
 //#ifdef VOXELIZE
 	Voxel* GetVoxel(){return fVoxel;}
 //#endif
@@ -48,6 +52,8 @@ public:
 	void CalculateScatterAngle();
 	void CalculateVoxel();
 	int GetVoxelNum();
+	void CalculateCandidateVoxels();
+	void WriteToFile();
 	virtual ~EventHelper();
 };
 
