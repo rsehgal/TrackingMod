@@ -26,6 +26,7 @@ class Functions{
 	Functions(){}
 public:
 
+
 static Functions *instance(){
 	if(!finstance){
 		finstance = new Functions;
@@ -119,11 +120,17 @@ void WriteToFile(std::string fileName, std::vector<double> scatteringVect){
 }
 
 void WriteToFile(std::string fileName, std::vector<Vector3D<double>> ptVect){
+   int count = 0 ;
    std::ofstream fileHandle(fileName);
+
    for(int i =0  ; i < ptVect.size() ; i++){
-      fileHandle << ptVect[i].x() << " " << ptVect[i].y() << " " << ptVect[i].z() <<  " " << ptVect[i].GetColor() <<std::endl;
+	  if(ptVect[i].GetColor()/1000. > 1e-4)
+		  fileHandle << ptVect[i].x() << " " << ptVect[i].y() << " " << ptVect[i].z() <<  " " << ptVect[i].GetColor() <<std::endl;
+	  else
+		  count++;
    }
    fileHandle.close();
+   std::cout<<"Num of Points with Scattering < 1e-4 : " << count << std::endl;
 }
 
 

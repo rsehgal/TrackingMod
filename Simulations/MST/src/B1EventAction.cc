@@ -49,7 +49,7 @@ using VectorOfVoxelsForAnEvent = std::vector<int>; // This represent std::vector
 
 B1EventAction::B1EventAction()
 : G4UserEventAction(),
-  fEdep(0.),verbose(false)
+  fEdep(0.),verbose(false),fScatteringAngle(0.)
 {} 
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -181,7 +181,7 @@ void B1EventAction::CalcScatteringAngle(){
   int hSize = size/2;
 
   LinesAngle l;
-
+if(size){
   if(size == 3){
 	  //fScatteringAngle = l.GetAngleRadian(l.CalculateAngle(hitVect[0],hitVect[hSize],hitVect[hSize],hitVect[size-1]));
 	  fScatteringAngle = 0.;// CommonFunc::Functions::instance()->GetAngleInRadian(hitVect[0],hitVect[hSize],hitVect[hSize],hitVect[size-1]);
@@ -189,6 +189,7 @@ void B1EventAction::CalcScatteringAngle(){
 	  //fScatteringAngle = l.GetAngleRadian(l.CalculateAngle(hitVect[0],hitVect[hSize-1],hitVect[hSize],hitVect[size-1]));
 	  fScatteringAngle = CommonFunc::Functions::instance()->GetAngleInRadian(hitVect[0],hitVect[hSize-1],hitVect[hSize],hitVect[size-1]);
   }
+}
 
 }
 
