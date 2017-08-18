@@ -37,7 +37,7 @@ EventHelper::EventHelper(Track incoming, Track outgoing){
 void EventHelper::CalculatePOCA(){
 	fPocaPt = fIm.POCA(fIncoming,fOutgoing);
 	//std::cout << "Scattering NewArch : " << fScatteringAngle << std::endl;
-	fPocaPt.SetColor(fScatteringAngle);
+	fPocaPt.SetColor(fScatteringAngle*1000);
 	//std::cout<< "POCA from EventHELPER : " ; fPocaPt.Print();
 }
 
