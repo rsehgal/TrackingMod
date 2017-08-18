@@ -24,7 +24,7 @@ using Tomography::Track;
 
 
 namespace Tomography{
-
+namespace evolution{
 class Voxelator{
 private:
   Vector3D<int> fVoxelizedVolumeDim; // This should be set using the detector size
@@ -140,7 +140,7 @@ public:
 
 };
 
-
+}//end of evolution namespace
 } // end of Tomography namespace
 #endif  // INC_VOXELATOR__
 
