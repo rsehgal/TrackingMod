@@ -47,7 +47,7 @@ Voxel::Voxel(Tracking::Vector3D<double> pocaPt, int voxelNum):fVoxelNum(-100){
 	fOutlier = fPointCount < fMinPointsInVoxel;*/
 	fSD = 0.;
 	fRL = 0.;
-	fMinPointsInVoxel = 20;
+	fMinPointsInVoxel = 50;
 	fTotalVoxelsCreated++;
 	//std::cout << "New Voxel Created ........ " << std::endl;
 	fVoxelNum = voxelNum;
@@ -59,6 +59,7 @@ Voxel::Voxel(Tracking::Vector3D<double> pocaPt, int voxelNum):fVoxelNum(-100){
 	fVoxelVector.push_back(this);
 
 }
+
 
 void Voxel::Insert(Tracking::Vector3D<double> pocaPt, int voxelNum){
 	//std::cout<<"Inserted Point in the found voxel........." << std::endl;
