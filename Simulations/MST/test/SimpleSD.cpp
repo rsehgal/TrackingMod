@@ -18,7 +18,7 @@ int main(int argc, char *argv[]){
 
     TApplication *fApp = new TApplication("Test", NULL, NULL);
 	TCanvas *c = new TCanvas("TestCanvas", "ScatteringAngleCanvas", 800, 600);
-	TH1F  *histogram = new TH1F("SD", "Data", 1000, -0.001, 0.1);
+	TH1F  *histogram = new TH1F("SD", "Data", 1000, -0.2, 0.2);
       
 
 
@@ -33,18 +33,27 @@ int main(int argc, char *argv[]){
     int numOfEvents = std::atoi(argv[1]);
     runfile >> energy >> material >> thickness;
     std::cout<<"Energy : " << energy << ":: material : " << material << std::endl;
+#if(1)
     while(numOfEvents){
     	runfile >> scatteringAngle;
-    	std::cout << "Scattering Angle : " << scatteringAngle << std::endl;
+    	//std::cout << "Scattering Angle : " << scatteringAngle << std::endl;
     	histogram->Fill(scatteringAngle);
     	numOfEvents--;
     }
+#endif
+
 
     std::cout<<"--- Execution Completed ----" << std::endl;
     double sd = histogram->GetStdDev();
+    histogram->Fit("gaus","","",-2*sd, 2*sd);
+    TF1 *fit = histogram->GetFunction("gaus");
+    double chi2 = fit->GetChisquare();
+    double p1 = fit->GetParameter(2);
+    std::cout<<"Par2 : " << p1 << std::endl;
+   // double e1 = fit->GetParError(1);
     std::cout << "SD : " << sd << std::endl;
     //sd = 0.01704;
-    //sd/=2.8;
+//    /sd = 0.0201;
 
 
     int bin1 = histogram->FindFirstBinAbove(histogram->GetMaximum()/2);
@@ -55,7 +64,7 @@ int main(int argc, char *argv[]){
     //sd = fwhm;
     //sd = .0092901;
     //double radLen = 0.0136*0.0136*10./(sd*sd);
-    double radLen = ((15.*15.)/(3000*3000))*(10/(sd*sd));//(fwhm*fwhm);
+    double radLen = ((15.*15.)/(3000*3000))*(10/(p1*p1));//(fwhm*fwhm);
     //double radLen = ((13.6*13.6)/(3000*3000))*(10/(fwhm*fwhm));
     std::cout << "RadLength : " << radLen << std::endl;
     histogram->Draw();

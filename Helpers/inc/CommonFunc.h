@@ -150,12 +150,13 @@ void WriteToFile(std::string fileName, std::vector<Vector3D<double>> ptVect){
 void WriteToFile(std::string fileName,std::vector<Tomography::Voxel*> voxelsVector){
    std::ofstream fileHandle(fileName);
    int count=-1;;
+   if(voxelsVector.size()){
    for(int i = 0 ; i < voxelsVector.size() ; i++){
       Tracking::Vector3D<double> voxCenter = voxelsVector[i]->GetVoxelCenter();
       if(!(voxelsVector[i]->IsOutlier())){
     	  count++;
       if(count==0){
-         Tracking::Vector3D<int> dim = Tomography::Voxelator::instance()->GetEachVoxelDim();
+         Tracking::Vector3D<int> dim = Tomography::evolution::Voxelator::instance()->GetEachVoxelDim();
          fileHandle << dim.x() << " " << dim.y() << " " << dim.z() << std::endl;
          fileHandle << voxCenter.x() << " " << voxCenter.y() << " " << voxCenter.z()
                     << " " << voxelsVector[i]->GetRadiationLength() <<  std::endl;
@@ -166,13 +167,14 @@ void WriteToFile(std::string fileName,std::vector<Tomography::Voxel*> voxelsVect
    }
 
    }
+   }
 
    fileHandle.close();
 }
 
 double RadiationLength(double sd){
 	//std::cout << "Voxel Depth : " << (Tomography::Voxelator::instance()->GetEachVoxelDim()).z() << std::endl;
-	return ((15.*15.)/(3000.*3000.))*((Tomography::Voxelator::instance()->GetEachVoxelDim()).z()/(sd*sd));
+	return ((15.*15.)/(3000.*3000.))*((Tomography::evolution::Voxelator::instance()->GetEachVoxelDim()).z()/(sd*sd));
 }
 
 double RadiationLength(std::vector<double> scatteringAngleVector, double depth){

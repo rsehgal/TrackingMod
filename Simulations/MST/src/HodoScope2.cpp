@@ -19,7 +19,7 @@
 #include "G4GDMLParser.hh"
 
 #include "Scatterers.h"
-#include "Voxelator.h"
+//#include "Voxelator_Evolution.h"
 //#include "base/Global.h"
 #define PI 3.14159265359
 
@@ -125,6 +125,7 @@ G4VPhysicalVolume *phyTargetPbBlock = new G4PVPlacement(0,
     G4Material *U=nist->FindOrBuildMaterial("G4_U");
 
 
+/*
     G4Box *targetKnown = new G4Box("Target",50*cm,50*cm,5*cm);
     G4LogicalVolume *fLogicTargetKnown = new G4LogicalVolume(targetKnown,Fe,"LogicalKnownBlock");
     G4VPhysicalVolume *phyKnownTargetBlock = new G4PVPlacement(0,
@@ -137,12 +138,13 @@ G4VPhysicalVolume *phyTargetPbBlock = new G4PVPlacement(0,
                                 false,
                                 0,
                                 checkOverlaps);
+*/
 
 
 
 //Generalized target which can be changed from UI, default material is set to Aluminium
   //target = new G4Box("Target",0.250*world_sizeXYZ, 0.250*world_sizeXYZ,fTargetThickness);
-#if(0)
+#if(1)
   G4NistManager* nist = G4NistManager::Instance();
   target = new G4Box("Target",5*cm,5*cm,8*cm);
 

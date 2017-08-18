@@ -3,7 +3,7 @@
 #include "Delta.h"
 
 namespace Tomography {
-
+namespace evolution{
 Voxelator *Voxelator::s_instance = 0;
 Voxelator* Voxelator::instance(double voxelizedVolHalfX,double voxelizedVolHalfY, double voxelizedVolHalfZ,
 			 double voxelX,double voxelY, double voxelZ) {
@@ -306,5 +306,5 @@ for (auto &pocaPt : pocaPtVect) {
 AverageOut();
 }
 
-
+}//end of evolution namespace
 } // end of Tomography namespace

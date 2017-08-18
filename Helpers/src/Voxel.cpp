@@ -47,7 +47,7 @@ Voxel::Voxel(Tracking::Vector3D<double> pocaPt, int voxelNum):fVoxelNum(-100){
 	fOutlier = fPointCount < fMinPointsInVoxel;*/
 	fSD = 0.;
 	fRL = 0.;
-	fMinPointsInVoxel = 10;
+	fMinPointsInVoxel = 20;
 	fTotalVoxelsCreated++;
 	//std::cout << "New Voxel Created ........ " << std::endl;
 	fVoxelNum = voxelNum;
@@ -55,8 +55,8 @@ Voxel::Voxel(Tracking::Vector3D<double> pocaPt, int voxelNum):fVoxelNum(-100){
 	fPointCount = fVectPointsInVoxel.size();
 	fOutlier = fPointCount < fMinPointsInVoxel;
 	fVisitedVoxelNumVector.push_back(fVoxelNum);
+	fVoxelCenter = Tomography::evolution::Voxelator::instance()->GetVoxelCenter(fVoxelNum);
 	fVoxelVector.push_back(this);
-	fVoxelCenter = Tomography::Voxelator::instance()->GetVoxelCenter(fVoxelNum);
 
 }
 
@@ -110,6 +110,33 @@ void Voxel::CalcRadiationLength(){
 
 void Voxel::CalcSD(){
 	fSD = CommonFunc::Functions::instance()->StandardDeviation(GetScatteringVector());
+}
+
+std::vector<Voxel*> Voxel::GetFilteredVoxelVector(){
+	std::vector<Voxel*> filteredVoxelVector;
+	for(int i= 0 ; i < fVoxelVector.size() ; i++){
+		if(!fVoxelVector[i]->IsOutlier()){
+			filteredVoxelVector.push_back(fVoxelVector[i]);
+
+		}
+	}
+
+	std::cout <<  "@@@@@@@@@@@ Filtered Voxel Vector Size : "<< filteredVoxelVector.size() << " @@@@@@@@@@@@ " << std::endl;
+	return filteredVoxelVector;
+}
+
+std::vector<Tracking::Vector3D<double>> Voxel::GetFilteredPocaPtVector(){
+	std::vector<Voxel*> filteredVoxelVector = GetFilteredVoxelVector();
+	std::vector<Tracking::Vector3D<double>> filteredPocaVector;
+	for(int i = 0 ; i < filteredVoxelVector.size() ; i++){
+		for(int j = 0 ; j < filteredVoxelVector[i]->GetPocaPointsVector().size() ; j++){
+			filteredPocaVector.push_back(filteredVoxelVector[i]->GetPocaPointsVector()[j]);
+		}
+	}
+
+	std::cout <<  "@@@@@@@@@@@ Filtered Poca Vector Size : "<< filteredPocaVector.size() << " @@@@@@@@@@@@ " << std::endl;
+	return filteredPocaVector;
+
 }
 
 Voxel::~Voxel() {

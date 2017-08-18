@@ -67,16 +67,28 @@ void RunHelper::FillScatteringAngleVector(){
     }
 }
 
+/*One should not do filtering here itself.
+* Hence commenting the code that does the filtering
+*/
 void RunHelper::FillPocaVector(){
     for(int i = 0 ; i < fVoxelVector.size() ; i++){
-        if(fVoxelVector[i]->IsOutlier()){
+
+    	std::vector<Tracking::Vector3D<double>> pocaPointsVector = fVoxelVector[i]->GetPocaPointsVector();
+    	        for(int j = 0 ; j  < pocaPointsVector.size() ; j++){
+    	            Insert(pocaPointsVector[j]);
+    	}
+
+    	/*
+    	 if(fVoxelVector[i]->IsOutlier()){
 
         }else{
         std::vector<Tracking::Vector3D<double>> pocaPointsVector = fVoxelVector[i]->GetPocaPointsVector();
         for(int j = 0 ; j  < pocaPointsVector.size() ; j++){
             Insert(pocaPointsVector[j]);
         }
-    }
+    	}
+       */
+
     }
 
 }
@@ -85,6 +97,8 @@ void RunHelper::WriteToFile(){
     CommonFunc::Functions::instance()->WriteToFile("scattering.txt",fScatteringAngleVector);
     CommonFunc::Functions::instance()->WriteToFile("PocaPt.txt",fPocaPtVector);
     CommonFunc::Functions::instance()->WriteToFile("Voxels.txt",Tomography::Voxel::GetVoxelVector());
+    CommonFunc::Functions::instance()->WriteToFile("filteredVoxels.txt",Tomography::Voxel::GetFilteredVoxelVector());
+    CommonFunc::Functions::instance()->WriteToFile("filteredPocaPt.txt",Tomography::Voxel::GetFilteredPocaPtVector());
 
 
 }

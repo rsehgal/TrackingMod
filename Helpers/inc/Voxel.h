@@ -62,6 +62,9 @@ public:
 
 	static int IfVoxelExist(int voxelNum);
 	static std::vector<Voxel*> GetVoxelVector() {return fVoxelVector;}
+	static std::vector<Voxel*> GetFilteredVoxelVector();
+	static std::vector<Tracking::Vector3D<double>> GetFilteredPocaPtVector();
+
 
 };
 

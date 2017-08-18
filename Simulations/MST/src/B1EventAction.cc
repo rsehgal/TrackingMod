@@ -39,7 +39,7 @@
 #include "Delta.h"
 
 #include "CommonFunc.h"
-#include "Voxel.h"
+//#include "Voxel.h"
 
 #include "Imaging.h"
 using Tracking::ImageReconstruction;
@@ -184,10 +184,10 @@ void B1EventAction::CalcScatteringAngle(){
 
   if(size == 3){
 	  //fScatteringAngle = l.GetAngleRadian(l.CalculateAngle(hitVect[0],hitVect[hSize],hitVect[hSize],hitVect[size-1]));
-	  fScatteringAngle = CommonFunc::Functions::GetAngleInRadian(hitVect[0],hitVect[hSize],hitVect[hSize],hitVect[size-1]);
+	  fScatteringAngle = 0.;// CommonFunc::Functions::instance()->GetAngleInRadian(hitVect[0],hitVect[hSize],hitVect[hSize],hitVect[size-1]);
   }else{
 	  //fScatteringAngle = l.GetAngleRadian(l.CalculateAngle(hitVect[0],hitVect[hSize-1],hitVect[hSize],hitVect[size-1]));
-	  fScatteringAngle = CommonFunc::Functions::GetAngleInRadian(hitVect[0],hitVect[hSize-1],hitVect[hSize],hitVect[size-1]);
+	  fScatteringAngle = CommonFunc::Functions::instance()->GetAngleInRadian(hitVect[0],hitVect[hSize-1],hitVect[hSize],hitVect[size-1]);
   }
 
 }

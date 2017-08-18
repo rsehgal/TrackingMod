@@ -26,8 +26,11 @@ EventHelper::EventHelper(Track incoming, Track outgoing){
 	CalculateScatterAngle();
 	CalculatePOCA();
 	CalculateVoxel();
-	CalculateCandidateVoxels();
-	WriteToFile();
+
+
+	//Uncomment them if one want Candidate voxel for an event
+	//CalculateCandidateVoxels();
+	//WriteToFile();
 
 }
 
@@ -58,18 +61,20 @@ void EventHelper::CalculateVoxel(){
 }
 
 void EventHelper::CalculateCandidateVoxels(){
-	fCandidateVoxelNumVector = Tomography::Voxelator::instance()->FindCandidateVoxels(fIncoming,fOutgoing,fIncomingHitPoint,fOutgoingHitPoint);
+	fCandidateVoxelNumVector = Tomography::evolution::Voxelator::instance()->FindCandidateVoxels(fIncoming,fOutgoing,fIncomingHitPoint,fOutgoingHitPoint);
 }
 
 void EventHelper::WriteToFile(){
 	std::vector<Tracking::Vector3D<double>> voxelCenterVector;
-	Tracking::Vector3D<int> dim = Tomography::Voxelator::instance()->GetEachVoxelDim();
+	Tracking::Vector3D<int> dim = Tomography::evolution::Voxelator::instance()->GetEachVoxelDim();
 	//Pushing Voxel Dimension
 	voxelCenterVector.push_back(Tracking::Vector3D<double>((double)dim.x(),(double)dim.y(),(double)dim.z()));
 	voxelCenterVector.push_back(fIncomingHitPoint);
 	voxelCenterVector.push_back(fOutgoingHitPoint);
 	voxelCenterVector.push_back(fPocaPt);
 
+
+//Uncomment block below to store all voxel informations.
 /*
 	for(int i = 0 ;  i <  Tomography::Voxelator::instance()->GetTotalNumberOfVoxels() ; i++ ){
 		Tracking::Vector3D<double> center = Tomography::Voxelator::instance()->GetVoxelCenter(i);
@@ -79,15 +84,16 @@ void EventHelper::WriteToFile(){
 	}
 */
 
+
 	for(int i = 0 ; i < fCandidateVoxelNumVector.size() ; i++){
 		std::cout<< (i+1) <<" Candidate Voxel Num : " << fCandidateVoxelNumVector[i] << std::endl;
-		Tracking::Vector3D<double> center = Tomography::Voxelator::instance()->GetVoxelCenter(fCandidateVoxelNumVector[i]);
+		Tracking::Vector3D<double> center = Tomography::evolution::Voxelator::instance()->GetVoxelCenter(fCandidateVoxelNumVector[i]);
 		center.SetColor(4.);
 		voxelCenterVector.push_back(center);
 	}
 
 	//Now pushing PocaPt
-	Tracking::Vector3D<double> pocaCenter = Tomography::Voxelator::instance()->GetVoxelCenter(fPocaPt);
+	Tracking::Vector3D<double> pocaCenter = Tomography::evolution::Voxelator::instance()->GetVoxelCenter(fPocaPt);
 	//intentionally setting blue color for pocalVoxel
 	pocaCenter.SetColor(2.);
 	voxelCenterVector.push_back(pocaCenter);
@@ -96,7 +102,7 @@ void EventHelper::WriteToFile(){
 }
 
 int EventHelper::GetVoxelNum(){
-	int voxNum = Voxelator::instance()->GetVoxelNumber(fPocaPt); //logica to calculate voxel num
+	int voxNum = Tomography::evolution::Voxelator::instance()->GetVoxelNumber(fPocaPt); //logica to calculate voxel num
 	return voxNum;
 }
 

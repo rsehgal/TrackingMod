@@ -56,14 +56,16 @@ const char* input_filename = (argc>1)?argv[1]:"tracks.txt";
     //	hist->Fill(color);
     	//if((z/deno) > 15. || (z/deno) < 5.) continue;
     	pt.Set(x/deno,y/deno,z/deno);
-	pt.SetColor(color*1000);
+	pt.SetColor(color);
     	//v.Register(slicer,pt);
     //v.Register(pt);
+/*
 #ifdef USE_EVE
 	v.Register_V2(pt);
 #else
+*/
 	v.Register(pt);
-#endif
+///#endif
     
     }
 #ifdef USE_EVE
