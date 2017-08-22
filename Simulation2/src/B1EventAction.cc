@@ -121,6 +121,8 @@ void B1EventAction::EndOfEventAction(const G4Event*)
    //if(diff < 0.)
   	// std::cout<<"Negative comes............" << std::endl;
    run->FillScatteringAngleVector(diff);//angleOutgoing-angleIncoming);
+  //std::cout<<"-------------------------------------" << std::endl;
+   //std::cout<<"Diff from EventAction : " << diff << std::endl;
    //run->FillInComingAngleVector(angleIncoming);
    Tomography::EventHelper u(incoming,outgoing);
 

@@ -64,7 +64,7 @@ int main(int argc, char *argv[]){
     //sd = fwhm;
     //sd = .0092901;
     //double radLen = 0.0136*0.0136*10./(sd*sd);
-    double radLen = ((15.*15.)/(3000*3000))*(10/(p1*p1));//(fwhm*fwhm);
+    double radLen = ((15.*15.)/(3000*3000))*(10/(sd*sd));//(fwhm*fwhm);
     //double radLen = ((13.6*13.6)/(3000*3000))*(10/(fwhm*fwhm));
     std::cout << "RadLength : " << radLen << std::endl;
     histogram->Draw();
