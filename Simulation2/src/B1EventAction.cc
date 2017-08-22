@@ -41,6 +41,7 @@
 #include "EventHelper.h"
 #include "Voxelator_Evolution.h"
 #include "Imaging.h"
+#include "CommonFunc.h"
 
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -110,7 +111,23 @@ void B1EventAction::EndOfEventAction(const G4Event*)
 			  << " :: VertexEnergy : "<< vertexEnergy[1] <<" : Energy " << energy[1] << std::endl;
     }
 
-  //std::cout<<"Position Vector Size : "<< position.size() << std::endl;
+
+  Tomography::Track ref(G4ThreeVector(0.,0.,0.),G4ThreeVector(0.,0.,1.));
+   Tomography::Track incoming(CommonFunc::Functions::instance()->ConvertToVector3D(position[0]),CommonFunc::Functions::instance()->ConvertToVector3D(position[2]));
+   Tomography::Track outgoing(CommonFunc::Functions::instance()->ConvertToVector3D(position[5]),CommonFunc::Functions::instance()->ConvertToVector3D(position[7]));
+   double angleIncoming = CommonFunc::Functions::instance()->GetAngleInRadian(incoming,ref);
+   double angleOutgoing = CommonFunc::Functions::instance()->GetAngleInRadian(outgoing,ref);
+   double diff = angleOutgoing-angleIncoming;
+   //if(diff < 0.)
+  	// std::cout<<"Negative comes............" << std::endl;
+   run->FillScatteringAngleVector(diff);//angleOutgoing-angleIncoming);
+   //run->FillInComingAngleVector(angleIncoming);
+   Tomography::EventHelper u(incoming,outgoing);
+
+
+
+  /*
+   //std::cout<<"Position Vector Size : "<< position.size() << std::endl;
   G4ThreeVector incoming = position[2]-position[0];
   G4ThreeVector outgoing = position[7]-position[5];
   //Tomography::EventHelper u(incoming,outgoing);
@@ -136,6 +153,10 @@ void B1EventAction::EndOfEventAction(const G4Event*)
 	  run->FillScatteringAngleVector(B1RunAction::fScatteringAngle);
 	  Tomography::EventHelper u(B1RunAction::fIncomingTrack,B1RunAction::fOutgoingTrack);
   }
+
+*/
+
+
   //std::cout<<"ScatteringAngle from EventAction : " << B1RunAction::fScatteringAngle << std::endl;
 	  //(run->GetScatteringAngleVector()).push_back(B1RunAction::fScatteringAngle);
   //Tracking::ImageReconstruction fIm;
