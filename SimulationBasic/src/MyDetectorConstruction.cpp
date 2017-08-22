@@ -84,9 +84,8 @@ G4VPhysicalVolume* MyDetectorConstruction::Construct(){
 
 
 
-/*
   //Lets try to build material from NIST database
-  G4Box *leadBlock = new G4Box("LeadBlock",50.*cm,50.*cm,10.*cm);
+  G4Box *leadBlock = new G4Box("LeadBlock",50.*cm,50.*cm,5.*cm);
   G4Material *Pb=nist->FindOrBuildMaterial("G4_Fe");
   G4LogicalVolume *logicalLeadBlock = new G4LogicalVolume(leadBlock,Pb,"LogicalLeadBlock");
   G4VPhysicalVolume *phyLeadBlock = new G4PVPlacement(0,
@@ -98,8 +97,10 @@ G4VPhysicalVolume* MyDetectorConstruction::Construct(){
                             false,
                             0,
                             checkOverlaps);
-*/
 
+
+
+/*
 	 G4Material *Pb=nist->FindOrBuildMaterial("G4_Pb");
 	    G4Material *Fe=nist->FindOrBuildMaterial("G4_Fe");
 	    G4Material *Al=nist->FindOrBuildMaterial("G4_Al");
@@ -181,6 +182,7 @@ G4VPhysicalVolume* MyDetectorConstruction::Construct(){
                                     0,
                                     checkOverlaps);
 
+*/
 
   G4GDMLParser parser;
   parser.Write("Hodoscope.gdml", physWorld);

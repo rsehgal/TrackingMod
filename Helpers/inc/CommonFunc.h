@@ -91,13 +91,14 @@ double StandardDeviation(std::vector<double> scatteringVect){
 #endif
 
 
-double StandardDeviation(std::vector<double> scatteringVect,bool forVoxel = true, int numOfBins = 1000){
+double StandardDeviation(std::vector<double> scatteringVect,bool forVoxel = false, int numOfBins = 1000){
 	//std::cout<<"@@@@@@@@@@@@@@@@@@@@@@@ SD Called........ @@@@@@@@@@@@@@@@@@@@@@@" << std::endl;
 
 	if(scatteringVect.size() <= 1)
 		return 0;
 	double max = *std::max_element(scatteringVect.begin(),scatteringVect.end());
 	double min = *std::min_element(scatteringVect.begin(),scatteringVect.end());
+	std::cout<<"Min : " << min <<" : Max : "<< max << std::endl;
 	TH1F *histogram = new TH1F("Hist","Hist",numOfBins,min,max);
 	for(int i = 0 ; i < scatteringVect.size() ; i++)
 		histogram->Fill(scatteringVect[i]);

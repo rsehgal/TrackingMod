@@ -9,6 +9,8 @@
 #include "CommonFunc.h"
 #include "Voxelator_Evolution.h"
 
+using Tracking::Vector3D;
+
 namespace Tomography {
 
 EventHelper::EventHelper() {
@@ -24,6 +26,7 @@ EventHelper::EventHelper(Track incoming, Track outgoing){
 	fIncoming = incoming;
 	fOutgoing = outgoing;
 	CalculateScatterAngle();
+	//std::cout<<"ScattAngle from EventHelper : " << fScatteringAngle << std::endl;
 	CalculatePOCA();
 	CalculateVoxel();
 
@@ -37,12 +40,16 @@ EventHelper::EventHelper(Track incoming, Track outgoing){
 void EventHelper::CalculatePOCA(){
 	fPocaPt = fIm.POCA(fIncoming,fOutgoing);
 	//std::cout << "Scattering NewArch : " << fScatteringAngle << std::endl;
-	fPocaPt.SetColor(fScatteringAngle*1000);
+	fPocaPt.SetColor(fScatteringAngle);
 	//std::cout<< "POCA from EventHELPER : " ; fPocaPt.Print();
 }
 
 void EventHelper::CalculateScatterAngle(){
-	fScatteringAngle = CommonFunc::Functions::instance()->GetAngleInRadian(fIncoming,fOutgoing);
+	//fScatteringAngle = CommonFunc::Functions::instance()->GetAngleInRadian(fIncoming,fOutgoing);
+	Tomography::Track ref(Vector3D<double>(0.,0.,0.),Vector3D<double>(0.,0.,1.));
+	double angleIncoming = CommonFunc::Functions::instance()->GetAngleInRadian(fIncoming,ref);
+	double angleOutgoing = CommonFunc::Functions::instance()->GetAngleInRadian(fOutgoing,ref);
+	fScatteringAngle = angleOutgoing-angleIncoming;
 	//std::cout << "ScatteringAngle from EventHELPER : " << fScatteringAngle << std::endl;
 }
 
