@@ -109,7 +109,7 @@ void B1RunAction::BeginOfRunAction(const G4Run*)
   fTree = new TTree ("BSC_DATA_TREE","My GEANT4 simulation") ;
 #endif
 
-  Tomography::Voxelator::Create(50*cm,50*cm,45*cm,20*cm,20*cm,18*cm);
+  Tomography::evolution::Voxelator::instance()->Create(50*cm,50*cm,45*cm,20*cm,20*cm,18*cm);
 
   //Tracking::Channel b;
   //InitializeTree();
@@ -255,9 +255,9 @@ void B1RunAction::EndOfRunAction(const G4Run* run)
   Tomography::RunHelper *runHelper = new Tomography::RunHelper();
   //Now trying to calculate Radiation for the whole run
   std::cout<<"@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@" << std::endl;
-  std::cout<<"                              SD : " << CommonFunc::Functions::StandardDeviation(runHelper->GetScatteringAngleVector()) << std::endl;
+  std::cout<<"                              SD : " << CommonFunc::Functions::instance()->StandardDeviation(runHelper->GetScatteringAngleVector()) << std::endl;
   std::cout<<"@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@" << std::endl;
-  std::cout<<"                              RL : " << CommonFunc::Functions::RadiationLength(runHelper->GetScatteringAngleVector(),10) << std::endl;
+  std::cout<<"                              RL : " << CommonFunc::Functions::instance()->RadiationLength(runHelper->GetScatteringAngleVector(),10) << std::endl;
   std::cout<<"@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@" << std::endl;
 
 }
