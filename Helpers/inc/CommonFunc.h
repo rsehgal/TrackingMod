@@ -91,7 +91,9 @@ double StandardDeviation(std::vector<double> scatteringVect){
 #endif
 
 
-double StandardDeviation(std::vector<double> scatteringVect, int numOfBins = 1000){
+double StandardDeviation(std::vector<double> scatteringVect,bool forVoxel = false, int numOfBins = 1000){
+	//std::cout<<"@@@@@@@@@@@@@@@@@@@@@@@ SD Called........ @@@@@@@@@@@@@@@@@@@@@@@" << std::endl;
+
 	if(scatteringVect.size() <= 1)
 		return 0;
 	double max = *std::max_element(scatteringVect.begin(),scatteringVect.end());
@@ -100,13 +102,18 @@ double StandardDeviation(std::vector<double> scatteringVect, int numOfBins = 100
 	for(int i = 0 ; i < scatteringVect.size() ; i++)
 		histogram->Fill(scatteringVect[i]);
 	double sd = histogram->GetStdDev();
-	return sd;
-	delete histogram;
+	if(forVoxel){
+		delete histogram;
+		return sd;
+	}
+	//return sd;
+	//delete histogram;
 	std::cout<<"SD from hist : " << sd << std::endl;
 	histogram->Fit("gaus","","",-2*sd, 2*sd);
 	TF1 *fit = histogram->GetFunction("gaus");
 	double chi2 = fit->GetChisquare();
 	double p1 = fit->GetParameter(2);
+	delete histogram;
 	return p1;
 }
 

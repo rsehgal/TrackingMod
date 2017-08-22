@@ -110,7 +110,7 @@ void Voxel::CalcRadiationLength(){
 }
 
 void Voxel::CalcSD(){
-	fSD = CommonFunc::Functions::instance()->StandardDeviation(GetScatteringVector());
+	fSD = CommonFunc::Functions::instance()->StandardDeviation(GetScatteringVector(),true);
 }
 
 std::vector<Voxel*> Voxel::GetFilteredVoxelVector(){
