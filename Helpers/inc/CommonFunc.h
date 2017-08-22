@@ -91,7 +91,7 @@ double StandardDeviation(std::vector<double> scatteringVect){
 #endif
 
 
-double StandardDeviation(std::vector<double> scatteringVect,bool forVoxel = false, int numOfBins = 1000){
+double StandardDeviation(std::vector<double> scatteringVect,bool forVoxel = true, int numOfBins = 1000){
 	//std::cout<<"@@@@@@@@@@@@@@@@@@@@@@@ SD Called........ @@@@@@@@@@@@@@@@@@@@@@@" << std::endl;
 
 	if(scatteringVect.size() <= 1)
