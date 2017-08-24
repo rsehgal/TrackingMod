@@ -47,10 +47,12 @@ int main(int argc, char *argv[]) {
   rpc1->SetClusterSize(1);
   Detector *rpc2 = new GlassRpc(3, "SecondGlassRpc",-45, 31);
   rpc2->SetClusterSize(1);
+
   Detector *rpc3 = new GlassRpc(4, "FirstGlassRpc", 45, 31);
-    rpc3->SetClusterSize(1);
-    Detector *rpc4 = new GlassRpc(5, "SecondGlassRpc",75, 31);
-    rpc4->SetClusterSize(1);
+  rpc3->SetClusterSize(1);
+  Detector *rpc4 = new GlassRpc(5, "SecondGlassRpc",75, 31);
+  rpc4->SetClusterSize(1);
+
 
   //Creating and Registering Paddle
 //  Detector *paddle = new Paddle(2,"Paddle", -15, 15, 18., 66.);
@@ -68,10 +70,12 @@ int main(int argc, char *argv[]) {
   Tomography::SetupManager::instance()->Register(rpc1);
   v->Register(rpc2);
   Tomography::SetupManager::instance()->Register(rpc2);
+
   v->Register(rpc3);
-    Tomography::SetupManager::instance()->Register(rpc3);
-    v->Register(rpc4);
-    Tomography::SetupManager::instance()->Register(rpc4);
+  Tomography::SetupManager::instance()->Register(rpc3);
+  v->Register(rpc4);
+  Tomography::SetupManager::instance()->Register(rpc4);
+
 
 //  v.Register(topPlane);
 //  Tomography::SetupManager::instance()->Register(topPlane);

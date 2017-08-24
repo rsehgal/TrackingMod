@@ -25,6 +25,10 @@
 #include "SetupManager.h"
  #include "visualizer/Eve/Singleton.h"
 #include "Track.h"
+#include <fstream>
+#include "CommonFunc.h"
+#include "EventProcessor.h"
+
 
 typedef Tomography::Properties Detector;
 //using Tomography::VisualizationHelper;
@@ -40,7 +44,7 @@ public:
 	Update(){fDelay = 2; firstTrack=true;}
 	void SetDelay(int delay){fDelay = delay;}
 	int GetDelay(){return fDelay;}
-
+#if(0)
 	void *handleRoot(void *ptr) {
 		std::cout<<"Handle ROOT Called..." << std::endl;
 
@@ -68,12 +72,16 @@ public:
 		Coordinates c;
 		int evCount = 0;
 		//numOfEvents = 153;
+		//TH1F *hist = new TH1F("Scattering","Scattering",1000,0,M_PI/2.);
+		std::ofstream fs("MuonAngles.txt");
+		fs << 3000 << " " << "G4_Fe" << " " << 100 << " ";
 		for (int evNo = 0; evNo < numOfEvents; evNo++) {
 			tempVect.clear();
 			setup->SetEventDetected("GLASS",evNo);
 			if(setup->EventDetected()){
 			evCount++;
 			std::cout<<"Genuine event no w.r.t Full Setup : " << evCount << std::endl;
+
 
 			for (int j = 0; j < detectors.size(); j++) {  // begin of detector loop
 					temp1 = temp;
@@ -107,8 +115,15 @@ public:
 
 			//Tomography::Track t(tempVect[0],tempVect[tempVect.size()-1]);
 			Tomography::Track incoming(tempVect[0],tempVect[1]);
-			Tomography::Track outgoing(tempVect[2],tempVect[3]);
+			//Tomography::Track outgoing(tempVect[2],tempVect[3]);
 			//Tomography::VisualizationHelper::instance()->RegisterLine(tempVect[0],tempVect[tempVect.size()-1]);
+
+			Tomography::Track ref(G4ThreeVector(0.,0.,0.),G4ThreeVector(0.,0.,-1.));
+			double angleIncoming = CommonFunc::Functions::instance()->GetAngleInRadian(incoming,ref);
+			fs << angleIncoming << " ";
+
+
+
 #ifdef ACCUMULATE_TRACK
 #else
           if (!firstTrack){
@@ -120,7 +135,7 @@ public:
 #endif
             std::vector<Tomography::Track*> trackVector;
             trackVector.push_back(&incoming);
-            trackVector.push_back(&outgoing);
+          //  trackVector.push_back(&outgoing);
 			Tomography::VisualizationHelper::instance()->Register(trackVector);
 			//Tomography::VisualizationHelper::instance()->Register(&outgoing);
 
@@ -133,11 +148,56 @@ public:
 			}
 			sleep(fDelay);
 		}// end of event loop
-
+		fs.close();
 	}
+#endif
+	void *handleRoot_V2(void *ptr) {
+			TGeoHMatrix m;
+			LinesAngle l;
+			Double_t trans[3] = { 0., 0., 0. };
+			m.SetTranslation(trans);
+
+			int numOfEvents = Tracking::Tree::instance()->GetNumOfEvents();
+			std::cout<<"Num Of Events : " << numOfEvents << std::endl;
+			//std::vector<HittedPixel *> hittedPixelVector;
+
+			//std::vector<Tracking::Vector3D<double>> poiVect;
+			Tomography::EventProcessor eventProcessor;
+			std::ofstream fs("MuonAngles.txt");
+			fs << 3000 << " " << "G4_Fe" << " " << 100 << " ";
+			for (int evNo = 0; evNo < numOfEvents; evNo++) {
+				eventProcessor.ProcessEvent(evNo);
+				Tomography::Track incoming = eventProcessor.GetIncomingTrack();
+				Tomography::Track outgoing = eventProcessor.GetOutgoingTrack();
+				Tomography::Track ref(G4ThreeVector(0.,0.,0.),G4ThreeVector(0.,0.,-1.));
+				double angleIncoming = CommonFunc::Functions::instance()->GetAngleInRadian(incoming,ref);
+				fs << angleIncoming << " ";
+
+
+
+	#ifdef ACCUMULATE_TRACK
+	#else
+	          if (!firstTrack){
+	        	  Tomography::VisualizationHelper::instance()->RemoveTrack();
+	          	 // Tomography::VisualizationHelper::instance()->RemoveTrack();
+	          }
+	          else
+	        	  firstTrack = false;
+	#endif
+	            std::vector<Tomography::Track*> trackVector;
+	            trackVector.push_back(&incoming);
+	            trackVector.push_back(&outgoing);
+				Tomography::VisualizationHelper::instance()->Register(trackVector);
+				//Tomography::VisualizationHelper::instance()->Register(&outgoing);
+
+				sleep(fDelay);
+			}// end of event loop
+			fs.close();
+		}
+
 
 	void RunThread2() {
-	      TThread *mythread2 = new TThread("My Thread2", (void (*)(void *)) & Update::handleRoot, (void *)this);
+	      TThread *mythread2 = new TThread("My Thread2", (void (*)(void *)) & Update::handleRoot_V2, (void *)this);
 	      mythread2->Run();
 	}
 

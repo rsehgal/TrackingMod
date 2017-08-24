@@ -29,6 +29,11 @@ public:
   Tracking::Vector3D<double> GetP2(){return fP2;}
   void SetP1(Tracking::Vector3D<double> val){fP1 = val; CalculateDirCosine();}
   void SetP2(Tracking::Vector3D<double> val){fP2 = val; CalculateDirCosine();}
+  void Set(Tracking::Vector3D<double> p1,Tracking::Vector3D<double> p2){
+    fP1 = p1; 
+    fP2 = p2; 
+    CalculateDirCosine();
+  }
   Tracking::Vector3D<double> GetDirCosine(){return fDirCosine;}
   Tracking::Vector3D<double> GetDirection(){return fDirection;}
   void Print(){fP1.Print(); std::cout<<" : " ; fP2.Print();}
