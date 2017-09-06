@@ -1,0 +1,2 @@
+File 10204.root contains data for 20K event for Scintillator planes. The threshold setting used here, gives considerable good Scintillator Pattern.
+
