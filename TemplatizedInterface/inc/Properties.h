@@ -138,7 +138,8 @@ public:
   void GetHitPlot();
   void GetHitPlot3D();
   void GetHitPlot3D_V2();
-  void GetStripsHitPlot3D();
+  TH2F* GetStripsHitPlot3D();
+  TH1F* GetAngularDistributionFromScintillators();
   Tracking::Vector3D<double> GetStripCoordinate(int x, int y, int z);
   //void FetchInfo(Tracking::Tree t);
   void InsertPlane(ScintillatorPlane *plane){

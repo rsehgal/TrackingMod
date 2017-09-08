@@ -313,9 +313,46 @@ void Properties::GetHitPlot3D_V2(){
 
 }
 
-void Properties::GetStripsHitPlot3D(){
+TH1F* Properties::GetAngularDistributionFromScintillators(){
+//  TCanvas *angDist = new TCanvas(GetName().c_str(), GetName().c_str(), 600, 450);
+  int numOfBinsX =   (GetPlane(0)->GetNumOfScintillators() );
+  int numOfBinsY =   (GetPlane(1)->GetNumOfScintillators() );
+
+  TH1F *angDistHist = new TH1F("AngularDistribution","AngularDistribution",numOfBinsX,0,numOfBinsX);
+  int numOfEvents = Tracking::Tree::instance()->GetNumOfEvents();
+  std::cout<<"Num of Events : " << numOfEvents << std::endl;
+  std::vector<int> topPlaneFiredStripVector;
+  std::vector<int> bottomPlaneFiredStripVector;
+  std::vector<Tracking::Vector3D<double>> pixelVect;
+  int count1=0;
+  std::cout<<"ClusterSize : " << fClusterSize << std::endl;
+  int count = 0 ;
+  for(int evNo = 0 ; evNo < numOfEvents ; evNo++){
+   // pixelVect.clear();
+    SetEventDetected(evNo);
+    topPlaneFiredStripVector = GetPlane(0)->GetFiredStripsVector();
+    bottomPlaneFiredStripVector = GetPlane(1)->GetFiredStripsVector();
+    if(fEventDetected && topPlaneFiredStripVector.size()<=fClusterSize && bottomPlaneFiredStripVector.size()<=fClusterSize ){
+	 for(int xval = 0  ; xval < topPlaneFiredStripVector.size() ; xval++){
+	   for(int yval = 0  ; yval < bottomPlaneFiredStripVector.size() ; yval++){
+		if(topPlaneFiredStripVector[xval]==0){
+		  angDistHist->Fill(bottomPlaneFiredStripVector[yval]);
+		}
+	   }
+	 }
+
+    }
+
+  }
+
+  //angDistHist->Draw(); 
+  return angDistHist;
+  
+}
+
+TH2F* Properties::GetStripsHitPlot3D(){
 	gStyle->SetPalette(1);
-  TCanvas *cHitPlot = new TCanvas(GetName().c_str(), GetName().c_str(), 600, 450);
+  //TCanvas *cHitPlot = new TCanvas(GetName().c_str(), GetName().c_str(), 600, 450);
   int numOfBinsX =   (GetPlane(0)->GetNumOfScintillators() );
   int numOfBinsY =   (GetPlane(1)->GetNumOfScintillators() );
   //std::cout<<"Num of Bins : " << numOfBinsX << " : fLength : "<< fLength <<" : fBreadth : " << fBreadth << std::endl;
@@ -380,7 +417,10 @@ void Properties::GetStripsHitPlot3D(){
   std::cout<<"==================================================================="<< std::endl;
 
   //h3dHitPlot->Draw("0lego1 PFC");
-  h3dHitPlot->Draw("LEGO2");
+  
+
+  //h3dHitPlot->Draw("LEGO2");
+  return h3dHitPlot;
 
 }
 
