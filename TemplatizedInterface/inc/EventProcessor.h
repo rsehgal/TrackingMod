@@ -11,7 +11,11 @@
 #include "Coordinates.h"
 #include <TGeoMatrix.h>
 #include "base/Global.h"
+
+#ifdef USE_EVE
 #include "HittedPixel.h"
+#endif
+
 #include "TGeoBBox.h"
 #include "visualizer/Eve/Singleton.h"
 #include "VisualizationHelper.h"

@@ -15,7 +15,8 @@
 #include "G4Material.hh"
 #include "G4UnitsTable.hh"
 #include "G4GDMLParser.hh"
-
+#include "Voxelator_Evolution.h"
+#include "Scatterers.h"
 MyDetectorConstruction::MyDetectorConstruction(){
 
 }
@@ -84,9 +85,10 @@ G4VPhysicalVolume* MyDetectorConstruction::Construct(){
 
 
 
+/*
   //Lets try to build material from NIST database
   G4Box *leadBlock = new G4Box("LeadBlock",50.*cm,50.*cm,5.*cm);
-  G4Material *Pb=nist->FindOrBuildMaterial("G4_Fe");
+  G4Material *Pb=nist->FindOrBuildMaterial("G4_Pb");
   G4LogicalVolume *logicalLeadBlock = new G4LogicalVolume(leadBlock,Pb,"LogicalLeadBlock");
   G4VPhysicalVolume *phyLeadBlock = new G4PVPlacement(0,
                             //G4ThreeVector(),
@@ -97,18 +99,19 @@ G4VPhysicalVolume* MyDetectorConstruction::Construct(){
                             false,
                             0,
                             checkOverlaps);
+*/
 
 
 
-/*
+
 	 G4Material *Pb=nist->FindOrBuildMaterial("G4_Pb");
 	    G4Material *Fe=nist->FindOrBuildMaterial("G4_Fe");
 	    G4Material *Al=nist->FindOrBuildMaterial("G4_Al");
 	    G4Material *U=nist->FindOrBuildMaterial("G4_U");
 
+
 	 //   G4NistManager* nist = G4NistManager::Instance();
 	     G4Box *target = new G4Box("Target",5*cm,5*cm,8*cm);
-
 	      G4LogicalVolume *fLogicTarget = new G4LogicalVolume(target,Pb,"LogicalTargetBlock");
 	      G4LogicalVolume *fLogicTargetFe = new G4LogicalVolume(target,Pb,"LogicalTargetFeBlock");
 
@@ -117,6 +120,7 @@ G4VPhysicalVolume* MyDetectorConstruction::Construct(){
 	      G4LogicalVolume *fLogicTargetAl = new G4LogicalVolume(targetAl,Al,"LogicalTargetAlBlock");
 	      G4LogicalVolume *fLogicTargetU = new G4LogicalVolume(target,U,"LogicalTargetUBlock");
 	      G4LogicalVolume *fLogicSubTargetU = new G4LogicalVolume(subtargetU,U,"LogicalSubTargetUBlock");
+
 
 
 
@@ -182,7 +186,75 @@ G4VPhysicalVolume* MyDetectorConstruction::Construct(){
                                     0,
                                     checkOverlaps);
 
+
+
+
+
+
+/*
+
+
+    G4Box *targetOuterBox = new G4Box("TargetOuterBox",16.*cm,16.*cm,16.*cm);
+    G4LogicalVolume* fLogicTargetOuterBox = new G4LogicalVolume(targetOuterBox,Al,"LogicalTargetOuterPbox");
+    G4VPhysicalVolume *phyTargetOuterBox = new G4PVPlacement(0,
+                                G4ThreeVector(),
+                                fLogicTargetOuterBox,
+                                "PhysicalOuterBox",
+								logicWorld,
+                                false,
+                                0,
+                                checkOverlaps);
+
+
+
+    //G4Sphere *targetU = new G4Sphere("TargetU",0., 5.*cm, 0., 2*M_PI*rad, 0. , M_PI*rad);
+    G4Box *targetU = new G4Box("InnerBox",5.*cm,5.*cm,5.*cm);
+    G4LogicalVolume* fLogicTargetSphereU = new G4LogicalVolume(targetU,U,"LogicalTargetUBlock");
+    G4VPhysicalVolume *phyTargetUSphere1 = new G4PVPlacement(0,
+                                G4ThreeVector(-5*cm,0.,0.),
+                                fLogicTargetSphereU,
+                                "PhysicalUBall1",
+								fLogicTargetOuterBox,
+                                false,
+                                0,
+                                checkOverlaps);
+
+     G4VPhysicalVolume *phyTargetUSphere2 = new G4PVPlacement(0,
+                                G4ThreeVector(5*cm,0.,0.),
+                                fLogicTargetSphereU,
+                                "PhysicalUBall2",
+								fLogicTargetOuterBox,
+                                false,
+                                0,
+                                checkOverlaps);
+
 */
+
+
+//#define VOXELIZE
+#ifdef VOXELIZE
+   //Trying to use Voxelator to visualize the VoxelizedVolume
+   Tomography::evolution::Voxelator *v = Tomography::evolution::Voxelator::Create(50*cm,50*cm,42*cm,20*cm,20*cm,16.8*cm);
+   //v->SetVoxelator(50*cm,50*cm,40*cm,20*cm,20*cm,16*cm);
+   v->CalculateVoxelCenters();
+   std::vector<Tracking::Vector3D<double>> voxelCenters = v->GetVoxelCenters();
+   Tracking::Vector3D<int> voxDim = v->GetEachVoxelDim();
+   Block *voxel = new Block("Voxel",voxDim.x()/2.,voxDim.y()/2.,voxDim.z()/2.,"G4_Galactic");
+   //int i = 5;
+   for(int i = 0 ; i< voxelCenters.size() ; i++){
+	//  voxelCenters[i].Print();
+   G4VPhysicalVolume *voxPhy = new G4PVPlacement(0,
+   	                               //G4ThreeVector(),
+   	                               G4ThreeVector(voxelCenters[i].x(),voxelCenters[i].y(),voxelCenters[i].z()),
+   	                               voxel->GetLogicalVolume(),
+   	                               "VoxelPhysical",
+   	                               logicWorld,//world->GetLogicalVolume(),//logicWorld,
+   	                               false,
+   	                               0,
+   	                               checkOverlaps);
+   }
+#endif
+
 
   G4GDMLParser parser;
   parser.Write("Hodoscope.gdml", physWorld);
