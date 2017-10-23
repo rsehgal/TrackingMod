@@ -3,11 +3,12 @@
 #include "Coordinates.h"
 #include <vector>
 #include <fstream>
+#include "CommonFunc.h"
 
 #define PI 3.14159265359
 using Vec_t = Tracking::Vector3D<double>;
 
-void ReadDataFromFile();
+void ReadDataFromFile(std::string filename);
 void GenerateRandomDataOnCircle();
 void FindClusters(std::vector<Vec_t> ptVect, double);
 
@@ -55,24 +56,28 @@ int main(int argc, char **argv){
 #endif
 
 
-		//GenerateRandomDataOnCircle();
-		ReadDataFromFile();
+		GenerateRandomDataOnCircle();
+		//ReadDataFromFile(argv[1]);
 		return 0;
 
 }
 
-void ReadDataFromFile(){
+void ReadDataFromFile(std::string filename){
 	std::ifstream input;
 	//input.open("ThreeD.txt");
-	input.open("tracks.txt");
+	input.open(filename);
 	std::vector<Vec_t> ptVect;
 	double x=0.,y=0.,z=0.,color=0.;
 	double deno=1;
+	int count=0;
 	if(input.is_open()){
 		while(!input.eof()){
+			count++;
 			input >> x >> y >> z >> color;
 			ptVect.push_back(Vec_t(x/deno,y/deno,z/deno,color));
 		}
+
+		std::cout<<"READ POINTS : " << count << std::endl;
 	}
 	double epsilon = 10.0;
 	FindClusters(ptVect,epsilon);
@@ -104,7 +109,8 @@ void GenerateRandomDataOnCircle(){
 		  ptVect.push_back(Vec_t(x,y,z));
 		}
 #endif
-	double epsilon = 0.1;
+	double epsilon = 0.2;
+	CommonFunc::Functions::instance()->WriteToFile("testClusteringData.txt",ptVect);
 	FindClusters(ptVect,epsilon);
 
 
@@ -122,6 +128,7 @@ void FindClusters(std::vector<Vec_t> ptVect, double epsilon){
 */
 			//clusterVect = (new Tracking::Clustering(ptVect,epsilon))->GetClusterVector();
 			clusterVect = (new Tracking::Clustering(ptVect,epsilon))->GetFilteredClusterVector();
+			//clusterVect = (new Tracking::Clustering(ptVect))->GetFilteredClusterVector();
 			std::cout<<" @@@@@@@@ ClusterVector Size : " << clusterVect.size() << "   @@@@@@@@@@@" << std::endl;
 
 				for(int i = 0 ; i< clusterVect.size(); i++){

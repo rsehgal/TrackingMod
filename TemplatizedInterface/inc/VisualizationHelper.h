@@ -29,6 +29,7 @@ typedef Tracking::Visualizer TomographyVisualizer;
 #include "Properties.h"
 #include "Track.h"
 #include "TGeoManager.h"
+#include "Voxel.h"
 typedef Tomography::Properties Detector;
 namespace Tomography{
 
@@ -67,7 +68,20 @@ class VisualizationHelper{
 TomographyVisualizer fVis;
 bool fSlicingRequired;
 
+//Stuff to make it Singleton
+static VisualizationHelper  *s_instance;
+VisualizationHelper(){
+#ifdef USE_EVE
+  TEveManager::Create();
+#endif
+  fSlicingRequired = true;
+
+}
+
 public:
+static VisualizationHelper *instance();
+
+/*
   VisualizationHelper(){
 #ifdef USE_EVE
     TEveManager::Create();
@@ -75,6 +89,7 @@ public:
     fSlicingRequired = true;
 
   }
+*/
 
   void Register(Detector *det){
   //void Register(GlassRpc *obj){
@@ -110,9 +125,55 @@ public:
   }
 #endif
 
-  void Register(Track *t){
-	  fVis.AddLine(t->GetP1(),t->GetP2());
+// This is for visualization during simulation or data analysis
+  void Register(Voxel * voxel){
+    Tracking::Vector3D<double> voxDim = voxel->GetVoxelDimensions();
+    //Tracking::Vector3D<double> voxCenter = voxel->GetVoxelCenter();
+    double color = voxel->GetStandardDeviation();
+    //Register(voxDim,voxCenter,color);
   }
+
+  
+  //To Read from txt file
+  void Register(double voxDimX,double voxDimY,double voxDimZ, double voxCenterX,
+                double voxCenterY,double voxCenterZ, double color ){
+
+    Register(Tracking::Vector3D<double>(voxDimX,voxDimY,voxDimZ),
+            Tracking::Vector3D<double>(voxCenterX,voxCenterY,voxCenterZ),
+            color);
+
+  }  
+
+  //To Read from txt file
+  void Register(Tracking::Vector3D<double> voxDim,Tracking::Vector3D<double> voxCenter, double color ){
+
+	//std::cout << "Vox Dim : " ; voxDim.Print();
+	//std::cout << "Vox Center : " ;  voxCenter.Print();
+    TGeoHMatrix m;
+    Double_t trans[3] = { 0., 0., 0. };
+    m.SetTranslation(trans);
+    TGeoBBox *box = new TGeoBBox("Voxel",voxDim.x()/2.,voxDim.y()/2.,voxDim.z()/2.);
+    m.SetDx(voxCenter.x());
+    m.SetDy(voxCenter.y());
+    m.SetDz(voxCenter.z());
+    fVis.AddEveShape("Voxel",box,m,color);
+    //std::cout << "Set Color : "<< color << std::endl;
+
+  }
+
+  void Register(Tomography::Track *t,double color=5){
+	  fVis.AddLine(t->GetP1(),t->GetP2(),color);
+  }
+
+  void Register(std::vector<Tomography::Track *>trackVector,double color=5){
+  	  fVis.AddTracks(trackVector,color);
+    }
+
+#ifdef USE_EVE
+  void RemoveTrack(){
+	  fVis.RemoveTrack();
+  }
+#endif
 
   void RegisterLine(Tracking::Vector3D<double> p1, Tracking::Vector3D<double> p2){
 	  fVis.AddLine(p1,p2);
@@ -120,7 +181,11 @@ public:
 
 
   void Register(Tracking::Vector3D<double> pt){
-	  fVis.AddMarkers(pt);
+  #ifdef USE_EVE
+	  fVis.AddMarkers_V2(pt);
+  #else
+    fVis.AddMarkers(pt);
+  #endif
   }
 
 #ifdef USE_EVE
@@ -141,7 +206,8 @@ public:
   void Register(Slicer slicer, Tracking::Vector3D<double> pt){
 	  if(slicer.fSlicingRequired){
 		if(slicer.PointWithinSlice(pt))
-			fVis.AddMarkers(pt);
+			//fVis.AddMarkers(pt);
+			fVis.AddMarkers_V2(pt);
 	  }
 
   }
@@ -232,6 +298,9 @@ void InitializeVisualizer(){
  }
  
 };
+
+
+
 
 }// end of Tomography namespace
 

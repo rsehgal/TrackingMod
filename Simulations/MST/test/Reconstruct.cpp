@@ -26,26 +26,26 @@ int main(int argc, char *argv[]){
 int main(int argc, char *argv[]){
 const char* input_filename = (argc>1)?argv[1]:"tracks.txt";
 	TApplication *fApp = new TApplication("Test", NULL, NULL);
-	VisualizationHelper v;
+	VisualizationHelper *v = VisualizationHelper::instance();
 #ifdef USE_EVE
-	v.Register("Hodoscope.gdml");
+	v->Register("Hodoscope.gdml");
 	//v.Register("VoxelizedVolume.gdml");
 	// v.RegisterLine(Vector3D<double>(0.,0.,0.),Vector3D<double>(0.,0.,0.));
  //    v.CreatePointSetArray();
-    v.InitializeVisualizer();
+    v->InitializeVisualizer();
 #endif
 
     Vector3D<double> pt;
     std::ifstream ft;
     ft.open(input_filename);
     double x=0.,y=0.,z=0;
-    int color=0;
+    double color=0;
 
     //TH1F *hist = new TH1F("test","Scattering",100,0.,100.);
 
-    Tomography::Slicer slicer(-500,500.,-100.,100.,-150.,150.);
+    Tomography::Slicer slicer(-500,500.,0.,160.,-150.,150.);
     double deno=10.;
-    int count = 10000;
+    int count = atoi(argv[2]);
     //while(!ft.eof()){
 
    
@@ -56,24 +56,26 @@ const char* input_filename = (argc>1)?argv[1]:"tracks.txt";
     //	hist->Fill(color);
     	//if((z/deno) > 15. || (z/deno) < 5.) continue;
     	pt.Set(x/deno,y/deno,z/deno);
-	pt.SetColor(color);
-    	//v.Register(slicer,pt);
+	pt.SetColor(color*10000);
+    	v->Register(slicer,pt);
     //v.Register(pt);
+/*
 #ifdef USE_EVE
 	v.Register_V2(pt);
 #else
-	v.Register(pt);
-#endif
+*/
+	//v->Register(pt);
+///#endif
     
     }
 #ifdef USE_EVE
-    v.Lock();
+    v->Lock();
     //fPointSetArray->CloseBins();
 #endif
 
 	//hist->Draw();
 	
-	v.Show();
+	v->Show();
     #ifdef USE_EVE
     gEve->DoRedraw3D(); 
     #endif

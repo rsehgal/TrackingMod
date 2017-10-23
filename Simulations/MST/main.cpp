@@ -5,6 +5,7 @@
 #include "MyDetectorConstruction.h"
 #include "QBBC.hh"
 #include "FTFP_BERT.hh"
+#include "QGSP_BIC.hh"
 //#include "MyPhysics.h"
 #include "B1ActionInitialization.hh"
 
@@ -46,6 +47,7 @@ int main(int argc, char *argv[]){
   //runManager->SetUserInitialization(new PhysicsList);
   //runManager->SetUserInitialization(new MyPhysics);
   runManager->SetUserInitialization(new FTFP_BERT);
+  //runManager->SetUserInitialization(new QGSP_BIC);
 
   //Primary Generator Action
   //runManager->SetUserAction(new MyPrimaryGeneratorAction());

@@ -45,6 +45,8 @@ using Tracking::ImageReconstruction;
 /// Event action class
 ///
 
+class B1Run;
+
 class B1EventAction : public G4UserEventAction
 {
   public:
@@ -62,6 +64,9 @@ class B1EventAction : public G4UserEventAction
     void GenerateOutgoingTrack();
     void CalculatePOCA();
     Vector3D<double> GetPOCA(){return fPocaPt;}
+
+    //int IfVoxelExist(B1Run *run,int voxelNum);
+    int IfVoxelExist(int voxelNum);
 
 
   private:

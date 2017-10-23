@@ -8,8 +8,26 @@ int main(){
     TApplication *fApp = new TApplication("Test", NULL, NULL);
     VisualizationHelper v;
     Vec_t pt(3.,4.,5.,10.);
-    v.Register_V2(pt);
-    v.CloseBins();
+    v.InitializeVisualizer();
+    v.Register(pt);
+
+    double color =10;
+    //Now tryig to register a voxel
+    Vec_t voxDim(10.,10.,10.);
+    Vec_t voxCenter(0.,0.,0.);
+    v.Register(voxDim,voxCenter,color);
+
+    voxCenter.Set(10.,0.,0.);
+    v.Register(voxDim,voxCenter,2);
+
+    voxCenter.Set(0.,10.,0.);
+    v.Register(voxDim,voxCenter,4);
+
+    voxCenter.Set(10.,10.,0.);
+    v.Register(voxDim,voxCenter,6);
+
+    v.Lock();
+    //rev.CloseBins();
 
     v.Show();
     fApp->Run();

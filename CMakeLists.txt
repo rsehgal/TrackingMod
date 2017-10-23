@@ -364,11 +364,14 @@ set(TOMOLIB ${TOMOLIB}
 Tomo
 )
 
+find_package(Geant4 REQUIRED)
+include(${Geant4_USE_FILE})
+
 message(STATUS "--------- Following source files will be use for the creation of HELPERS Shared library -----------")
 message(STATUS ${helpers})
 message(STATUS "------------------------------------------------------------------------------------------")
 add_library(Helpers SHARED ${helpers} ) #G__Tree.cxx)
-target_link_libraries(Helpers  ${XERCES_LIBRARIES} ${MYSQL_LIBRARIES} ${ROOT_LIBRARIES} -lTreePlayer)
+target_link_libraries(Helpers  ${XERCES_LIBRARIES} ${MYSQL_LIBRARIES} ${ROOT_LIBRARIES} ${Geant4_LIBRARIES} -lTreePlayer)
 #target_link_libraries(Tomo ${EXTERNAL_LIBS})
 set(HELPERSLIB ${HELPERSLIB}
 Helpers
@@ -414,6 +417,7 @@ message(STATUS ${tests})
 message(STATUS "====================================================")
 add_subdirectory(Simulations/MST)
 add_subdirectory(Simulation2)
+add_subdirectory(SimulationBasic)
 #Copying the test geom.root file to build directory for visualization testing
 file(GLOB ROOT_FILES ${PROJECT_SOURCE_DIR}/RootFiles/*)
 message(STATUS ${ROOT_FILES})

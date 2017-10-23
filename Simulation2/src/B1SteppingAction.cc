@@ -128,13 +128,22 @@ stepNum++;
 		  B1EventAction::position.push_back(point1->GetPosition());
 	  }*/
 
-
+//std::cout<<"MoveUpHistory : " << touch1->MoveUpHistory() << std::endl;
+//	  std::cout<<"Name : " << touch1->GetVolume()->GetName() << std::endl;
+//	  std::cout<<"Name : " << touch1->GetVolume()->GetName().substr(0,4) << std::endl;
+//if(touch1->GetVolume(2)){
+/*
 	  if((touch1->GetVolume(2)->GetName()=="Module2" ||
 	  			  touch1->GetVolume(2)->GetName()=="Module3" ||
 	  			  touch1->GetVolume(2)->GetName()=="Module4" ||
 	  			  touch1->GetVolume(2)->GetName()=="Module5")
 	  			  && point1->GetStepStatus()==fGeomBoundary)
+*/
+	  if(touch1->GetVolume()->GetName().substr(0,4) == "_LE_")
+
 	  //if(point1->GetStepStatus()==fGeomBoundary)
+
+	  //if(touch1->GetVolume()->GetName())
 	  {
 		  B1EventAction::evMultiplicity++;
 
@@ -178,6 +187,7 @@ stepNum++;
 		   //<<" :: TrackID : "<< step->GetTrack()->GetTrackID() <<  std::endl;
 		   //<<" :: GrandParentName Poststep: " << touch2->GetVolume(2)->GetName() << std::endl;
 	  }
+  //}
  
   }
 
