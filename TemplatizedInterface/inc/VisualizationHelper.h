@@ -206,7 +206,8 @@ static VisualizationHelper *instance();
   void Register(Slicer slicer, Tracking::Vector3D<double> pt){
 	  if(slicer.fSlicingRequired){
 		if(slicer.PointWithinSlice(pt))
-			fVis.AddMarkers(pt);
+			//fVis.AddMarkers(pt);
+			fVis.AddMarkers_V2(pt);
 	  }
 
   }

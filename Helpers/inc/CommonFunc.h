@@ -127,13 +127,15 @@ void WriteToFile(std::string fileName, std::vector<double> scatteringVect){
    fileHandle.close();
 }
 
-void WriteToFile(std::string fileName, std::vector<Vector3D<double>> ptVect){
+void WriteToFile(std::string fileName, std::vector<Vector3D<double>> ptVect, double cut=0.3){
    int count = 0 ;
    std::ofstream fileHandle(fileName);
-
+   //std::cout<<"------------ RAMAN -------------" << std::endl;
    for(int i =0  ; i < ptVect.size() ; i++){
-	  if(ptVect[i].GetColor()/1000. > 1e-4)
+	   if(std::fabs(ptVect[i].GetColor())*1000 > cut){
+		  // std::cout << ptVect[i].x() << " " << ptVect[i].y() << " " << ptVect[i].z() <<  " " << ptVect[i].GetColor() <<std::endl;
 		  fileHandle << ptVect[i].x() << " " << ptVect[i].y() << " " << ptVect[i].z() <<  " " << ptVect[i].GetColor() <<std::endl;
+	   }
 	  else
 		  count++;
    }
