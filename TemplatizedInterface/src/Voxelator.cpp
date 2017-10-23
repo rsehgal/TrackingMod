@@ -143,6 +143,17 @@ void Voxelator::PrintVoxelCenters(){
 }
 
 
+/*
+void Voxelator::CreateSDGraph(){
+	std::vector<int> x;
+	int numOfVoxels = fVoxelatorDim.x()*fVoxelatorDim.y()*fVoxelatorDim.z();
+	for(int i = 0 ; i < numOfVoxels ; i++){
+		x.push_back(i);
+	}
+	//fGraphSD = new TGraph(numOfVoxels, &x[0],);
+}
+*/
+
 void Voxelator::CreateHistogram(){
 	//Create the required 3D Hist which corresponds to voxelized volume
 	histVoxelValue = new  TH3F("histVoxelValue", "HistVoxelValue", fVoxelatorDim.x(), -fVoxelizedVolumeDim.x(), fVoxelizedVolumeDim.x(),

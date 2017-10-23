@@ -36,6 +36,7 @@
 #include <fstream>
 #include <TH1F.h>
 
+
 class G4Run;
 class G4LogicalVolume;
 
@@ -52,6 +53,7 @@ class B1RunAction : public G4UserRunAction
     std::ofstream fs;
     std::ofstream ftrack;
     TH1F *fScatteringHist;
+    //TGraph *fGraphSD;
     bool verbose;
     
   public:
@@ -61,6 +63,7 @@ class B1RunAction : public G4UserRunAction
     virtual G4Run* GenerateRun();
     virtual void BeginOfRunAction(const G4Run*);
     virtual void   EndOfRunAction(const G4Run*);
+    void CreateSDGraph();
 };
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

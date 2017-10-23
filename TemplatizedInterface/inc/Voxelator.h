@@ -14,6 +14,7 @@
 #include "TH2F.h"
 #include "ObjectChecker.h"
 #include "Track.h"
+#include <TGraph.h>
 
 using Slice = std::vector<std::vector<Tracking::Vector3D<double>>>;
 using VoxelCenters = std::vector<Slice>;
@@ -32,6 +33,8 @@ private:
   TH3F *histVoxelCount;
   TH1F *fVoxelsIn1D;
   TH1F *fVoxelsIn1DCount;
+  //TGraph *fGraphSD;// = new TGraph(dim, &x[0], &y[0]);
+
 
   ObjectChecker fObjChecker;
 
@@ -73,6 +76,7 @@ public:
   // This needs NOT to be called by user program
   void CreateHistogram();
   void CalculateVoxelCenters();
+  //void CreateSDGraph();
 
   void PrintVoxelCenters();
 

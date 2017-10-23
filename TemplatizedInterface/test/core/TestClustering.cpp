@@ -104,7 +104,7 @@ void GenerateRandomDataOnCircle(){
 		  ptVect.push_back(Vec_t(x,y,z));
 		}
 #endif
-	double epsilon = 0.1;
+	double epsilon = 0.2;
 	FindClusters(ptVect,epsilon);
 
 

@@ -12,6 +12,7 @@
 #include <utility>
 #include "TGeoMatrix.h"
 #include "base/Vector3D.h"
+#include "Track.h"
 //#include "SingleTon.h"
 class TEveElementList;
 class TEveGeoShape;
@@ -43,7 +44,10 @@ public:
   void AddEveShape(TEveGeoShape *eveShape, TGeoHMatrix &mat);
   void AddEveShape(std::string shapeName,TGeoShape *shape, TGeoHMatrix &mat, int color);
   void AddEveShape(std::string shapeName,TGeoShape *shape, TGeoHMatrix &mat);
-  void AddLine(Vector3D<double>p1, Vector3D<double>p2);
+  void AddLine(Vector3D<double>p1, Vector3D<double>p2,double color=5);
+  void AddTracks(std::vector<Tomography::Track*> trackVector,double color=5);
+  void RemoveLine();
+  void RemoveTrack();
   static void Show();
   static void UpdateScene();
   void AddMarkers(Vector3D<double> pt);

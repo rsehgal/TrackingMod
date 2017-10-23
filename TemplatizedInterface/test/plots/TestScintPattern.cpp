@@ -20,16 +20,20 @@ using namespace Tomography;
 int main(int argc, char *argv[]) {
   std::string temp_str = std::to_string(atoi(argv[1]));
   temp_str += ".root";
-  int clusterSize = 1;
+  int clusterSize = 6;
   TApplication *fApp = new TApplication("Test", NULL, NULL);
   //gStyle->SetPalette(1);
   Tracking::Tree::instance()->ReadTree(temp_str.c_str(), "BSC_DATA_TREE", 0);
 
 #if(1) //using concept of Detector
   Detector *trgPlanes = new GenericXYDetector(2,"XYTriggeringPlanes",0,-1,8,100.,100.,1);
+  trgPlanes->SetClusterSize(2);
   trgPlanes->SetClusterSize(clusterSize);
   SetupManager::instance()->Register(trgPlanes);
-  trgPlanes->GetStripsHitPlot3D();
+  TCanvas *cPattern = new TCanvas("cPattern", "cPattern", 200, 10, 700, 500);
+  trgPlanes->GetStripsHitPlot3D()->Draw("LEGO2");
+  TCanvas *cAngDist = new TCanvas("cAngDist", "cAngDist", 200, 10, 700, 500);
+  trgPlanes->GetAngularDistributionFromScintillators()->Draw();
 #endif
 
 #if(0) // Old Traditional Way

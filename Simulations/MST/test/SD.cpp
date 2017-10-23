@@ -20,9 +20,9 @@ int main(int argc, char *argv[]){
 	TCanvas *c = new TCanvas("TestCanvas", "ScatteringAngleCanvas", 800, 600);
 	c->Divide(4,4);
 	std::vector<TH1F*> histogram;
-	int numOfEnergies = 3;
-	int numOfMaterials = 2;
-    int numOfSteps = 8;
+	int numOfEnergies = 1;
+	int numOfMaterials = 1;
+    int numOfSteps = 1;
 	int nxbins = 80;
 	
  	histogram.resize(numOfSteps*numOfMaterials);

@@ -39,13 +39,13 @@ const char* input_filename = (argc>1)?argv[1]:"tracks.txt";
     std::ifstream ft;
     ft.open(input_filename);
     double x=0.,y=0.,z=0;
-    int color=0;
+    double color=0;
 
     //TH1F *hist = new TH1F("test","Scattering",100,0.,100.);
 
     Tomography::Slicer slicer(-500,500.,-100.,100.,-150.,150.);
     double deno=10.;
-    int count = 10000;
+    int count = atoi(argv[2]);
     //while(!ft.eof()){
 
    
@@ -59,11 +59,13 @@ const char* input_filename = (argc>1)?argv[1]:"tracks.txt";
 	pt.SetColor(color);
     	//v.Register(slicer,pt);
     //v.Register(pt);
+/*
 #ifdef USE_EVE
 	v.Register_V2(pt);
 #else
+*/
 	v.Register(pt);
-#endif
+///#endif
     
     }
 #ifdef USE_EVE

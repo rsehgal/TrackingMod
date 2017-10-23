@@ -10,6 +10,8 @@
 
 #include "base/Vector3D.h"
 #include "base/Global.h"
+#include <G4ThreeVector.hh>
+
 
 namespace Tomography {
 
@@ -21,14 +23,23 @@ class Track {
 public:
   Track();
   Track(Tracking::Vector3D<double> p1,Tracking::Vector3D<double> p2);
+  Track(G4ThreeVector p1,G4ThreeVector p2);
   void CalculateDirCosine();
   Tracking::Vector3D<double> GetP1(){return fP1;}
   Tracking::Vector3D<double> GetP2(){return fP2;}
   void SetP1(Tracking::Vector3D<double> val){fP1 = val; CalculateDirCosine();}
   void SetP2(Tracking::Vector3D<double> val){fP2 = val; CalculateDirCosine();}
+  void Set(Tracking::Vector3D<double> p1,Tracking::Vector3D<double> p2){
+    fP1 = p1; 
+    fP2 = p2; 
+    CalculateDirCosine();
+  }
   Tracking::Vector3D<double> GetDirCosine(){return fDirCosine;}
   Tracking::Vector3D<double> GetDirection(){return fDirection;}
   void Print(){fP1.Print(); std::cout<<" : " ; fP2.Print();}
+
+  //Overloading operator
+  void operator = (const Track &newVal);
 
   ~Track();
 };

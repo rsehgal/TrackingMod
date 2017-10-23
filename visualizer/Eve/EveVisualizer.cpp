@@ -45,8 +45,8 @@ namespace Tracking {
   
   // fPointSetArray->CloseBins();
   Singleton::instance()->AddElement(fPointSetArray);
-  int bins = 100;
-  fPointSetArray->InitBins("Scattering", bins, 0., 100.);
+  int bins = 200;
+  fPointSetArray->InitBins("Scattering", bins, 0., 200.);
 
    TColor::SetPalette(1, 0); 
    const Int_t nCol = TColor::GetNumberOfColors();
@@ -60,7 +60,9 @@ namespace Tracking {
 
   }
 
-void EveVisualizer::AddLine(Vector3D<double>p1, Vector3D<double>p2){
+void EveVisualizer::AddLine(Vector3D<double>p1, Vector3D<double>p2,double color){
+	std::cout<<"Add line called ...." << std::endl;
+//if(!ls)
   ls = new TEveStraightLineSet();
   
   /*fPointSetArray = new TEvePointSetArray("points");
@@ -76,11 +78,40 @@ void EveVisualizer::AddLine(Vector3D<double>p1, Vector3D<double>p2){
 		       p2.x(),p2.y(),p2.z());
   AddMarkers(p1);
   AddMarkers(p2);
+  ls->SetMainColor(color);
   //ls->SetMarkerSize(1.5);
   //ls->SetMarkerStyle(4);
   Singleton::instance()->AddLineSet(ls);
   //gEve->AddElement(ls);
   //Singleton::instance()->AddElement(ls);
+  std::cout<<"Exiting AddLIne .....  " << std::endl;
+}
+
+void EveVisualizer::AddTracks(std::vector<Tomography::Track*> trackVector,double color){
+	ls = new TEveStraightLineSet();
+	for(int i = 0 ; i < trackVector.size() ; i++){
+	Tracking::Vector3D<double> p1 = trackVector[i]->GetP1();
+	Tracking::Vector3D<double> p2 = trackVector[i]->GetP2();
+	ls->AddLine( p1.x(),p1.y(),p1.z(),
+			       p2.x(),p2.y(),p2.z());
+	AddMarkers(p1);
+	AddMarkers(p2);
+	}
+
+	ls->SetMainColor(color);
+	Singleton::instance()->AddLineSet(ls);
+
+
+}
+
+
+void EveVisualizer::RemoveLine(){
+	//fEveGeomList->RemoveElement(ls);
+	Tracking::Singleton::instance()->RemoveElement();
+}
+
+void EveVisualizer::RemoveTrack(){
+	RemoveLine();
 }
 
 void EveVisualizer::AddMarkers(Vector3D<double> pt) {
@@ -91,6 +122,7 @@ void EveVisualizer::AddMarkers(Vector3D<double> pt) {
 	ls->AddMarker(pt.x(), pt.y(), pt.z());
      ls->SetMarkerSize(1.3);
      ls->SetMarkerStyle(4);
+
 
 
    }
@@ -120,6 +152,7 @@ void EveVisualizer::AddMarkers_V2(Vector3D<double> pt){
 
 }*/
   if(gEve){
+	  std::cout<<"Color of POCA : " << pt.GetColor() << std::endl;
   fPointSetArray->Fill(pt.x(),pt.y(),pt.z(),pt.GetColor());
  // fPointSetArray->CloseBins();
 }

@@ -17,15 +17,52 @@ Clustering::Clustering():fEpsilon(2) {
 
 }
 
+void Clustering::ExportClustersData(){
+	std::cout<< "Writing Individual Clusters Data file........" << std::endl;
+	std::vector<File*> fileHandles;
+
+	//Inserting respective file objects
+	for(int i = 0  ; i < (NewCluster::fClusterNum+1) ; i++){
+		std::string fileName = "Cluster_"+std::to_string(i)+".txt";
+		File *fileObject = new File(fileName);
+		fileHandles.push_back(fileObject);
+	}
+
+	//Inserting data to respective file
+	for(int i = 0 ; i < fPtVect.size() ; i++){
+		if(fPtVect[i]->fClusterNum >= 0){
+		Vector3D<double> pt = fPtVect[i]->fPt;
+		(fileHandles[fPtVect[i]->fClusterNum])->fHandle << pt.x() << " " << pt.y() << " " << pt.z() << " " << pt.GetColor() << std::endl;
+		}
+
+	}
+
+
+	//Closing all the files
+	for(int i = 0  ; i < (NewCluster::fClusterNum+1) ; i++){
+
+		(fileHandles[i]->fHandle).close();
+	}
+	std::cout<<"All Data files written !!!" << std::endl;
+}
+
 void Clustering::FillHistogram(){
 	//TFile clusterFile("clusterCount.root","recreate");
 	fHist1DOfClusterNum = new TH1F("Cluster_1d_Hist","Cluster_1d_Hist",(NewCluster::fClusterNum),0,(NewCluster::fClusterNum));
 	fHist1DOfScatterigInClusterNum = new TH1F("Scattering_Cluster_1d_Hist","Scattering_Cluster_1d_Hist",(NewCluster::fClusterNum),0,(NewCluster::fClusterNum));
 	for(int i = 0 ; i < fPtVect.size() ; i++){
 		fHist1DOfClusterNum->Fill(fPtVect[i]->fClusterNum);
+		//fHist1DOfClusterNum->Fill(fPtVect[i]->fClusterNum,500000);
 		fHist1DOfScatterigInClusterNum->Fill(fPtVect[i]->fClusterNum, (fPtVect[i]->fPt).GetColor());
 	}
+
+	ExportClustersData();
+	//This will give the MEAN of Scattering angle of points within the cluster.
 	fHist1DOfScatterigInClusterNum->Divide(fHist1DOfClusterNum);
+
+	//One should also try MEDIAN and SD, and these can be calculated very easily in R
+
+
 
 /*
 	for(int i = 0  ; i < (NewCluster::fClusterNum+1) ; i++){
@@ -50,20 +87,20 @@ void Clustering::NormalizeScatteringValue(){
 		if(clusterNum >= 0){
 		//std::cout << "ClusterNum : "<< clusterNum << std::endl;
 		//std::cout << fHist1DOfScatterigInClusterNum->GetBinContent(clusterNum) << std::endl;
-			std::cout<<"Color : "<< fHist1DOfScatterigInClusterNum->GetBinContent(clusterNum) << std::endl;
+			//std::cout<<"Color : "<< fHist1DOfScatterigInClusterNum->GetBinContent(clusterNum) << std::endl;
 			(fPtVect[i]->fPt).SetColor(fHist1DOfScatterigInClusterNum->GetBinContent(clusterNum));
 		}
 		//(fPtVect[i]->fPt).SetColor(fHist1DOfScatterigInClusterNum->GetBinContent(fPtVect[i]->fClusterNum + 1));
 	}
 }
 
-Clustering::Clustering(std::vector<Vec_t> ptVect):fEpsilon(1.1),fMinPtsInCluster(20){
+Clustering::Clustering(std::vector<Vec_t> ptVect):fEpsilon(1.1),fMinPtsInCluster(100){
 	//Call the required Clustering Algorithm, using DBSCAN by default
 	//DBSCAN(ptVect);
 	SequentialClustering(ptVect);
 }
 
-Clustering::Clustering(std::vector<Vec_t> ptVect, double eps):fEpsilon(eps),fMinPtsInCluster(10){
+Clustering::Clustering(std::vector<Vec_t> ptVect, double eps):fEpsilon(eps),fMinPtsInCluster(20){
 	//DBSCAN(ptVect);
 	//fClusterRootFile = new TFile("clusterCount.root","recreate");
 	for(int i=0 ; i <ptVect.size() ; i++){
