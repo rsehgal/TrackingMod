@@ -16,7 +16,7 @@
 #include "G4UnitsTable.hh"
 #include "G4GDMLParser.hh"
 #include "Voxelator_Evolution.h"
-#include "Scatterers.h"
+//#include "Scatterers.h"
 MyDetectorConstruction::MyDetectorConstruction(){
 
 }
@@ -85,6 +85,7 @@ G4VPhysicalVolume* MyDetectorConstruction::Construct(){
 
 
 
+
 /*
   //Lets try to build material from NIST database
   G4Box *leadBlock = new G4Box("LeadBlock",50.*cm,50.*cm,5.*cm);
@@ -104,6 +105,8 @@ G4VPhysicalVolume* MyDetectorConstruction::Construct(){
 
 
 
+
+/*
 	 G4Material *Pb=nist->FindOrBuildMaterial("G4_Pb");
 	    G4Material *Fe=nist->FindOrBuildMaterial("G4_Fe");
 	    G4Material *Al=nist->FindOrBuildMaterial("G4_Al");
@@ -185,6 +188,7 @@ G4VPhysicalVolume* MyDetectorConstruction::Construct(){
                                     false,
                                     0,
                                     checkOverlaps);
+*/
 
 
 

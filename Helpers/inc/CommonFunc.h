@@ -18,9 +18,15 @@
 #include <G4ThreeVector.hh>
 #include <algorithm>
 #include <TF1.h>
+#include "base/Global.h"
 using Tracking::Vector3D;
 
 namespace CommonFunc{
+
+static Precision Distance(Vector3D<Precision> p, Vector3D<Precision> q){
+	return (p-q).Mag();
+}
+
 class Functions{
 	static Functions *finstance;
 	Functions(){}

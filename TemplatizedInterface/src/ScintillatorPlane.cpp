@@ -61,7 +61,7 @@ void ScintillatorPlane::SetFiredStripsVector(int evNo) {
     }
 
   }
-  std::cout << std::endl;
+  //std::cout << std::endl;
 }
 
 } /* namespace Tomography */

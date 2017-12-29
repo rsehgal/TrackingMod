@@ -10,6 +10,7 @@
 #include <TH2F.h>
 #include <TH3F.h>
 #include <TStyle.h>
+#include <fstream>
 namespace Tomography{
 
 //int Properties::fClusterSize = 10;
@@ -188,6 +189,7 @@ void Properties::GetHitPlot(){
   std::vector<int> bottomPlaneFiredStripVector;
   std::vector<Tracking::Vector3D<double>> pixelVect;
   int count=0;
+	std::ofstream earth("earth.dat",std::ios::app);
   for(int evNo = 0 ; evNo < numOfEvents ; evNo++){
     pixelVect.clear();
     SetEventDetected(evNo);
@@ -203,18 +205,22 @@ void Properties::GetHitPlot(){
       }
     }
     if(pixelVect.size()){
+
       for(int i = 0 ;  i < pixelVect.size() ; i++){
         h2dHitPlot->Fill(pixelVect[i].x(), pixelVect[i].y());
+	earth << pixelVect[i].x() << " " << pixelVect[i].y() << std::endl;         
         //pixelVect[i].Print();
       }
     }
 
   }
 
+	earth.close();
+
   std::cout<<"Total Num of Hit Point for Detector  : "<< GetName() << " : " << count << std::endl;
   std::cout<<"==================================================================="<< std::endl;
   
-  h2dHitPlot->Draw();
+  h2dHitPlot->Draw("");
   
 }
 

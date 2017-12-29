@@ -32,7 +32,7 @@ EventHelper::EventHelper(Track incoming, Track outgoing){
 
 
 	//Uncomment them if one want Candidate voxel for an event
-	//CalculateCandidateVoxels();
+	CalculateCandidateVoxels();
 	//WriteToFile();
 
 }
@@ -67,6 +67,7 @@ void EventHelper::CalculateVoxel(){
 	}
 }
 
+#ifdef FIND_CANDIDATE_VOXEL
 void EventHelper::CalculateCandidateVoxels(){
 	fCandidateVoxelNumVector = Tomography::evolution::Voxelator::instance()->FindCandidateVoxels(fIncoming,fOutgoing,fIncomingHitPoint,fOutgoingHitPoint);
 }
@@ -107,6 +108,7 @@ void EventHelper::WriteToFile(){
 
 	CommonFunc::Functions::instance()->WriteToFile("candidatesVoxels.txt",voxelCenterVector);
 }
+#endif
 
 int EventHelper::GetVoxelNum(){
 	int voxNum = Tomography::evolution::Voxelator::instance()->GetVoxelNumber(fPocaPt); //logica to calculate voxel num
