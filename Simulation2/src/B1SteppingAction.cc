@@ -42,6 +42,8 @@
 #include <cstdlib>
 #include "base/Global.h"
 
+#include "G4SystemOfUnits.hh"
+
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 int B1SteppingAction::stepNum = -1;
@@ -151,10 +153,150 @@ stepNum++;
 		   * So Currently processing only those events where steplength
 		   * is non-zero.
 		   */
+
 		  if(step->GetStepLength()){
 			  std::string hittedStripName = (touch1->GetVolume(2)->GetName()+ touch1->GetVolume()->GetName());
 			 // std::cout<< "Hitted Strip : "<< hittedStripName << std::endl;
+			 G4ThreeVector hitLocation = point1->GetPosition();
+			 hitLocation.setZ(0.);
+
+			 bool button = false;
+
+			 //Filling Vector of Spacers location
+			 /*buttonLocationVector.push_back(G4ThreeVector(20*cm,20*cm,0.));
+			 buttonLocationVector.push_back(G4ThreeVector(-20*cm,20*cm,0.));
+			 buttonLocationVector.push_back(G4ThreeVector(-20*cm,-20*cm,0.));
+			 buttonLocationVector.push_back(G4ThreeVector(20*cm,-20*cm,0.));
+			 buttonLocationVector.push_back(G4ThreeVector(10*cm,10*cm,0.));
+			 buttonLocationVector.push_back(G4ThreeVector(-10*cm,10*cm,0.));
+ 			 buttonLocationVector.push_back(G4ThreeVector(-10*cm,-10*cm,0.));
+ 			 buttonLocationVector.push_back(G4ThreeVector(10*cm,-10*cm,0.));
+
+*/
+#ifdef USE_SPACERS
+			 std::vector<G4ThreeVector> buttonLocationVector;
+			 	 	 	 buttonLocationVector.push_back(G4ThreeVector(20*cm,-40*cm,0.));
+			 			 buttonLocationVector.push_back(G4ThreeVector(20*cm,-30*cm,0.));
+			 			 buttonLocationVector.push_back(G4ThreeVector(20*cm,-20*cm,0.));
+			 			 buttonLocationVector.push_back(G4ThreeVector(20*cm,-10*cm,0.));
+			 			 buttonLocationVector.push_back(G4ThreeVector(20*cm,0*cm,0.));
+			 			 buttonLocationVector.push_back(G4ThreeVector(20*cm,10*cm,0.));
+			  			 buttonLocationVector.push_back(G4ThreeVector(20*cm,20*cm,0.));
+			  			 buttonLocationVector.push_back(G4ThreeVector(20*cm,30*cm,0.));
+			  			 buttonLocationVector.push_back(G4ThreeVector(20*cm,40*cm,0.));
+
+			 	 	 	 buttonLocationVector.push_back(G4ThreeVector(-20*cm,-40*cm,0.));
+			 			 buttonLocationVector.push_back(G4ThreeVector(-20*cm,-30*cm,0.));
+			 			 buttonLocationVector.push_back(G4ThreeVector(-20*cm,-20*cm,0.));
+			 			 buttonLocationVector.push_back(G4ThreeVector(-20*cm,-10*cm,0.));
+			 			 buttonLocationVector.push_back(G4ThreeVector(-20*cm,0*cm,0.));
+			 			 buttonLocationVector.push_back(G4ThreeVector(-20*cm,10*cm,0.));
+			  			 buttonLocationVector.push_back(G4ThreeVector(-20*cm,20*cm,0.));
+			  			 buttonLocationVector.push_back(G4ThreeVector(-20*cm,30*cm,0.));
+			  			 buttonLocationVector.push_back(G4ThreeVector(-20*cm,40*cm,0.));
+
+
+			  			 buttonLocationVector.push_back(G4ThreeVector(40*cm,-40*cm,0.));
+			  			 buttonLocationVector.push_back(G4ThreeVector(40*cm,-30*cm,0.));
+			  			 buttonLocationVector.push_back(G4ThreeVector(40*cm,-20*cm,0.));
+			  			 buttonLocationVector.push_back(G4ThreeVector(40*cm,-10*cm,0.));
+			  			 buttonLocationVector.push_back(G4ThreeVector(40*cm,0*cm,0.));
+			  			 buttonLocationVector.push_back(G4ThreeVector(40*cm,10*cm,0.));
+			  			 buttonLocationVector.push_back(G4ThreeVector(40*cm,20*cm,0.));
+			  			 buttonLocationVector.push_back(G4ThreeVector(40*cm,30*cm,0.));
+			  			 buttonLocationVector.push_back(G4ThreeVector(40*cm,40*cm,0.));
+
+			  			 buttonLocationVector.push_back(G4ThreeVector(-40*cm,-40*cm,0.));
+			  			 buttonLocationVector.push_back(G4ThreeVector(-40*cm,-30*cm,0.));
+			  			 buttonLocationVector.push_back(G4ThreeVector(-40*cm,-20*cm,0.));
+			  			 buttonLocationVector.push_back(G4ThreeVector(-40*cm,-10*cm,0.));
+			  			 buttonLocationVector.push_back(G4ThreeVector(-40*cm,0*cm,0.));
+			  			 buttonLocationVector.push_back(G4ThreeVector(-40*cm,10*cm,0.));
+			  			 buttonLocationVector.push_back(G4ThreeVector(-40*cm,20*cm,0.));
+			  			 buttonLocationVector.push_back(G4ThreeVector(-40*cm,30*cm,0.));
+			  			 buttonLocationVector.push_back(G4ThreeVector(-40*cm,40*cm,0.));
+
+
+			 	 	 	 buttonLocationVector.push_back(G4ThreeVector(-10*cm,-40*cm,0.));
+			 			 buttonLocationVector.push_back(G4ThreeVector(-10*cm,-30*cm,0.));
+			 			 buttonLocationVector.push_back(G4ThreeVector(-10*cm,-20*cm,0.));
+			 			 buttonLocationVector.push_back(G4ThreeVector(-10*cm,-10*cm,0.));
+			 			 buttonLocationVector.push_back(G4ThreeVector(-10*cm,0*cm,0.));
+			 			 buttonLocationVector.push_back(G4ThreeVector(-10*cm,10*cm,0.));
+			  			 buttonLocationVector.push_back(G4ThreeVector(-10*cm,20*cm,0.));
+			  			 buttonLocationVector.push_back(G4ThreeVector(-10*cm,30*cm,0.));
+			  			 buttonLocationVector.push_back(G4ThreeVector(-10*cm,40*cm,0.));
+
+			 	 	 	 buttonLocationVector.push_back(G4ThreeVector(10*cm,-40*cm,0.));
+			 			 buttonLocationVector.push_back(G4ThreeVector(10*cm,-30*cm,0.));
+			 			 buttonLocationVector.push_back(G4ThreeVector(10*cm,-20*cm,0.));
+			 			 buttonLocationVector.push_back(G4ThreeVector(10*cm,-10*cm,0.));
+			 			 buttonLocationVector.push_back(G4ThreeVector(10*cm,0*cm,0.));
+			 			 buttonLocationVector.push_back(G4ThreeVector(10*cm,10*cm,0.));
+			  			 buttonLocationVector.push_back(G4ThreeVector(10*cm,20*cm,0.));
+			  			 buttonLocationVector.push_back(G4ThreeVector(10*cm,30*cm,0.));
+			  			 buttonLocationVector.push_back(G4ThreeVector(10*cm,40*cm,0.));
+
+
+			  			 buttonLocationVector.push_back(G4ThreeVector(30*cm,-40*cm,0.));
+			  			 buttonLocationVector.push_back(G4ThreeVector(30*cm,-30*cm,0.));
+			  			 buttonLocationVector.push_back(G4ThreeVector(30*cm,-20*cm,0.));
+			  			 buttonLocationVector.push_back(G4ThreeVector(30*cm,-10*cm,0.));
+			  			 buttonLocationVector.push_back(G4ThreeVector(30*cm,0*cm,0.));
+			  			 buttonLocationVector.push_back(G4ThreeVector(30*cm,10*cm,0.));
+			  			 buttonLocationVector.push_back(G4ThreeVector(30*cm,20*cm,0.));
+			  			 buttonLocationVector.push_back(G4ThreeVector(30*cm,30*cm,0.));
+			  			 buttonLocationVector.push_back(G4ThreeVector(30*cm,40*cm,0.));
+
+			  			 buttonLocationVector.push_back(G4ThreeVector(-30*cm,-40*cm,0.));
+			  			 buttonLocationVector.push_back(G4ThreeVector(-30*cm,-30*cm,0.));
+			  			 buttonLocationVector.push_back(G4ThreeVector(-30*cm,-20*cm,0.));
+			  			 buttonLocationVector.push_back(G4ThreeVector(-30*cm,-10*cm,0.));
+			  			 buttonLocationVector.push_back(G4ThreeVector(-30*cm,0*cm,0.));
+			  			 buttonLocationVector.push_back(G4ThreeVector(-30*cm,10*cm,0.));
+			  			 buttonLocationVector.push_back(G4ThreeVector(-30*cm,20*cm,0.));
+			  			 buttonLocationVector.push_back(G4ThreeVector(-30*cm,30*cm,0.));
+			  			 buttonLocationVector.push_back(G4ThreeVector(-30*cm,40*cm,0.));
+
+
+			  			 buttonLocationVector.push_back(G4ThreeVector(0*cm,-40*cm,0.));
+			  			 buttonLocationVector.push_back(G4ThreeVector(0*cm,-30*cm,0.));
+			  			 buttonLocationVector.push_back(G4ThreeVector(0*cm,-20*cm,0.));
+			  			 buttonLocationVector.push_back(G4ThreeVector(0*cm,-10*cm,0.));
+			  			 buttonLocationVector.push_back(G4ThreeVector(0*cm,0*cm,0.));
+			  			 buttonLocationVector.push_back(G4ThreeVector(0*cm,10*cm,0.));
+			  			 buttonLocationVector.push_back(G4ThreeVector(0*cm,20*cm,0.));
+			  			 buttonLocationVector.push_back(G4ThreeVector(0*cm,30*cm,0.));
+			  			 buttonLocationVector.push_back(G4ThreeVector(0*cm,40*cm,0.));
+
+
+/*
+			 for(int i = 4 ; i < 5 ; i++){
+				 for(int j = 0 ; j; i++){
+			 			 buttonLocationVector.push_back(G4ThreeVector((-40+i*10)*cm,(-40+j*10)*cm,0.));
+				 }
+			 }
+*/
+
+
+			 //G4ThreeVector buttonLocation(20*cm,20*cm,0.);
+
+
+			 for(int i = 0 ; i < buttonLocationVector.size() ; i++){
+				 button |= (buttonLocationVector[i] - hitLocation).mag() < 5*mm;
+				 if(button)
+					 break;
+			 }
+#endif
+
+			 //bool button = (buttonLocation - hitLocation).mag() < 5*mm;
+			 //button = false;
+			 if(button){
+				//(B1RunAction::brMap[hittedStripName]).push_back((int)Tracking::Global::GenRandomDet(19450, 21000));
+				 std::cout << "Going through the spacer............. Should not get recored !!!! : Branch Name : " << hittedStripName << std::endl;
+			 }else {
 			 (B1RunAction::brMap[hittedStripName]).push_back((int)Tracking::Global::GenRandomDet(19450, 21000));
+			 }
 			 B1EventAction::position.push_back(point1->GetPosition());
 			  //std::cout<<"Type : " << Tracking::Tree::instance()->GetTTree()->GetBranch(hittedStripName.c_str())->GetClassName() << std::endl;
 			// std::cout<<"Entering .... " << touch1->GetVolume(1)->GetName() << std::endl;
