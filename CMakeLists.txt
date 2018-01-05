@@ -211,6 +211,7 @@ ${CMAKE_SOURCE_DIR}/Helpers/inc
 #${PROJECT_SOURCE_DIR}/visualizer
 ${CMAKE_SOURCE_DIR}/inc
 ${CMAKE_SOURCE_DIR}
+${CMAKE_SOURCE_DIR}/CryGeantInterface
 )
 
 if(EVE)
@@ -225,6 +226,7 @@ endif(VISUALIZATION)
 
 macro(include_dirs INCLUDES)
   foreach(INCLUDE ${INCLUDES})
+    message(STATUS "Following : "${INCLUDE})
     include_directories(${INCLUDE})
   endforeach()
 endmacro()
@@ -367,11 +369,21 @@ Tomo
 find_package(Geant4 REQUIRED)
 include(${Geant4_USE_FILE})
 
+
+#Find_package(CRY REQUIRED)
+#include_directories(${CRY_INCLUDE_DIR})
+#file(GLOB cryg4interfaceheaders ${cryg4interfaceheaders} CryGeantInterface/*.h CryGeantInterface/*.hh)
+#file(GLOB cryg4interfacesources ${cryg4interfacesources} CryGeantInterface/*.cpp CryGeantInterface/*.cc)
+#add_library(cryg4interface SHARED ${cryg4interfaceheaders} ${cryg4interfacesources})
+#target_link_libraries(cryg4interface ${Geant4_LIBRARIES} ${CRY_LIBRARIES})
+
+
+
 message(STATUS "--------- Following source files will be use for the creation of HELPERS Shared library -----------")
 message(STATUS ${helpers})
 message(STATUS "------------------------------------------------------------------------------------------")
 add_library(Helpers SHARED ${helpers} ) #G__Tree.cxx)
-target_link_libraries(Helpers  ${XERCES_LIBRARIES} ${MYSQL_LIBRARIES} ${ROOT_LIBRARIES} ${Geant4_LIBRARIES} -lTreePlayer)
+target_link_libraries(Helpers  ${XERCES_LIBRARIES} ${MYSQL_LIBRARIES} ${ROOT_LIBRARIES} ${Geant4_LIBRARIES} -lTreePlayer ) # cryg4interface)
 #target_link_libraries(Tomo ${EXTERNAL_LIBS})
 set(HELPERSLIB ${HELPERSLIB}
 Helpers

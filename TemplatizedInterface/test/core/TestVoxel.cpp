@@ -15,13 +15,14 @@
 #include "EventHelper.h"
 
 using Tracking::Vector3D;
-using Tomography::Voxelator;
+using Tomography::evolution::Voxelator;
 using Tomography::Track;
 using Tomography::Voxel;
 
 int main(){
 
-	Tomography::Voxelator::Create(50,50,50,20,20,20);
+	//Tomography::
+	Voxelator::Create(50,50,50,20,20,20);
 	Voxelator *voxelator = Voxelator::instance();
     assert(voxelator->GetTotalNumberOfVoxels() == 125);
     Vector3D<double> pt(0.,0.,0.);

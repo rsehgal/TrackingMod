@@ -42,13 +42,17 @@ private:
 
 
 #ifdef USE_CRY
+/*
 #include "CRYSetup.h"
 #include "CRYGenerator.h"
 #include "CRYParticle.h"
 #include "CRYUtils.h"
 #include "RNGWrapper.hh"
 #include "PrimaryGeneratorMessenger.hh"
+*/
+#include "CryGeantInterface.h"
 #endif
+
 
 
 class G4ParticleGun;
@@ -76,11 +80,13 @@ class MyPrimaryGeneratorAction : public G4VUserPrimaryGeneratorAction
     const G4ParticleGun* GetParticleGun() const { return fParticleGun; }
 
 #ifdef USE_CRY
+/*
     void ForCry(const char *inputfile);
     void GeneratePrimariesForCry(G4Event *anEvent);
     void InputCRY();
     void UpdateCRY(std::string* MessInput);
     void CRYFromFile(G4String newValue);
+*/
 
 #endif
   
@@ -88,12 +94,15 @@ class MyPrimaryGeneratorAction : public G4VUserPrimaryGeneratorAction
     G4ParticleGun*  fParticleGun; // pointer a to G4 gun class
     //G4Box* fEnvelopeBox;
 #ifdef USE_CRY
+/*
     std::vector<CRYParticle*> *vect; // vector of generated particles
     G4ParticleTable* particleTable;
     G4ParticleGun* particleGun;
     CRYGenerator* gen;
     G4int InputState;
     PrimaryGeneratorMessenger* gunMessenger;
+*/
+    CryGeantInterface *cryG4Interface;
 #endif
 };
 

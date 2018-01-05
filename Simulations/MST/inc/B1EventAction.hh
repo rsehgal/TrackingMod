@@ -79,6 +79,8 @@ class B1EventAction : public G4UserEventAction
     Vector3D<double> fPocaPt;
     ImageReconstruction fIm;
 
+    static int eventNo;
+
 };
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

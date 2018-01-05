@@ -36,7 +36,8 @@ void Print(Detector *rpc1) {
 
 int main() {
   TApplication *fApp = new TApplication("Test", NULL, NULL);
-  Tomography::VisualizationHelper v;
+  //Tomography::VisualizationHelper v;
+  Tomography::VisualizationHelper *v = Tomography::VisualizationHelper::instance();
   std::vector<int> channelVector;
   channelVector.push_back(32);
 
@@ -52,12 +53,12 @@ int main() {
   //Detector *rpc7 = new GlassRpc(4, "SecondGlassRpc", -120, -1);
 
   //  Print(rpc2);
-  v.Register(rpc0);
-  v.Register(rpc1);
-  v.Register(rpc2);
-  v.Register(rpc3);
-  v.Register(rpc4);
-  v.Register(rpc5);
+  v->Register(rpc0);
+  v->Register(rpc1);
+  v->Register(rpc2);
+  v->Register(rpc3);
+  v->Register(rpc4);
+  v->Register(rpc5);
   //v.Register(rpc6);
   //v.Register(rpc7);
 
@@ -85,7 +86,7 @@ int main() {
   Update u;
   u.RunThread();
 
-  v.Show();
+  v->Show();
 
   TTimer timer(20); // every 20 millisecond
   //// timer.SetCommand("gEve->Redraw3D(kTRUE);");
