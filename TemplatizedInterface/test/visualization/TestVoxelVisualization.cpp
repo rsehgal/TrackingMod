@@ -15,9 +15,10 @@ using Tomography::VisualizationHelper;
 using Vec_t = Tracking::Vector3D<double>;
 int main(int argc, char *argv[]){
     TApplication *fApp = new TApplication("Test", NULL, NULL);
-    VisualizationHelper v;
+    //VisualizationHelper v;
+    Tomography::VisualizationHelper *v = Tomography::VisualizationHelper::instance();
     //Vec_t pt(3.,4.,5.,10.);
-    v.InitializeVisualizer();
+    v->InitializeVisualizer();
     //v.Register(pt);
 
 //Reading Voxels.txt
@@ -42,10 +43,10 @@ pocaPt.SetColor(6.);
 
 
 Tomography::Track tr(incomingHitPoint,outgoingHitPoint);
-v.Register(incomingHitPoint);
-v.Register(outgoingHitPoint);
-v.Register(&tr,3);
-v.Register(pocaPt);
+v->Register(incomingHitPoint);
+v->Register(outgoingHitPoint);
+v->Register(&tr,3);
+v->Register(pocaPt);
 
 
 int i = 0 ;
@@ -56,7 +57,7 @@ while(numOfEvents){
     std::cout << x << " , " << y << " , " << z << " , " << color << std::endl;
     //voxCenter.Set(x*1.,y*1.,z*1.);
     Vec_t voxCenter(x,y,z);
-    v.Register(voxDim,voxCenter,color);
+    v->Register(voxDim,voxCenter,color);
     numOfEvents--;
 }
 
@@ -71,7 +72,7 @@ while(numOfEvents){
 
     for(int i = 0 ;  i < 4 ; i++){
     Vec_t voxCenter(100.*i,0.,0.);
-    v.Register(voxDim,voxCenter,i+1);
+    v->Register(voxDim,voxCenter,i+1);
     }
 
 /*
@@ -88,8 +89,8 @@ while(numOfEvents){
     
     //rev.CloseBins();
 #endif
-    v.Lock();
-    v.Show();
+    v->Lock();
+    v->Show();
     fApp->Run();
 
     return 0;

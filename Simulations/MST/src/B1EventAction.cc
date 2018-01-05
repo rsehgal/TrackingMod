@@ -30,6 +30,7 @@
 
 #include "B1EventAction.hh"
 #include "B1Run.hh"
+#include "B1RunAction.hh"
 
 #include "G4Event.hh"
 #include "G4RunManager.hh"
@@ -42,6 +43,8 @@
 //#include "Voxel.h"
 
 #include "Imaging.h"
+
+int B1EventAction::eventNo = 0 ;
 using Tracking::ImageReconstruction;
 using VectorOfVoxelsForAnEvent = std::vector<int>; // This represent std::vector of candidate voxel num which can influenced the muon track.
 
@@ -61,6 +64,7 @@ B1EventAction::~B1EventAction()
 
 void B1EventAction::BeginOfEventAction(const G4Event*)
 {    
+  eventNo++;
   fEdep = 0.;
   fScatteringAngle = 0.;
   hitVect.clear();
@@ -127,7 +131,7 @@ void B1EventAction::EndOfEventAction(const G4Event*)
 	  std::cout<<"Voxel Exist.......... : VoxelNum : " << val <<  std::endl;
 
 
-
+#undef FIND_CANDIDATE_VOXEL
 #ifdef FIND_CANDIDATE_VOXEL
 	VectorOfVoxelsForAnEvent vectOfVoxels;
   //Detecting HitPoints in Voxelized Volume
@@ -174,6 +178,22 @@ void B1EventAction::EndOfEventAction(const G4Event*)
   }
 
   // 
+
+  std::cout<<"Ending Event no : " << eventNo << std::endl;
+/*  if(eventNo == 50){
+  const B1RunAction* runAction
+      = static_cast<const B1RunAction*>(
+          G4RunManager::GetRunManager()->GetUserRunAction());
+
+  G4Run* g4run
+      =  G4RunManager::GetRunManager()->GetNonConstCurrentRun();
+
+  std::cout<<"@@@@@@@@@@ Going to call end of Run Action @@@@@@@@@@@ " << std::endl;
+  //runAction
+  G4RunManager::GetRunManager()->GetUserRunAction()->EndOfRunAction(g4run);
+  }*/
+
+
 }
 
 void B1EventAction::CalcScatteringAngle(){

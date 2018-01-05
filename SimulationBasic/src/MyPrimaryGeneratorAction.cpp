@@ -39,7 +39,10 @@ MyPrimaryGeneratorAction::MyPrimaryGeneratorAction() {
 MyPrimaryGeneratorAction::MyPrimaryGeneratorAction(const char *inputfile) {
 
 #ifdef USE_CRY
-  ForCry(inputfile);
+	cryG4Interface = new CryGeantInterface();
+	cryG4Interface->ForCry(inputfile);
+//  ForCry(inputfile);
+
 #endif
 }
 
@@ -54,7 +57,8 @@ void MyPrimaryGeneratorAction::GeneratePrimaries(G4Event *event) {
 	//  fParticleGun->GeneratePrimaryVertex(event);
 
 #ifdef USE_CRY
-  GeneratePrimariesForCry(event);
+//  GeneratePrimariesForCry(event);
+	cryG4Interface->GeneratePrimariesForCry(event);
 #else
 
 
@@ -105,6 +109,7 @@ void MyPrimaryGeneratorAction::GeneratePrimaries(G4Event *event) {
 }
 
 #ifdef USE_CRY
+/*
 void MyPrimaryGeneratorAction::GeneratePrimariesForCry(G4Event *anEvent){
 
 	  if (InputState != 0) {
@@ -254,6 +259,7 @@ void MyPrimaryGeneratorAction::CRYFromFile(G4String newValue)
     InputState=0;
   }
 }
+*/
 
 
 #endif

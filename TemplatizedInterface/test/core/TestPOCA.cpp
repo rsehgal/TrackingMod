@@ -28,7 +28,8 @@ int main(int argc, char *argv[]){
 	//std::cout<<"Penetration Level is set to : " << penetration << std::endl;
 	TApplication *fApp = new TApplication("Test", NULL, NULL);
 #ifdef USE_EVE
-	Tomography::VisualizationHelper v;
+	//Tomography::VisualizationHelper v;
+	Tomography::VisualizationHelper *v = Tomography::VisualizationHelper::instance();
 #endif
 	Detector *rpc0 = new GlassRpc(4, "FirstGlassRpc", 60, 31);
 	Detector *rpc1 = new GlassRpc(2, "SecondGlassRpc", 30, 31);
@@ -61,11 +62,11 @@ int main(int argc, char *argv[]){
     outgoingTracksVector.reserve(numOfTracks);
 
 #ifdef USE_EVE
-	v.Register(rpc0);
-	v.Register(rpc1);
-	v.Register(rpc2);
-	v.Register(rpc3);
-	v.Register(paddle);
+	v->Register(rpc0);
+	v->Register(rpc1);
+	v->Register(rpc2);
+	v->Register(rpc3);
+	v->Register(paddle);
 
 #endif
 
@@ -123,8 +124,8 @@ int main(int argc, char *argv[]){
 
         std::cout<< "POCA point : "; pocaPt.Print();
 #ifdef USE_EVE
-        v.RegisterLine(pocaPt,pocaPt);
-        v.Register(pocaPt);
+        v->RegisterLine(pocaPt,pocaPt);
+        v->Register(pocaPt);
 #endif
 
         Tracking::Vector3D<double> diff = pocaPt - poiVect[i];
@@ -145,7 +146,7 @@ int main(int argc, char *argv[]){
     std::cout<<"Estimated Target Thickness : " << (maxz - minz) << std::endl;
 
 #ifdef USE_EVE
-	v.Show();
+	v->Show();
 	gEve->DoRedraw3D();
 #endif
 
