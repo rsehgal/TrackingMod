@@ -9,6 +9,7 @@
 #define HELPERS_INC_HIST2D_H_
 
 #include <string>
+#include "Histogram.h"
 
 namespace Tomography {
 

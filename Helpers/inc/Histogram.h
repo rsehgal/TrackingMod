@@ -19,7 +19,7 @@ public:
 	int GetNumberOfBins()const { return fTotalNumOfBins; }
 	void SetNumOfBins(int nbins);
 	int GetBinCount(int binNum){ return fBins[binNum]; }
-	void Fill(int binNum){ fBins[binNum]++; }
+	void Fill2(int binNum){ fBins[binNum]++; }
 
 	//virtual void CalculateBinNum() = 0;
 
