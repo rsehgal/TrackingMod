@@ -26,7 +26,7 @@ Hist2D::Hist2D(std::string histname, int binsx, double startx, double endx,int b
 	fStartY = starty;
 	fEndY = endy;
 	binsizeX = (fEndX-fStartX)/fBinsX;
-	finsizeY = (fEndY-fStartY)/fBinsY;
+	binsizeY = (fEndY-fStartY)/fBinsY;
 	SetNumOfBins(fBinsX*fBinsY);
 
 }
@@ -41,7 +41,7 @@ int Hist2D::GetBinNum(double x, double  y){
 }
 
 void Hist2D::Fill(double x, double y){
-	Fill(GetBinNum(x,y));
+	Fill2(GetBinNum(x,y));
 }
 
 } /* namespace Tomography */
