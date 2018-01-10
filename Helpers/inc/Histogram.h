@@ -20,6 +20,8 @@ public:
 	void SetNumOfBins(int nbins);
 	int GetBinCount(int binNum){ return fBins[binNum]; }
 	void Fill2(int binNum){ fBins[binNum]++; }
+	void SetCutOnNumOfEntriesInABin(int cutVal){ fCutVal = cutVal; }
+	int GetCutOnNumOfEntriesInABin()const { return fCutVal; }
 
 	//virtual void CalculateBinNum() = 0;
 
@@ -29,6 +31,7 @@ protected:
 
 private:
 	int fTotalNumOfBins;
+	int fCutVal;
 };
 
 } /* namespace Tomography */
