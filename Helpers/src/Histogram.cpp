@@ -21,7 +21,8 @@ Histogram::~Histogram() {
 void Histogram::SetNumOfBins(int nbins){
 	fBins.clear();
 	fTotalNumOfBins = nbins;
-	fBins.reserve(fTotalNumOfBins);
+	fBins.resize(fTotalNumOfBins,0);
+
 }
 
 } /* namespace Tomography */
