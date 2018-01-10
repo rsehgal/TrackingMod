@@ -11,6 +11,7 @@ namespace Tomography {
 
 Histogram::Histogram() {
 	// TODO Auto-generated constructor stub
+	fCutVal = 1e+10;
 
 }
 

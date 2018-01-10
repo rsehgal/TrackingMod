@@ -36,7 +36,10 @@ int Hist2D::GetBinNum(double x, double  y){
 	//Logic to calculate bin num
 	int xbinNum = (x - fStartX) / binsizeX;
 	int ybinNum = (y - fStartY) / binsizeY;
-	binNum = (ybinNum-1)*fBinsX + xbinNum;
+	if(ybinNum)
+		binNum = (ybinNum)*fBinsX + xbinNum;
+	else
+		binNum = xbinNum;
 	return binNum;
 }
 
