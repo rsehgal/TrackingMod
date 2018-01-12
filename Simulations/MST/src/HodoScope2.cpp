@@ -19,8 +19,13 @@
 #include "G4GDMLParser.hh"
 
 #include "Scatterers.h"
-//#include "Voxelator_Evolution.h"
-//#include "base/Global.h"
+#include "Voxelator_Evolution.h"
+#include "base/Global.h"
+
+#include <cassert>
+
+#undef NDEBUG
+
 #define PI 3.14159265359
 
 HodoScope2::HodoScope2(){
@@ -246,16 +251,25 @@ G4VPhysicalVolume *phyTargetPbBlock = new G4PVPlacement(0,
 
 
 #ifdef VOXELIZE
-   //Trying to use Voxelator to visualize the VoxelizedVolume
-   Tomography::Voxelator v;
-   v.SetVoxelator(50*cm,50*cm,40*cm,20*cm,20*cm,16*cm);
-   v.CalculateVoxelCenters();
-   std::vector<Tracking::Vector3D<double>> voxelCenters = v.GetVoxelCenters();
-   Tracking::Vector3D<int> voxDim = v.GetEachVoxelDim();
+   /* Trying to use Voxelator to visualize the VoxelizedVolume
+   ** This is nothing to do with the simulation. Used just to
+   ** voxelize the volume fro visualization
+   **
+   ** Advice : While doing simulation comment it out, to
+   ** 		   get proper simulation results. other one may
+   ** 		   get various overlap warning, because the object
+   ** 		   under test may overlaps with Voxels.
+   */
+   Tomography::evolution::Voxelator *v = Tomography::evolution::Voxelator::instance(50*cm,50*cm,40*cm,10*cm,10*cm,8*cm);;
+   //Below line is not required, because Voxel Center calculation is done automatically upon getting Voxelator instance
+   //v->CalculateVoxelCenters();
+   std::vector<Tracking::Vector3D<double>> voxelCenters = v->GetVoxelCenters();
+   Tracking::Vector3D<int> voxDim = v->GetEachVoxelDim();
    Block *voxel = new Block("Voxel",voxDim.x()/2.,voxDim.y()/2.,voxDim.z()/2.,"G4_Galactic");
-   //int i = 5;
+   //std::cout<<"VoxelCenterVector Size : " << voxelCenters.size() << " : Total Num Of Voxels : " << v->GetTotalNumberOfVoxels() << std::endl;
+   assert(voxelCenters.size()==v->GetTotalNumberOfVoxels());
    for(int i = 0 ; i< voxelCenters.size() ; i++){
-	//  voxelCenters[i].Print();
+   voxelCenters[i].Print();
    G4VPhysicalVolume *voxPhy = new G4PVPlacement(0,
    	                               //G4ThreeVector(),
    	                               G4ThreeVector(voxelCenters[i].x(),voxelCenters[i].y(),voxelCenters[i].z()),
@@ -266,6 +280,7 @@ G4VPhysicalVolume *phyTargetPbBlock = new G4PVPlacement(0,
    	                               0,
    	                               checkOverlaps);
    }
+
 #endif
 
    /*for(int i = 0 ; i < voxelCenters.size() ; i++){
