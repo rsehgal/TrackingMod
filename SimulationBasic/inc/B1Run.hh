@@ -43,6 +43,7 @@ class B1Run : public G4Run
 {
 	std::vector<double> fScatteringAngleVect;
 	std::vector<double> fMuonInitialAngles;
+	std::vector<double> fRealIncomingMuonAngles;
 
   public:
     B1Run();
@@ -61,6 +62,18 @@ class B1Run : public G4Run
     	return fScatteringAngleVect;
 
     }
+
+    /* This function is introduced to record the angle of incoming muon before it reaches the detector.
+    ** ideally this should be same as angle calculated using first two detector that muon encounters.
+    ** This will be a good validation step, and will be very much useful to validate the angular
+    ** histogram of cosmic muons
+    **
+    ** NOTE : But this information is available only at PrimaryGenerator level, so this vector needs
+    ** to be filled in PrimaryGenerator
+    */
+    void FillRealIncomingAngleVector(double incomingAngle){fRealIncomingMuonAngles.push_back(incomingAngle);}
+    std::vector<double> GetRealIncomingAngleVector() const {return fRealIncomingMuonAngles;}
+
     void FillScatteringAngleVector(double scatteringAngle){fScatteringAngleVect.push_back(scatteringAngle);}
     void FillInComingAngleVector(double incomingAngle){fMuonInitialAngles.push_back(incomingAngle);}
     std::vector<double> GetIncomingAngleVector() const {return fMuonInitialAngles;}

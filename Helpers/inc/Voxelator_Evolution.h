@@ -122,10 +122,11 @@ public:
 
    //Vector3D<double> GetInsersection(Track t, double zVal, int select);
 
-
+#ifdef FIND_CANDIDATE_VOXEL
   std::vector<int> FindCandidateVoxels(Track incoming, Track outgoing,
 			Tracking::Vector3D<double> &inComingHitPt,
 			Tracking::Vector3D<double> &outGoingHitPt);
+#endif
 /*
 	VectorOfVoxelsForAnEvent vectOfVoxels;
   //Detecting HitPoints in Voxelized Volume

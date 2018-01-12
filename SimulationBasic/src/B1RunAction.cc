@@ -85,7 +85,7 @@ void B1RunAction::BeginOfRunAction(const G4Run*)
 {
   //inform the runManager to save random number seed
   G4RunManager::GetRunManager()->SetRandomNumberStore(false);
-  Tomography::evolution::Voxelator::Create(50*cm,50*cm,45*cm,5*cm,5*cm,5*cm);
+  Tomography::evolution::Voxelator::Create(50*cm,50*cm,45*cm,10*cm,10*cm,9.0*cm);
 
 
 }
@@ -144,6 +144,13 @@ void B1RunAction::EndOfRunAction(const G4Run* run)
 	  fIncoming << b1Run->GetIncomingAngleVector()[i] << " " ;
   }
   fIncoming.close();
+
+  ofstream fRealIncoming("realIncoming.txt");
+    fRealIncoming << 3000 << " " << "G4_Fe" << " " << 100 << " ";
+    for(int i = 0 ; i < b1Run->GetRealIncomingAngleVector().size() ; i++){
+  	  fRealIncoming << b1Run->GetRealIncomingAngleVector()[i] << " " ;
+    }
+    fRealIncoming.close();
 
 
 

@@ -1,6 +1,7 @@
 #include "Voxelator_Evolution.h"
 #include <cmath>
 #include "Delta.h"
+#include "CommonFunc.h"
 
 namespace Tomography {
 namespace evolution{
@@ -86,7 +87,7 @@ void Voxelator::SetVoxelator(double voxelizedVolHalfX,double voxelizedVolHalfY, 
 	CreateHistogram();
 }
 
-
+#ifdef FIND_CANDIDATE_VOXEL
 std::vector<int> Voxelator::FindCandidateVoxels(Track incoming, Track outgoing,
 												Tracking::Vector3D<double> &inComingHitPt,
 												Tracking::Vector3D<double> &outGoingHitPt){
@@ -98,20 +99,31 @@ std::vector<int> Voxelator::FindCandidateVoxels(Track incoming, Track outgoing,
 	  std::cout << "OutgoingHitPoint : " ;
 	  outGoingHitPt.Print();
 
+	  double epsilon = 0.001;
 	  Tomography::Track tr(inComingHitPt,outGoingHitPt);
+	  Tracking::Vector3D<double> prevPoint(0.,0.,0.);
 	  for(int i = 0 ; i < GetVoxelatorDim().z() ; i++){
+
 		  Tracking::Vector3D<double> voxelHitPt = Delta::GetIntersection(tr,
 				  	  	  	  -1.*(GetVoxelizedVolumeDim().z()/2.)+(i*GetEachVoxelDim().z()),
 							  3);
-		  voxelHitPt.SetZ(voxelHitPt.z()+1);
+		  voxelHitPt.SetZ(voxelHitPt.z()+epsilon);
 
 		  std::cout<<"Voxel Hit Point for Slice : " << i << " : VoxelNumber : " << GetVoxelNumber(voxelHitPt) << std::endl;
 					//<< " : PocaPt_VoxelNumber : " << GetVoxelNumber(fPocaPt) << " : Voxel Point ";
 		  voxelHitPt.Print();
 		  vectOfVoxels.push_back(GetVoxelNumber(voxelHitPt));
+
+		  if(i!=0){
+			  double voxelDist = CommonFunc::Distance(voxelHitPt,prevPoint);
+			  std::cout<< " VoxelDist : " << voxelDist << std::endl;
+		  }
+
+		  prevPoint = voxelHitPt;
 	  }
-	  return vectOfVoxels;
+	  return vectOfVoxels; // This is basically a vector of index of Hitted Voxel that influenced the muon track.
 }
+#endif
 
 /*
 Vector3D<double> Voxelator::GetInsersection(Track t, double zVal, int select){
