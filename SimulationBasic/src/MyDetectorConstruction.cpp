@@ -243,18 +243,21 @@ G4VPhysicalVolume* MyDetectorConstruction::Construct(){
    v->CalculateVoxelCenters();
    std::vector<Tracking::Vector3D<double>> voxelCenters = v->GetVoxelCenters();
    Tracking::Vector3D<int> voxDim = v->GetEachVoxelDim();
-   Block *voxel = new Block("Voxel",voxDim.x()/2.,voxDim.y()/2.,voxDim.z()/2.,"G4_Galactic");
+   //Block *voxel = new Block("Voxel",voxDim.x()/2.,voxDim.y()/2.,voxDim.z()/2.,"G4_Galactic");
+   G4Box *voxel = new G4Box("Voxel",voxDim.x()/2.,voxDim.y()/2.,voxDim.z()/2.);
+   G4LogicalVolume *logicalVoxel = new G4LogicalVolume(rpc,galactic,"LogicalVoxel");
    //int i = 5;
    for(int i = 0 ; i< voxelCenters.size() ; i++){
 	//  voxelCenters[i].Print();
    G4VPhysicalVolume *voxPhy = new G4PVPlacement(0,
    	                               //G4ThreeVector(),
    	                               G4ThreeVector(voxelCenters[i].x(),voxelCenters[i].y(),voxelCenters[i].z()),
-   	                               voxel->GetLogicalVolume(),
-   	                               "VoxelPhysical",
+   	                               //voxel->GetLogicalVolume(),
+   	                               logicalVoxel,
+   	                               "VoxelPhysical"+std::to_string(i),
    	                               logicWorld,//world->GetLogicalVolume(),//logicWorld,
    	                               false,
-   	                               0,
+   	                               i,
    	                               checkOverlaps);
    }
 #endif
