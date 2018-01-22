@@ -54,8 +54,14 @@ for (std::set<ObjectChecker>::iterator it=ObjectCheckersSet.begin(); it!=ObjectC
 if((*it).get_name() == objName)
 {
     //std::cout <<"Attempt to DUPLICATE ... the histogram with name : "<< (*it).GetHist()->GetName() << "  !!! .. Reusing Previously declared one.." << std::endl;
-//    cout << "HistObjectChecker : "<< (*it).GetHist()->GetObjectChecker() << endl;
-	(*it).GetHist()->Fill(x,y,w);
+	// cout << "HistObjectChecker : "<< (*it).GetHist()->GetObjectChecker() << endl;
+
+	/* Removed the weightage parameter(which corresponds to scattering or color),
+	 * removed because this was not appropriate here, since we just wanted to know
+	 * the count of POCA points in a slice of voxelized volume.
+	 */
+	//(*it).GetHist()->Fill(x,y,w);
+	(*it).GetHist()->Fill(x,y);
     return ;
 }
 }

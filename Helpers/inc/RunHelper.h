@@ -11,6 +11,7 @@
 #include <vector>
 #include "base/Vector3D.h"
 #include "Voxel.h"
+#include "Voxelator_Evolution.h"
 //#include "Voxel.h"
 
 using Tracking::Vector3D;
@@ -49,6 +50,9 @@ public:
 	void CalcRLOfEachVoxel();
 	void FillRLVector();
 	void WriteToFile();
+#ifdef STORE
+	void Store();
+#endif
 
 #ifdef VOXELIZE
 	//void Insert(Voxel *obj){ fVoxelVector.push_back(obj); }

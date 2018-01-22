@@ -71,6 +71,17 @@ double GetAngleInRadian(Tomography::Track InComing, Tomography::Track Outgoing){
 	return GetAngleInRadian(InComing.GetDirection(),Outgoing.GetDirection());
 }
 
+template<bool TopToDown=true>
+double GetAngleWithVertical(Vector3D<double>direction){
+	TVector3  dir(direction.x(),direction.y(),direction.z());
+	TVector3  vertical(0.,0.,0.);
+	if(TopToDown)
+		vertical.SetXYZ(0.,0.,-1);
+	else
+		vertical.SetXYZ(0.,0.,1);
+
+	return dir.Angle(vertical);
+}
 
 double Mean(std::vector<double> scatteringVect){
    double sum = 0.;
@@ -104,7 +115,7 @@ double StandardDeviation(std::vector<double> scatteringVect,bool forVoxel = fals
 		return 0;
 	double max = *std::max_element(scatteringVect.begin(),scatteringVect.end());
 	double min = *std::min_element(scatteringVect.begin(),scatteringVect.end());
-	std::cout<<"Min : " << min <<" : Max : "<< max << std::endl;
+	//std::cout<<"Min : " << min <<" : Max : "<< max << std::endl;
 	TH1F *histogram = new TH1F("Hist","Hist",numOfBins,min,max);
 	for(int i = 0 ; i < scatteringVect.size() ; i++)
 		histogram->Fill(scatteringVect[i]);

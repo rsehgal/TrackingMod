@@ -27,6 +27,14 @@ endif()
 
 #----------------------------------------------------------------------------
 
+if(STORE_SLICE)
+add_definitions(-DSTORE_SLICE)
+endif(STORE_SLICE)
+
+if(STORE)
+add_definitions(-DSTORE)
+endif(STORE)
+
 if(USE_RND)
 add_definitions(-DRANDOM_GUN)
 endif(USE_RND)
