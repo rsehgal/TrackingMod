@@ -48,7 +48,7 @@ void EventHelper::CalculatePOCA(){
 
 void EventHelper::CalculateScatterAngle(){
 	//fScatteringAngle = CommonFunc::Functions::instance()->GetAngleInRadian(fIncoming,fOutgoing);
-	Tomography::Track ref(Vector3D<double>(0.,0.,0.),Vector3D<double>(0.,0.,1.));
+	Tomography::Track ref(Vector3D<double>(0.,0.,0.),Vector3D<double>(0.,0.,-1.));
 	double angleIncoming = CommonFunc::Functions::instance()->GetAngleInRadian(fIncoming,ref);
 	double angleOutgoing = CommonFunc::Functions::instance()->GetAngleInRadian(fOutgoing,ref);
 	fScatteringAngle = angleOutgoing-angleIncoming;

@@ -84,7 +84,7 @@ void B1EventAction::EndOfEventAction(const G4Event*)
   run->AddEdep(fEdep);
  // Tracking::Tree::instance()->Fill();
 
- Tomography::Track ref(G4ThreeVector(0.,0.,0.),G4ThreeVector(0.,0.,1.));
+ Tomography::Track ref(G4ThreeVector(0.,0.,0.),G4ThreeVector(0.,0.,-1.));
  Tomography::Track incoming(position[0],position[1]);
  Tomography::Track outgoing(position[2],position[3]);
  double angleIncoming = CommonFunc::Functions::instance()->GetAngleInRadian(incoming,ref);

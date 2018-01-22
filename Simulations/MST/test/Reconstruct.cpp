@@ -43,7 +43,7 @@ const char* input_filename = (argc>1)?argv[1]:"tracks.txt";
 
     //TH1F *hist = new TH1F("test","Scattering",100,0.,100.);
 
-    Tomography::Slicer slicer(-500,500.,0.,160.,-150.,150.);
+    Tomography::Slicer slicer(-500,500.,-500.,500.,-150.,150.);
     double deno=10.;
     int count = atoi(argv[2]);
     //while(!ft.eof()){
@@ -56,7 +56,7 @@ const char* input_filename = (argc>1)?argv[1]:"tracks.txt";
     //	hist->Fill(color);
     	//if((z/deno) > 15. || (z/deno) < 5.) continue;
     	pt.Set(x/deno,y/deno,z/deno);
-	pt.SetColor(color*10000);
+    	pt.SetColor(color*10000);
     	v->Register(slicer,pt);
     //v.Register(pt);
 /*

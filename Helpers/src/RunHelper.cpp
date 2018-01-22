@@ -8,6 +8,7 @@
 #include "RunHelper.h"
 #include "Voxel.h"
 #include "CommonFunc.h"
+#include <TFile.h>
 
 namespace Tomography {
 
@@ -93,7 +94,47 @@ void RunHelper::FillPocaVector(){
 
 }
 
+#ifdef STORE
+void RunHelper::Store(){
+	Tomography::evolution::Voxelator *vox = Tomography::evolution::Voxelator::instance();
+	TFile flVox("voxel.root","recreate");
+	vox->Insert(fPocaPtVector); //Voxelized Poca Ready
+	std::ofstream voxTrack;
+	voxTrack.open("VoxelizedTracks.txt");
+	Vector3D<int> voxelatorDim = vox->GetVoxelatorDim();
+	std::cout<< " -+-+-+-+--+-+-+--+--+-+--+-------+---++- " << std::endl;
+	voxelatorDim.Print();
+	Vector3D<int> voxelizedVolumeDim = vox->GetVoxelizedVolumeDim();
+	Vector3D<int> voxelDim = vox->GetEachVoxelDim();
+	for(int x = 0 ; x < voxelatorDim.x()-1 ; x++){
+	    for(int y = 0 ; y < voxelatorDim.y()-1 ; y++){
+	      for(int z = 0 ; z < voxelatorDim.z()-1 ; z++){
+		if(vox->GetVoxelizedCount()->GetBinContent(x,y,z))
+		//voxTrack << x << " " << y << " " << z << " " <<  vox.GetVoxelizedHist()->GetBinContent(x,y,z) << std::endl;
+		voxTrack << (-voxelizedVolumeDim.x()+x*voxelDim.x()) << " " << (-voxelizedVolumeDim.y()+y*voxelDim.y())
+				 << " " << (-voxelizedVolumeDim.z()+z*voxelDim.z())  << " " <<  vox->GetVoxelizedHist()->GetBinContent(x,y,z) << std::endl;
+	      }
+	    }
+	  }
+
+	vox->GetVoxelIn1D()->Write();
+	vox->GetVoxelIn1DCount()->Write();
+
+	#ifdef STORE_SLICE
+	std::set<Tomography::ObjectChecker> histSet = vox->GetObjectChecker().GetSet();
+	for (std::set<Tomography::ObjectChecker>::iterator it=histSet.begin(); it!=histSet.end(); ++it){
+		(*it).GetHist()->Write();
+	}
+	#endif
+
+}
+
+#endif
+
 void RunHelper::WriteToFile(){
+#ifdef STORE
+	Store();
+#endif
     CommonFunc::Functions::instance()->WriteToFile("scattering.txt",fScatteringAngleVector);
     CommonFunc::Functions::instance()->WriteToFile("PocaPt.txt",fPocaPtVector);
     CommonFunc::Functions::instance()->WriteToFile("Voxels.txt",Tomography::Voxel::GetVoxelVector());

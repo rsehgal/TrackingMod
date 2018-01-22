@@ -32,8 +32,8 @@ MyPrimaryGeneratorAction::MyPrimaryGeneratorAction() {
   // Set the kinetic energy of the protons to 50 keV
   // and tell the gun to emit them along the x-axis
   fParticleGun->SetParticleEnergy(50. * keV);
-  fParticleGun->SetParticlePosition(G4ThreeVector(0., 0., -120 * cm ));
-  fParticleGun->SetParticleMomentumDirection(G4ThreeVector(0., 0., 1.));
+  fParticleGun->SetParticlePosition(G4ThreeVector(0., 0., 120 * cm ));
+  fParticleGun->SetParticleMomentumDirection(G4ThreeVector(0., 0., -1.));
 }
 
 MyPrimaryGeneratorAction::MyPrimaryGeneratorAction(const char *inputfile) {
@@ -72,14 +72,14 @@ void MyPrimaryGeneratorAction::GeneratePrimaries(G4Event *event) {
 	                      -120*cm);
 	  //std::cout<< pt.Unit().x() << pt.Unit().y() << pt.Unit().z() << std::endl;
 	  //pt1.Set(0.,0.,0.);
-	  double x = (pt1-pt2).Unit().x();
-	  double y = (pt1-pt2).Unit().y();
-	  double z = (pt1-pt2).Unit().z();
+	  double x = (pt2-pt1).Unit().x();
+	  double y = (pt2-pt1).Unit().y();
+	  double z = (pt2-pt1).Unit().z();
 
 
 	  #ifdef RANDOM_GUN
 	  //fParticleGun->SetParticlePosition(G4ThreeVector(Tracking::Global::GenRandomDet(-50.,50.)*cm, Tracking::Global::GenRandomDet(-50.,50.)*cm, -120 * cm));
-	  fParticleGun->SetParticlePosition(G4ThreeVector(pt2.x(),pt2.y(),pt2.z()));
+	  fParticleGun->SetParticlePosition(G4ThreeVector(pt1.x(),pt1.y(),pt1.z()));
 	  fParticleGun->SetParticleMomentumDirection(G4ThreeVector(x,y,z));
 	  //fParticleGun->SetParticleMomentumDirection(G4ThreeVector(0.,0.,1.));
 		#endif
@@ -88,15 +88,10 @@ void MyPrimaryGeneratorAction::GeneratePrimaries(G4Event *event) {
 	  	  B1Run* run
 	  	      = static_cast<B1Run*>(
 	  	          G4RunManager::GetRunManager()->GetNonConstCurrentRun());
-	  	  double angleIncoming = CommonFunc::Functions::instance()->GetAngleInRadian(Tracking::Vector3D<double>(x,y,z),Tracking::Vector3D<double>(0.,0.,1.));
+
+	  	  double angleIncoming = CommonFunc::Functions::instance()->GetAngleWithVertical<true>(Tracking::Vector3D<double>(x,y,z));
 	  	  run->FillRealIncomingAngleVector(angleIncoming);
 	 //_____________________________________________________________________________________
-
-
-
-
-
-
 
 
 	  //This line should be the LAST line of this Function
