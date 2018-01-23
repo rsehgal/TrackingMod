@@ -12,13 +12,17 @@
 #include "base/Vector3D.h"
 #include "LinesAngle.h"
 #include <iostream>
+#include "CommonFunc.h"
 
 using Tomography::Track;
 //using Vector3D<double> = Tracking::Vector3D<double>;
 using Tracking::Vector3D;//<double>;
 
-
+#ifdef VERBOSE
 bool verbose = true;
+#else
+bool verbose = false;
+#endif
 
 /* if xdir set to true then this will return the
  * displacement in X direction, otherwise in
@@ -100,13 +104,25 @@ static double DeltaAngular(Track incoming, Track outgoing){
 	refOutgoing.SetP1(newOutgoing.GetP1());
 	refOutgoing.SetP2(Vector3D<double>(newOutgoing.GetP1().x(),newOutgoing.GetP1().y(),newOutgoing.GetP2().z()));
 
+
+/*
+ *  // For the time being, not using LinesAngle class, instead now we use
+ *  // Function from CommonFunc::Functions class, that contains many such
+ *  // function to do similar work using ROOT function.
+ *
 	LinesAngle la;
 	double thetaIncoming = la.CalculateAngle(newIncoming,refIncoming);
 	double thetaOutgoing = la.CalculateAngle(newOutgoing,refOutgoing);
+*/
+
+	double thetaIncoming = CommonFunc::Functions::instance()->GetAngleInRadian(newIncoming,refIncoming);
+	double thetaOutgoing = CommonFunc::Functions::instance()->GetAngleInRadian(newOutgoing,refOutgoing);
+
 	if(verbose)
 		std::cout<<"ThetaIncoming : " <<  thetaIncoming <<" : ThetaOutgoing : " << thetaOutgoing << std::endl;
 	return (thetaOutgoing-thetaIncoming) ;
 }
+
 
 //Functions to detect Candidate Voxels that influenced the Muon direction
   /*
