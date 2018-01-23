@@ -34,8 +34,9 @@ EventHelper::EventHelper(Track incoming, Track outgoing){
 	//Uncomment them if one want Candidate voxel for an event
 #ifdef FIND_CANDIDATE_VOXEL
 	CalculateCandidateVoxels();
+	WriteToFile();
 #endif
-	//WriteToFile();
+
 
 }
 
