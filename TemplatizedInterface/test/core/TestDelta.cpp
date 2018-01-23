@@ -17,16 +17,16 @@ using Vec_t = Tracking::Vector3D<double>;
 int main(){
 
 //Simplest test case, Vertical Track.
-	double FirstBottomDetectorZ = 45.;
-	Track incoming(Vec_t(10.,20.,-45.),Vec_t(10.,20.,-15.));
-	Track outgoing(Vec_t(20.,30.,FirstBottomDetectorZ), Vec_t(30.,40.,75.));
+	double FirstBottomDetectorZ = -15.;
+	Track incoming(Vec_t(10.,20.,45.),Vec_t(10.,20.,15.));
+	Track outgoing(Vec_t(20.,30.,FirstBottomDetectorZ), Vec_t(30.,40.,-45.));
 
 	double deltaX = Delta::DeltaLinear<true>(incoming,outgoing,FirstBottomDetectorZ);
 	double deltaY = Delta::DeltaLinear<false>(incoming,outgoing,FirstBottomDetectorZ);
 	std::cout<<"DeltaX : " << deltaX <<" : DeltaY : " << deltaY << std::endl;
 //	assert(deltaX==10. && deltaY==10.);
 
-	incoming.SetP2(Vec_t(40.,80.,-15.));
+	incoming.SetP2(Vec_t(40.,80.,15.));
 	deltaX = Delta::DeltaLinear<true>(incoming,outgoing,FirstBottomDetectorZ);
     deltaY = Delta::DeltaLinear<false>(incoming,outgoing,FirstBottomDetectorZ);
 	std::cout<<"DeltaX : " << deltaX <<" : DeltaY : " << deltaY << std::endl;
@@ -36,6 +36,15 @@ int main(){
 	double deltaAngX = Delta::DeltaAngular<true>(incoming,outgoing);
 	double deltaAngY = Delta::DeltaAngular<false>(incoming,outgoing);
 	std::cout<< "DeltaAngX : "<< deltaAngX <<" : DeltaAngY : " << deltaAngY << std::endl;
+
+	incoming.SetP1(Vec_t(0.,0.,0.));
+	incoming.SetP2(Vec_t(0.,0.,-1.));
+	outgoing.SetP1(Vec_t(0.,0.,0.));
+	outgoing.SetP2(Vec_t(1.,6.,-5.));
+	deltaAngX = Delta::DeltaAngular<true>(incoming,outgoing);
+	deltaAngY = Delta::DeltaAngular<false>(incoming,outgoing);
+	std::cout<< "DeltaAngX : "<< deltaAngX <<" : DeltaAngY : " << deltaAngY << std::endl;
+
 
 	return 0;
 
