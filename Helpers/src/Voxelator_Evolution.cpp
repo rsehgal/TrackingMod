@@ -92,8 +92,8 @@ std::vector<int> Voxelator::FindCandidateVoxels(Track incoming, Track outgoing,
 												Tracking::Vector3D<double> &inComingHitPt,
 												Tracking::Vector3D<double> &outGoingHitPt){
 	std::vector<int> vectOfVoxels;
-	inComingHitPt = Delta::GetIntersection(incoming,-1.*(GetVoxelizedVolumeDim().z()/2.),1);
-	outGoingHitPt = Delta::GetIntersection(outgoing,GetVoxelizedVolumeDim().z()/2.,2);
+	inComingHitPt = Delta::GetIntersection(incoming,GetVoxelizedVolumeDim().z()/2.,1);
+	outGoingHitPt = Delta::GetIntersection(outgoing,-1*(GetVoxelizedVolumeDim().z()/2.),2);
 	  std::cout << "InComingHitPoint : ";
 	  inComingHitPt.Print();
 	  std::cout << "OutgoingHitPoint : " ;
@@ -105,7 +105,7 @@ std::vector<int> Voxelator::FindCandidateVoxels(Track incoming, Track outgoing,
 	  for(int i = 0 ; i < GetVoxelatorDim().z() ; i++){
 
 		  Tracking::Vector3D<double> voxelHitPt = Delta::GetIntersection(tr,
-				  	  	  	  -1.*(GetVoxelizedVolumeDim().z()/2.)+(i*GetEachVoxelDim().z()),
+				  	  	  	  (GetVoxelizedVolumeDim().z()/2.)-(i*GetEachVoxelDim().z()),
 							  3);
 		  voxelHitPt.SetZ(voxelHitPt.z()+epsilon);
 
