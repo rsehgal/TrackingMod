@@ -137,14 +137,17 @@ double StandardDeviation(std::vector<double> scatteringVect,bool forVoxel = fals
 
 
 void WriteToFile(std::string fileName, std::vector<double> scatteringVect){
+   std::cout<<"Writing file " << fileName << "....  ";
    std::ofstream fileHandle(fileName);
    for( int i = 0 ; i < scatteringVect.size() ; i++){
       fileHandle << scatteringVect[i] << " ";
    }
    fileHandle.close();
+   std::cout<< "Writing DONE, file CLOSE !! " << std::endl;
 }
 
 void WriteToFile(std::string fileName, std::vector<Vector3D<double>> ptVect, double cut=0.3){
+   std::cout<<"Writing file " << fileName << "....  ";
    int count = 0 ;
    std::ofstream fileHandle(fileName);
    //std::cout<<"------------ RAMAN -------------" << std::endl;
@@ -157,6 +160,7 @@ void WriteToFile(std::string fileName, std::vector<Vector3D<double>> ptVect, dou
 		  count++;
    }
    fileHandle.close();
+   std::cout<< "Writing DONE, file CLOSE !! " << std::endl;
    std::cout<<"Num of Points with Scattering < 1e-4 : " << count << std::endl;
 }
 
@@ -181,12 +185,14 @@ void WriteToFile(std::string fileName, std::vector<Vector3D<double>> ptVect, dou
    fileHandle.close();
 }*/
 
-void WriteToFile(std::string fileName,std::vector<Tomography::Voxel*> voxelsVector){
+void WriteToFile(std::string fileName,std::vector<Tomography::Voxel*> voxelsVector,bool filteredVoxels = true){
+   std::cout<<"Writing file " << fileName << "....  ";
    std::ofstream fileHandle(fileName);
    int count=-1;;
    if(voxelsVector.size()){
    for(int i = 0 ; i < voxelsVector.size() ; i++){
       Tracking::Vector3D<double> voxCenter = voxelsVector[i]->GetVoxelCenter();
+      if(filteredVoxels){
       if(!(voxelsVector[i]->IsOutlier())){
     	  count++;
       if(count==0){
@@ -198,12 +204,24 @@ void WriteToFile(std::string fileName,std::vector<Tomography::Voxel*> voxelsVect
       fileHandle << voxCenter.x() << " " << voxCenter.y() << " " << voxCenter.z()
                  << " " << voxelsVector[i]->GetRadiationLength() <<  std::endl;
    }
-   }
+   }}else{
+ 	  count++;
+   if(count==0){
+      Tracking::Vector3D<int> dim = Tomography::evolution::Voxelator::instance()->GetEachVoxelDim();
+      fileHandle << dim.x() << " " << dim.y() << " " << dim.z() << std::endl;
+      fileHandle << voxCenter.x() << " " << voxCenter.y() << " " << voxCenter.z()
+                 << " " << voxelsVector[i]->GetRadiationLength() <<  std::endl;
+   }else{
+   fileHandle << voxCenter.x() << " " << voxCenter.y() << " " << voxCenter.z()
+              << " " << voxelsVector[i]->GetRadiationLength() <<  std::endl;
+}
+}
 
    }
    }
 
    fileHandle.close();
+   std::cout<< "Writing DONE, file CLOSE !! " << std::endl;
 }
 
 double RadiationLength(double sd){
