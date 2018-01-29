@@ -32,10 +32,14 @@ class Voxel {
 
 	static int fTotalVoxelsCreated;
 
+	// This is basically a weight value that represent scattering Density for the voxel
+	// Required for implementing TUSHAR ROY's idea.
+	double fScatteringDensity;
+
 public:
 	Voxel();
 	Voxel(Tracking::Vector3D<double> pocaPt);
-	Voxel(Tracking::Vector3D<double> pocaPt, int voxelNum);
+	Voxel(Tracking::Vector3D<double> pocaPt, int voxelNum, bool useEnclosingVoxels = false);
 	virtual ~Voxel();
 	bool IsOutlier(){return fOutlier;}
 	int GetNumOfPoints(){return fPointCount;}
@@ -44,7 +48,7 @@ public:
 	Tracking::Vector3D<double> GetVoxelDimensions(){return fDim;}
 	Tracking::Vector3D<double> GetVoxelCenter(){return fVoxelCenter;}
 
-	void Insert(Tracking::Vector3D<double>, int voxelNum);
+	void Insert(Tracking::Vector3D<double>, int voxelNum, bool useEnclosingVoxels = false , double scatteringDensity = 0.);
 
 	static Voxel* GetVoxel(int voxelNum){return fVoxelVector[voxelNum];}
 /*
@@ -64,6 +68,12 @@ public:
 	static std::vector<Voxel*> GetVoxelVector() {return fVoxelVector;}
 	static std::vector<Voxel*> GetFilteredVoxelVector();
 	static std::vector<Tracking::Vector3D<double>> GetFilteredPocaPtVector();
+
+
+	double GetScatteringDensity()const { return fScatteringDensity; }
+	void SetScatteringDensity(double scatteringDensity) { fScatteringDensity = scatteringDensity; }
+	std::vector<Tracking::Vector3D<double>> GetEightCorners_Of_ImaginaryVoxel_CentredAtPocaPoint(Tracking::Vector3D<double> pocaPt);
+
 
 
 };

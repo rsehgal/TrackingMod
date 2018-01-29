@@ -31,7 +31,7 @@ Voxel::Voxel(Tracking::Vector3D<double> pocaPt){
 
 }
 
-Voxel::Voxel(Tracking::Vector3D<double> pocaPt, int voxelNum):fVoxelNum(-100){
+Voxel::Voxel(Tracking::Vector3D<double> pocaPt, int voxelNum, bool useEnclosingVoxels):fVoxelNum(-100){
 	/*fMinPointsInVoxel = 10;
 	int existingVoxelNumber = IfVoxelExist(voxelNum);
 	if(existingVoxelNumber < 0.){
@@ -45,28 +45,63 @@ Voxel::Voxel(Tracking::Vector3D<double> pocaPt, int voxelNum):fVoxelNum(-100){
 	fVectPointsInVoxel.push_back(pocaPt);
 	fPointCount = fVectPointsInVoxel.size();
 	fOutlier = fPointCount < fMinPointsInVoxel;*/
+	fScatteringDensity = 0.;
 	fSD = 0.;
 	fRL = 0.;
-	fMinPointsInVoxel = 500;
+	fMinPointsInVoxel = 1;
 	fTotalVoxelsCreated++;
 	//std::cout << "New Voxel Created ........ " << std::endl;
+	fVoxelNum = voxelNum;
+/*
 	fVoxelNum = voxelNum;
 	fVectPointsInVoxel.push_back(pocaPt);
 	fPointCount = fVectPointsInVoxel.size();
 	fOutlier = fPointCount < fMinPointsInVoxel;
+*/
+	Insert(pocaPt, voxelNum, useEnclosingVoxels);
+
 	fVisitedVoxelNumVector.push_back(fVoxelNum);
 	fVoxelCenter = Tomography::evolution::Voxelator::instance()->GetVoxelCenter(fVoxelNum);
 	fVoxelVector.push_back(this);
+	//std::cout<<" @@@@@  VoxelVectorSize :  " << fVoxelVector.size() << "   @@@@@@@" << std::endl;
 
 }
 
+std::vector<Tracking::Vector3D<double>> Voxel::GetEightCorners_Of_ImaginaryVoxel_CentredAtPocaPoint(Tracking::Vector3D<double> pocaPt){
+	std::vector<Tracking::Vector3D<double>> corners;
+	for(int i=-1 ; i <= 1 ; i=i+2  ) // X axis
+		  for(int j=-1 ; j <= 1 ; j=j+2  ) // Y axis
+			  for(int k=-1 ; k <= 1 ; k=k+2  ){ // Z axis
+				  corners.push_back(Tracking::Vector3D<double>(pocaPt.x()+(i*fDim.x()/2.) , pocaPt.y()+(j*fDim.y()/2.) , pocaPt.z()+(k*fDim.z()/2.) ));
+			  }
+}
 
-void Voxel::Insert(Tracking::Vector3D<double> pocaPt, int voxelNum){
+
+void Voxel::Insert(Tracking::Vector3D<double> pocaPt, int voxelNum, bool useEnclosingVoxels , double scatteringDensity){
 	//std::cout<<"Inserted Point in the found voxel........." << std::endl;
+	if(useEnclosingVoxels)
+		fScatteringDensity += scatteringDensity;
+	else{
 	this->fVoxelNum = voxelNum;
 	this->fVectPointsInVoxel.push_back(pocaPt);
 	this->fPointCount = fVectPointsInVoxel.size();
 	this->fOutlier = fPointCount < fMinPointsInVoxel;
+
+	/* For the time being, ScatteringDensity is incremented by 1.
+	** But ideally this should be replaced with the function call.
+	** that will allocate a fraction between 0. and 1., which should
+	** be proportional to the proportion of volume of an imaginary
+	** voxel (centred around PocaPt), that it shares with nearby
+	** voxels.
+	**
+	** This is a nice idea to share the intensity with nearby voxels.
+	**
+	** TODO: Implement a function **CalcScatteringDensity()** to implement the
+	** above mentioned idea.
+	**/
+
+	fScatteringDensity += scatteringDensity;
+	}
 }
 
 
