@@ -52,6 +52,7 @@ public:
 	void CalculateScatterAngle();
 	void CalculateVoxel();
 	int GetVoxelNum();
+	int GetVoxelNum(Tracking::Vector3D<double> pt);
 	void CalculateCandidateVoxels();
 	void WriteToFile();
 	virtual ~EventHelper();

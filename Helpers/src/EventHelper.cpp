@@ -68,6 +68,37 @@ void EventHelper::CalculateVoxel(){
 		fVoxel = Voxel::GetVoxelVector()[voxNum];
 		fVoxel->Insert(fPocaPt,voxelNum);
 	}
+
+#define USE_ENCLOSING_VOXELS
+#ifdef USE_ENCLOSING_VOXELS
+	std::vector<Tracking::Vector3D<double>> enclosingVoxelsCorners = fVoxel->GetEightCorners_Of_ImaginaryVoxel_CentredAtPocaPoint(fPocaPt);
+	std::vector<Voxel*> enclosingVoxelsVector;
+	double sumOfInverseDistancesFromEnclosingVoxels = 0.;
+	for(int i =0 ; i  < enclosingVoxelsCorners.size() ; i++){
+		voxelNum = GetVoxelNum(enclosingVoxelsCorners[i]);
+		voxNum = Voxel::IfVoxelExist(voxelNum);
+		if(voxNum < 0.){
+			enclosingVoxelsVector.push_back(new Voxel(enclosingVoxelsCorners[i],voxelNum,true));
+			//oxel::InsertVoxel(new Voxel(fPocaPt,voxelNum),voxelNum);
+		}else{
+			enclosingVoxelsVector.push_back(Voxel::GetVoxelVector()[voxNum]);
+		}
+
+		sumOfInverseDistancesFromEnclosingVoxels += 1./CommonFunc::Distance(enclosingVoxelsVector[i]->GetVoxelCenter(),fPocaPt);
+	}
+
+	for(int i =0 ; i  < enclosingVoxelsVector.size() ; i++){
+		enclosingVoxelsVector[i]->SetScatteringDensity((1./CommonFunc::Distance(enclosingVoxelsVector[i]->GetVoxelCenter(),
+														fPocaPt))/sumOfInverseDistancesFromEnclosingVoxels);
+
+	}
+
+	/*
+	 * Above logic to calculate the inverse ratios, is taken from table from the following link
+	 * https://math.stackexchange.com/questions/2479777/find-the-inverse-ratio-of-a-group-of-numbers
+	 */
+
+#endif
 }
 
 #ifdef FIND_CANDIDATE_VOXEL
@@ -115,6 +146,11 @@ void EventHelper::WriteToFile(){
 
 int EventHelper::GetVoxelNum(){
 	int voxNum = Tomography::evolution::Voxelator::instance()->GetVoxelNumber(fPocaPt); //logica to calculate voxel num
+	return voxNum;
+}
+
+int EventHelper::GetVoxelNum(Tracking::Vector3D<double> pt){
+	int voxNum = Tomography::evolution::Voxelator::instance()->GetVoxelNumber(pt); //logica to calculate voxel num
 	return voxNum;
 }
 
