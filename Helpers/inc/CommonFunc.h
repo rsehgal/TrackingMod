@@ -199,10 +199,14 @@ void WriteToFile(std::string fileName,std::vector<Tomography::Voxel*> voxelsVect
          Tracking::Vector3D<int> dim = Tomography::evolution::Voxelator::instance()->GetEachVoxelDim();
          fileHandle << dim.x() << " " << dim.y() << " " << dim.z() << std::endl;
          fileHandle << voxCenter.x() << " " << voxCenter.y() << " " << voxCenter.z()
-                    << " " << voxelsVector[i]->GetRadiationLength() <<  std::endl;
+                    //<< " " << voxelsVector[i]->GetRadiationLength() <<  std::endl;
+						<< " " << voxelsVector[i]->GetRadiationLength() <<  " " <<
+						voxelsVector[i]->GetScatteringDensity() <<  std::endl;
       }else{
       fileHandle << voxCenter.x() << " " << voxCenter.y() << " " << voxCenter.z()
-                 << " " << voxelsVector[i]->GetRadiationLength() <<  std::endl;
+                 //<< " " << voxelsVector[i]->GetRadiationLength() <<  std::endl;
+								<< " " << voxelsVector[i]->GetRadiationLength() <<  " " <<
+								voxelsVector[i]->GetScatteringDensity() <<  std::endl;
    }
    }}else{
  	  count++;
@@ -210,10 +214,14 @@ void WriteToFile(std::string fileName,std::vector<Tomography::Voxel*> voxelsVect
       Tracking::Vector3D<int> dim = Tomography::evolution::Voxelator::instance()->GetEachVoxelDim();
       fileHandle << dim.x() << " " << dim.y() << " " << dim.z() << std::endl;
       fileHandle << voxCenter.x() << " " << voxCenter.y() << " " << voxCenter.z()
-                 << " " << voxelsVector[i]->GetRadiationLength() <<  std::endl;
+                 //<< " " << voxelsVector[i]->GetRadiationLength() <<  std::endl;
+								<< " " << voxelsVector[i]->GetRadiationLength() <<  " " <<
+								voxelsVector[i]->GetScatteringDensity() <<  std::endl;
    }else{
    fileHandle << voxCenter.x() << " " << voxCenter.y() << " " << voxCenter.z()
-              << " " << voxelsVector[i]->GetRadiationLength() <<  std::endl;
+              //<< " " << voxelsVector[i]->GetRadiationLength() <<  std::endl;
+								<< " " << voxelsVector[i]->GetRadiationLength() <<  " " <<
+								voxelsVector[i]->GetScatteringDensity() <<  std::endl;
 }
 }
 
