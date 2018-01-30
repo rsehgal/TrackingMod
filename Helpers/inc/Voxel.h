@@ -40,6 +40,7 @@ public:
 	Voxel();
 	Voxel(Tracking::Vector3D<double> pocaPt);
 	Voxel(Tracking::Vector3D<double> pocaPt, int voxelNum, bool useEnclosingVoxels = false);
+	//Voxel(Tracking::Vector3D<double> pocaPt, int voxelNum, Tracking::Vector3D<double> voxelDim, bool useEnclosingVoxels = false);
 	virtual ~Voxel();
 	bool IsOutlier(){return fOutlier;}
 	int GetNumOfPoints(){return fPointCount;}
