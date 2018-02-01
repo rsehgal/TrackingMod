@@ -10,6 +10,8 @@
 #include <iostream>
 #include <fstream>
 #include "Track.h"
+#include "TStyle.h"
+#include "TColor.h"
 
 using Tomography::VisualizationHelper;
 using Vec_t = Tracking::Vector3D<double>;
@@ -20,6 +22,7 @@ int main(int argc, char *argv[]){
     //Vec_t pt(3.,4.,5.,10.);
     v->InitializeVisualizer();
     //v.Register(pt);
+    gStyle->SetPalette(kRainBow);
 
 //Reading Voxels.txt
 #if(1)
@@ -27,10 +30,11 @@ std::ifstream filehandle(argv[1]);
 int numOfEvents = atoi(argv[2]);
 double x = 0., y = 0., z = 0.;
 double color = 0.;
+double intensity = 0.;
 filehandle >> x >> y >> z >> color;
 Vec_t voxDim(x,y,z);
 
-filehandle >> x >> y >> z >> color;
+/*filehandle >> x >> y >> z >> color;
 Vec_t incomingHitPoint(x,y,z,color);
 
 
@@ -48,16 +52,16 @@ v->Register(outgoingHitPoint);
 v->Register(&tr,3);
 v->Register(pocaPt);
 
-
+*/
 int i = 0 ;
 
 while(numOfEvents){
     i++;
-    filehandle >> x >> y >> z >> color;
-    std::cout << x << " , " << y << " , " << z << " , " << color << std::endl;
+    filehandle >> x >> y >> z >> color >> intensity;
+    std::cout << x << " , " << y << " , " << z << " , " << color << " , " << intensity << std::endl;
     //voxCenter.Set(x*1.,y*1.,z*1.);
     Vec_t voxCenter(x,y,z);
-    v->Register(voxDim,voxCenter,color);
+    v->Register(voxDim,voxCenter,intensity*10);
     numOfEvents--;
 }
 

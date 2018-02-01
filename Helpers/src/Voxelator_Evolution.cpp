@@ -183,7 +183,10 @@ Tracking::Vector3D<double> Voxelator::GetVoxelCenter(int voxelNum){
 
 Tracking::Vector3D<double> Voxelator::GetVoxelCenter(double x, double y, double z){
 
-	return fVoxelCenters[GetVoxelNumber(x,y,z)];
+	int voxelNumber = GetVoxelNumber(x,y,z);
+	std::cout<< "######### Voxel Number : " << voxelNumber << std::endl;
+	if(voxelNumber > 0 && voxelNumber < GetTotalNumberOfVoxels())
+		return fVoxelCenters[voxelNumber];
 }
 
 Tracking::Vector3D<double> Voxelator::GetVoxelCenter(Tracking::Vector3D<double> vox){

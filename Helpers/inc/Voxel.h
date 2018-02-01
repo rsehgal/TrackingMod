@@ -73,7 +73,7 @@ public:
 
 	double GetScatteringDensity()const { return fScatteringDensity; }
 	void SetScatteringDensity(double scatteringDensity) { fScatteringDensity = scatteringDensity; }
-	std::vector<Tracking::Vector3D<double>> GetEightCorners_Of_ImaginaryVoxel_CentredAtPocaPoint(Tracking::Vector3D<double> pocaPt);
+	//static std::vector<Tracking::Vector3D<double>> GetEightCorners_Of_ImaginaryVoxel_CentredAtPocaPoint(Tracking::Vector3D<double> pocaPt);
 
 
 

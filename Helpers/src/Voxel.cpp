@@ -48,11 +48,11 @@ Voxel::Voxel(Tracking::Vector3D<double> pocaPt, int voxelNum, bool useEnclosingV
 	fPointCount = fVectPointsInVoxel.size();
 	fOutlier = fPointCount < fMinPointsInVoxel;*/
 	//fDim = voxelDim;
-	fDim.Set(10*cm,10*cm,9*cm);
+	fDim.Set(5*cm,5*cm,4.5*cm);
 	fScatteringDensity = 0.;
 	fSD = 0.;
 	fRL = 0.;
-	fMinPointsInVoxel = 1;
+	fMinPointsInVoxel = 30;
 	fTotalVoxelsCreated++;
 	//std::cout << "New Voxel Created ........ " << std::endl;
 	fVoxelNum = voxelNum;
@@ -71,7 +71,8 @@ Voxel::Voxel(Tracking::Vector3D<double> pocaPt, int voxelNum, bool useEnclosingV
 
 }
 
-std::vector<Tracking::Vector3D<double>> Voxel::GetEightCorners_Of_ImaginaryVoxel_CentredAtPocaPoint(Tracking::Vector3D<double> pocaPt){
+/*
+std::vector<Tracking::Vector3D<double>> Voxel::GetEightCorners_Of_ImaginaryVoxel_CentredAtPocaPoint(Tracking::Vector3D<double> pocaPt,){
 	int count = 0;
 	std::vector<Tracking::Vector3D<double>> corners;
 	for(int i=-1 ; i <= 1 ; i=i+2  ) // X axis
@@ -86,6 +87,7 @@ std::vector<Tracking::Vector3D<double>> Voxel::GetEightCorners_Of_ImaginaryVoxel
 
 	return corners;
 }
+*/
 
 
 void Voxel::Insert(Tracking::Vector3D<double> pocaPt, int voxelNum, bool useEnclosingVoxels , double scatteringDensity){

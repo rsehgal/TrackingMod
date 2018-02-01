@@ -28,7 +28,10 @@ const char* input_filename = (argc>1)?argv[1]:"tracks.txt";
 	TApplication *fApp = new TApplication("Test", NULL, NULL);
 	VisualizationHelper *v = VisualizationHelper::instance();
 #ifdef USE_EVE
+#define VISUALIZE_SETUP
+#ifdef VISUALIZE_SETUP
 	v->Register("Hodoscope.gdml");
+#endif
 	//v.Register("VoxelizedVolume.gdml");
 	// v.RegisterLine(Vector3D<double>(0.,0.,0.),Vector3D<double>(0.,0.,0.));
  //    v.CreatePointSetArray();
@@ -56,7 +59,7 @@ const char* input_filename = (argc>1)?argv[1]:"tracks.txt";
     //	hist->Fill(color);
     	//if((z/deno) > 15. || (z/deno) < 5.) continue;
     	pt.Set(x/deno,y/deno,z/deno);
-    	pt.SetColor(color*10000);
+    	pt.SetColor(2+color*100);
     	v->Register(slicer,pt);
     //v.Register(pt);
 /*

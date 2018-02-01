@@ -86,7 +86,8 @@ public:
 		vec[0]=x;
 		vec[1]=y;
 		vec[2]=z;
-		fColor = int(w);
+		//fColor = int(w);
+		fColor = w;
 	}
 
         void SetColor(int color){
