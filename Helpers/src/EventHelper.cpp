@@ -69,22 +69,23 @@ void EventHelper::CalculateVoxel(){
 		fVoxel->Insert(fPocaPt,voxelNum);
 	}
 
-#define USE_ENCLOSING_VOXELS
+/*
+//#define USE_ENCLOSING_VOXELS
 #ifdef USE_ENCLOSING_VOXELS
-	std::vector<Tracking::Vector3D<double>> enclosingVoxelsCorners = fVoxel->GetEightCorners_Of_ImaginaryVoxel_CentredAtPocaPoint(fPocaPt);
+	std::vector<Tracking::Vector3D<double>> imaginaryVoxelsCorners = fVoxel->GetEightCorners_Of_ImaginaryVoxel_CentredAtPocaPoint(fPocaPt);
 	std::vector<Voxel*> enclosingVoxelsVector;
 	double sumOfInverseDistancesFromEnclosingVoxels = 0.;
-	for(int i =0 ; i  < enclosingVoxelsCorners.size() ; i++){
-		voxelNum = GetVoxelNum(enclosingVoxelsCorners[i]);
+	for(int i =0 ; i  < imaginaryVoxelsCorners.size() ; i++){
+		voxelNum = GetVoxelNum(imaginaryVoxelsCorners[i]);
 		voxNum = Voxel::IfVoxelExist(voxelNum);
 		if(voxNum < 0.){
-			enclosingVoxelsVector.push_back(new Voxel(enclosingVoxelsCorners[i],voxelNum,true));
+			enclosingVoxelsVector.push_back(new Voxel(imaginaryVoxelsCorners[i],voxelNum,true));
 			//oxel::InsertVoxel(new Voxel(fPocaPt,voxelNum),voxelNum);
 		}else{
 			enclosingVoxelsVector.push_back(Voxel::GetVoxelVector()[voxNum]);
 		}
 		Tracking::Vector3D<double> encVoxCenter = enclosingVoxelsVector[i]->GetVoxelCenter();
-		Tracking::Vector3D<double> corner = enclosingVoxelsCorners[i];
+		Tracking::Vector3D<double> corner = imaginaryVoxelsCorners[i];
 //		std::cout<<"@@@@@@@@ POCAPt : " << fPocaPt.x() <<" , "<< fPocaPt.y() <<" , "<< fPocaPt.z() << std::endl;
 //		std::cout<<"@@@@@@@@ encVoxCenter : " << encVoxCenter.x() <<" , "<< encVoxCenter.y() <<" , "<< encVoxCenter.z() << std::endl;
 //		std::cout<<"@@@@@@@@ ImaginaryVoxelCorner : " << corner.x() <<" , "<< corner.y() <<" , "<< corner.z() << std::endl;
@@ -101,12 +102,13 @@ void EventHelper::CalculateVoxel(){
 
 	}
 
-	/*
+
 	 * Above logic to calculate the inverse ratios, is taken from table from the following link
 	 * https://math.stackexchange.com/questions/2479777/find-the-inverse-ratio-of-a-group-of-numbers
-	 */
+
 
 #endif
+*/
 }
 
 #ifdef FIND_CANDIDATE_VOXEL

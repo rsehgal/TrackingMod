@@ -185,8 +185,10 @@ void WriteToFile(std::string fileName, std::vector<Vector3D<double>> ptVect, dou
    fileHandle.close();
 }*/
 
+/*
 void WriteToFile(std::string fileName,std::vector<Tomography::Voxel*> voxelsVector,bool filteredVoxels = true){
    std::cout<<"Writing file " << fileName << "....  ";
+   float dummy = 0.;
    std::ofstream fileHandle(fileName);
    int count=-1;;
    if(voxelsVector.size()){
@@ -197,7 +199,7 @@ void WriteToFile(std::string fileName,std::vector<Tomography::Voxel*> voxelsVect
     	  count++;
       if(count==0){
          Tracking::Vector3D<int> dim = Tomography::evolution::Voxelator::instance()->GetEachVoxelDim();
-         fileHandle << dim.x() << " " << dim.y() << " " << dim.z() << std::endl;
+         fileHandle << dim.x() << " " << dim.y() << " " << dim.z() << " " << dummy << std::endl;
          fileHandle << voxCenter.x() << " " << voxCenter.y() << " " << voxCenter.z()
                     //<< " " << voxelsVector[i]->GetRadiationLength() <<  std::endl;
 						<< " " << voxelsVector[i]->GetRadiationLength() <<  " " <<
@@ -231,6 +233,43 @@ void WriteToFile(std::string fileName,std::vector<Tomography::Voxel*> voxelsVect
    fileHandle.close();
    std::cout<< "Writing DONE, file CLOSE !! " << std::endl;
 }
+*/
+
+
+void WriteToFile(std::string fileName,std::vector<Tomography::Voxel*> voxelsVector ){
+   std::cout<<"Writing file " << fileName << "....  ";
+   float dummy = 0.;
+   std::ofstream fileHandle(fileName);
+   int count=-1;;
+   std::cout<<"VoxelVector Size : " << voxelsVector.size() << std::endl;
+   if(voxelsVector.size()){
+   for(int i = 0 ; i < voxelsVector.size() ; i++){
+      Tracking::Vector3D<double> voxCenter = voxelsVector[i]->GetVoxelCenter();
+      count++;
+      if(count==0){
+         Tracking::Vector3D<int> dim = Tomography::evolution::Voxelator::instance()->GetEachVoxelDim();
+         fileHandle << dim.x() << " " << dim.y() << " " << dim.z() << " " << dummy << std::endl;
+         fileHandle << std::setprecision(20.) << voxCenter.x() << " " << voxCenter.y() << " " << voxCenter.z()
+                    //<< " " << voxelsVector[i]->GetRadiationLength() <<  std::endl;
+						<< " " << voxelsVector[i]->GetRadiationLength() <<  " " <<
+						voxelsVector[i]->GetScatteringDensity() <<  std::endl;
+
+      }else{
+      fileHandle << std::setprecision(20.) << voxCenter.x() << " " << voxCenter.y() << " " << voxCenter.z()
+                 //<< " " << voxelsVector[i]->GetRadiationLength() <<  std::endl;
+								<< " " << voxelsVector[i]->GetRadiationLength() <<  " " <<
+								voxelsVector[i]->GetScatteringDensity() <<  std::endl;
+      std::cout << "UNEXPECTED VALUE SHOULD COME FROM HERE.......... : " << voxelsVector[i]->GetScatteringDensity() << std::endl;
+   }
+   }
+
+   }
+
+   fileHandle.close();
+      std::cout<< "Writing DONE, file CLOSE !! " << std::endl;
+   }
+
+
 
 double RadiationLength(double sd){
 	//std::cout << "Voxel Depth : " << (Tomography::Voxelator::instance()->GetEachVoxelDim()).z() << std::endl;
@@ -246,6 +285,75 @@ double RadiationLength(std::vector<double> scatteringAngleVector, double depth){
 Tracking::Vector3D<double> ConvertToVector3D(G4ThreeVector g4vect3d){
 		return Tracking::Vector3D<double>(g4vect3d.x(),g4vect3d.y(),g4vect3d.z());
 }
+
+int GetVoxelNum(Tracking::Vector3D<double> pt){
+	int voxNum = Tomography::evolution::Voxelator::instance()->GetVoxelNumber(pt); //logica to calculate voxel num
+	return voxNum;
+}
+
+#define USE_ENCLOSING_VOXELS
+#ifdef USE_ENCLOSING_VOXELS
+std::vector<Tracking::Vector3D<double>> GetEightCorners_Of_ImaginaryVoxel_CentredAtPocaPoint(Tracking::Vector3D<double> pocaPt){
+	int count = 0;
+	Tracking::Vector3D<int> voxelDim = Tomography::evolution::Voxelator::instance()->GetEachVoxelDim();
+	std::vector<Tracking::Vector3D<double>> corners;
+	for(int i=-1 ; i <= 1 ; i=i+2  ) // X axis
+		  for(int j=-1 ; j <= 1 ; j=j+2  ) // Y axis
+			  for(int k=-1 ; k <= 1 ; k=k+2  ){ // Z axis
+				  count++;
+				  Tracking::Vector3D<double> corner(pocaPt.x()+(i*voxelDim.x()/2.) , pocaPt.y()+(j*voxelDim.y()/2.) , pocaPt.z()+(k*voxelDim.z()/2.) );
+				  //corners.push_back(Tracking::Vector3D<double>(pocaPt.x()+(i*fDim.x()/2.) , pocaPt.y()+(j*fDim.y()/2.) , pocaPt.z()+(k*fDim.z()/2.) ));
+				  corners.push_back(corner);
+				  //std::cout<<"Corner "<< count << " :: " << corner.x() << " , " << corner.y() << " , " << corner.z() << std::endl;
+			  }
+
+	return corners;
+}
+
+
+std::vector<Tomography::Voxel*> GetEnclosingVoxelWithScatteringIntensity(Tracking::Vector3D<double> pocaPt){
+	std::vector<Tracking::Vector3D<double>> imaginaryVoxelsCorners = GetEightCorners_Of_ImaginaryVoxel_CentredAtPocaPoint(pocaPt);
+	std::vector<Tomography::Voxel*> enclosingVoxelsVector;
+	double sumOfInverseDistancesFromEnclosingVoxels = 0.;
+	for(int i =0 ; i  < imaginaryVoxelsCorners.size() ; i++){
+		int voxelNum = GetVoxelNum(imaginaryVoxelsCorners[i]);
+		int voxNum = Tomography::Voxel::IfVoxelExist(voxelNum);
+		if(voxNum < 0.){
+			enclosingVoxelsVector.push_back(new Tomography::Voxel(imaginaryVoxelsCorners[i],voxelNum,true));
+			//oxel::InsertVoxel(new Voxel(fPocaPt,voxelNum),voxelNum);
+		}else{
+			enclosingVoxelsVector.push_back(Tomography::Voxel::GetVoxelVector()[voxNum]);
+		}
+		Tracking::Vector3D<double> encVoxCenter = enclosingVoxelsVector[i]->GetVoxelCenter();
+		Tracking::Vector3D<double> corner = imaginaryVoxelsCorners[i];
+//		std::cout<<"@@@@@@@@ POCAPt : " << fPocaPt.x() <<" , "<< fPocaPt.y() <<" , "<< fPocaPt.z() << std::endl;
+//		std::cout<<"@@@@@@@@ encVoxCenter : " << encVoxCenter.x() <<" , "<< encVoxCenter.y() <<" , "<< encVoxCenter.z() << std::endl;
+//		std::cout<<"@@@@@@@@ ImaginaryVoxelCorner : " << corner.x() <<" , "<< corner.y() <<" , "<< corner.z() << std::endl;
+//		std::cout<<"@@@@@@@@ RAMAN DIST : " << CommonFunc::Distance(enclosingVoxelsVector[i]->GetVoxelCenter(),fPocaPt) << std::endl;
+//		std::cout<<"@@@@@@@@ SHACHI InvDIST : " << 1./CommonFunc::Distance(enclosingVoxelsVector[i]->GetVoxelCenter(),fPocaPt) << std::endl;
+		sumOfInverseDistancesFromEnclosingVoxels += 1./CommonFunc::Distance(enclosingVoxelsVector[i]->GetVoxelCenter(),pocaPt);
+	}
+
+	std::cout<< " @@@@@@@@@ AYUSH sumOfInverseDistancesFromEnclosingVoxels : " << sumOfInverseDistancesFromEnclosingVoxels << std::endl;
+
+	for(int i =0 ; i  < enclosingVoxelsVector.size() ; i++){
+		enclosingVoxelsVector[i]->SetScatteringDensity(((1./CommonFunc::Distance(enclosingVoxelsVector[i]->GetVoxelCenter(),
+														pocaPt))/sumOfInverseDistancesFromEnclosingVoxels));//*pocaPt.GetColor());
+
+	}
+
+	return enclosingVoxelsVector;
+}
+
+	/*
+	 * Above logic to calculate the inverse ratios, is taken from table from the following link
+	 * https://math.stackexchange.com/questions/2479777/find-the-inverse-ratio-of-a-group-of-numbers
+	 */
+
+#endif
+
+
+
 };
 
 

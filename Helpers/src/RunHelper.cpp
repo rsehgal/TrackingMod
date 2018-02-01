@@ -23,10 +23,10 @@ RunHelper::RunHelper() {
     fVoxelVector = Voxel::GetVoxelVector();
     FillPocaVector();
     FillScatteringAngleVector();
-    CalcSDOfEachVoxel();
-    FillSDVector();
-    CalcRLOfEachVoxel();
-    FillRLVector();
+//    CalcSDOfEachVoxel();
+//    FillSDVector();
+//    CalcRLOfEachVoxel();
+//    FillRLVector();
 
     WriteToFile();
      

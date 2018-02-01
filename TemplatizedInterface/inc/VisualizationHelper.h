@@ -9,6 +9,9 @@
 #define TEMPLATIZEDINTERFACE_INC_VISUALIZATIONHELPER_H_
 #ifdef SHOW_VISUALIZATION
 
+#include "TStyle.h"
+#include "TColor.h"
+
 #ifdef USE_EVE
 #include "Eve/EveVisualizer.h"
 #include "TEveManager.h"
@@ -149,6 +152,7 @@ static VisualizationHelper *instance();
 
 	//std::cout << "Vox Dim : " ; voxDim.Print();
 	//std::cout << "Vox Center : " ;  voxCenter.Print();
+    gStyle->SetPalette(kRainBow);
     TGeoHMatrix m;
     Double_t trans[3] = { 0., 0., 0. };
     m.SetTranslation(trans);
@@ -156,17 +160,29 @@ static VisualizationHelper *instance();
     m.SetDx(voxCenter.x());
     m.SetDy(voxCenter.y());
     m.SetDz(voxCenter.z());
+#ifdef USE_EVE
     fVis.AddEveShape("Voxel",box,m,color);
+#else
+  	  //TODO : AddShape for TGeo Visualizer
+#endif
     //std::cout << "Set Color : "<< color << std::endl;
 
   }
 
   void Register(Tomography::Track *t,double color=5){
+#ifdef USE_EVE
 	  fVis.AddLine(t->GetP1(),t->GetP2(),color);
+#else
+  	  //TODO : AddLine for TGeo Visualizer
+#endif
   }
 
   void Register(std::vector<Tomography::Track *>trackVector,double color=5){
+#ifdef USE_EVE
   	  fVis.AddTracks(trackVector,color);
+#else
+  	  //TODO : AddTracks for TGeo Visualizer
+#endif
     }
 
 #ifdef USE_EVE
@@ -207,7 +223,11 @@ static VisualizationHelper *instance();
 	  if(slicer.fSlicingRequired){
 		if(slicer.PointWithinSlice(pt))
 			//fVis.AddMarkers(pt);
-			fVis.AddMarkers_V2(pt);
+#ifdef USE_EVE
+		fVis.AddMarkers_V2(pt);
+#else
+		fVis.AddMarkers(pt);
+#endif
 	  }
 
   }

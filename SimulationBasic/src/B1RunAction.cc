@@ -85,7 +85,7 @@ void B1RunAction::BeginOfRunAction(const G4Run*)
 {
   //inform the runManager to save random number seed
   G4RunManager::GetRunManager()->SetRandomNumberStore(false);
-  Tomography::evolution::Voxelator::Create(50*cm,50*cm,45*cm,10*cm,10*cm,9.0*cm);
+  Tomography::evolution::Voxelator::Create(50*cm,50*cm,45*cm,5*cm,5*cm,4.5*cm);
 
 
 }
