@@ -34,6 +34,11 @@ class DetectorMapping{
 	    std::vector<double> fEfficienyBothVector;
 	    std::vector<double> fVoltageVector;
 
+	    //Data member for Temp, Pressure and Humidity
+	    float fTemp = 0.;
+	    float fPressure = 0.;
+	    float fHumidity = 0.;
+
 
 	public:
 
