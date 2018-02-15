@@ -43,7 +43,7 @@ DetectorMapping::DetectorMapping(std::string filename){
 void DetectorMapping::ReadMapping(){
 	//std::cout<<"FileName from ReadMapping : " << fileName << std::endl;
 	std::ifstream in(fileName);
-	int count = 0 ;
+	int count = -1 ;
 	int detCounter = 0;
 	while(1){
 
@@ -52,12 +52,20 @@ void DetectorMapping::ReadMapping(){
 		int module = 0;
 		int channelStart = 31;
 		double zCoordinate = 0.;
+		//std::string plotsLocation;
+		if(count == -1){
+			count++;
+			in >> fPlotsLocation >> fPlotsLocation;
+			continue;
+		}
 		if(count == 0){
 			count++;
 			std::string lmodule, lchannelstart, lzcoordinate;
 			in >> detectorName >> lmodule >> lchannelstart >> lzcoordinate ;
 			continue;
-		}else{
+		}
+		///else{
+		if(count==1){
 			detCounter++;
 			in >> detectorName >> module >> channelStart >> zCoordinate ;
 			fDetectorNameVector.push_back(detectorName);
