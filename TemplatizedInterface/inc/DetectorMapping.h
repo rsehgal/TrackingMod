@@ -19,6 +19,9 @@ class DetectorMapping{
 	    std::vector<int> fStartingChannelVector;
 	    std::vector<double> fZCoordinateVector;
 
+	    //Location to store all the plots
+	    std::string fPlotsLocation ;
+
 	    DetectorMapping();
 	    DetectorMapping(std::string filename);
 
@@ -31,6 +34,11 @@ class DetectorMapping{
 		int GetNumOfDetectors() const {return fNumOfDetectors;}
 		void ReadMapping();
 		std::vector<std::string> GetDetectorNamesVector() const {return fDetectorNameVector;}
+		std::vector<int> GetModuleVector() const {return fModuleVector;}
+		std::vector<int> GetStartingChannelVector() const {return fStartingChannelVector;}
+		std::vector<double> GetZCoordinateVector() const {return fZCoordinateVector;}
+
+		std::string GetPlotsLocation() const {return fPlotsLocation;}
 
 
 

@@ -11,6 +11,7 @@
 #include <TH3F.h>
 #include <TStyle.h>
 #include <fstream>
+#include "DetectorMapping.h"
 namespace Tomography{
 
 //int Properties::fClusterSize = 10;
@@ -445,11 +446,17 @@ void Properties::GetX_Y_And_ClusterHistograms()
   int ylow = 0;
   int yhigh = 32;
  
+  TCanvas *histX = new TCanvas("HistX");
   TH1F *histogram_x = new TH1F(GetPlane(0)->GetName().c_str(), "Cluster Size of X Plane", nxbins, xlow, xhigh);
+  TCanvas *histY = new TCanvas("HistY");
   TH1F *histogram_y = new TH1F(GetPlane(1)->GetName().c_str(), "Cluster Size of Y Plane", nybins, ylow, yhigh);
+  TCanvas *histPixel = new TCanvas("HistPixel");
   TH1F *histogram_pixel = new TH1F(("Pixels-"+GetName()).c_str(), "Cluster Size of Pixels", pbins, 0, 1024);
  
   int numOfEvents = Tracking::Tree::instance()->GetNumOfEvents();
+  Tomography::DetectorMapping *detectorMap = Tomography::DetectorMapping::create("testMapping.txt");
+  std::string plotsLocation = detectorMap->GetPlotsLocation();
+  std::cout << "Plots Location from ClusterSize : " << plotsLocation << std::endl;
  
   for (int evNo = 0; evNo < numOfEvents; evNo++) 
   {
@@ -460,20 +467,35 @@ void Properties::GetX_Y_And_ClusterHistograms()
       histogram_pixel->Fill(GetPlane(0)->GetFiredStripsVector().size() * GetPlane(1)->GetFiredStripsVector().size());
   }
       
-  c->cd(1);
+  //c->cd(1);
+  histX->cd();
   histogram_x->GetXaxis()->SetRangeUser(0,10);
   histogram_x->Draw();
+  histX->Modified();
+  histX->Update();
 
-  c->cd(2);
+  //c->cd(2);
+  histY->cd();
   histogram_y->GetXaxis()->SetRangeUser(0,10);
   histogram_y->Draw();
+  histY->Modified();
+  histY->Update();
 
 
-  c->cd(3);
+  //c->cd(3);
+  histPixel->cd();
   histogram_pixel->GetXaxis()->SetRangeUser(0,10);
   histogram_pixel->Draw();
 
-  c->SaveAs((GetName()+"ClusterSize.gif").c_str());
+  histPixel->Modified();
+  histPixel->Update();
+
+  std::string runnum = Tracking::Tree::instance()->GetRunNumber();
+  //c->SaveAs((GetName()+"ClusterSize.gif").c_str());
+  histX->SaveAs((plotsLocation+runnum+"-"+GetName()+"-XPlane-ClusterSize.gif").c_str());
+  histY->SaveAs((plotsLocation+runnum+"-"+GetName()+"-YPlane-ClusterSize.gif").c_str());
+  histPixel->SaveAs((plotsLocation+runnum+"-"+GetName()+"-Pixel-ClusterSize.gif").c_str());
+
 //  fApp->Run();
 }
 
@@ -484,8 +506,8 @@ void Properties::GetStripProfile()
   int nxbins = 64;
   int xlow = 0;
   int xhigh = 64;
-  
-  TH1F *histogram = new TH1F(GetName().c_str(), "Strip Profile of Full Detector", nxbins, xlow, xhigh);
+  std::string histName = "Strip Profile of Full Detector "+GetName();
+  TH1F *histogram = new TH1F(GetName().c_str(), histName.c_str(), nxbins, xlow, xhigh);
 
   int numOfEvents = Tracking::Tree::instance()->GetNumOfEvents();
 
@@ -506,7 +528,10 @@ void Properties::GetStripProfile()
   }
       
     histogram->Draw();
-    c->SaveAs((GetName()+"StripProfile.gif").c_str());
+    std::string runnum = Tracking::Tree::instance()->GetRunNumber();
+    Tomography::DetectorMapping *detectorMap = Tomography::DetectorMapping::create("testMapping.txt");
+    std::string plotsLocation = detectorMap->GetPlotsLocation();
+    c->SaveAs((plotsLocation+runnum+"-"+GetName()+"-StripProfile.gif").c_str());
    // fapp->Run();
 }
 

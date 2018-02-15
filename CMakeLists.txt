@@ -65,6 +65,11 @@ option(STORE "Store data to ROOT Tree" OFF)
 option(VOXELIZE "Voxelize the Region" OFF)
 option(STORE_SLICE "Store 2D hist of eache Slice in Z direction" OFF)
 option(FIND_CANDIDATE_VOXEL "Does the calculation to find Candidate Voxels that influenced the track" OFF)
+option(GEANT4 "Enable Geant4 to do simulation" OFF)
+
+if(GEANT4)
+add_definitions(-DUSE_GEANT4)
+endif(GEANT4)
 
 if(FIND_CANDIDATE_VOXEL)
 add_definitions(-DFIND_CANDIDATE_VOXEL)
@@ -90,12 +95,14 @@ add_subdirectory(Cry)
 endif(CRY)
 
 #For Xml Processing
+if(GEANT4)
 find_package(XERCES REQUIRED)
 include_directories(${XERCES_INCLUDE_DIR})
 add_subdirectory(xmldom)
 #include_directories(${CMAKE_SOURCE_DIR}/xmldom)
 find_package(XMLDOM REQUIRED)
 include_directories(${XMLDOM_INCLUDE_DIR})
+endif(GEANT4)
 
 if(CGAL)
 find_package(CGAL REQUIRED)
@@ -268,7 +275,9 @@ ${CMAKE_SOURCE_DIR}/CoordinateGenerator/test
 ${CMAKE_SOURCE_DIR}/TemplatizedInterface/test
 ${CMAKE_SOURCE_DIR}/TemplatizedInterface/test/core
 ${CMAKE_SOURCE_DIR}/TemplatizedInterface/test/plots
+if(GEANT4)
 ${CMAKE_SOURCE_DIR}/Simulations/MST/test
+endif(GEANT4)
 ${CMAKE_SOURCE_DIR}/visualizer/test
 #${CMAKE_SOURCE_DIR}/CAEN/test
 #${CMAKE_SOURCE_DIR}/test
@@ -427,9 +436,11 @@ message(STATUS ${headers})
 message(STATUS "====================================================")
 message(STATUS ${tests})
 message(STATUS "====================================================")
+if(GEANT4)
 add_subdirectory(Simulations/MST)
 add_subdirectory(Simulation2)
 add_subdirectory(SimulationBasic)
+endif(GEANT4)
 #Copying the test geom.root file to build directory for visualization testing
 file(GLOB ROOT_FILES ${PROJECT_SOURCE_DIR}/RootFiles/*)
 message(STATUS ${ROOT_FILES})
