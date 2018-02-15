@@ -5,6 +5,7 @@
 #include <vector>
 #include <string>
 #include <iostream>
+
 namespace Tomography{
 
 
@@ -22,8 +23,17 @@ class DetectorMapping{
 	    //Location to store all the plots
 	    std::string fPlotsLocation ;
 
+	    //private constructors for singleton class
 	    DetectorMapping();
 	    DetectorMapping(std::string filename);
+
+
+	    //Data members for Efficiency values
+	    std::vector<double> fEfficienyTopVector;
+	    std::vector<double> fEfficienyBottomVector;
+	    std::vector<double> fEfficienyBothVector;
+	    std::vector<double> fVoltageVector;
+
 
 	public:
 
@@ -31,6 +41,7 @@ class DetectorMapping{
 		static DetectorMapping *instance();
 		static DetectorMapping *create(std::string filename);
 
+		void SetFileName(std::string filename) {fileName = filename;}
 		int GetNumOfDetectors() const {return fNumOfDetectors;}
 		void ReadMapping();
 		std::vector<std::string> GetDetectorNamesVector() const {return fDetectorNameVector;}
@@ -40,6 +51,12 @@ class DetectorMapping{
 
 		std::string GetPlotsLocation() const {return fPlotsLocation;}
 
+		//Function to read information from runnumber.daq file
+		void ReadDaqInfo(std::string daqfile);
+
+
+		//Some Printing function basically for debugging
+		void PrintEfficiencyVector() const;
 
 
 };
