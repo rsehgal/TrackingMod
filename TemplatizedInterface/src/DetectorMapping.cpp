@@ -108,6 +108,9 @@ void DetectorMapping::ReadDaqInfo(std::string daqfile){
 		std::string variablestring1;
 		double temperature = 0., pressure = 0., humidity = 0.;
 		rff >> variablestring1 >> temperature >> humidity >> pressure;
+		fTemp = temperature;
+		fPressure = pressure;
+		fHumidity = humidity;
 
 		if (verbose_openfile)
 			std::cout << "Temp: " << temperature << " humidity: " << humidity << " pressure: " << pressure << std::endl;
@@ -196,10 +199,18 @@ void DetectorMapping::ReadDaqInfo(std::string daqfile){
 
 void DetectorMapping::PrintEfficiencyVector() const {
 
+	bool verbose = false;
+	std::ofstream outfile("Eff.txt");
+
 	for(int i = 0 ; i < fEfficienyBothVector.size() ; i++){
-		std::cout << "Eff-Top : " << fEfficienyTopVector[i] <<" : Eff-Bottom : " << fEfficienyBottomVector[i] << " : Eff-Both : " << fEfficienyBothVector[i] << std::endl;
+		outfile << fDetectorNameVector[i] << " " <<fVoltageVector[i] << " " << fTemp << " " << fPressure << " " << fHumidity
+				<< " "<< fEfficienyTopVector[i] << " " << fEfficienyBottomVector[i] << " " << fEfficienyBothVector[i] << std::endl;
+		if(verbose)
+			std::cout << "Eff-Top : " << fEfficienyTopVector[i] <<" : Eff-Bottom : " << fEfficienyBottomVector[i] << " : Eff-Both : " << fEfficienyBothVector[i] << std::endl;
 
 	}
+
+	outfile.close();
 }
 
 }
