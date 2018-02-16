@@ -88,6 +88,10 @@ int main()
     	stream4 << " <td><img src=" << pathOnServer << num << "-"<< detectorNamesVector[i] << "-XPlane-ClusterSize.gif"" alt=""run_not_yet_analyzed"" width=""600"" height=""360"">" << endl;
     	stream4 << " <td><img src=" << pathOnServer << num << "-"<< detectorNamesVector[i] << "-YPlane-ClusterSize.gif"" alt=""run_not_yet_analyzed"" width=""600"" height=""360"">" << endl;
     	stream4 << " <td><img src=" << pathOnServer << num << "-"<< detectorNamesVector[i] << "-Pixel-ClusterSize.gif"" alt=""run_not_yet_analyzed"" width=""600"" height=""360"">" << endl;
+    	stream4 << " <td><img src=" << pathOnServer << num << "-"<< detectorNamesVector[i] << "-HitPlot.gif"" alt=""run_not_yet_analyzed"" width=""450"" height=""450"">" << endl;
+    	stream4 << " <td><img src=" << pathOnServer << num << "-"<< detectorNamesVector[i] << "-HitPlot3D.gif"" alt=""run_not_yet_analyzed"" width=""450"" height=""450"">" << endl;
+    	stream4 << " <td><img src=" << pathOnServer << num << "-"<< detectorNamesVector[i] << "-Radiograph.gif"" alt=""run_not_yet_analyzed"" width=""450"" height=""450"">" << endl;
+    	stream4 << " <td><img src=" << pathOnServer << num  << "-ScintillatorPattern.gif"" alt=""run_not_yet_analyzed"" width=""450"" height=""450"">" << endl;
 
 /*
     	stream4 << " <td><img src=""http://"<< ipaddress << pathOnServer << num << "-"<< detectorNamesVector[i] << "-StripProfile.gif"" alt=""run_not_yet_analyzed"" width=""600"" height=""360"">" << endl;
