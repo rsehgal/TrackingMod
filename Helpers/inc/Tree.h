@@ -85,6 +85,13 @@ class Tree{
 		void PrintBranchNames();
 		void Initialize();
 
+		std::string GetRootFileName() const {return rootFile;}
+		std::string GetRunNumber(){
+			size_t lastindex = rootFile.find_last_of(".");
+			std::string rawname = rootFile.substr(0, lastindex);
+			return rawname;
+		}
+
 
 };
 

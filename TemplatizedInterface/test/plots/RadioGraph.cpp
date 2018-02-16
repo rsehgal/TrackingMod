@@ -34,7 +34,7 @@ int main(int argc, char *argv[]) {
 	TH2F *haitoff = new TH2F("ha","Aitoff",    nbins, -50, 50 , nbins, -50, 50);
 	TH2F *hcont4 = new TH2F("ha","CONT4",    nbins, -50, 50 , nbins, -50, 50);
 
-	std::ifstream in("earth.dat");
+	std::ifstream in("6928-RPC-MT1-RadiographData.dat"); //"earth.dat");
 
 	float x,y,z;
 	while (1) {
