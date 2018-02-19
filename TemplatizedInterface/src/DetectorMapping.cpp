@@ -200,17 +200,19 @@ void DetectorMapping::ReadDaqInfo(std::string daqfile){
 void DetectorMapping::PrintEfficiencyVector() const {
 
 	bool verbose = false;
-	std::ofstream outfile("Eff.txt");
 
 	for(int i = 0 ; i < fEfficienyBothVector.size() ; i++){
+	std::ofstream outfile(fDetectorNameVector[i]+".txt");
+
+	//for(int i = 0 ; i < fEfficienyBothVector.size() ; i++){
 		outfile << fDetectorNameVector[i] << " " <<fVoltageVector[i] << " " << fTemp << " " << fPressure << " " << fHumidity
 				<< " "<< fEfficienyTopVector[i] << " " << fEfficienyBottomVector[i] << " " << fEfficienyBothVector[i] << std::endl;
 		if(verbose)
 			std::cout << "Eff-Top : " << fEfficienyTopVector[i] <<" : Eff-Bottom : " << fEfficienyBottomVector[i] << " : Eff-Both : " << fEfficienyBothVector[i] << std::endl;
 
-	}
-
+	//}
 	outfile.close();
+	}
 }
 
 }

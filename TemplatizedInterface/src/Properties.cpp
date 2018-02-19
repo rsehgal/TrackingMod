@@ -424,8 +424,8 @@ TH2F* Properties::GetStripsHitPlot3D(){
     		  << topPlaneFiredStripVector.size() <<" : " << bottomPlaneFiredStripVector.size() << std::endl;
     }
 */
-    std::cout << "Event Num : " << evNo <<"  :: FiredStripVector Size : "
-        		  << topPlaneFiredStripVector.size() <<" : " << bottomPlaneFiredStripVector.size() << std::endl;
+    //std::cout << "Event Num : " << evNo <<"  :: FiredStripVector Size : "
+      //  		  << topPlaneFiredStripVector.size() <<" : " << bottomPlaneFiredStripVector.size() << std::endl;
     if(fEventDetected && topPlaneFiredStripVector.size()<=fClusterSize && bottomPlaneFiredStripVector.size()<=fClusterSize ){
     //if(topPlaneFiredStripVector.size() && bottomPlaneFiredStripVector.size()){
       for(int xval = 0  ; xval < topPlaneFiredStripVector.size() ; xval++){
