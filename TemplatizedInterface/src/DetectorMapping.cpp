@@ -202,7 +202,7 @@ void DetectorMapping::PrintEfficiencyVector() const {
 	bool verbose = false;
 
 	for(int i = 0 ; i < fEfficienyBothVector.size() ; i++){
-	std::ofstream outfile(fDetectorNameVector[i]+".txt");
+	std::ofstream outfile(fDetectorNameVector[i]+".txt",std::ios::app);
 
 	//for(int i = 0 ; i < fEfficienyBothVector.size() ; i++){
 		outfile << fDetectorNameVector[i] << " " <<fVoltageVector[i] << " " << fTemp << " " << fPressure << " " << fHumidity
