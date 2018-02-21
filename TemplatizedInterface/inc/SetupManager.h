@@ -132,7 +132,7 @@ typedef Tomography::Properties Detector;
 
         void SetEfficiency(std::string detType){
           int numOfEvents = 0;
-          int count = 0;
+          int lcount = 0;
           bool detected = false;
           numOfEvents = Tracking::Tree::instance()->GetNumOfEvents();
           std::cout<<"Total Num of Events  : " <<  numOfEvents << std::endl;
@@ -149,10 +149,10 @@ typedef Tomography::Properties Detector;
             for(int evNo = 0 ; evNo < numOfEvents ; evNo++){
             SetEventDetected(detType,evNo);
             if(fEventDetected)
-              count++;
+              lcount++;
           }
 
-          fEfficiency = count/(double)numOfEvents * 100;
+          fEfficiency = lcount/(double)numOfEvents * 100;
 
         }
 
@@ -163,8 +163,9 @@ typedef Tomography::Properties Detector;
         void SetEventDetected(std::string detType, int evNo){
         	fEventDetected = false;
             std::vector<Detector*> detVect = GetDetectorVector(detType);
+          //  std::cout<<"detectorVector size : " << detVect.size() << std::endl;
           //for(int evNo = 0 ; evNo < numOfEvents ; evNo++){
-            for(int detNo = 0 ; detNo < detVect.size() ; detNo++){
+            for(unsigned int detNo = 0 ; detNo < detVect.size() ; detNo++){
               detVect[detNo]->SetEventDetected(evNo);
               if(detNo==0){
               fEventDetected = detVect[detNo]->EventDetected();
