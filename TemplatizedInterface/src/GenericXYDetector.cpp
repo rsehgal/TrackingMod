@@ -6,6 +6,7 @@
  */
 
 #include "GenericXYDetector.h"
+#include "SetupManager.h"
 
 namespace Tomography {
 
@@ -33,6 +34,8 @@ GenericXYDetector::GenericXYDetector(int moduleId,std::string detName,double zPo
 	  }*/
 	  InsertPlane(new ScintillatorPlane(moduleId,numOfStrips,zPos,GetLength(),GetBreadth(),GetHeight(),0.,true));
 	  InsertPlane(new ScintillatorPlane(moduleId,numOfStrips,zPos,GetLength(),GetBreadth(),GetHeight(),0.,false));
+
+	  Tomography::SetupManager::instance()->Register(this);
 
 
 }

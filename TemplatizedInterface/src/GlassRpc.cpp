@@ -8,6 +8,7 @@
 #include "GlassRpc.h"
 #include "Scintillator.h"
 #include "ScintillatorPlane.h"
+#include "SetupManager.h"
 
 namespace Tomography {
 
@@ -46,6 +47,7 @@ GlassRpc::GlassRpc(int moduleId, std::string rpcName, double zPos, int startId) 
   InsertPlane(new ScintillatorPlane(moduleId,32,zPos,GetLength(),GetBreadth(),GetHeight(),0.,true));
   InsertPlane(new ScintillatorPlane(moduleId,32,zPos,GetLength(),GetBreadth(),GetHeight(),0.,false));
   //SetClusterSize(2);
+  Tomography::SetupManager::instance()->Register(this);
 
 }
 
