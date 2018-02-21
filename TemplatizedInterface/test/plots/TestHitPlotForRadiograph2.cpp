@@ -12,15 +12,31 @@
 #include "DetectorMapping.h"
 #include "GenericXYDetector.h"
 #include "TriggeringPlane.h"
+
+#include <fstream>
+#include <stdio.h>
+
 typedef Tomography::Properties Detector;
 using namespace Tomography;
 
 int main(int argc, char *argv[]) {
-  std::string temp_str = std::to_string(atoi(argv[1]));
+  //std::string temp_str = std::to_string(atoi(argv[1]));
+  FILE *runname;
+  int numd = 0;
+  // reading run number from file
+  //runname = fopen("/home/user/re4data/TDC/run","r");
+  runname = fopen("/var/www/html/Tomo/run","r");
+  fscanf (runname, "%d\n", &numd);
+  fclose(runname);
+  std::string temp_str = std::to_string(numd-1);
   std::string daqinfofile = temp_str;
   temp_str += ".root";
   int clusterSize = 10;
-  TApplication *fApp = new TApplication("Test", NULL, NULL);
+
+
+#ifdef INTERACTIVE
+    TApplication *fApp = new TApplication("Test", NULL, NULL);
+#endif
   Tracking::Tree::instance()->ReadTree(temp_str.c_str(), "BSC_DATA_TREE", 0);
 
   //Reading Detector data from file, instead of doing hard coding here.
@@ -50,5 +66,7 @@ int main(int argc, char *argv[]) {
 
   detectorMap->ReadDaqInfo(daqinfofile);
   detectorMap->PrintEfficiencyVector();
+#ifdef INTERACTIVE
   fApp->Run();
+#endif
 }

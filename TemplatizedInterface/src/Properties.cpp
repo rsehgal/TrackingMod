@@ -228,10 +228,11 @@ void Properties::GetHitPlot(){
   cHitPlot->Update();
   std::string plotsLocation = Tomography::DetectorMapping::instance()->GetPlotsLocation();
   cHitPlot->SaveAs((plotsLocation+runnumber+"-"+GetName()+"-HitPlot.gif").c_str());
-
+#ifndef INTERACTIVE
   delete h2dHitPlot;
   delete cHitPlot;
-
+#endif
+  return;
 }
 
 void Properties::GetHitPlot3D(){
@@ -272,14 +273,17 @@ void Properties::GetHitPlot3D(){
   std::cout<<"Total Num of Hit Point for Detector  : "<< GetName() << " : " << count << std::endl;
   std::cout<<"==================================================================="<< std::endl;
 
-  h3dHitPlot->Draw("0lego1 PFC");
+  //  h3dHitPlot->Draw("0lego1 PFC");
   cHitPlot->Modified();
   cHitPlot->Update();
   std::string plotsLocation = Tomography::DetectorMapping::instance()->GetPlotsLocation();
   std::string runnumber = tree->GetRunNumber();
   cHitPlot->SaveAs((plotsLocation+runnumber+"-"+GetName()+"-HitPlot3D.gif").c_str());
+#ifndef INTERACTIVE
   delete h3dHitPlot;
   delete cHitPlot;
+#endif
+  return;
 }
 
 void Properties::GetHitPlot3D_V2(){
@@ -345,9 +349,11 @@ void Properties::GetHitPlot3D_V2(){
   cHitPlot->Modified();
   cHitPlot->Update();
   cHitPlot->SaveAs((plotsLocation+runnumber+"-"+GetName()+"-Radiograph.gif").c_str());
-
+#ifndef INTERACTIVE
   delete h3dHitPlot;
   delete cHitPlot;
+#endif
+  return;
 
 }
 
@@ -465,10 +471,11 @@ TH2F* Properties::GetStripsHitPlot3D(){
   std::string runnumber = tree->GetRunNumber();
   cHitPlot->SaveAs((plotsLocation+runnumber+"-ScintillatorPattern.gif").c_str());
   //delete h3dHitPlot;
+#ifndef INTERACTIVE
   delete cHitPlot;
-
+#endif
   return h3dHitPlot;
-
+  
 }
 
 
@@ -536,7 +543,17 @@ void Properties::GetX_Y_And_ClusterHistograms()
   histY->SaveAs((plotsLocation+runnum+"-"+GetName()+"-YPlane-ClusterSize.gif").c_str());
   histPixel->SaveAs((plotsLocation+runnum+"-"+GetName()+"-Pixel-ClusterSize.gif").c_str());
 
-//  fApp->Run();
+#ifndef INTERACTIVE
+  delete histX;
+  delete histogram_x;
+  delete histY;
+  delete histogram_y;
+  delete histPixel;
+  delete histogram_pixel;
+  delete c;
+#endif
+  return;
+  //  fApp->Run();
 }
 
 void Properties::GetStripProfile()
@@ -573,7 +590,13 @@ void Properties::GetStripProfile()
     std::string plotsLocation = detectorMap->GetPlotsLocation();
     c->SaveAs((plotsLocation+runnum+"-"+GetName()+"-StripProfile.gif").c_str());
    // fapp->Run();
-}
+#ifndef INTERACTIVE
+    delete histogram;
+    delete c;
+#endif
+
+    return;
+  }
 
 
 
