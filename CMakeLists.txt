@@ -66,6 +66,12 @@ option(VOXELIZE "Voxelize the Region" OFF)
 option(STORE_SLICE "Store 2D hist of eache Slice in Z direction" OFF)
 option(FIND_CANDIDATE_VOXEL "Does the calculation to find Candidate Voxels that influenced the track" OFF)
 option(GEANT4 "Enable Geant4 to do simulation" OFF)
+option(SHOWPLOTS "Show various plots, Useful when operating in Interactive mode" OFF)
+
+if(SHOWPLOTS)
+add_definitions(-DINTERACTIVE)
+endif(SHOWPLOTS)
+
 
 if(GEANT4)
 add_definitions(-DUSE_GEANT4)
