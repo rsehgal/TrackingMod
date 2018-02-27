@@ -33,7 +33,7 @@ void GenerateTimingHistogram(std::string runNum) {
   Detector *topPlane = new TriggeringPlane(2, "TopPlane", -150, -1);
   Detector *bottomPlane = new TriggeringPlane(2, "BottomPlane", 150, 7);
   int nxbins = 1000;
-  int xlow = 19000;
+  int xlow = 15000;
   int xhigh = 23000;
   int nybins = 150;
   int ylow = -10;
@@ -92,11 +92,13 @@ void GenerateTimingHistogram(std::string runNum) {
 #define RPC
 #ifdef RPC
   // Now Creating Real RPC
-  Detector *rpc = new GlassRpc(3, "SecondGlassRpc", 120, 31);
+  Detector *rpc = new GlassRpc(4, "SecondGlassRpc", 120, 31);
+  rpc->SetClusterSize(1);
   std::vector<std::string> firedNameVector;
   std::vector<int> firedIDVector;
   int count[]={0,0};
   int countBoth = 0;
+#if(1)
   for (int evNo = 0; evNo < numOfEvents; evNo++) {
 	  rpc->SetFiredStripsVector(evNo);
 
@@ -118,13 +120,40 @@ void GenerateTimingHistogram(std::string runNum) {
     		for(int i = 0 ; i < firedNameVector.size() ; i++){
     			ch = t->GetEntry(firedNameVector[i], evNo);
     			if (ch->size()) {
-    				//h2d->Fill(ch->at(0), firedIDVector[i]+plNum*32);
-    				h2d->Fill(ch->at(0), firedIDVector[i]);
+    				//Ideally 10 should not be there,
+    				//it is used just to put some separation between trigger and detector data
+    				h2d->Fill(ch->at(0), firedIDVector[i]+10);
     			}
     		}
     	}
     }
   }
+#endif
+
+#if(0)
+  for (int evNo = 0; evNo < numOfEvents; evNo++) {
+	  rpc->SetEventDetected(evNo);
+	  for (int plNum = 0; plNum < rpc->GetNumOfPlanes(); plNum++) {
+		  //firedNameVector.clear();
+		  firedIDVector.clear();
+		  //firedNameVector = rpc->GetPlane(plNum)->GetFiredStripsNameVector();
+		  firedIDVector = rpc->GetPlane(plNum)->GetFiredStripsIDVector();
+
+		  //std::cout << "FiredIDVectorSize : " << firedIDVector.size() << std::endl;
+		  if(firedIDVector.size()){
+		  for(int i = 0 ; i < firedIDVector.size() ; i++){
+			  //std::cout << " : Channel num : " << firedIDVector[i] << std::endl;
+			  Scintillator *scint = rpc->GetPlane(plNum)->GetScintillator(firedIDVector[i]/32 - 1);
+			  //std::cout << "Value : " << rpc->GetPlane(plNum)->GetScintillator(firedIDVector[i]/32 -1)->GetValue() << std::endl;
+			  //h2d->Fill(rpc->GetPlane(plNum)->GetScintillator(firedIDVector[i])->GetValue(), firedIDVector[i]+10);
+			  h2d->Fill(scint->GetValue(), firedIDVector[i]+10);
+		  }
+		  }
+
+	  }
+
+  }
+#endif
 
   std::cout<<"countBoth : " << countBoth <<std::endl;
   std::cout<<"Count-0 : " << count[0] << std::endl;

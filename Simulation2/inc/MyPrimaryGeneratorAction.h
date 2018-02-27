@@ -34,6 +34,10 @@ private:
 #include "G4ParticleGun.hh"
 #include "globals.hh"
 
+#ifdef USE_CRY
+#include "CryGeantInterface.h"
+#endif
+
 class G4ParticleGun;
 class G4Event;
 class G4Box;
@@ -50,13 +54,17 @@ class MyPrimaryGeneratorAction : public G4VUserPrimaryGeneratorAction
      ~MyPrimaryGeneratorAction();
 
     // method from the base class
-    void GeneratePrimaries(G4Event*);         
+    void GeneratePrimaries(G4Event*);
+    MyPrimaryGeneratorAction(const char *inputfile);
   
     // method to access particle gun
     const G4ParticleGun* GetParticleGun() const { return fParticleGun; }
   
   private:
     G4ParticleGun*  fParticleGun; // pointer a to G4 gun class
+#ifdef USE_CRY
+    CryGeantInterface *cryG4Interface;
+#endif   
     //G4Box* fEnvelopeBox;
 };
 

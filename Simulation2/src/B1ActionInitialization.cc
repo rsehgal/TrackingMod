@@ -56,7 +56,13 @@ void B1ActionInitialization::BuildForMaster() const
 
 void B1ActionInitialization::Build() const
 {
+#ifndef USE_CRY
   SetUserAction(new MyPrimaryGeneratorAction);
+#else
+        SetUserAction(new MyPrimaryGeneratorAction(""));
+#endif
+
+//  SetUserAction(new MyPrimaryGeneratorAction);
   SetUserAction(new B1RunAction);
   
   B1EventAction* eventAction = new B1EventAction;

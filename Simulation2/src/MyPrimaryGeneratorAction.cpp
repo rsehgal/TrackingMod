@@ -15,6 +15,10 @@
 #include "base/Vector3D.h"
 using Tracking::Vector3D;
 
+//#ifdef USE_CRY
+//#include "CryGeantInterface.h"
+//#endif
+
 MyPrimaryGeneratorAction::MyPrimaryGeneratorAction() {
   G4int n_particle = 1;
   fParticleGun = new G4ParticleGun(n_particle);
@@ -26,6 +30,17 @@ MyPrimaryGeneratorAction::MyPrimaryGeneratorAction() {
   fParticleGun->SetParticlePosition(G4ThreeVector(0., 0., 120 * cm ));
   fParticleGun->SetParticleMomentumDirection(G4ThreeVector(0., 0., -1.));
 }
+
+MyPrimaryGeneratorAction::MyPrimaryGeneratorAction(const char *inputfile) {
+
+#ifdef USE_CRY
+	cryG4Interface = new CryGeantInterface();
+	cryG4Interface->ForCry(inputfile);
+//  ForCry(inputfile);
+
+#endif
+}
+
 MyPrimaryGeneratorAction::~MyPrimaryGeneratorAction() { delete fParticleGun; }
 
 void MyPrimaryGeneratorAction::GeneratePrimaries(G4Event *event) {
@@ -36,6 +51,13 @@ void MyPrimaryGeneratorAction::GeneratePrimaries(G4Event *event) {
     //                              Tracking::Global::GenRandomDet(-fLength/2.
   
   //fParticleGun->SetParticlePosition(G4ThreeVector(0., 0., -120 * cm));
+
+#ifdef USE_CRY
+//  GeneratePrimariesForCry(event);
+	std::cout << "Generating Event using CRY @@@@@@@@@@@@@@@@@@@@ " << std::endl;
+	cryG4Interface->GeneratePrimariesForCry(event);
+#else
+
   Vector3D<double> pt1(Tracking::Global::GenRandomDet(-50.*cm,50.*cm),
                       Tracking::Global::GenRandomDet(-50.*cm,50.*cm),
                       //Tracking::Global::GenRandomDet(0.,50.)
@@ -61,5 +83,5 @@ void MyPrimaryGeneratorAction::GeneratePrimaries(G4Event *event) {
   fParticleGun->GeneratePrimaryVertex(event);
    //fParticleGun->SetParticlePosition(G4ThreeVector(50 * cm, 0., -120 * cm));
    //fParticleGun->GeneratePrimaryVertex(event);
-
+#endif
 }

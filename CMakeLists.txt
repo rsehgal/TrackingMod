@@ -384,14 +384,16 @@ Tomo
 find_package(Geant4 REQUIRED)
 include(${Geant4_USE_FILE})
 
-
-#Find_package(CRY REQUIRED)
-#include_directories(${CRY_INCLUDE_DIR})
-#file(GLOB cryg4interfaceheaders ${cryg4interfaceheaders} CryGeantInterface/*.h CryGeantInterface/*.hh)
-#file(GLOB cryg4interfacesources ${cryg4interfacesources} CryGeantInterface/*.cpp CryGeantInterface/*.cc)
-#add_library(cryg4interface SHARED ${cryg4interfaceheaders} ${cryg4interfacesources})
-#target_link_libraries(cryg4interface ${Geant4_LIBRARIES} ${CRY_LIBRARIES})
-
+if(CRY)
+message(STATUS "Creating library libcryg4interface.so")
+find_package(CRY REQUIRED)
+include_directories(${CRY_INCLUDE_DIR})
+include_directories(CryGeantInterface)
+file(GLOB cryg4interfaceheaders ${cryg4interfaceheaders} CryGeantInterface/*.h CryGeantInterface/*.hh)
+file(GLOB cryg4interfacesources ${cryg4interfacesources} CryGeantInterface/*.cpp CryGeantInterface/*.cc)
+add_library(cryg4interface SHARED ${cryg4interfaceheaders} ${cryg4interfacesources})
+target_link_libraries(cryg4interface ${Geant4_LIBRARIES} ${CRY_LIBRARIES})
+endif(CRY)
 
 
 message(STATUS "--------- Following source files will be use for the creation of HELPERS Shared library -----------")

@@ -31,7 +31,7 @@ int main(int argc, char *argv[]) {
   std::string temp_str = std::to_string(numd-1);
   std::string daqinfofile = temp_str;
   temp_str += ".root";
-  int clusterSize = 10;
+  int clusterSize = 2;
 
 
 #ifdef INTERACTIVE
@@ -49,7 +49,7 @@ int main(int argc, char *argv[]) {
   for(int i = 0 ; i < detectorNamesVector.size()-1; i++){
     std::cout << "Name of Detector : " << (i+1) << " : " << detectorNamesVector[i] << std::endl;
     Detector *rpc = new GlassRpc(moduleVector[i], detectorNamesVector[i], zcoordinateVector[i], startChannelVector[i]);
-    rpc->SetClusterSize(1);
+    rpc->SetClusterSize(clusterSize);
     rpc->GetHitPlot();
     rpc->GetHitPlot3D_V2();
     rpc->GetX_Y_And_ClusterHistograms();

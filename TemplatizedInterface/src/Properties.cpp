@@ -175,13 +175,16 @@ Tracking::Vector3D<double> Properties::GetStripCoordinate(int x, int y, int z) {
   temp.SetY(-GetBreadth()/2. + (y+0.5)*pixelBreadth); //y * stripBreadth + stripBreadth/2.);
   temp.SetZ(z);
 
+//  std::cout << "XStrip No : " << x << " : YStripNo : " << y << std::endl;
+//  temp.Print();
+//  std::cout<<"====================================================" << std::endl;
   return temp;
 }
 
 
 void Properties::GetHitPlot(){
   
-  TCanvas *cHitPlot = new TCanvas(GetName().c_str(), GetName().c_str(), 450, 450);
+  TCanvas *cHitPlot2D = new TCanvas(GetName().c_str(), GetName().c_str(), 450, 450);
   TH2F *h2dHitPlot = new TH2F("h2dHitPlot", "HitPlot", 32, -fLength/2., fLength/2., 32, -fBreadth/2., fBreadth/2.);
   h2dHitPlot->SetMarkerSize(0.2);
   h2dHitPlot->SetMarkerStyle(20);
@@ -204,6 +207,9 @@ void Properties::GetHitPlot(){
         for(int yval = 0  ; yval < bottomPlaneFiredStripVector.size() ; yval++){
           count++;
           pixelVect.push_back(GetStripCoordinate(topPlaneFiredStripVector[xval],bottomPlaneFiredStripVector[yval],GetZPos()));
+          //int binNum = 32*topPlaneFiredStripVector[xval]+bottomPlaneFiredStripVector[yval];
+          //std::cout << "BinNum : " << binNum << std::endl;
+          //h2dHitPlot->AddBinContent(binNum);
         }
       }
     }
@@ -211,6 +217,8 @@ void Properties::GetHitPlot(){
 
       for(int i = 0 ;  i < pixelVect.size() ; i++){
         h2dHitPlot->Fill(pixelVect[i].x(), pixelVect[i].y());
+    	  //int binNum = 32*x + y;
+    	  //h2dHitPlot->AddBinContent();
         radiographData << pixelVect[i].x() << " " << pixelVect[i].y() << std::endl;
         //pixelVect[i].Print();
       }
@@ -223,21 +231,21 @@ void Properties::GetHitPlot(){
   std::cout<<"Total Num of Hit Point for Detector  : "<< GetName() << " : " << count << std::endl;
   std::cout<<"==================================================================="<< std::endl;
   
-  h2dHitPlot->Draw("");
-  cHitPlot->Modified();
-  cHitPlot->Update();
+  h2dHitPlot->Draw();
+  cHitPlot2D->Modified();
+  cHitPlot2D->Update();
   std::string plotsLocation = Tomography::DetectorMapping::instance()->GetPlotsLocation();
-  cHitPlot->SaveAs((plotsLocation+runnumber+"-"+GetName()+"-HitPlot.gif").c_str());
+  cHitPlot2D->SaveAs((plotsLocation+runnumber+"-"+GetName()+"-HitPlot.gif").c_str());
 #ifndef INTERACTIVE
   delete h2dHitPlot;
-  delete cHitPlot;
+  delete cHitPlot2D;
 #endif
-  return;
+  //return;
 }
 
 void Properties::GetHitPlot3D(){
   gStyle->SetPalette(1);
-  TCanvas *cHitPlot = new TCanvas(GetName().c_str(), GetName().c_str(), 600, 450);
+  TCanvas *cHitPlot3D = new TCanvas(GetName().c_str(), GetName().c_str(), 600, 450);
   TH3F *h3dHitPlot = new TH3F("h3dHitPlot", "3DHitPlot", 64, -fLength, fLength, 64, -fBreadth, fBreadth,10,fZPos, fZPos+10);
   //h3dHitPlot->SetMarkerSize(0.5);
   //h3dHitPlot->SetMarkerStyle(20);
@@ -274,21 +282,21 @@ void Properties::GetHitPlot3D(){
   std::cout<<"==================================================================="<< std::endl;
 
   //  h3dHitPlot->Draw("0lego1 PFC");
-  cHitPlot->Modified();
-  cHitPlot->Update();
+  cHitPlot3D->Modified();
+  cHitPlot3D->Update();
   std::string plotsLocation = Tomography::DetectorMapping::instance()->GetPlotsLocation();
   std::string runnumber = tree->GetRunNumber();
-  cHitPlot->SaveAs((plotsLocation+runnumber+"-"+GetName()+"-HitPlot3D.gif").c_str());
+  cHitPlot3D->SaveAs((plotsLocation+runnumber+"-"+GetName()+"-HitPlot3D.gif").c_str());
 #ifndef INTERACTIVE
   delete h3dHitPlot;
-  delete cHitPlot;
+  delete cHitPlot3D;
 #endif
-  return;
+  //return;
 }
 
 void Properties::GetHitPlot3D_V2(){
 	gStyle->SetPalette(1);
-  TCanvas *cHitPlot = new TCanvas(GetName().c_str(), GetName().c_str(), 450, 450);
+  TCanvas *cHitPlot3D = new TCanvas(GetName().c_str(), GetName().c_str(), 450, 450);
   int numOfBinsX =   (GetPlane(0)->GetNumOfScintillators());// * 2);
   int numOfBinsY =   (GetPlane(1)->GetNumOfScintillators());// * 2);
   //std::cout<<"Num of Bins : " << numOfBinsX << " : fLength : "<< fLength <<" : fBreadth : " << fBreadth << std::endl;
@@ -310,7 +318,7 @@ void Properties::GetHitPlot3D_V2(){
     topPlaneFiredStripVector = GetPlane(0)->GetFiredStripsVector();
     bottomPlaneFiredStripVector = GetPlane(1)->GetFiredStripsVector();
 
-    if(fEventDetected && topPlaneFiredStripVector.size()==fClusterSize && bottomPlaneFiredStripVector.size()==fClusterSize ){
+    if(fEventDetected && topPlaneFiredStripVector.size()<=fClusterSize && bottomPlaneFiredStripVector.size()<=fClusterSize ){
     //if(topPlaneFiredStripVector.size() && bottomPlaneFiredStripVector.size()){
       for(int xval = 0  ; xval < topPlaneFiredStripVector.size() ; xval++){
         for(int yval = 0  ; yval < bottomPlaneFiredStripVector.size() ; yval++){
@@ -339,21 +347,21 @@ void Properties::GetHitPlot3D_V2(){
 
   //h3dHitPlot->Draw("0lego1 PFC");
   h3dHitPlot->Draw("lego2");
-  cHitPlot->Modified();
-  cHitPlot->Update();
+  cHitPlot3D->Modified();
+  cHitPlot3D->Update();
   std::string plotsLocation = Tomography::DetectorMapping::instance()->GetPlotsLocation();
   std::string runnumber = tree->GetRunNumber();
-  cHitPlot->SaveAs((plotsLocation+runnumber+"-"+GetName()+"-HitPlot3D.gif").c_str());
+  cHitPlot3D->SaveAs((plotsLocation+runnumber+"-"+GetName()+"-HitPlot3D.gif").c_str());
 
   h3dHitPlot->Draw("COLZ");
-  cHitPlot->Modified();
-  cHitPlot->Update();
-  cHitPlot->SaveAs((plotsLocation+runnumber+"-"+GetName()+"-Radiograph.gif").c_str());
+  cHitPlot3D->Modified();
+  cHitPlot3D->Update();
+  cHitPlot3D->SaveAs((plotsLocation+runnumber+"-"+GetName()+"-Radiograph.gif").c_str());
 #ifndef INTERACTIVE
   delete h3dHitPlot;
-  delete cHitPlot;
+  delete cHitPlot3D;
 #endif
-  return;
+  //return;
 
 }
 
@@ -397,7 +405,7 @@ TH1F* Properties::GetAngularDistributionFromScintillators(){
 TH2F* Properties::GetStripsHitPlot3D(){
 	Tracking::Tree *tree = Tracking::Tree::instance();
   gStyle->SetPalette(1);
-  TCanvas *cHitPlot = new TCanvas(GetName().c_str(), GetName().c_str(), 450, 450);
+  TCanvas *cHitPlotStrip3D = new TCanvas(GetName().c_str(), GetName().c_str(), 450, 450);
   int numOfBinsX =   (GetPlane(0)->GetNumOfScintillators() );
   int numOfBinsY =   (GetPlane(1)->GetNumOfScintillators() );
   //std::cout<<"Num of Bins : " << numOfBinsX << " : fLength : "<< fLength <<" : fBreadth : " << fBreadth << std::endl;
@@ -465,14 +473,14 @@ TH2F* Properties::GetStripsHitPlot3D(){
   
 
   h3dHitPlot->Draw("LEGO2");
-  cHitPlot->Modified();
-  cHitPlot->Update();
+  cHitPlotStrip3D->Modified();
+  cHitPlotStrip3D->Update();
   std::string plotsLocation = Tomography::DetectorMapping::instance()->GetPlotsLocation();
   std::string runnumber = tree->GetRunNumber();
-  cHitPlot->SaveAs((plotsLocation+runnumber+"-ScintillatorPattern.gif").c_str());
+  cHitPlotStrip3D->SaveAs((plotsLocation+runnumber+"-ScintillatorPattern.gif").c_str());
   //delete h3dHitPlot;
 #ifndef INTERACTIVE
-  delete cHitPlot;
+  delete cHitPlotStrip3D;
 #endif
   return h3dHitPlot;
   
@@ -482,8 +490,8 @@ TH2F* Properties::GetStripsHitPlot3D(){
 void Properties::GetX_Y_And_ClusterHistograms()
 {
  // TApplication *fApp = new TApplication("Histograms", NULL, NULL);
-  TCanvas *c = new TCanvas((GetName()+"Cluster").c_str(), (GetName() + " ClusterSize").c_str(), 800, 600);
-  c->Divide(2,2);
+ // TCanvas *c = new TCanvas((GetName()+"Cluster").c_str(), (GetName() + " ClusterSize").c_str(), 800, 600);
+ // c->Divide(2,2);
 
   int nxbins = 32;
   int nybins = 32;
@@ -550,28 +558,30 @@ void Properties::GetX_Y_And_ClusterHistograms()
   delete histogram_y;
   delete histPixel;
   delete histogram_pixel;
-  delete c;
+ // delete c;
 #endif
-  return;
+  //return;
   //  fApp->Run();
 }
+
 
 void Properties::GetStripProfile()
 {
   //TApplication *fApp = new TApplication("Histogram", NULL, NULL);
-  TCanvas *c = new TCanvas((GetName()+"StripProfile").c_str(),  (GetName() + " Strip Profile").c_str(), 800, 600);
+  int numOfEvents = Tracking::Tree::instance()->GetNumOfEvents();
+  TCanvas *c = new TCanvas((GetName()+"StripProfile"+std::to_string(numOfEvents)).c_str(),  (GetName() + " Strip Profile"+std::to_string(numOfEvents)).c_str(), 800, 600);
   int nxbins = 64;
-  int xlow = 0;
-  int xhigh = 64;
-  std::string histName = "Strip Profile of Full Detector "+GetName();
+  int xlow = 32;
+  int xhigh = 96;
+  std::string histName = "Strip Profile of Full Detector "+GetName()+"  : "+ std::to_string(numOfEvents);
   TH1F *histogram = new TH1F(GetName().c_str(), histName.c_str(), nxbins, xlow, xhigh);
 
-  int numOfEvents = Tracking::Tree::instance()->GetNumOfEvents();
+//  int numOfEvents = Tracking::Tree::instance()->GetNumOfEvents();
 
   for (int evNo = 0; evNo < numOfEvents; evNo++) 
   {
      SetFiredStripsVector(evNo);
-       
+#ifdef VATSAL_ALGO
      for(int k = 0 ; k < GetNumOfPlanes() ; k++)
      {
         for(int l = 0 ; l < GetPlane(k)->GetNumOfScintillators() ; l++)
@@ -582,6 +592,20 @@ void Properties::GetStripProfile()
             }
         } 
       }
+#else // Modified by Raman
+     for(int k = 0 ; k < GetNumOfPlanes() ; k++)
+     {
+        //for(int l = 0 ; l < GetPlane(k)->GetNumOfScintillators() ; l++)
+    	if(GetPlane(k)->GetFiredStripsIDVector().size())
+    	{
+    		for(int l = 0 ; l < GetPlane(k)->GetFiredStripsIDVector().size() ; l++)
+    		{
+              histogram->Fill(GetPlane(k)->GetFiredStripsIDVector()[l]);
+    		}
+    	}
+      }
+
+#endif
   }
       
     histogram->Draw();
@@ -595,8 +619,10 @@ void Properties::GetStripProfile()
     delete c;
 #endif
 
-    return;
+   // return;
   }
+
+
 
 
 
