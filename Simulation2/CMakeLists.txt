@@ -34,6 +34,12 @@ if(STORE)
 add_definitions(-DSTORE)
 endif(STORE)
 
+if(CRY)
+add_definitions(-DUSE_CRY)
+Find_package(CRY REQUIRED)
+include_directories(${CRY_INCLUDE_DIR})
+endif(CRY)
+
 file(GLOB MAC_FILES ${PROJECT_SOURCE_DIR}/MacFiles/*)
 message(STATUS ${MAC_FILES})
 #file(COPY ${MAC_FILES} DESTINATION ${PROJECT_SOURCE_DIR}/build)
@@ -50,5 +56,5 @@ file(GLOB sources ${PROJECT_SOURCE_DIR}/src/*.cpp ${PROJECT_SOURCE_DIR}/src/*.cc
 file(GLOB headers ${PROJECT_SOURCE_DIR}/inc/*.h ${PROJECT_SOURCE_DIR}/inc/*.hh ../../base/Vector3D.h) 
 
 add_executable(mainNew mainNew.cpp ${sources} ${headers})
-target_link_libraries(mainNew ${Geant4_LIBRARIES} Helpers)
+target_link_libraries(mainNew cryg4interface ${Geant4_LIBRARIES} Helpers)
 #target_link_libraries(main ${Geant4_LIBRARIES} Tomo)
