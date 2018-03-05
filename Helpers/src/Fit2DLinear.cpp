@@ -41,7 +41,7 @@ void Fit2DLinear::Fit(std::vector<double> vectX, std::vector<double> vectY){
 	double xy = SumXY(vectX, vectY) * vectSizeInv;;
 	double x2 = SumX2(vectX) * vectSizeInv;;
 	double y2 = SumY2(vectY) * vectSizeInv;;
-	std::cout << x <<" " << y << " " << xy << " " << x2 << " " << y2 << std::endl;
+	//std::cout << x <<" " << y << " " << xy << " " << x2 << " " << y2 << std::endl;
 	fA = -xy + x*y ;
 	double bX = x2 - x*x;
 	double bY = y2 - y*y;

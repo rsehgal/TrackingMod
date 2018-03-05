@@ -6,6 +6,7 @@
  */
 
 #include "EventProcessor.h"
+#include "Fit2DLinear.h"
 
 namespace Tomography {
 
@@ -41,16 +42,6 @@ void EventProcessor::ProcessEvent(int evNo){
                                             detectors[j]->GetPlane(1)->GetFiredStripsVector()[yval],
                                             detectors[j]->GetZPos());
 
-                            //temp.Print();
-
-                            /*if (gEve) {
-                                m.SetDx(temp.x());
-                                m.SetDy(temp.y());
-                                m.SetDz(temp.z());
-                                //hittedPixelVector.push_back(new HittedPixel(m));
-                                hittedPixelVector.push_back(
-                                        new HittedPixel(m, true, false));
-                            }*/
                         }
                     }
                     /*
@@ -61,9 +52,15 @@ void EventProcessor::ProcessEvent(int evNo){
                     tempVect.push_back(temp);
             } // end of detector loop
 
+
+
             fIncoming.Set(tempVect[0],tempVect[1]);
             fOutgoing.Set(tempVect[2],tempVect[3]);
     }
+
+    Tomography::Fit2DLinear f;
+    f.CalculateResiduals(tempVect);
+    f.PrintResiduals();
 
 }
 
