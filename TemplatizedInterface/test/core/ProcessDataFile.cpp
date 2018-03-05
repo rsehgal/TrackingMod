@@ -54,9 +54,12 @@ int main(int arc, char *argv[]){
 	int numOfEvents = Tracking::Tree::instance()->GetNumOfEvents();
 	Tomography::EventProcessor eventProcessor;
 	Tomography::SetupManager *setup = Tomography::SetupManager::instance();
+	numOfEvents = 10;
 	for (int evNo = 0; evNo < numOfEvents; evNo++) {
+		std::cout << "=============== Event No : " << evNo << " =========================== " << std::endl;
 		eventProcessor.ProcessEvent(evNo);
 		if(setup->EventDetected()){
+			std::cout << "Event Detected....." << std::endl;
 
 		Tomography::Track incoming = eventProcessor.GetIncomingTrack();
 		//Tomography::Track outgoing = eventProcessor.GetOutgoingTrack();
@@ -65,6 +68,8 @@ int main(int arc, char *argv[]){
 		double angleIncoming = CommonFunc::Functions::instance()->GetAngleInRadian(incoming,ref);
 		hist->Fill(angleIncoming);
 		fs << angleIncoming << " ";
+		}else{
+			std::cout << "Event NOT Detected....." << std::endl;
 		}
 	}
 
