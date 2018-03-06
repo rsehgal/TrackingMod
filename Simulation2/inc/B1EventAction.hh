@@ -42,6 +42,7 @@
 class B1EventAction : public G4UserEventAction
 {
 static int evNo;
+static int effEvNo;
 public:
 static int evMultiplicity;
 static int genuineEventCounter;

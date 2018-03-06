@@ -8,6 +8,7 @@
 #include "Fit2DLinear.h"
 #include <iostream>
 #include <cmath>
+#include <fstream>
 
 namespace Tomography {
 
@@ -74,11 +75,14 @@ double Fit2DLinear::SumXY(std::vector<double> vectX, std::vector<double> vectY){
 
 void Fit2DLinear::PrintFitModel(){
 	std::cout << "\n Linear Fit is of form : " << fA <<"x + "<<fB<<"y + "<<fC << std::endl;
+	std::cout << "\n Linear Fit in Slopef form : " << (-fA/fB) <<"x + "<<(-fC/fB) << std::endl;
 }
 
 double Fit2DLinear::Residual(double x, double y){
 	double fittedX = (-fC - fB*y)/fA;
-	return (fittedX - x);
+	double residual = (fittedX - x);
+	std::cout << "FittedValue : "<< fittedX << " : X : " << x << " : Residual : " << residual <<" : Y : " << y << std::endl;
+	return residual;
 }
 
 void Fit2DLinear::CalculateResiduals(std::vector<Tracking::Vector3D<double>> hitPointVect){
@@ -88,17 +92,33 @@ void Fit2DLinear::CalculateResiduals(std::vector<Tracking::Vector3D<double>> hit
 		yVect.push_back(hitPointVect[i].y());
 		zVect.push_back(hitPointVect[i].z());
 	}
+	WriteXZ(xVect,zVect);
 	Fit(xVect,zVect);
-	Fit(yVect,zVect);
+	std::cout<<"\n------------------ Residuals X Plane ----------------" << std::endl;
+	PrintFitModel();
 	for(int i = 0 ; i < hitPointVect.size() ; i++){
 		fResidualXVect.push_back(Residual(hitPointVect[i].x(),hitPointVect[i].z()));
+	}
+	Fit(yVect,zVect);
+	std::cout<<"\n------------------ Residuals Y Plane ----------------" << std::endl;
+	PrintFitModel();
+	for(int i = 0 ; i < hitPointVect.size() ; i++){
 		fResidualYVect.push_back(Residual(hitPointVect[i].y(),hitPointVect[i].z()));
 	}
 }
 
+void Fit2DLinear::WriteAB(std::vector<double> x, std::vector<double> z,std::string filename){
+	std::ofstream outfile(filename);
+	for(int i = 0 ; i < x.size() ; i++){
+		outfile << x[i] << " " << z[i] << std::endl;
+	}
+	outfile.close();
+
+}
+
 void Fit2DLinear::PrintResiduals(){
 	for(int i = 0 ; i < fResidualXVect.size() ; i++){
-		std::cout<<"XResidual : " << fResidualXVect[i] << " : YResidual : " << fResidualYVect[i] << std::endl;
+		std::cout<<"\n XResidual : " << fResidualXVect[i] << " : YResidual : " << fResidualYVect[i] << std::endl;
 	}
 }
 

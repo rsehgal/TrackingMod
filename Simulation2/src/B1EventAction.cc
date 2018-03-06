@@ -46,6 +46,7 @@
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 int B1EventAction::evNo = 0;
+int B1EventAction::effEvNo = 0;
 int B1EventAction::evMultiplicity = 0;
 int B1EventAction::genuineEventCounter = 0;
 std::vector<G4String> B1EventAction::volName({"Hello"});
@@ -87,6 +88,7 @@ if(!(evNo%10000))
 
 void B1EventAction::EndOfEventAction(const G4Event*)
 {  
+	ofstream outfile("Hits.txt",std::ios::app);
  /* double E1,E2,th1,th2,phi1,phi2,erel,c12;   //declaration of energy and theta_phi
   th1=acos(z1/r);
   th2=acos(z2/r);
@@ -111,6 +113,20 @@ void B1EventAction::EndOfEventAction(const G4Event*)
 			  << " :: VertexEnergy : "<< vertexEnergy[1] <<" : Energy " << energy[1] << std::endl;
     }
 
+if(position.size() == 12){
+
+	for(int i = 0 ; i < position.size() ; ){
+		outfile << "Event No : " << effEvNo <<" : " << position[i].x() << "  " << position[i].y() << "  " << position[i].z() << std::endl;
+		i += 2;
+	}
+	effEvNo++;
+
+	outfile.close();
+
+//	std::cout << "Position : "<< position[0] << " :: ";
+//  std::cout << "Raman Position Vector Size : " << position.size() << std::endl;
+
+
 
   Tomography::Track ref(G4ThreeVector(0.,0.,0.),G4ThreeVector(0.,0.,1.));
    Tomography::Track incoming(CommonFunc::Functions::instance()->ConvertToVector3D(position[0]),CommonFunc::Functions::instance()->ConvertToVector3D(position[2]));
@@ -125,7 +141,9 @@ void B1EventAction::EndOfEventAction(const G4Event*)
    //std::cout<<"Diff from EventAction : " << diff << std::endl;
    //run->FillInComingAngleVector(angleIncoming);
    Tomography::EventHelper u(incoming,outgoing);
-
+}else{
+	return;
+}
 
 
   /*

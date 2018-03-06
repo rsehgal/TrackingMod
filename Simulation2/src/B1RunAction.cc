@@ -127,7 +127,7 @@ void B1RunAction::BeginOfRunAction(const G4Run*)
   fTree->Branch("Module2_LE_CH31","Module2_LE_CH31",&brMap["Module2_LE_CH31"]);
 #endif
   counter = 0;
-  for(int i = 2 ; i < 6 ; i++){
+  for(int i = 2 ; i < 8 ; i++){
 
   	for(int brNum = 32 ; brNum < 96 ; brNum++){
   		counter++;

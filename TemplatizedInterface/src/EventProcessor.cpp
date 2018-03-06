@@ -37,6 +37,11 @@ void EventProcessor::ProcessEvent(int evNo){
                     for (int xval = 0; xval < detectors[j]->GetPlane(0)->GetFiredStripsVector().size(); xval++) {
                         for (int yval = 0; yval < detectors[j]->GetPlane(1)->GetFiredStripsVector().size(); yval++) {
 
+                        	std::cout << detectors[j]->GetPlane(0)->GetFiredStripsNameVector()[xval] << " : "
+                        			  << detectors[j]->GetPlane(1)->GetFiredStripsNameVector()[yval] << " : "
+									  << detectors[j]->GetPlane(0)->GetFiredStripsVector()[xval] << " : "
+									  << detectors[j]->GetPlane(1)->GetFiredStripsVector()[yval] << std::endl;
+
                             temp = c.GetStripCoordinate(detectors[j],
                                             detectors[j]->GetPlane(0)->GetFiredStripsVector()[xval],
                                             detectors[j]->GetPlane(1)->GetFiredStripsVector()[yval],

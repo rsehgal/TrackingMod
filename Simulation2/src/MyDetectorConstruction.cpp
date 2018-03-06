@@ -84,7 +84,8 @@ G4VPhysicalVolume* MyDetectorConstruction::Construct(){
   G4LogicalVolume *planeE = CreateEBlock(planeE1Logical, planeE2Logical, 1.*cm, world_mat);
 
 for(int k=0; k < 8 ; k++){
-if(k==0 || k==3 || k==4 || k==7)
+//if(k==0 || k==3 || k==4 || k==7)
+if(k==0 || k==7)
 	continue;
  eBlockNum++;
  G4VPhysicalVolume *planeEPhy = new G4PVPlacement(0,
@@ -119,6 +120,7 @@ G4VPhysicalVolume *brickLanePhy = new G4PVPlacement(0,
 */
 
 
+/*
 G4LogicalVolume *leadStrip = GetStrip("PbStrip", 50*cm,50*cm,5*cm,Fe);
 G4VPhysicalVolume *PbStripPhy = new G4PVPlacement(0,
                             G4ThreeVector(0,0.,0.),
@@ -130,6 +132,7 @@ G4VPhysicalVolume *PbStripPhy = new G4PVPlacement(0,
 							//eBlockNum,
 							0,
                            checkOverlaps);
+*/
 
 
 /*
