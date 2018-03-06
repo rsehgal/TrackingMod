@@ -40,6 +40,14 @@ private:
 
 	double Residual(double x, double y);
 
+	void WriteAB(std::vector<double> x, std::vector<double> z,std::string filename="regData.txt" );
+	void WriteXZ(std::vector<double> x, std::vector<double> z, std::string filename = "xz.txt"){
+		WriteAB(x,z,filename);
+	}
+	void WriteYZ(std::vector<double> y, std::vector<double> z, std::string filename = "yz.txt"){
+		WriteAB(y,z,filename);
+	}
+
 public:
 	Fit2DLinear();
 	virtual ~Fit2DLinear();

@@ -156,8 +156,9 @@ stepNum++;
 
 		  if(step->GetStepLength()){
 			  std::string hittedStripName = (touch1->GetVolume(2)->GetName()+ touch1->GetVolume()->GetName());
-			 // std::cout<< "Hitted Strip : "<< hittedStripName << std::endl;
+			 std::cout<< "Hitted Strip : "<< hittedStripName << "  : " ; //std::endl;
 			 G4ThreeVector hitLocation = point1->GetPosition();
+			 std::cout<< "HitLocation : "<< hitLocation.x() << "  " << hitLocation.y() << "  :  " << hitLocation.z() << std::endl;
 			 hitLocation.setZ(0.);
 
 			 bool button = false;
@@ -296,6 +297,7 @@ stepNum++;
 				 std::cout << "Going through the spacer............. Should not get recored !!!! : Branch Name : " << hittedStripName << std::endl;
 			 }else {
 			 (B1RunAction::brMap[hittedStripName]).push_back((int)Tracking::Global::GenRandomDet(19450, 21000));
+			 //std::cout<<"Hitted Strip  : " << hittedStripName << std::endl;
 			 }
 			 B1EventAction::position.push_back(point1->GetPosition());
 			  //std::cout<<"Type : " << Tracking::Tree::instance()->GetTTree()->GetBranch(hittedStripName.c_str())->GetClassName() << std::endl;

@@ -39,7 +39,7 @@ GlassRpc::GlassRpc(int moduleId, std::string rpcName, double zPos, int startId) 
   SetNumOfPlanes(numOfPlanes);
   SetName(rpcName);
   SetZPos(zPos);
-  SetLBH(100,100,1);
+  SetLBH(1000,1000,1);
   Initialize();
   /*for(int i = 0 ; i < numOfPlanes ; i++){
     InsertPlane(new ScintillatorPlane(moduleId,32,zPos,GetLength(),GetBreadth()));
@@ -60,7 +60,7 @@ GlassRpc::GlassRpc(int moduleId, std::string rpcName, double xPos, double yPos, 
   SetNumOfPlanes(numOfPlanes);
   SetName(rpcName);
   SetZPos(zPos);
-  SetLBH(100,100,1);
+  SetLBH(1000,1000,1);
   Initialize();
   /*for(int i = 0 ; i < numOfPlanes ; i++){
     InsertPlane(new ScintillatorPlane(moduleId,32,zPos,GetLength(),GetBreadth()));
