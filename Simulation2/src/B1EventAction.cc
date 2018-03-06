@@ -128,9 +128,13 @@ if(position.size() == 12){
 
 
 
-  Tomography::Track ref(G4ThreeVector(0.,0.,0.),G4ThreeVector(0.,0.,1.));
-   Tomography::Track incoming(CommonFunc::Functions::instance()->ConvertToVector3D(position[0]),CommonFunc::Functions::instance()->ConvertToVector3D(position[2]));
-   Tomography::Track outgoing(CommonFunc::Functions::instance()->ConvertToVector3D(position[5]),CommonFunc::Functions::instance()->ConvertToVector3D(position[7]));
+  Tomography::Track ref(G4ThreeVector(0.,0.,0.),G4ThreeVector(0.,0.,-1.));
+   Tomography::Track incoming(CommonFunc::Functions::instance()->ConvertToVector3D(position[0]),
+                              CommonFunc::Functions::instance()->ConvertToVector3D(position[2]));
+
+   Tomography::Track outgoing(CommonFunc::Functions::instance()->ConvertToVector3D(position[5]),
+                              CommonFunc::Functions::instance()->ConvertToVector3D(position[7]));
+   
    double angleIncoming = CommonFunc::Functions::instance()->GetAngleInRadian(incoming,ref);
    double angleOutgoing = CommonFunc::Functions::instance()->GetAngleInRadian(outgoing,ref);
    double diff = angleOutgoing-angleIncoming;

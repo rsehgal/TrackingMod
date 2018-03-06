@@ -38,6 +38,7 @@ class EventProcessor {
 	bool fGenuineEvent;
 	Tomography::Track fIncoming;
 	Tomography::Track fOutgoing;
+    std::vector<Tracking::Vector3D<double>> fHitPointVector;
 
 public:
 	EventProcessor();
@@ -47,6 +48,7 @@ public:
 	void ProcessEvent(int evNo);
 	Tomography::Track GetIncomingTrack(){return fIncoming;}
 	Tomography::Track GetOutgoingTrack(){return fOutgoing;}
+    std::vector<Tracking::Vector3D<double>> GetHitPointVector() const {return fHitPointVector;}
 
 };
 
