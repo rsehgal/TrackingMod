@@ -29,6 +29,7 @@ void EventProcessor::ProcessEvent(int evNo){
     Tracking::Vector3D<double> temp(0.,0.,0.);
     Coordinates c;
     tempVect.clear();
+    fHitPointVector.clear();
     setup->SetEventDetected("GLASS",evNo);
     if(setup->EventDetected()){
         fGenuineEvent = true;
@@ -55,6 +56,7 @@ void EventProcessor::ProcessEvent(int evNo){
                      std::cout<<"Y Strip : " << detectors[j]->GetPlane(1)->GetFiredStripsVector()[0] << std::endl;
                      */
                     tempVect.push_back(temp);
+                    fHitPointVector.push_back(temp);
             } // end of detector loop
 
 

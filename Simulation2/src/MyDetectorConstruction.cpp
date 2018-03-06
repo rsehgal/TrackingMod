@@ -120,8 +120,8 @@ G4VPhysicalVolume *brickLanePhy = new G4PVPlacement(0,
 */
 
 
-/*
-G4LogicalVolume *leadStrip = GetStrip("PbStrip", 50*cm,50*cm,5*cm,Fe);
+
+G4LogicalVolume *leadStrip = GetStrip("PbStrip", 10*cm,10*cm,10*cm,Pb);
 G4VPhysicalVolume *PbStripPhy = new G4PVPlacement(0,
                             G4ThreeVector(0,0.,0.),
                             leadStrip,
@@ -132,7 +132,7 @@ G4VPhysicalVolume *PbStripPhy = new G4PVPlacement(0,
 							//eBlockNum,
 							0,
                            checkOverlaps);
-*/
+
 
 
 /*
