@@ -18,15 +18,18 @@ public:
 
 class Gaussian {
 private:
+	int fDim;
 	double *fMean;//[2];
 	double **fCovars;//[2][2];
 
 	void AllocateMemory();
+	void AllocateMemory3();
 
 public:
 	Gaussian();
 	Gaussian(double *mean, double **covars);
 	Gaussian(double mean[2], double covars[2][2]);
+	Gaussian(double mean[3], double covars[3][3]);
 	virtual ~Gaussian();
 	Vector2D Sample();
 
