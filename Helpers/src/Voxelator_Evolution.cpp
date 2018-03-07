@@ -87,6 +87,12 @@ void Voxelator::SetVoxelator(double voxelizedVolHalfX,double voxelizedVolHalfY, 
 	CreateHistogram();
 }
 
+bool Voxelator::IsGenuine(Tracking::Vector3D<double> pocaPt){
+	return (std::fabs(pocaPt.x()) < ((double)fVoxelizedVolumeDim.x())/2.) &&
+		   (std::fabs(pocaPt.y()) < ((double)fVoxelizedVolumeDim.y())/2.) &&
+		   (std::fabs(pocaPt.z()) < ((double)fVoxelizedVolumeDim.z())/2.);
+}
+
 #ifdef FIND_CANDIDATE_VOXEL
 std::vector<int> Voxelator::FindCandidateVoxels(Track incoming, Track outgoing,
 												Tracking::Vector3D<double> &inComingHitPt,

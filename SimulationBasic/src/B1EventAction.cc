@@ -85,8 +85,8 @@ void B1EventAction::EndOfEventAction(const G4Event*)
  // Tracking::Tree::instance()->Fill();
 
  Tomography::Track ref(G4ThreeVector(0.,0.,0.),G4ThreeVector(0.,0.,-1.));
- Tomography::Track incoming(position[0],position[1]);
- Tomography::Track outgoing(position[2],position[3]);
+ Tomography::Track incoming(position[0],position[2]);
+ Tomography::Track outgoing(position[3],position[5]);
  double angleIncoming = CommonFunc::Functions::instance()->GetAngleInRadian(incoming,ref);
  double angleOutgoing = CommonFunc::Functions::instance()->GetAngleInRadian(outgoing,ref);
  double diff = angleOutgoing-angleIncoming;
