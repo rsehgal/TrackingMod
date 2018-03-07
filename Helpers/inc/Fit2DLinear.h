@@ -75,8 +75,9 @@ public:
 	void CalculateResiduals(std::vector<Tracking::Vector3D<double>> hitPointVect);
 	void PrintResiduals();
 
-
-
+	//Trying to get fitted track
+	std::vector<Tracking::Vector3D<double>> GetFittedTrack(std::vector<Tracking::Vector3D<double>> hitPointVect);
+	std::vector<double> GetFittedValue(std::vector<double> zVect);
 
 
 };

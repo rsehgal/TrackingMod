@@ -65,9 +65,11 @@ void EventProcessor::ProcessEvent(int evNo){
             fOutgoing.Set(tempVect[2],tempVect[3]);
     }
 
+/*
     Tomography::Fit2DLinear f;
     f.CalculateResiduals(tempVect);
     f.PrintResiduals();
+*/
 
 }
 
