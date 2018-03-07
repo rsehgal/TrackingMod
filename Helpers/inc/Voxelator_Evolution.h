@@ -105,6 +105,7 @@ public:
   TH3F* GetVoxelizedCount(){return histVoxelCount;}
   Vector3D<int> GetVoxelizedVolumeDim(){return fVoxelizedVolumeDim;}
   Vector3D<int> GetEachVoxelDim(){return fEachVoxelDim;}
+  bool IsGenuine(Tracking::Vector3D<double> pocaPt);
 
 
 
@@ -137,6 +138,10 @@ public:
   std::cout << "OutgoingHitPoint : " ;
   outGoingHitPt.Print();
 */
+
+  /*
+   * Function to detect if the point lie within the VoxelizedRegion
+   */
 
 
 };

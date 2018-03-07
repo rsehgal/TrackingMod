@@ -56,17 +56,26 @@ void EventHelper::CalculateScatterAngle(){
 	//std::cout << "ScatteringAngle from EventHELPER : " << fScatteringAngle << std::endl;
 }
 
+/*
+ * If point lie outside the voxelized region then it should be rejected
+ * there itself. This will make the processing faster
+ */
 void EventHelper::CalculateVoxel(){
 	int voxelNum = GetVoxelNum();
 	int voxNum = Voxel::IfVoxelExist(voxelNum);
     //std::cout<<"VoxNum : " << voxNum << std::endl;
-	if(voxNum < 0.){
-		fVoxel = new Voxel(fPocaPt,voxelNum);
+
+	//Checking if the POCA point lie within the Voxelized Region,
+	//If yes then only insert it in the desired Voxel.
+	if(Tomography::evolution::Voxelator::instance()->IsGenuine(fPocaPt)){
+		if(voxNum < 0.){
+			fVoxel = new Voxel(fPocaPt,voxelNum);
 		//oxel::InsertVoxel(new Voxel(fPocaPt,voxelNum),voxelNum);
-	}else{
+		}else{
 		//Voxel::GetVoxelVector()[voxNum]->Insert(fPocaPt,voxelNum);
-		fVoxel = Voxel::GetVoxelVector()[voxNum];
-		fVoxel->Insert(fPocaPt,voxelNum);
+			fVoxel = Voxel::GetVoxelVector()[voxNum];
+			fVoxel->Insert(fPocaPt,voxelNum);
+		}
 	}
 
 /*
