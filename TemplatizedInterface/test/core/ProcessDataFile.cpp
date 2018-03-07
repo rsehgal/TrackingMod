@@ -126,8 +126,8 @@ int main(int arc, char *argv[]){
 		outgoingHitPointVector.clear();
 
 #else
-		Tomography::Track incoming(hitPointVector[0],hitPointVector[3]);
-		Tomography::Track outgoing(hitPointVector[4],hitPointVector[7]);
+		Tomography::Track incoming(hitPointVector[0],hitPointVector[hitPointVector.size()/2-1]);
+		Tomography::Track outgoing(hitPointVector[hitPointVector.size()/2],hitPointVector[hitPointVector.size()-1]);
 #endif
 		Tomography::EventHelper u(incoming,outgoing);
 		//break;
