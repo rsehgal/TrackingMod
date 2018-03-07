@@ -25,6 +25,7 @@
 #include "SetupManager.h"
 #include <TH1F.h>
 #include <G4SystemOfUnits.hh>
+#include "Fit2DLinear.h"
 
 typedef Tomography::Properties Detector;
 
@@ -59,8 +60,11 @@ int main(int arc, char *argv[]){
 	//numOfEvents = 2;
 #define RECONSTRUCT
 #ifdef RECONSTRUCT
-	Tomography::evolution::Voxelator::Create(50*cm,50*cm,45*cm,10*cm,10*cm,9*cm);
+	Tomography::evolution::Voxelator::Create(50*cm,50*cm,12*cm,10*cm,10*cm,8*cm);
 #endif
+
+	Tomography::Fit2DLinear fitter;
+
 	for (int evNo = 0; evNo < numOfEvents; evNo++) {
 		std::cout << "=============== Event No : " << evNo << " =========================== " << std::endl;
 		eventProcessor.ProcessEvent(evNo);
@@ -77,13 +81,61 @@ int main(int arc, char *argv[]){
 		*/
 
 		std::vector<Tracking::Vector3D<double>> hitPointVector = eventProcessor.GetHitPointVector();
-		Tomography::Track incoming(hitPointVector[0],hitPointVector[2]);
-		Tomography::Track outgoing(hitPointVector[3],hitPointVector[5]);
+
+#define USE_FITTED_TRACK
+#ifdef USE_FITTED_TRACK
+		std::vector<Tracking::Vector3D<double>> incomingHitPointVector;
+		std::vector<Tracking::Vector3D<double>> outgoingHitPointVector;
+
+		int size = hitPointVector.size();
+		for(int i = 0 ; i < size ; i++){
+			if(i < size/2){
+				incomingHitPointVector.push_back(hitPointVector[i]);
+			}else{
+				outgoingHitPointVector.push_back(hitPointVector[i]);
+			}
+		}
+
+		std::vector<Tracking::Vector3D<double>> fittedIncomingHitPointVector = fitter.GetFittedTrack(incomingHitPointVector);
+		std::vector<Tracking::Vector3D<double>> fittedOutgoingHitPointVector = fitter.GetFittedTrack(outgoingHitPointVector);
+		Tomography::Track incoming(fittedIncomingHitPointVector[0],fittedIncomingHitPointVector[fittedIncomingHitPointVector.size()-1]);
+		Tomography::Track outgoing(fittedOutgoingHitPointVector[0],fittedOutgoingHitPointVector[fittedOutgoingHitPointVector.size()-1]);
+
+		for(int i = 0 ; i < fittedIncomingHitPointVector.size() ; i++){
+			std::cout << incomingHitPointVector[i].x() << "  " << incomingHitPointVector[i].y() << "  " << incomingHitPointVector[i].z() << "   ::  "
+					 << fittedIncomingHitPointVector[i].x() << "  " << fittedIncomingHitPointVector[i].y() << "  " << fittedIncomingHitPointVector[i].z() << std::endl;
+		}
+
+		for(int i = 0 ; i < fittedOutgoingHitPointVector.size() ; i++){
+			std::cout << outgoingHitPointVector[i].x() << "  " << outgoingHitPointVector[i].y() << "  " << outgoingHitPointVector[i].z() << "   ::  "
+					 << fittedOutgoingHitPointVector[i].x() << "  " << fittedOutgoingHitPointVector[i].y() << "  " << fittedOutgoingHitPointVector[i].z() << std::endl;
+		}
+
+/*
+
+		//Just for cross check with real hit points
+		if(evNo==10)
+			break;
+		else
+			continue;
+*/
+
+
+
+		incomingHitPointVector.clear();
+		outgoingHitPointVector.clear();
+
+#else
+		Tomography::Track incoming(hitPointVector[0],hitPointVector[3]);
+		Tomography::Track outgoing(hitPointVector[4],hitPointVector[7]);
+#endif
 		Tomography::EventHelper u(incoming,outgoing);
 		//break;
 		}else{
 			std::cout << "Event NOT Detected....." << std::endl;
 		}
+
+
 	}
 
 #ifdef RECONSTRUCT

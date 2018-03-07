@@ -122,6 +122,37 @@ void Fit2DLinear::PrintResiduals(){
 	}
 }
 
+std::vector<Tracking::Vector3D<double>> Fit2DLinear::GetFittedTrack(std::vector<Tracking::Vector3D<double>> hitPointVect){
+	std::vector<double> xVect, yVect, zVect;
+	for(int i = 0 ; i < hitPointVect.size() ; i++){
+		xVect.push_back(hitPointVect[i].x());
+		yVect.push_back(hitPointVect[i].y());
+		zVect.push_back(hitPointVect[i].z());
+	}
+
+	Fit(xVect,zVect);
+	std::vector<double> xValueFitted = GetFittedValue(zVect);
+
+	Fit(yVect,zVect);
+	std::vector<double> yValueFitted = GetFittedValue(zVect);
+
+	std::vector<Tracking::Vector3D<double>> fittedHitValueVector;
+	for(int i = 0 ; i < hitPointVect.size() ; i++){
+		fittedHitValueVector.push_back(Tracking::Vector3D<double>(xValueFitted[i], yValueFitted[i], zVect[i] ));
+	}
+	return fittedHitValueVector;
+
+}
+
+std::vector<double> Fit2DLinear::GetFittedValue(std::vector<double> zVect){
+	std::vector<double> fitValueVector;
+	fitValueVector.clear();
+	for(int i = 0 ; i < zVect.size() ; i++){
+		fitValueVector.push_back((-fC - fB*zVect[i])/fA);
+	}
+	return fitValueVector;
+}
+
 Fit2DLinear::~Fit2DLinear() {
 	// TODO Auto-generated destructor stub
 }
