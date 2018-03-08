@@ -31,9 +31,6 @@ if (NOT GNU AND NOT Clang AND NOT Intel)
   message(WARNING "Unsupported compiler. Build will likely fail.")
 endif()
 
-#set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${PROJECT_SOURCE_DIR}/cmake/modules)
-
-#include(MacroUtilities)
 ################################################################################
 
 # see if we have CCACHE ( to avoid recompilation on branch switches )
@@ -44,6 +41,15 @@ if(CCACHE_FOUND)
   set_property(GLOBAL PROPERTY RULE_LAUNCH_LINK ccache)
 endif(CCACHE_FOUND)
 
+option(EIGEN "Use Eigen library for Matrix operations" OFF)
+
+
+if(EIGEN)
+add_definitions(-DUSE_EIGEN)
+endif(EIGEN)
+
+include_directories(/home/rsehgal/Tomo/TrackingMod)
+
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
 file(GLOB headersGMM ${headersGMM} ${CMAKE_CURRENT_SOURCE_DIR}/include/*.h )
 file(GLOB sourcesGMM ${sourcesGMM} ${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp )
@@ -53,7 +59,11 @@ include_directories(${EIGEN_INCLUDE_DIR})
 
 #add_library(gnuplot SHARED ${headersGnuplot} ${sourcesGnuplot})
 add_executable(TestGaussian ${CMAKE_CURRENT_SOURCE_DIR}/test/TestGaussian.cpp ${sourcesGMM})
+target_link_libraries (TestGaussian Eigen3::Eigen)
 #target_link_libraries(TestGnuplot gnuplot)
 
 add_executable (TestEigen ${CMAKE_CURRENT_SOURCE_DIR}/test/TestEigen.cpp)
 target_link_libraries (TestEigen Eigen3::Eigen)
+
+add_executable (TestGmm ${CMAKE_CURRENT_SOURCE_DIR}/test/TestGmm.cpp ${sourcesGMM})
+target_link_libraries (TestGmm Eigen3::Eigen)
