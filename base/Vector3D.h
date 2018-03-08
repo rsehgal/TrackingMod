@@ -49,7 +49,12 @@ class Vector3D{
 private:
 	Type vec[3];
         double fColor;
+        std::vector<double> fGaussProb;
 public:
+    void SetProbability(int gaussNum, double probValue){
+    	fGaussProb[gaussNum] = probValue;
+    }
+
 	Vector3D(){
 		vec[0]=0.;
 		vec[1]=0.;
