@@ -31,8 +31,8 @@ public:
 	double GetMean() const {return fMean;}
 	double GetCovars() const {return fCovars;}
 	double GetWeight() const {return fWeight;}
-	void PrintMean() const {std::cout << fMean << std::endl;}
-	void PrintCovars() const {std::cout << fCovars << std::endl;}
+	void PrintMean() const {std::cout << "Mean : "<< fMean << std::endl;}
+	void PrintCovars() const {std::cout << "Covars : " << fCovars << std::endl;}
 	void UpdateWeight(double weight){fWeight = weight;}
 	void UpdateMean(double mean) {fMean = mean;}
 	void UpdateCovars(double covars) {fCovars = covars;}

@@ -40,15 +40,33 @@ public:
 	int GetNumOfGaussians() const {return fNumOfGaussians;}
 	std::vector<Gaussian1D*> GetGaussianVector() const {return fGaussianVector;}
 
+	void SetData(std::vector<double> data){
+		for(int i = 0 ; i < data.size() ; i++){
+			X x;
+			x.sX = data[i];
+			for(int j = 0 ; j < fNumOfGaussians ; j++)
+				x.sGaussProb.push_back(0.);
+			fPointVector.push_back(x);
+		}
+	}
+
+	void Start(){
+		DoExpectation();
+		DoMaximization();
+	}
+
 	void DoExpectation(){
+		std::cout<<"Doing Expectation............. Point Vector size : " << fPointVector.size() << std::endl;
 		for(int i= 0 ; i < fPointVector.size() ; i++){
+			//std::cout << "Processing Point : " << i << std::endl;
 			for(int j = 0 ; j < fGaussianVector.size() ; j++){
-				fPointVector[i].SetProbability(j,fGaussianVector[i]->CalculateProbability(fPointVector[i].sX));
+				fPointVector[i].SetProbability(j,fGaussianVector[j]->CalculateProbability(fPointVector[i].sX));
 			}
 		}
 	}
 
 	void DoMaximization(){
+		std::cout<<"Doing Maximization............. @@@@@@@@ " << std::endl;
 		/* Here basically we have to update the following three parameters:
 		 * 1) fWeight
 		 * 2) fMean
@@ -57,9 +75,9 @@ public:
 
 		std::vector<double> sum, sumProbX, sumProbDev2;
 		for(int i = 0 ; i < fNumOfGaussians ; i++){
-			sum[i] = 0.;
-			sumProbX[i] = 0.;
-			sumProbDev2[i] = 0.;
+			sum.push_back(0.);
+			sumProbX.push_back(0.);
+			sumProbDev2.push_back(0.);
 		}
 
 		for(int i = 0 ; i < fPointVector.size() ; i++){
