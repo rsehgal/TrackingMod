@@ -43,7 +43,7 @@ public:
 		double pw = (-0.5 * devMean*devMean) / (fCovars*fCovars);
 		double numer = std::exp(pw);
 		prob = numer/deno;
-		return prob;
+		return prob*fWeight;
 	}
 
 	virtual ~Gaussian1D(){}

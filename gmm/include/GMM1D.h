@@ -19,6 +19,7 @@ struct X{
     void SetProbability(int gaussNum, double probValue){
     	sGaussProb[gaussNum] = probValue;
     }
+    std::vector<double>  GetProbabilityVector()const {return sGaussProb;}
 };
 
 class GMM1D {
@@ -45,10 +46,48 @@ public:
 				fPointVector[i].SetProbability(j,fGaussianVector[i]->CalculateProbability(fPointVector[i].sX));
 			}
 		}
-
 	}
-	void DoMaximization(){
 
+	void DoMaximization(){
+		/* Here basically we have to update the following three parameters:
+		 * 1) fWeight
+		 * 2) fMean
+		 * 3) fCovars
+		 */
+
+		std::vector<double> sum, sumProbX, sumProbDev2;
+		for(int i = 0 ; i < fNumOfGaussians ; i++){
+			sum[i] = 0.;
+			sumProbX[i] = 0.;
+			sumProbDev2[i] = 0.;
+		}
+
+		for(int i = 0 ; i < fPointVector.size() ; i++){
+			std::vector<double> probVect = fPointVector[i].GetProbabilityVector();
+			for(int j = 0 ; j < fNumOfGaussians ; j++){
+				sum[j] += probVect[j];
+				sumProbX[j] += probVect[j] * fPointVector[i].sX;
+				sumProbDev2[j] += probVect[j] * (fPointVector[i].sX-fGaussianVector[j]->GetMean())*(fPointVector[i].sX-fGaussianVector[j]->GetMean());
+			}
+		}
+
+
+		std::vector<double> updatedWeightVector, updatedMeanVector, updatedCovarsVector;
+		for(int j = 0 ; j < fNumOfGaussians ; j++){
+
+			//Maximization of fWeight
+			//updatedWeightVector[j] = sum[j]/fPointVector.size();
+			fGaussianVector[j]->UpdateWeight(sum[j]/fPointVector.size());
+
+			//Maximization of fMean
+			//updatedMeanVector[j] = sumProbX[j]/sum[j];
+			fGaussianVector[j]->UpdateMean(sumProbX[j]/sum[j]);
+
+			//Maximization of fCovars
+			//updatedCovarsVector[j] = sumProbDev2[j]/sum[j];
+			fGaussianVector[j]->UpdateCovars(sumProbDev2[j]/sum[j]);
+
+		}
 	}
 
 
