@@ -13,6 +13,7 @@
 
 namespace Tomography {
 
+
 Gaussian::Gaussian() {
 	// TODO Auto-generated constructor stub
 /*
@@ -239,6 +240,25 @@ double Gaussian::CalculateProbability(double x, double y, double z){
 
 	return prob;
 }
+
+
+#ifdef USE_EIGEN
+double Gaussian::CalculateProbability(Eigen::VectorXd dataSample){
+
+	double deno = std::pow(2*M_PI,fDim/2)*std::sqrt(std::fabs(CalculateDeterminant()));
+
+	Eigen::VectorXd devMean	= (dataSample-fMean);
+//	std::cout <<"No. of Row of fMean : " << fMean.rows() <<" : No. of Columns of fMean : " << fMean.cols() << std::endl;
+//	std::cout <<"No. of Row of devMean : " << devMean.rows() <<" : No. of Columns of devMean : " << devMean.cols() << std::endl;
+
+	double pw = -0.5 * devMean.transpose() * fCovars.inverse() * devMean ;
+	double numer = std::exp(pw);
+	double prob = numer/deno;
+
+	return prob;
+
+}
+#endif
 
 Gaussian::~Gaussian() {
 	// TODO Auto-generated destructor stub
