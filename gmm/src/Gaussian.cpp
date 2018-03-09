@@ -214,7 +214,7 @@ double Gaussian::CalculateProbability(double x, double y){
 
 #endif
 
-	return prob;
+	return prob*fWeight;
 }
 
 double Gaussian::CalculateProbability(double x, double y, double z){
@@ -238,7 +238,7 @@ double Gaussian::CalculateProbability(double x, double y, double z){
 
 #endif
 
-	return prob;
+	return prob*fWeight;
 }
 
 
@@ -255,7 +255,7 @@ double Gaussian::CalculateProbability(Eigen::VectorXd dataSample){
 	double numer = std::exp(pw);
 	double prob = numer/deno;
 
-	return prob;
+	return prob*fWeight;
 
 }
 #endif

@@ -46,6 +46,11 @@ void GMM::DoExpectation(){
 }
 
 void GMM::DoMaximization(){
+	/* Here basically we have to update the following three parameters:
+	 * 1) fWeight
+	 * 2) fMean
+	 * 3) fCovars
+	 */
 
 }
 

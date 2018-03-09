@@ -102,6 +102,9 @@ public:
  	void SetColor(double color){
 		fColor=color;
  	}
+ 	TRACKING_INLINE
+	std::vector<double>  GetProbabilityVector()const {return fGaussProb;}
+
 	TRACKING_INLINE
 	double GetColor()const {return fColor;}
 	TRACKING_INLINE
