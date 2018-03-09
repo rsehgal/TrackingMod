@@ -33,18 +33,20 @@ public:
 	double GetWeight() const {return fWeight;}
 	void PrintMean() const {std::cout << "Mean : "<< fMean << std::endl;}
 	void PrintCovars() const {std::cout << "Covars : " << fCovars << std::endl;}
+	void PrintWeight() const {std::cout << "Weight : " << fWeight << std::endl;}
 	void UpdateWeight(double weight){fWeight = weight;}
 	void UpdateMean(double mean) {fMean = mean;}
 	void UpdateCovars(double covars) {fCovars = covars;}
 	double CalculateProbability(double x){
 		double prob = 0.;
-		double deno = std::sqrt(2*M_PI)*fCovars;
+		double deno = std::sqrt(2*M_PI*fCovars);
 		double devMean = (x-fMean);
-		double pw = (-0.5 * devMean*devMean) / (fCovars*fCovars);
+		double pw = (-0.5 * devMean*devMean) / fCovars ;// (fCovars*fCovars);
 		double numer = std::exp(pw);
 		prob = numer/deno;
 		return prob*fWeight;
 	}
+
 
 	virtual ~Gaussian1D(){}
 };

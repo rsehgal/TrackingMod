@@ -55,12 +55,28 @@ public:
 		DoMaximization();
 	}
 
+	//The return value will be used by Expectation function of GMM
+	double CalculateGaussianProbability(int gaussNum, double val){
+		double prob = fGaussianVector[gaussNum]->CalculateProbability(val);
+		return prob;
+	}
+
 	void DoExpectation(){
 		std::cout<<"Doing Expectation............. Point Vector size : " << fPointVector.size() << std::endl;
+
+		std::vector<double> probVector;
+
 		for(int i= 0 ; i < fPointVector.size() ; i++){
+			probVector.clear();
+			double denoSum = 0.;
+			for(int j = 0 ; j < fNumOfGaussians ; j++){
+				probVector.push_back(CalculateGaussianProbability(j,fPointVector[i].sX));
+				denoSum += probVector[j];
+			}
 			//std::cout << "Processing Point : " << i << std::endl;
 			for(int j = 0 ; j < fGaussianVector.size() ; j++){
-				fPointVector[i].SetProbability(j,fGaussianVector[j]->CalculateProbability(fPointVector[i].sX));
+				//fPointVector[i].SetProbability(j,fGaussianVector[j]->CalculateProbability(fPointVector[i].sX));
+				fPointVector[i].SetProbability(j,probVector[j]/denoSum);
 			}
 		}
 	}
