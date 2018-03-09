@@ -51,6 +51,7 @@ private:
 
 public:
 	Gaussian();
+
 	Gaussian(double *mean, double **covars);
 
 	Gaussian(double mean[2], double covars[2][2]);
@@ -72,6 +73,9 @@ public:
 	void UpdateWeight(double weight){fWeight = weight;}
 	void UpdateMean(Eigen::VectorXd mean) {fMean = mean;}
 	void UpdateCovars(Eigen::MatrixXd covars) {fCovars = covars;}
+
+	void SetMean(Eigen::VectorXd mean) {fMean = mean;}
+	void SetCovars(Eigen::MatrixXd covars) {fCovars = covars;}
 #endif
 
 	virtual ~Gaussian();
@@ -103,7 +107,9 @@ public:
 	//point belonging to a Gaussian.
 	double CalculateProbability(double x, double y);
 	double CalculateProbability(double x, double y,double z);
-
+#ifdef USE_EIGEN
+	double CalculateProbability(Eigen::VectorXd dataSample);
+#endif
 
 };
 

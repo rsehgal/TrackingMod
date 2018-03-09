@@ -23,7 +23,7 @@ private:
 
 	std::vector<Tracking::Vector3D<double>> fPointVector;
 
-	//Lets have a std::vector of Gaussians ie.
+	//Lets have a std::vector of Gaussian ie.
 	std::vector<Gaussian*> fGaussianVector;
 
 
