@@ -79,13 +79,13 @@ Gaussian::Gaussian(double mean[2], double covars[2][2]){
 	CalculateDeterminant();
 }
 
-Gaussian::Gaussian(double mean[2], double covars[2][2],double weight){
-	Gaussian(mean,covars);
+Gaussian::Gaussian(double mean[2], double covars[2][2],double weight) : Gaussian(mean,covars){
+
 	fWeight = weight;
 }
 
-Gaussian::Gaussian(double mean[3], double covars[3][3], double weight){
-	Gaussian(mean,covars);
+Gaussian::Gaussian(double mean[3], double covars[3][3], double weight) : Gaussian(mean,covars){
+
 	fWeight = weight;
 }
 
@@ -94,18 +94,20 @@ Gaussian::Gaussian(double mean[3], double covars[3][3], double weight){
 Gaussian::Gaussian(Eigen::VectorXd mean, Eigen::MatrixXd covars){
 	//std::cout << "Size from another constructor : " << mean.size() << std::endl;
 	fDim = mean.size();
+//	std::cout << "fDim from Gaussian Constructor : " << fDim << std::endl;
 	fMean.resize(fDim);
 	fMean = mean;
-	//std::cout << "Mean from Another Constructor : " << std::endl << fMean << std::endl;
+//	std::cout << "Mean from Another Constructor : " << std::endl << fMean << std::endl;
 	fCovars.resize(fDim,fDim);
 	fCovars = covars;
-	std::cout << "Covariance from Another Constructor : " << std::endl << fCovars << std::endl;
+//	std::cout << "Covariance from Another Constructor : " << std::endl << fCovars << std::endl;
+//	std::cout <<"From Another Constructor : No. of Row of fMean : " << fMean.rows() <<" : No. of Columns of fMean : " << fMean.cols() << std::endl;
 }
 
-Gaussian::Gaussian(Eigen::VectorXd  mean, Eigen::MatrixXd  covars, double weight){
+Gaussian::Gaussian(Eigen::VectorXd  mean, Eigen::MatrixXd  covars, double weight) : Gaussian(mean,covars){
 	//std::cout << "Mean from Gaussian : " << std::endl << mean << std::endl;
 	//std::cout << "Covariance from Gaussian : " << std::endl << covars << std::endl;
-	Gaussian(mean,covars);
+//	Gaussian(mean,covars);
 	fWeight = weight;
 }
 #endif
@@ -148,6 +150,7 @@ void Gaussian::PrintMean() const{
 		std::cout << fMean[i] << " , " ;
 	std::cout << std::endl;
 #else
+	std::cout << "Mean Size : " << fMean.size() << std::endl;
 	std::cout << fMean << std::endl;
 #endif
 }
@@ -218,9 +221,16 @@ double Gaussian::CalculateProbability(double x, double y, double z){
 #ifndef USE_EIGEN
 
 #else
-	Eigen::Vector3d X(x,y,z);
+	Eigen::VectorXd X;// << x , y , z ;
+	X.resize(3);
+	X << x , y , z;
+
 	double deno = 2*M_PI*std::sqrt(2*M_PI)*std::sqrt(std::fabs(CalculateDeterminant()));
-	Eigen::Vector3d devMean = (X-fMean);
+
+	Eigen::VectorXd devMean	= (X-fMean);
+//	std::cout <<"No. of Row of fMean : " << fMean.rows() <<" : No. of Columns of fMean : " << fMean.cols() << std::endl;
+//	std::cout <<"No. of Row of devMean : " << devMean.rows() <<" : No. of Columns of devMean : " << devMean.cols() << std::endl;
+
 	double pw = -0.5 * devMean.transpose() * fCovars.inverse() * devMean ;
 	double numer = std::exp(pw);
 	prob = numer/deno;

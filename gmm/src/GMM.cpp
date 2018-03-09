@@ -22,20 +22,13 @@ GMM::GMM(int numOfGaussians, int dimension){
 
 	//Filling the MeanVector and CovarianceMatrix
 	for(int i = 0 ; i < fNumOfGaussians ; i++){
+
 		Eigen::VectorXd mean;
 		mean.resize(fDimension);
 		mean = InitializeMean();
 		Eigen::MatrixXd covars;
 		covars.resize(fDimension,fDimension);
 		covars = InitializeCovars();
-		//fMeanVector.push_back(mean);
-		//fCovarsVector.push_back(covars);
-
-		//fGaussianVector.push_back(new Gaussian(mean,covars,1./fNumOfGaussians));
-		//std::cout << "--------------------------------------------------------" << std::endl;
-		//std::cout<<"Mean from constructor : " << std::endl << InitializeMean() << std::endl;
-		//fGaussianVector.push_back(new Gaussian(InitializeMean(),InitializeCovars(),1./fNumOfGaussians));
-		//(new Gaussian(mean,covars,1./fNumOfGaussians))->PrintMean();
 		fGaussianVector.push_back(new Gaussian(mean,covars,1./fNumOfGaussians));
 	}
 

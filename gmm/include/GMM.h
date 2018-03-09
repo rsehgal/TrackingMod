@@ -23,11 +23,7 @@ private:
 
 	std::vector<Tracking::Vector3D<double>> fPointVector;
 
-	//size of these should be equal to the number of gaussians used in gmm
-	//std::vector<Eigen::VectorXd> fMeanVector;
-	//std::vector<Eigen::MatrixXd> fCovarsVector;
-
-	//Lets have a std::vector of Gaussian.
+	//Lets have a std::vector of Gaussians ie.
 	std::vector<Gaussian*> fGaussianVector;
 
 
