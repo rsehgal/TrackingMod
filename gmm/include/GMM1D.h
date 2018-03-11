@@ -10,6 +10,7 @@
 
 #include "Gaussian1D.h"
 #include "vector"
+ 
 
 namespace Tomography {
 
@@ -29,12 +30,36 @@ private:
 	//Lets have a std::vector of Gaussian1D ie.
 	std::vector<Gaussian1D*> fGaussianVector;
 
+	//These members are required for Sampling
+	double fNumOfSamples;
+	std::vector<double> fWeightVector;
+	std::vector<double> fCovarsVector;
+	std::vector<double> fMeanVector;
+	std::vector<double> fSamplesVector;
+
 
 public:
+
 	GMM1D(){}
 	GMM1D(int numofGaussians): fNumOfGaussians(numofGaussians){
 		for(int i = 0 ; i < fNumOfGaussians ; i++)
 			fGaussianVector.push_back(new Gaussian1D(0.,0.,1./fNumOfGaussians));
+	}
+
+	std::vector<double> Sample(int totalNumOfSamples, std::vector<double> meanVector, std::vector<double> covarsVector,std::vector<double> weightVector){
+		//Setting parameter of different gaussians
+		for(int i = 0 ; i < fNumOfGaussians ; i++){
+			fGaussianVector[i]->SetMean(meanVector[i]);
+			fGaussianVector[i]->SetCovars(covarsVector[i]);
+			//fGaussianVector[i]->SetWeight(weightVector[i]);
+
+			int numOfSamples = weightVector[i] * totalNumOfSamples;
+			std::vector<double> samplesVectorOfGaussian = fGaussianVector[i]->Samples(numOfSamples);
+			fSamplesVector.insert( fSamplesVector.end(), samplesVectorOfGaussian.begin(), samplesVectorOfGaussian.end() );
+			
+		}
+
+		return fSamplesVector;
 	}
 
 	int GetNumOfGaussians() const {return fNumOfGaussians;}
@@ -48,6 +73,16 @@ public:
 				x.sGaussProb.push_back(0.);
 			fPointVector.push_back(x);
 		}
+	}
+
+	void PrintPointVector()const {
+	    for(int i = 0 ; i < fPointVector.size() ; i++){
+		std::cout << "Value : " << fPointVector[i].sX ;
+		for(int j = 0 ; j < fNumOfGaussians ; j++) {
+		    std::cout << " : Prob Gauss : " << j << " : " << fPointVector[i].sGaussProb[j];
+		}
+		std::cout << std::endl;
+	    }
 	}
 
 	void Start(){

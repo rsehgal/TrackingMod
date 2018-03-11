@@ -10,6 +10,9 @@
 
 #include <cmath>
 #include <iostream>
+#include <fstream>
+#include "TRandom3.h"
+#include <cstdlib>
 
 namespace Tomography {
 
@@ -18,10 +21,13 @@ private:
 	double fMean;
 	double fCovars;
 	double fWeight;
+	double fSigma; //basically used for sampling
+
+	
 
 public:
 	Gaussian1D(){}
-	Gaussian1D(double mean, double covars):fMean(mean), fCovars(covars){}
+	Gaussian1D(double mean, double covars):fMean(mean), fCovars(covars){ fSigma = std::sqrt(fCovars);}
 	Gaussian1D(double mean, double covars,double weight):Gaussian1D(mean,covars){
 		 fWeight = weight;
 	}
@@ -46,6 +52,28 @@ public:
 		prob = numer/deno;
 		return prob*fWeight;
 	}
+
+	double Sample() {
+		TRandom3 fSampler;
+		return fSampler.Gaus(fMean,fSigma);
+	}
+
+	std::vector<double> Samples(int numOfSamples){
+		gRandom = new TRandom3();
+		std::vector<double> sampleVector;
+		std::ofstream outfile("data.txt",std::ios::app);
+		for(int i = 0 ; i < numOfSamples ; i++){
+			//fSampler.SetSeed(rand()+i);
+			double val = gRandom->Gaus(fMean,fSigma);
+			outfile << val << std::endl;
+			std::cout<< "Sample : " << val << std::endl;
+			sampleVector.push_back(val);
+		}
+		outfile.close();
+
+		return sampleVector;
+	}
+
 
 
 	virtual ~Gaussian1D(){}
