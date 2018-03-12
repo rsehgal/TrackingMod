@@ -52,7 +52,7 @@ if(EIGEN)
 add_definitions(-DUSE_EIGEN)
 endif(EIGEN)
 
-include_directories(/home/raman/TrackingMod)
+include_directories(/home/rsehgal/Tomo/TrackingMod)
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
 file(GLOB headersGMM ${headersGMM} ${CMAKE_CURRENT_SOURCE_DIR}/include/*.h )
@@ -74,3 +74,9 @@ target_link_libraries (TestEigen Eigen3::Eigen)
 
 add_executable (TestGmm ${CMAKE_CURRENT_SOURCE_DIR}/test/TestGmm.cpp ${sourcesGMM})
 target_link_libraries (TestGmm Eigen3::Eigen ${ROOT_LIBRARIES})
+
+add_executable (TestGmmND ${CMAKE_CURRENT_SOURCE_DIR}/test/TestGmmND.cpp ${sourcesGMM})
+target_link_libraries (TestGmmND Eigen3::Eigen ${ROOT_LIBRARIES})
+
+add_executable (TestGmm2D ${CMAKE_CURRENT_SOURCE_DIR}/test/TestGmm2D.cpp ${sourcesGMM})
+target_link_libraries (TestGmm2D Eigen3::Eigen ${ROOT_LIBRARIES})
