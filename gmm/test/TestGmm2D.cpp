@@ -63,6 +63,18 @@ int main(){
 	gmm2->GetGaussianVector()[0]->SetMean(mean);
 	gmm2->GetGaussianVector()[0]->SetCovars(covars);
 
+/*
+	mean(0) = -2.5;
+	mean(1) = -4.9;
+	covars(0,0) = 1.5;
+	covars(0,1) = 1.5;
+	covars(1,0) = 0.2;
+	covars(1,1) = 0.5;
+
+	gmm2->GetGaussianVector()[1]->SetMean(mean);
+	gmm2->GetGaussianVector()[1]->SetCovars(covars);
+*/
+
 
 	std::cout<<"----------- STARTED WITH --------------" << std::endl;
 	Print(gmm2);
@@ -81,7 +93,7 @@ int main(){
 	}
 
 	gmm2->SetData(dataVector);
-	for(int i = 0 ; i < 10 ; i++){
+	for(int i = 0 ; i < 20 ; i++){
 		std::cout << "-------------- Iteration no : "<< (i+1) <<" -------------------" << std::endl;
 		gmm2->Start();
 		std::cout<<"GMM Processing Done.............." << std::endl;
@@ -89,6 +101,27 @@ int main(){
 	}
 
 	std::cout << "====================================================================" << std::endl;
+
+	std::cout << "----- Probability calculation using generated model ----------------" << std::endl;
+	data(0) = 10.;
+	data(1) = 0.;
+	for(int i = 0 ;  i < 2 ; i++){
+		std::cout <<"Prob w.r.t gaussian : " << (i+1) << " : " << gmm2->GetGaussianVector()[i]->CalculateProbability(data) << std::endl;
+	}
+	std::cout<<"----- Trying another point that lie in one of the guassians------" <<std::endl;
+	data(0) = -2.;
+	data(1) = 1.;
+	for(int i = 0 ;  i < 2 ; i++){
+		std::cout <<"Prob w.r.t gaussian : " << (i+1) << " : " << gmm2->GetGaussianVector()[i]->CalculateProbability(data) << std::endl;
+	}
+
+	std::cout<<"----- Trying another point that lie in one of the guassians------" <<std::endl;
+		data(0) = 0.;
+		data(1) = 0.;
+		for(int i = 0 ;  i < 2 ; i++){
+			std::cout <<"Prob w.r.t gaussian : " << (i+1) << " : " << gmm2->GetGaussianVector()[i]->CalculateProbability(data) << std::endl;
+		}
+
 
 
 	return 0;
