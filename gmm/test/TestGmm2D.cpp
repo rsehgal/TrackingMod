@@ -49,7 +49,7 @@ int main(){
 
 	std::cout<<"*******************************************************************" << std::endl;
 
-	Tomography::GMM2D *gmm2 = new Tomography::GMM2D(mean,covars,2);
+	Tomography::GMM2D *gmm2 = new Tomography::GMM2D(mean,covars,3);
 //	std::cout << "Mean : " << std::endl << gmm2->GetGaussianVector()[0]->GetMean() << std::endl;
 //	std::cout << "Covars : " << std::endl << gmm2->GetGaussianVector()[0]->GetCovars() << std::endl;
 
@@ -63,17 +63,17 @@ int main(){
 	gmm2->GetGaussianVector()[0]->SetMean(mean);
 	gmm2->GetGaussianVector()[0]->SetCovars(covars);
 
-/*
-	mean(0) = -2.5;
-	mean(1) = -4.9;
-	covars(0,0) = 1.5;
-	covars(0,1) = 1.5;
-	covars(1,0) = 0.2;
-	covars(1,1) = 0.5;
+
+	mean(0) = 5.0;
+	mean(1) = 6.9;
+	covars(0,0) = 5.5;
+	covars(0,1) = 5.5;
+	covars(1,0) = 6.2;
+	covars(1,1) = 6.5;
 
 	gmm2->GetGaussianVector()[1]->SetMean(mean);
 	gmm2->GetGaussianVector()[1]->SetCovars(covars);
-*/
+
 
 
 	std::cout<<"----------- STARTED WITH --------------" << std::endl;
@@ -82,7 +82,7 @@ int main(){
 	//Reading data and filling std::vector
 	std::vector<Eigen::Vector2d> dataVector;
 	std::ifstream infile("gauss2D.txt");
-	int count = 50000;
+	int count = 70000;
 	double valX = 0., valY = 0.;
 	while(count){
 		infile >> valX >> valY;
@@ -105,22 +105,32 @@ int main(){
 	std::cout << "----- Probability calculation using generated model ----------------" << std::endl;
 	data(0) = 10.;
 	data(1) = 0.;
-	for(int i = 0 ;  i < 2 ; i++){
+	int numOfGaussians = gmm2->GetNumOfGaussians();
+	for(int i = 0 ;  i < numOfGaussians ; i++){
 		std::cout <<"Prob w.r.t gaussian : " << (i+1) << " : " << gmm2->GetGaussianVector()[i]->CalculateProbability(data) << std::endl;
 	}
 	std::cout<<"----- Trying another point that lie in one of the guassians------" <<std::endl;
 	data(0) = -2.;
 	data(1) = 1.;
-	for(int i = 0 ;  i < 2 ; i++){
+	for(int i = 0 ;  i < numOfGaussians ; i++){
 		std::cout <<"Prob w.r.t gaussian : " << (i+1) << " : " << gmm2->GetGaussianVector()[i]->CalculateProbability(data) << std::endl;
 	}
 
 	std::cout<<"----- Trying another point that lie in one of the guassians------" <<std::endl;
 		data(0) = 0.;
 		data(1) = 0.;
-		for(int i = 0 ;  i < 2 ; i++){
+		for(int i = 0 ;  i < numOfGaussians ; i++){
 			std::cout <<"Prob w.r.t gaussian : " << (i+1) << " : " << gmm2->GetGaussianVector()[i]->CalculateProbability(data) << std::endl;
 		}
+
+	std::cout<<"----- Trying another point that lie in one of the guassians------" <<std::endl;
+		data(0) = -5.76434;
+		data(1) = 10.7713;
+		for(int i = 0 ;  i < numOfGaussians ; i++){
+			std::cout <<"Prob w.r.t gaussian : " << (i+1) << " : " << gmm2->GetGaussianVector()[i]->CalculateProbability(data) << std::endl;
+		}
+
+	gmm2->ApplyFilteration();
 
 
 

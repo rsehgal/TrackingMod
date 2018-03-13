@@ -33,6 +33,15 @@ int main(){
 	outfile << valX << "  " << valY << std::endl;
   }
 
+  for(int i = 0 ; i < 20000 ; i++){
+
+  	double valX = r.Uniform(-10.,20.);
+  	double valY = r.Uniform(-10.,20.);
+          //std::cout << val << std::endl;
+  	outfile << valX << "  " << valY << std::endl;
+    }
+
+
   }
 /*
   for(int i = 0 ; i < 35000 ; i++){

@@ -49,6 +49,30 @@ public:
 		}
 	}
 
+	void ApplyFilteration(){
+		std::ofstream  outfile("filtered.txt");
+		for(int i = 0 ; i < fPointVector.size() ; i++){
+			std::cout << "Point : " << fPointVector[i].sX.transpose() << " : Probs : ";
+			double totalProb = 0.;
+			for(int j = 0 ; j < fNumOfGaussians ; j++){
+				totalProb += fPointVector[i].sGaussProb[j];
+				std::cout << fPointVector[i].sGaussProb[j] << " : ";
+			}
+
+			//if(fPointVector[i].sGaussProb[0] > 0.80)
+			if(0)
+				continue;
+			else{
+				//Getting the index of maximum probability gaussian.
+				int maxElementIndex = std::max_element(fPointVector[i].sGaussProb.begin(),fPointVector[i].sGaussProb.end()) - fPointVector[i].sGaussProb.begin();
+				outfile << fPointVector[i].sX(0) << " " << fPointVector[i].sX(1) << " " << (maxElementIndex+2) << std::endl;
+			}
+
+			std::cout<<"Total : "<< totalProb << std::endl;
+		}
+		outfile.close();
+	}
+
 	void Start(){
 		DoExpectation();
 		DoMaximization();
