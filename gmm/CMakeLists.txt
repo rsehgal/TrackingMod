@@ -80,3 +80,6 @@ target_link_libraries (TestGmmND Eigen3::Eigen ${ROOT_LIBRARIES})
 
 add_executable (TestGmm2D ${CMAKE_CURRENT_SOURCE_DIR}/test/TestGmm2D.cpp ${sourcesGMM})
 target_link_libraries (TestGmm2D Eigen3::Eigen ${ROOT_LIBRARIES})
+
+add_executable (TestGmm3D ${CMAKE_CURRENT_SOURCE_DIR}/test/TestGmm3D.cpp ${sourcesGMM})
+target_link_libraries (TestGmm3D Eigen3::Eigen ${ROOT_LIBRARIES})
