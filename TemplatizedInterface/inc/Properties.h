@@ -137,7 +137,7 @@ public:
   void GetX_Y_And_ClusterHistograms();
   void GetHitPlot();
   void GetHitPlot3D();
-  void GetHitPlot3D_V2();
+  void GetHitPlot3D_V2(int twoOrThreeD=3);
   TH2F* GetStripsHitPlot3D();
   TH1F* GetAngularDistributionFromScintillators();
   Tracking::Vector3D<double> GetStripCoordinate(int x, int y, int z);
@@ -171,6 +171,8 @@ public:
 			                            Tracking::Global::GenRandomDet(-fLength/2.,fLength/2.),
 										fZPos);
   }
+
+  void WriteHitInfoToFile();
 
 #if(0)
  void Print(){

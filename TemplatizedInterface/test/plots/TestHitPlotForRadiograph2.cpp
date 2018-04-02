@@ -31,7 +31,7 @@ int main(int argc, char *argv[]) {
   std::string temp_str = std::to_string(numd-1);
   std::string daqinfofile = temp_str;
   temp_str += ".root";
-  int clusterSize = 2;
+  int clusterSize = 1;
 
 
 #ifdef INTERACTIVE
@@ -46,14 +46,18 @@ int main(int argc, char *argv[]) {
   std::vector<int> moduleVector = detectorMap->GetModuleVector();
   std::vector<double> zcoordinateVector = detectorMap->GetZCoordinateVector();
 
+/*
   for(int i = 0 ; i < detectorNamesVector.size()-1; i++){
     std::cout << "Name of Detector : " << (i+1) << " : " << detectorNamesVector[i] << std::endl;
     Detector *rpc = new GlassRpc(moduleVector[i], detectorNamesVector[i], zcoordinateVector[i], startChannelVector[i]);
     rpc->SetClusterSize(clusterSize);
-    rpc->GetHitPlot();
-    rpc->GetHitPlot3D_V2();
+    //rpc->GetHitPlot();
+
+    rpc->GetHitPlot3D_V2(2);
+    rpc->GetHitPlot3D_V2(3);
     rpc->GetX_Y_And_ClusterHistograms();
     rpc->GetStripProfile();
+    rpc->WriteHitInfoToFile();
     delete rpc;
   }
 
@@ -63,6 +67,7 @@ int main(int argc, char *argv[]) {
   SetupManager::instance()->Register(trgPlanes);
   //TCanvas *cPattern = new TCanvas("cPattern", "cPattern", 200, 10, 700, 500);
   trgPlanes->GetStripsHitPlot3D();//->Draw("LEGO2");
+*/
 
   detectorMap->ReadDaqInfo(daqinfofile);
   detectorMap->PrintEfficiencyVector();

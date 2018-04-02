@@ -29,7 +29,10 @@ public:
 	Gaussian1D(){}
 	Gaussian1D(double mean, double covars):fMean(mean), fCovars(covars){ fSigma = std::sqrt(fCovars);}
 	Gaussian1D(double mean, double covars,double weight):Gaussian1D(mean,covars){
-		 fWeight = weight;
+		fWeight = weight;
+	}
+	Gaussian1D(double weight){
+		fWeight = weight;
 	}
 	void SetMean(double mean) {fMean = mean;}
 	void SetCovars(double covars) {fCovars = covars;}
