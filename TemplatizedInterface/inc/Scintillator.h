@@ -183,6 +183,38 @@ void Scintillator::DetectAndSetHit(int evNo) {
      */
 
     if(ForRpc) {
+    	if(ch->size()==1){
+    		scintillator = ch->at(0);
+    	    		long rpcData = scintillator;
+    	                if (rpcData >= fStart && rpcData <= fEnd) {
+    	                  fScintHit = true;
+    	                  fValue = rpcData;
+    	                  return;
+    	                  //break;
+    	                }
+    	}
+
+
+ /*   	else{
+    	for(int i = 0 ; i<ch->size() ; i++){
+    		scintillator = ch->at(i);
+    		long rpcData = scintillator;
+                if (rpcData >= fStart && rpcData <= fEnd) {
+                  fScintHit = true;
+                  fValue = rpcData;
+                  return;
+                  //break;
+                }
+
+        }
+    	}
+*/
+
+
+    }
+
+#if(0)
+    if(ForRpc) {
     	for(int i = 0 ; i<ch->size() ; i++){
     		scintillator = ch->at(i);
     		long rpcData = scintillator;
@@ -214,6 +246,7 @@ void Scintillator::DetectAndSetHit(int evNo) {
 		 fValue = scintillatorData;
 	}
     }
+#endif
 
 /*
     if (scintillator > 0) {

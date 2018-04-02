@@ -144,6 +144,8 @@ void DetectorMapping::ReadDaqInfo(std::string daqfile){
 			rff >> chamber_b >> curr3 >> vset3 >> vmon3 >> station;
 			fVoltageVector.push_back(vset1);
 
+			std::cout << chamber_tn << " : " << curr1 << std::endl;
+
 			//Logic to calculate efficieny using new Analysis code
 			//std::cout<<"Size of DetectorNameVector : " << (fDetectorNameVector.size()-1) << std::endl;
   		    //for(int i = 0 ; i < fDetectorNameVector.size()-1; i++){
@@ -202,7 +204,7 @@ void DetectorMapping::PrintEfficiencyVector() const {
 	bool verbose = false;
 
 	for(int i = 0 ; i < fEfficienyBothVector.size() ; i++){
-	std::ofstream outfile(fDetectorNameVector[i]+".txt",std::ios::app);
+	std::ofstream outfile(fDetectorNameVector[i]+"-Eff.txt",std::ios::app);
 
 	//for(int i = 0 ; i < fEfficienyBothVector.size() ; i++){
 		outfile << fDetectorNameVector[i] << " " <<fVoltageVector[i] << " " << fTemp << " " << fPressure << " " << fHumidity

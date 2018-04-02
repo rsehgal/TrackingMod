@@ -12,6 +12,7 @@
 #include <TStyle.h>
 #include <fstream>
 #include "DetectorMapping.h"
+#include "Coordinates.h"
 namespace Tomography{
 
 //int Properties::fClusterSize = 10;
@@ -294,7 +295,7 @@ void Properties::GetHitPlot3D(){
   //return;
 }
 
-void Properties::GetHitPlot3D_V2(){
+void Properties::GetHitPlot3D_V2(int twoOrThreeD){
 	gStyle->SetPalette(1);
   TCanvas *cHitPlot3D = new TCanvas(GetName().c_str(), GetName().c_str(), 450, 450);
   int numOfBinsX =   (GetPlane(0)->GetNumOfScintillators());// * 2);
@@ -346,12 +347,34 @@ void Properties::GetHitPlot3D_V2(){
   std::cout<<"==================================================================="<< std::endl;
 
   //h3dHitPlot->Draw("0lego1 PFC");
-  h3dHitPlot->Draw("lego2");
-  cHitPlot3D->Modified();
-  cHitPlot3D->Update();
+  //h3dHitPlot->Draw();
   std::string plotsLocation = Tomography::DetectorMapping::instance()->GetPlotsLocation();
   std::string runnumber = tree->GetRunNumber();
-  cHitPlot3D->SaveAs((plotsLocation+runnumber+"-"+GetName()+"-HitPlot3D.gif").c_str());
+  if(twoOrThreeD == 3){
+	  h3dHitPlot->Draw("lego2");
+	  cHitPlot3D->Modified();
+	  cHitPlot3D->Update();
+//	  std::string plotsLocation = Tomography::DetectorMapping::instance()->GetPlotsLocation();
+//	  std::string runnumber = tree->GetRunNumber();
+	  cHitPlot3D->SaveAs((plotsLocation+runnumber+"-"+GetName()+"-HitPlot3D.gif").c_str());
+  }
+
+  if(twoOrThreeD == 2){
+ 	  h3dHitPlot->Draw();
+ 	  cHitPlot3D->Modified();
+ 	  cHitPlot3D->Update();
+// 	  std::string plotsLocation = Tomography::DetectorMapping::instance()->GetPlotsLocation();
+// 	  std::string runnumber = tree->GetRunNumber();
+   cHitPlot3D->SaveAs((plotsLocation+runnumber+"-"+GetName()+"-HitPlot.gif").c_str());
+#ifndef INTERACTIVE
+  delete h3dHitPlot;
+  delete cHitPlot3D;
+#endif
+  return;
+   }
+
+
+
 
   h3dHitPlot->Draw("COLZ");
   cHitPlot3D->Modified();
@@ -564,6 +587,53 @@ void Properties::GetX_Y_And_ClusterHistograms()
   //  fApp->Run();
 }
 
+void Properties::WriteHitInfoToFile(){
+  std::string filename = fName+".txt";
+  std::ofstream outfile(filename);
+  Tracking::Tree *tree = Tracking::Tree::instance();
+  int numOfEvents = Tracking::Tree::instance()->GetNumOfEvents();
+  std::cout<<"Num of Events : " << numOfEvents << std::endl;
+  std::vector<int> topPlaneFiredStripVector;
+  std::vector<int> bottomPlaneFiredStripVector;
+  int count1=0;
+  std::cout<<"ClusterSize : " << fClusterSize << std::endl;
+  int count = 0 ;
+  Coordinates c;
+  outfile << "DetectorName" << " , " << "evNo" << ", " << "topPlaneFiredStrip" << " , " <<   "bottomPlaneFiredStrip" << " , " << "hitPoint_X"
+  				    << " , " << "hitPoint_Y" << " , " << "hitPoint_Z" << std::endl;
+  for(int evNo = 0 ; evNo < numOfEvents ; evNo++){
+    SetEventDetected(evNo);
+    topPlaneFiredStripVector = GetPlane(0)->GetFiredStripsVector();
+    bottomPlaneFiredStripVector = GetPlane(1)->GetFiredStripsVector();
+    if(fEventDetected && topPlaneFiredStripVector.size()<=fClusterSize && bottomPlaneFiredStripVector.size()<=fClusterSize ){
+      for(int xval = 0  ; xval < topPlaneFiredStripVector.size() ; xval++){
+        for(int yval = 0  ; yval < bottomPlaneFiredStripVector.size() ; yval++){
+
+//        	Tracking::Vector3D<double> hitPoint(topPlaneFiredStripVector[xval],bottomPlaneFiredStripVector[yval],GetZPos());
+
+        	Tracking::Vector3D<double> hitPoint = c.GetStripCoordinate(this, topPlaneFiredStripVector[xval],
+        						bottomPlaneFiredStripVector[yval],
+        	                    GetZPos());
+
+        	outfile << fName << " , " << evNo << ", " << topPlaneFiredStripVector[xval] << " , " <<   bottomPlaneFiredStripVector[yval] << " , " << hitPoint.x()
+				    << " , " << hitPoint.y() << " , " << hitPoint.z() << std::endl;
+		  count++;
+        }
+      }
+    }
+
+  }
+
+  outfile.close();
+
+/*
+  std::cout<< "Count : " << count1 << std::endl;
+
+  std::cout<<"Total Num of Hit Point for Detector  : "<< GetName() << " : " << count << std::endl;
+  std::cout<<"==================================================================="<< std::endl;
+*/
+
+}
 
 void Properties::GetStripProfile()
 {

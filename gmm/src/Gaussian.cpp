@@ -174,6 +174,8 @@ double Gaussian::CalculateDeterminant(){
 
 #else
 	fDet = fCovars.determinant();
+	std::cout<<"COVARS : " << std::endl;
+	std::cout << fCovars <<std::endl;
 #endif
 
 	return fDet;

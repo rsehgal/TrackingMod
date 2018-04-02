@@ -83,11 +83,12 @@ public:
 
 #ifndef USE_EIGEN
 	//Getters
-	double* GetMean() {return fMean;}
+	double GetMean() {return fMean;}
 	double** GetCovars() {return fCovars;}
 
 #else
-
+	Eigen::VectorXd GetMean() const {return fMean;}
+	Eigen::MatrixXd GetCovars() const {return fCovars;}
 	Eigen::MatrixXd CalculateCovarsInverse();
 	Eigen::MatrixXd CalculateCovarsTranspose();
 	Eigen::VectorXd CalculateVectorTranspose(Eigen::VectorXd vect);

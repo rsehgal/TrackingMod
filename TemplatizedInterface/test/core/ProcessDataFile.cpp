@@ -64,12 +64,15 @@ int main(int arc, char *argv[]){
 #endif
 
 	Tomography::Fit2DLinear fitter;
+	int detectedEventCount = 0;
 
 	for (int evNo = 0; evNo < numOfEvents; evNo++) {
-		std::cout << "=============== Event No : " << evNo << " =========================== " << std::endl;
+		//std::cout << "=============== Event No : " << evNo << " =========================== " << std::endl;
 		eventProcessor.ProcessEvent(evNo);
 		if(setup->EventDetected()){
-			std::cout << "Event Detected....." << std::endl;
+			std::cout << "==============  Event Detected..... : EvNo : " << evNo << "  ==================" <<  std::endl;
+			detectedEventCount++;
+
 
 		/*Tomography::Track incoming = eventProcessor.GetIncomingTrack();
 		//Tomography::Track outgoing = eventProcessor.GetOutgoingTrack();
@@ -81,8 +84,9 @@ int main(int arc, char *argv[]){
 		*/
 
 		std::vector<Tracking::Vector3D<double>> hitPointVector = eventProcessor.GetHitPointVector();
+		std::cout<<"Hit Point Vector Size : " << hitPointVector.size() << std::endl;
 
-#define USE_FITTED_TRACK
+//#define USE_FITTED_TRACK
 #ifdef USE_FITTED_TRACK
 		std::vector<Tracking::Vector3D<double>> incomingHitPointVector;
 		std::vector<Tracking::Vector3D<double>> outgoingHitPointVector;
@@ -126,18 +130,29 @@ int main(int arc, char *argv[]){
 		outgoingHitPointVector.clear();
 
 #else
-		Tomography::Track incoming(hitPointVector[0],hitPointVector[hitPointVector.size()/2-1]);
-		Tomography::Track outgoing(hitPointVector[hitPointVector.size()/2],hitPointVector[hitPointVector.size()-1]);
+
+		int numOfDetectors = 4;
+		if(numOfDetectors==3){
+			Tomography::Track incoming(hitPointVector[0],hitPointVector[1]);
+			Tomography::Track outgoing(hitPointVector[1],hitPointVector[2]);
+			//Tomography::EventHelper u(incoming,outgoing);
+			std::cout << "Deviation  : " << CommonFunc::Functions::instance()->GetAngleInRadian(incoming,outgoing) << std::endl;;
+		}else{
+			Tomography::Track incoming(hitPointVector[0],hitPointVector[hitPointVector.size()/2-1]);
+			Tomography::Track outgoing(hitPointVector[hitPointVector.size()/2],hitPointVector[hitPointVector.size()-1]);
+		}
 #endif
-		Tomography::EventHelper u(incoming,outgoing);
+		//Tomography::EventHelper u(incoming,outgoing);
 		//break;
 		}else{
-			std::cout << "Event NOT Detected....." << std::endl;
+			//std::cout << "Event NOT Detected....." << std::endl;
 		}
 
 
 	}
 
+	std::cout << "Total Number of Detected Events : " << detectedEventCount << std::endl;
+#undef RECONSTRUCT
 #ifdef RECONSTRUCT
    Tomography::RunHelper *runHelper = new Tomography::RunHelper();
   //Now trying to calculate Radiation for the whole run
