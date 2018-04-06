@@ -18,6 +18,7 @@ namespace Tomography {
 struct X{
 	Eigen::Vector3d sX;
 	std::vector<double> sGaussProb;
+	double sScattering;
     void SetProbability(int gaussNum, double probValue){
     	sGaussProb[gaussNum] = probValue;
     }
@@ -62,6 +63,7 @@ public:
 			X x;
 			//Converting Vector3D to Eigen::Vector3d
 			x.sX = ConvertToEigenVector3d(data[i]);
+			x.sScattering = data[i].GetColor();
 			for(int j = 0 ; j < fNumOfGaussians ; j++)
 				x.sGaussProb.push_back(0.);
 			fPointVector.push_back(x);
@@ -84,7 +86,8 @@ public:
 			else{
 				//Getting the index of maximum probability gaussian.
 				int maxElementIndex = std::max_element(fPointVector[i].sGaussProb.begin(),fPointVector[i].sGaussProb.end()) - fPointVector[i].sGaussProb.begin();
-				outfile << fPointVector[i].sX(0) << " " << fPointVector[i].sX(1) << " " << fPointVector[i].sX(2) << " " << (maxElementIndex+2) << std::endl;
+				outfile << fPointVector[i].sX(0) << " " << fPointVector[i].sX(1) << " " << fPointVector[i].sX(2) << " "
+						<< (maxElementIndex+2) << " " << fPointVector[i].sScattering <<  std::endl;
 			}
 
 			std::cout<<"Total : "<< totalProb << std::endl;
@@ -100,7 +103,9 @@ public:
 
 	//The return value will be used by Expectation function of GMM
 	double CalculateGaussianProbability(int gaussNum, Eigen::VectorXd val){
+		//std::cout << "Point : " << std::endl << val << std::endl;
 		double prob = fGaussianVector[gaussNum]->CalculateProbability(val);
+		//std::cout << "Prob from CalculateGaussianProbability : " << prob << std::endl;
 		return prob;
 	}
 

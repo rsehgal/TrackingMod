@@ -85,7 +85,8 @@ G4VPhysicalVolume* MyDetectorConstruction::Construct(){
 
 for(int k=0; k < 8 ; k++){
 //if(k==0 || k==3 || k==4 || k==7)
-if(k==0 || k==7)
+//if(k==0 || k==7)
+if(k==3 || k==4)
 	continue;
  eBlockNum++;
  G4VPhysicalVolume *planeEPhy = new G4PVPlacement(0,
@@ -121,9 +122,12 @@ G4VPhysicalVolume *brickLanePhy = new G4PVPlacement(0,
 
 
 
-G4LogicalVolume *leadStrip = GetStrip("PbStrip", 10*cm,10*cm,10*cm,Pb);
+
+G4LogicalVolume *leadStrip = GetStrip("PbStrip", 15*cm,15*cm,15*cm,Pb);
 G4VPhysicalVolume *PbStripPhy = new G4PVPlacement(0,
-                            G4ThreeVector(0,0.,0.),
+                            //G4ThreeVector(15*cm,0.,0.),
+							//G4ThreeVector(0.,0.,-60*cm),
+							G4ThreeVector(0.,0.,0.),
                             leadStrip,
                             //"Module"+std::to_string(eBlockNum),
 							"PbStripPhysical",
@@ -134,6 +138,17 @@ G4VPhysicalVolume *PbStripPhy = new G4PVPlacement(0,
                            checkOverlaps);
 
 
+/*
+		new G4PVPlacement(0,
+                            G4ThreeVector(-15*cm,0.,0.),
+                            leadStrip,
+			    "PbStripPhysical2",
+                            logicWorld,
+                            false,
+				0,
+                           checkOverlaps);
+
+*/
 
 /*
 G4LogicalVolume *ironStrip = GetStrip("FeStrip", 5*cm,5*cm,5*cm,Fe);

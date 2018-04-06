@@ -238,13 +238,13 @@ void Voxelator::CreateSDGraph(){
 
 void Voxelator::CreateHistogram(){
 	//Create the required 3D Hist which corresponds to voxelized volume
-	histVoxelValue = new  TH3F("histVoxelValue", "HistVoxelValue", fVoxelatorDim.x(), -fVoxelizedVolumeDim.x(), fVoxelizedVolumeDim.x(),
-						                                           fVoxelatorDim.y(), -fVoxelizedVolumeDim.y(), fVoxelizedVolumeDim.y(),
-																   fVoxelatorDim.z(), -fVoxelizedVolumeDim.z(), fVoxelizedVolumeDim.z()) ;
+	histVoxelValue = new  TH3F("histVoxelValue", "HistVoxelValue", fVoxelatorDim.x(), -fVoxelizedVolumeDim.x()/2., fVoxelizedVolumeDim.x()/2.,
+						                                           fVoxelatorDim.y(), -fVoxelizedVolumeDim.y()/2., fVoxelizedVolumeDim.y()/2.,
+																   fVoxelatorDim.z(), -fVoxelizedVolumeDim.z()/2., fVoxelizedVolumeDim.z()/2.) ;
 
-	histVoxelCount = new TH3F("histVoxelCount", "HistVoxelCount", fVoxelatorDim.x(), -fVoxelizedVolumeDim.x(), fVoxelizedVolumeDim.x(),
-																  fVoxelatorDim.y(), -fVoxelizedVolumeDim.y(), fVoxelizedVolumeDim.y(),
-																  fVoxelatorDim.z(), -fVoxelizedVolumeDim.z(), fVoxelizedVolumeDim.z()) ;
+	histVoxelCount = new TH3F("histVoxelCount", "HistVoxelCount", fVoxelatorDim.x(), -fVoxelizedVolumeDim.x()/2., fVoxelizedVolumeDim.x()/2.,
+																  fVoxelatorDim.y(), -fVoxelizedVolumeDim.y()/2., fVoxelizedVolumeDim.y()/2.,
+																  fVoxelatorDim.z(), -fVoxelizedVolumeDim.z()/2., fVoxelizedVolumeDim.z()/2.) ;
 
 	std::cout << "Total num of voxel for simulations : " << GetTotalNumberOfVoxels() << std::endl;
 	fVoxelsIn1D = new TH1F("IDHistOfVoxels","IDHistOfVoxels",GetTotalNumberOfVoxels(), 0, GetTotalNumberOfVoxels());
@@ -262,6 +262,7 @@ double Voxelator::GetAverageScatteringAngleInAVoxel(int x, int y, int z){
 }
 
 void Voxelator::Insert(double x, double y, double z, double w){
+std::cout<<"Inside INSERTTTTTTTTTTTTTTTTTTT...................." << std::endl;
 histVoxelCount->Fill(x,y,z);
 histVoxelValue->Fill(x,y,z,w);
 int voxelNumber = GetVoxelNumber(x,y,z);

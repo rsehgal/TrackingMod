@@ -65,7 +65,7 @@ G4VPhysicalVolume* MyDetectorConstruction::Construct(){
 
  
   //Adding RPC layer, considering that it is made up of galactic, to avoid interaction in RPC itself
-  G4Box *rpc = new G4Box("RPC",50.*cm,50.*cm,0.5*cm);
+  G4Box *rpc = new G4Box("RPC",2*50.*cm,2*50.*cm,0.5*cm);
   G4LogicalVolume *logicalRPC = new G4LogicalVolume(rpc,galactic,"LogicalRPC");
   int rpcNum = -1;
 	for (int k = 0; k < 8; k++) {
@@ -83,14 +83,11 @@ G4VPhysicalVolume* MyDetectorConstruction::Construct(){
 	}
 
 
-
-
-
-
   //Lets try to build material from NIST database
   G4Box *leadBlock = new G4Box("LeadBlock",5.*cm,5.*cm,5.*cm);
   G4Material *Pb=nist->FindOrBuildMaterial("G4_Pb");
   G4LogicalVolume *logicalLeadBlock = new G4LogicalVolume(leadBlock,Pb,"LogicalLeadBlock");
+/*
   G4VPhysicalVolume *phyLeadBlock = new G4PVPlacement(0,
                             //G4ThreeVector(),
                             G4ThreeVector(),
@@ -101,141 +98,57 @@ G4VPhysicalVolume* MyDetectorConstruction::Construct(){
                             0,
                             checkOverlaps);
 
-
-
-
-
-
-/*
-	 G4Material *Pb=nist->FindOrBuildMaterial("G4_Pb");
-	    G4Material *Fe=nist->FindOrBuildMaterial("G4_Fe");
-	    G4Material *Al=nist->FindOrBuildMaterial("G4_Al");
-	    G4Material *U=nist->FindOrBuildMaterial("G4_U");
-
-
-	 //   G4NistManager* nist = G4NistManager::Instance();
-	     G4Box *target = new G4Box("Target",5*cm,5*cm,8*cm);
-	      G4LogicalVolume *fLogicTarget = new G4LogicalVolume(target,Pb,"LogicalTargetBlock");
-	      G4LogicalVolume *fLogicTargetFe = new G4LogicalVolume(target,Pb,"LogicalTargetFeBlock");
-
-	      G4Box *targetAl = new G4Box("Target",5*cm,5*cm,18*cm);
-	      G4Box *subtargetU = new G4Box("Target",3*cm,3*cm,7*cm);
-	      G4LogicalVolume *fLogicTargetAl = new G4LogicalVolume(targetAl,Al,"LogicalTargetAlBlock");
-	      G4LogicalVolume *fLogicTargetU = new G4LogicalVolume(target,U,"LogicalTargetUBlock");
-	      G4LogicalVolume *fLogicSubTargetU = new G4LogicalVolume(subtargetU,U,"LogicalSubTargetUBlock");
-
-
-
-
-  G4VPhysicalVolume *phyTargetBlock = new G4PVPlacement(0,
+  new G4PVPlacement(0,
                               //G4ThreeVector(),
-                              //G4ThreeVector(15*cm,-15*cm,12*cm),
-  		  	  	  	  	    G4ThreeVector(15*cm,-15*cm,0*cm),//-39*cm),
-                             fLogicTarget,
-                              "TargetPhysical_Pb",
-                              //world->GetLogicalVolume(),//
-							  logicWorld,
-
+                              G4ThreeVector(20*cm,0.,0.),
+                              logicalLeadBlock,
+                              "PhysicalWorld",
+                              logicWorld,
                               false,
                               0,
                               checkOverlaps);
 
-    G4VPhysicalVolume *phyTargetBlock2 = new G4PVPlacement(0,
+  new G4PVPlacement(0,
                                 //G4ThreeVector(),
-                                //G4ThreeVector(-15*cm,15*cm,12*cm),
-  		  	  	  	  	  	  G4ThreeVector(-15*cm,15*cm,0*cm),//-39*cm),
-                               fLogicTargetU,
-                                "TargetPhysical_U",
-                                //world->GetLogicalVolume(),//
-								logicWorld,
+                                G4ThreeVector(20*cm,20.*cm,0.),
+                                logicalLeadBlock,
+                                "PhysicalWorld",
+                                logicWorld,
                                 false,
                                 0,
                                 checkOverlaps);
+*/
 
-    G4VPhysicalVolume *phyTargetBlock3 = new G4PVPlacement(0,
+
+  G4Box *feBlock = new G4Box("FeBlock",10.*cm,10.*cm,10.*cm);
+  G4Material *Fe=nist->FindOrBuildMaterial("G4_Fe");
+  G4LogicalVolume *logicalFeBlock = new G4LogicalVolume(feBlock,Fe,"LogicalFeBlock");
+
+  new G4PVPlacement(0,
                                   //G4ThreeVector(),
-                                  //G4ThreeVector(-15*cm,-15*cm,12*cm),
-  		  	  	  	  	  	    G4ThreeVector(-15*cm,-15*cm,0*cm),//-39*cm),
-                                 fLogicTargetAl,
-                                  "TargetPhysical_Al",
-                                  //world->GetLogicalVolume(),//
-								  logicWorld,
+                                  G4ThreeVector(0*cm,0.*cm,0.),
+                                  logicalLeadBlock,
+                                  "PhysicalWorld",
+                                  logicalFeBlock,
                                   false,
                                   0,
                                   checkOverlaps);
 
-    G4VPhysicalVolume *phyTargetBlock4 = new G4PVPlacement(0,
-                                    //G4ThreeVector(),
-                                    //G4ThreeVector(25*cm,25*cm,12*cm),
-  		  	  	  	  	  	  	  G4ThreeVector(25*cm,25*cm,0*cm),//-39*cm),
-                                   fLogicTargetFe,
-                                    "TargetPhysical_Fe",
-                                    //world->GetLogicalVolume(),//
-									logicWorld,
-                                    false,
-                                    0,
-                                    checkOverlaps);
+  new G4PVPlacement(0,
+                                  //G4ThreeVector(),
+                                  //G4ThreeVector(-20*cm,20.*cm,0.),
+		  	  	  	  	  	  	  G4ThreeVector(0.,0.,0.),
+                                  logicalFeBlock,
+                                  "PhysicalWorld",
+                                  logicWorld,
+                                  false,
+                                  0,
+                                  checkOverlaps);
 
-    G4VPhysicalVolume *phySubTargetBlockU = new G4PVPlacement(0,
-                                    //G4ThreeVector(),
-                                    //G4ThreeVector(-15*cm,-15*cm,12*cm),
-    		  	  	  	  	  	    G4ThreeVector(0*cm,0*cm,0*cm),//-39*cm),
-  								fLogicSubTargetU,
-                                    "TargetSubPhysical_U",
-                                    //world->GetLogicalVolume(),//logicWorld,
-  								  fLogicTargetAl,
-
-                                    false,
-                                    0,
-                                    checkOverlaps);
-*/
-
-
-
-
-
-
-/*
-
-
-    G4Box *targetOuterBox = new G4Box("TargetOuterBox",16.*cm,16.*cm,16.*cm);
-    G4LogicalVolume* fLogicTargetOuterBox = new G4LogicalVolume(targetOuterBox,Al,"LogicalTargetOuterPbox");
-    G4VPhysicalVolume *phyTargetOuterBox = new G4PVPlacement(0,
-                                G4ThreeVector(),
-                                fLogicTargetOuterBox,
-                                "PhysicalOuterBox",
-								logicWorld,
-                                false,
-                                0,
-                                checkOverlaps);
-
-
-
-    //G4Sphere *targetU = new G4Sphere("TargetU",0., 5.*cm, 0., 2*M_PI*rad, 0. , M_PI*rad);
-    G4Box *targetU = new G4Box("InnerBox",5.*cm,5.*cm,5.*cm);
-    G4LogicalVolume* fLogicTargetSphereU = new G4LogicalVolume(targetU,U,"LogicalTargetUBlock");
-    G4VPhysicalVolume *phyTargetUSphere1 = new G4PVPlacement(0,
-                                G4ThreeVector(-5*cm,0.,0.),
-                                fLogicTargetSphereU,
-                                "PhysicalUBall1",
-								fLogicTargetOuterBox,
-                                false,
-                                0,
-                                checkOverlaps);
-
-     G4VPhysicalVolume *phyTargetUSphere2 = new G4PVPlacement(0,
-                                G4ThreeVector(5*cm,0.,0.),
-                                fLogicTargetSphereU,
-                                "PhysicalUBall2",
-								fLogicTargetOuterBox,
-                                false,
-                                0,
-                                checkOverlaps);
-
-*/
 
 
 //#define VOXELIZE
+#undef VOXELIZE
 #ifdef VOXELIZE
    //Trying to use Voxelator to visualize the VoxelizedVolume
    Tomography::evolution::Voxelator *v = Tomography::evolution::Voxelator::Create(50*cm,50*cm,42*cm,20*cm,20*cm,16.8*cm);

@@ -34,6 +34,12 @@ public:
     fP2 = p2; 
     CalculateDirCosine();
   }
+  void Set(G4ThreeVector p1,G4ThreeVector p2){
+    fP1 = Tracking::Vector3D<double>(p1.x(),p1.y(),p1.z());
+    fP2 = Tracking::Vector3D<double>(p2.x(),p2.y(),p2.z());
+    CalculateDirCosine();
+  }
+
   Tracking::Vector3D<double> GetDirCosine(){return fDirCosine;}
   Tracking::Vector3D<double> GetDirection(){return fDirection;}
   void Print(){fP1.Print(); std::cout<<" : " ; fP2.Print();}
