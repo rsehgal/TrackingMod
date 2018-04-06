@@ -55,16 +55,23 @@ int main(int arc, char *argv[]){
 
 	Tracking::Tree::instance()->ReadTree(temp_str.c_str(), "BSC_DATA_TREE", 0);
 	int numOfEvents = Tracking::Tree::instance()->GetNumOfEvents();
+
+	/* We need EventProcess, because this guy will
+	 * will give us the hit point vector for every
+	 * event.
+	 */
 	Tomography::EventProcessor eventProcessor;
 	Tomography::SetupManager *setup = Tomography::SetupManager::instance();
 	//numOfEvents = 2;
 #define RECONSTRUCT
 #ifdef RECONSTRUCT
-	Tomography::evolution::Voxelator::Create(50*cm,50*cm,12*cm,10*cm,10*cm,8*cm);
+	Tomography::evolution::Voxelator::Create(50*cm,50*cm,45*cm,10*cm,10*cm,9*cm);
 #endif
 
 	Tomography::Fit2DLinear fitter;
 	int detectedEventCount = 0;
+	int deviatedMuonCounter = 0;
+	int undeviatedMuonCounter = 0;
 
 	for (int evNo = 0; evNo < numOfEvents; evNo++) {
 		//std::cout << "=============== Event No : " << evNo << " =========================== " << std::endl;
@@ -130,29 +137,79 @@ int main(int arc, char *argv[]){
 		outgoingHitPointVector.clear();
 
 #else
-
-		int numOfDetectors = 4;
+		Tomography::Track incoming, outgoing;
+		int numOfDetectors = 6;
 		if(numOfDetectors==3){
-			Tomography::Track incoming(hitPointVector[0],hitPointVector[1]);
-			Tomography::Track outgoing(hitPointVector[1],hitPointVector[2]);
+			incoming.Set(hitPointVector[0],hitPointVector[1]);
+			outgoing.Set(hitPointVector[1],hitPointVector[2]);
 			//Tomography::EventHelper u(incoming,outgoing);
-			std::cout << "Deviation  : " << CommonFunc::Functions::instance()->GetAngleInRadian(incoming,outgoing) << std::endl;;
 		}else{
-			Tomography::Track incoming(hitPointVector[0],hitPointVector[hitPointVector.size()/2-1]);
-			Tomography::Track outgoing(hitPointVector[hitPointVector.size()/2],hitPointVector[hitPointVector.size()-1]);
+			incoming.Set(hitPointVector[0],hitPointVector[hitPointVector.size()/2-1]);
+			outgoing.Set(hitPointVector[hitPointVector.size()/2],hitPointVector[hitPointVector.size()-1]);
 		}
 #endif
-		//Tomography::EventHelper u(incoming,outgoing);
+		Tomography::Track ref(Tracking::Vector3D<double>(0.,0.,0.),Tracking::Vector3D<double>(0.,0.,-1.));
+		//std::cout<<"INcoming vector : " ; incoming.Print();
+		//std::cout<<"OUTgoing vector : " ; outgoing.Print();
+
+		double inAngle = CommonFunc::Functions::instance()->GetAngleInRadian(incoming,ref);
+		double outAngle = CommonFunc::Functions::instance()->GetAngleInRadian(outgoing,ref);
+		double deviation = CommonFunc::Functions::instance()->GetAngleInRadian(incoming,outgoing);
+		std::cout << "Deviation  : " << deviation
+				  << " : Incoming : " <<  inAngle
+				  << " : Outgoing : " <<  outAngle
+				  << " : Diff : " << (inAngle-outAngle) << std::endl;
+
+		if(numOfDetectors == 6){
+
+		/* Deviation check in air, which should be very very close to zero,
+		** here we are allow deviation in air to have a maximum value of
+		** 1e-6
+		*/
+
+		//For incoming
+		Tomography::Track in,out;
+		in.Set(hitPointVector[0],hitPointVector[1]);
+		out.Set(hitPointVector[1],hitPointVector[2]);
+		double deviationIncoming =  CommonFunc::Functions::instance()->GetAngleInRadian(in,out);
+
+		in.Set(hitPointVector[3],hitPointVector[4]);
+		out.Set(hitPointVector[4],hitPointVector[5]);
+		double deviationOutgoing =  CommonFunc::Functions::instance()->GetAngleInRadian(in,out);
+
+
+		//if(deviation > 1e-6)
+		bool deviatedMuon = (deviationIncoming > 1e-6 || deviationOutgoing > 1e-7);
+		if(deviatedMuon)
+			deviatedMuonCounter++;
+		else
+			undeviatedMuonCounter++;
+
+		//Taking only undeviated events
+		//if(deviation < 1e-6)
+		if(!deviatedMuon){
+			std::cout << "FOUND UNDEVIATED MUON..........." << std::endl;
+			Tomography::EventHelper u(incoming,outgoing);
+		 }
+		}else{
+			Tomography::EventHelper u(incoming,outgoing);
+		}
+
 		//break;
 		}else{
 			//std::cout << "Event NOT Detected....." << std::endl;
 		}
 
+		//if(detectedEventCount == 10)
+			//					break;
 
 	}
 
 	std::cout << "Total Number of Detected Events : " << detectedEventCount << std::endl;
-#undef RECONSTRUCT
+	std::cout << "No of Unexpected deviation due to Mid point of Pixel are : " << deviatedMuonCounter << std::endl;
+	std::cout << "No of Expected Undeviated Muon even after taking Mid point of Pixel are : " << undeviatedMuonCounter << std::endl;
+//#undef RECONSTRUCT
+#define RECONSTRUCT
 #ifdef RECONSTRUCT
    Tomography::RunHelper *runHelper = new Tomography::RunHelper();
   //Now trying to calculate Radiation for the whole run

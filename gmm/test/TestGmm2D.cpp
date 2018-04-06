@@ -49,21 +49,53 @@ int main(){
 
 	std::cout<<"*******************************************************************" << std::endl;
 
-	Tomography::GMM2D *gmm2 = new Tomography::GMM2D(mean,covars,3);
+	Tomography::GMM2D *gmm2 = new Tomography::GMM2D(mean,covars,2);
 //	std::cout << "Mean : " << std::endl << gmm2->GetGaussianVector()[0]->GetMean() << std::endl;
 //	std::cout << "Covars : " << std::endl << gmm2->GetGaussianVector()[0]->GetCovars() << std::endl;
 
-	mean(0) = -2;
-	mean(1) = -4;
-	covars(0,0) = 2.;
-	covars(0,1) = 1.5;
-	covars(1,0) = 0.5;
-	covars(1,1) = 2.;
+
+	mean(0) = 0;
+	mean(1) = 2;
+	covars(0,0) = 400.;
+	covars(0,1) = 0.;
+	covars(1,0) = 0.;
+	covars(1,1) = 400.;
 
 	gmm2->GetGaussianVector()[0]->SetMean(mean);
 	gmm2->GetGaussianVector()[0]->SetCovars(covars);
 
 
+	mean(0) = -100.;
+	mean(1) = -200.;
+	gmm2->GetGaussianVector()[1]->SetMean(mean);
+	gmm2->GetGaussianVector()[1]->SetCovars(covars);
+
+/*
+	mean(0) = 100.;
+	mean(1) = -200.;
+	gmm2->GetGaussianVector()[2]->SetMean(mean);
+	gmm2->GetGaussianVector()[2]->SetCovars(covars);
+*/
+
+/*
+	mean(0) = -100.;
+	mean(1) = 200.;
+	gmm2->GetGaussianVector()[3]->SetMean(mean);
+	gmm2->GetGaussianVector()[3]->SetCovars(covars);
+
+	mean(0) = 100.;
+	mean(1) = 200.;
+	gmm2->GetGaussianVector()[4]->SetMean(mean);
+	gmm2->GetGaussianVector()[4]->SetCovars(covars);
+
+	mean(0) = 50.;
+	mean(1) = 50.;
+	gmm2->GetGaussianVector()[5]->SetMean(mean);
+	gmm2->GetGaussianVector()[5]->SetCovars(covars);
+*/
+
+
+/*
 	mean(0) = 5.0;
 	mean(1) = 6.9;
 	covars(0,0) = 5.5;
@@ -73,6 +105,7 @@ int main(){
 
 	gmm2->GetGaussianVector()[1]->SetMean(mean);
 	gmm2->GetGaussianVector()[1]->SetCovars(covars);
+*/
 
 
 
@@ -81,11 +114,12 @@ int main(){
 
 	//Reading data and filling std::vector
 	std::vector<Eigen::Vector2d> dataVector;
-	std::ifstream infile("gauss2D.txt");
-	int count = 70000;
-	double valX = 0., valY = 0.;
+	//std::ifstream infile("gauss2D.txt");
+	std::ifstream infile("PocaPt.txt");
+	int count = 6149;
+	double valX = 0., valY = 0., valZ = 0., color = 0.;
 	while(count){
-		infile >> valX >> valY;
+		infile >> valX >> valY >> valZ >> color;
 		Eigen::Vector2d val;
 		val << valX, valY;
 		dataVector.push_back(val);
@@ -93,7 +127,7 @@ int main(){
 	}
 
 	gmm2->SetData(dataVector);
-	for(int i = 0 ; i < 20 ; i++){
+	for(int i = 0 ; i < 100 ; i++){
 		std::cout << "-------------- Iteration no : "<< (i+1) <<" -------------------" << std::endl;
 		gmm2->Start();
 		std::cout<<"GMM Processing Done.............." << std::endl;
@@ -102,6 +136,7 @@ int main(){
 
 	std::cout << "====================================================================" << std::endl;
 
+/*
 	std::cout << "----- Probability calculation using generated model ----------------" << std::endl;
 	data(0) = 10.;
 	data(1) = 0.;
@@ -129,6 +164,7 @@ int main(){
 		for(int i = 0 ;  i < numOfGaussians ; i++){
 			std::cout <<"Prob w.r.t gaussian : " << (i+1) << " : " << gmm2->GetGaussianVector()[i]->CalculateProbability(data) << std::endl;
 		}
+*/
 
 	gmm2->ApplyFilteration();
 

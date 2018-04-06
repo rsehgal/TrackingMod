@@ -59,13 +59,21 @@ public:
 				std::cout << fPointVector[i].sGaussProb[j] << " : ";
 			}
 
-			//if(fPointVector[i].sGaussProb[0] > 0.80)
+			//if(fPointVector[i].sGaussProb[0] > 0.30)
 			if(0)
 				continue;
 			else{
 				//Getting the index of maximum probability gaussian.
+				//if(std::fabs(fPointVector[i].sGaussProb[1]-fPointVector[i].sGaussProb[0]) > 0.2){
 				int maxElementIndex = std::max_element(fPointVector[i].sGaussProb.begin(),fPointVector[i].sGaussProb.end()) - fPointVector[i].sGaussProb.begin();
 				outfile << fPointVector[i].sX(0) << " " << fPointVector[i].sX(1) << " " << (maxElementIndex+2) << std::endl;
+/*
+				for(int col = 0 ; col < fPointVector[i].sGaussProb.size() ; col++){
+					outfile << fPointVector[i].sX(0) << " " << fPointVector[i].sX(1) << " " << (fPointVector[i].sGaussProb[col]*10) << std::endl;
+				//outfile << fPointVector[i].sX(0) << " " << fPointVector[i].sX(1) << " " << (maxElementIndex+2) << std::endl;
+				}
+*/
+				//}
 			}
 
 			std::cout<<"Total : "<< totalProb << std::endl;

@@ -52,6 +52,9 @@ public:
 	void Insert(Tracking::Vector3D<double>, int voxelNum, bool useEnclosingVoxels = false , double scatteringDensity = 0.);
 
 	static Voxel* GetVoxel(int voxelNum){return fVoxelVector[voxelNum];}
+
+	void SetMinPointsInAVoxel(int minPts) {fMinPointsInVoxel = minPts;}
+	int GetMinPointsInAVoxel() const { return fMinPointsInVoxel;}
 /*
 	static void InsertVoxel(Voxel *vox, int voxelNum){
 		fVoxelVector.push_back(vox);

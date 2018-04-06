@@ -113,7 +113,8 @@ void B1EventAction::EndOfEventAction(const G4Event*)
 			  << " :: VertexEnergy : "<< vertexEnergy[1] <<" : Energy " << energy[1] << std::endl;
     }
 
-if(position.size() == 12){
+//if(position.size() == 8){
+  if(position.size() == 12){
 
 	for(int i = 0 ; i < position.size() ; ){
 		outfile << "Event No : " << effEvNo <<" : " << position[i].x() << "  " << position[i].y() << "  " << position[i].z() << std::endl;
