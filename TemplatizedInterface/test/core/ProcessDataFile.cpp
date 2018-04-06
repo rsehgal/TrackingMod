@@ -162,9 +162,15 @@ int main(int arc, char *argv[]){
 
 		if(numOfDetectors == 6){
 
+		// ONLY FOR SIX DETECTOR SETUP, either Simulation or Experiment
+
 		/* Deviation check in air, which should be very very close to zero,
 		** here we are allow deviation in air to have a maximum value of
 		** 1e-6
+		**
+		** This is very much useful when we will have 6 detector in experiment
+		** and this will help in chosing only those events where muon does not
+		** suffer any scattering when travelling in air.
 		*/
 
 		//For incoming
