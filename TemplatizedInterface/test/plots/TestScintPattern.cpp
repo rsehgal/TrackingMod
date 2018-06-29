@@ -20,14 +20,14 @@ using namespace Tomography;
 int main(int argc, char *argv[]) {
   std::string temp_str = std::to_string(atoi(argv[1]));
   temp_str += ".root";
-  int clusterSize = 6;
+  int clusterSize = 1;
   TApplication *fApp = new TApplication("Test", NULL, NULL);
   //gStyle->SetPalette(1);
   Tracking::Tree::instance()->ReadTree(temp_str.c_str(), "BSC_DATA_TREE", 0);
 
 #if(1) //using concept of Detector
   Detector *trgPlanes = new GenericXYDetector(2,"XYTriggeringPlanes",0,-1,8,100.,100.,1);
-  trgPlanes->SetClusterSize(2);
+  //trgPlanes->SetClusterSize(2);
   trgPlanes->SetClusterSize(clusterSize);
   SetupManager::instance()->Register(trgPlanes);
   TCanvas *cPattern = new TCanvas("cPattern", "cPattern", 200, 10, 700, 500);

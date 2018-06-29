@@ -155,6 +155,7 @@ public:
 
 };
 
+#if(0)
 template <bool ForRpc>
 //void Scintillator::DetectAndSetHit(Tracking::Tree &t, int evNo) {
 void Scintillator::DetectAndSetHit(int evNo) {
@@ -266,6 +267,101 @@ void Scintillator::DetectAndSetHit(int evNo) {
   // std::cout<<"fScintHit : "<< fScintHit <<std::endl;
 }
 }
+#endif
+
+template <bool ForRpc>
+//void Scintillator::DetectAndSetHit(Tracking::Tree &t, int evNo) {
+void Scintillator::DetectAndSetHit(int evNo) {
+  /*
+  *  For the time being hard coding the information related to
+  *  trigger module and channel.
+  *  triggerModule : 0 , triggerChannel : 31
+  *
+  *  ModuleVector variable "modVector" should be filled after reading the ROOT file
+  *
+  */
+  Tracking::Tree *t = Tracking::Tree::instance()->GetTree();
+  fScintHit = false;
+  Tracking::Channel *trigMultiHit = t->GetEntry("Module2_LE_CH31", evNo);
+  long trig = 0;
+ // if(trigMultiHit->size()==1)
+//	  trig = trigMultiHit->at(0);
+  if(trigMultiHit->size()){
+	  for(int i = 0 ; i < trigMultiHit->size() ; i++){
+		  trig = trigMultiHit->at(i);
+		  if(trig > 19500 && trig < 20650)
+			  break;
+	  }
+  }
+  else
+	  return;
+  ch = 0;
+  ch = t->GetEntry(fName, evNo);
+  if (ch->size()) {
+    long scintillator = 0;
+    scintillator = ch->at(0);
+    /* The below logic is duplicate for the time being.
+     * Based on the actual logic, it needs to be changed
+     * for Scintiallator and Rpc
+     */
+
+    if(ForRpc) {
+    	//if(ch->size()==1){
+    	if(0){
+    		scintillator = ch->at(0);
+    	    		long rpcData = scintillator;
+    	                if (rpcData >= fStart && rpcData <= fEnd) {
+    	                  fScintHit = true;
+    	                  fValue = rpcData;
+    	                  return;
+    	                  //break;
+    	                }
+    	}
+    	else{
+    	for(int i = 0 ; i<ch->size() ; i++){
+    		scintillator = ch->at(i);
+    		long rpcData = scintillator;
+            //if (rpcData >= fStart && rpcData <= fEnd) {
+    		//if(trig-rpcData > -1200 && trig-rpcData < 1200){
+    		long diff = rpcData-trig;
+    		if(diff > -600 && diff < 600){
+                  fScintHit = true;
+                  fValue = rpcData;
+                  //return;
+                  break;
+                }
+
+        }return;
+    	}
+
+
+
+    }else{
+    	for(int i = 0 ; i<ch->size() ; i++){
+    		scintillator = ch->at(i);
+    		//scintillator = ch->at(0);
+
+    		long diff = scintillator-trig;
+    		if(diff > -530 && diff < 530){
+    		    fScintHit = true;
+    		    fValue = scintillator;
+    		    break;
+    		    //return;
+    		}
+    		//fScintHit = true;
+    		//fValue = scintillator;
+    		//return;
+        }
+    	return;
+    }
+
+
+
+  // std::cout<<"fScintHit : "<< fScintHit <<std::endl;
+}
+}
+
+
 } /* namespace Tomography */
 
 #endif /* PLANE_H_ */

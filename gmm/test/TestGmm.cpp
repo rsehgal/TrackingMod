@@ -42,7 +42,7 @@ int main(){
 
 #endif
 	std::cout<<"-------- Trying with some sensible data ---------------" << std::endl;
-	Tomography::GMM1D *gmm2 = new Tomography::GMM1D(2);
+	Tomography::GMM1D *gmm2 = new Tomography::GMM1D(3);
 
 /*	std::vector<double> meann;
 	meann.push_back(2.); meann.push_back(4.);
@@ -69,25 +69,25 @@ int main(){
 
 	double mean1 = -1.;
 	double mean2 = 7.;
-//	double mean3 = 1.;
+	double mean3 = 1.;
 
 	double covars1 = 0.5; //0.25;
-	double covars2 = 1.0; //1.2;
-//	double covars3 = 1.5; //2.25;
+	double covars2 = 2.0; //1.2;
+	double covars3 = 1.5; //2.25;
 
 	gmm2->GetGaussianVector()[0]->SetMean(mean1);
 	gmm2->GetGaussianVector()[1]->SetMean(mean2);
-//	gmm2->GetGaussianVector()[2]->SetMean(mean3);
+	gmm2->GetGaussianVector()[2]->SetMean(mean3);
 
 
 	gmm2->GetGaussianVector()[0]->SetCovars(covars1);
 	gmm2->GetGaussianVector()[1]->SetCovars(covars2);
-//	gmm2->GetGaussianVector()[2]->SetCovars(covars3);
+	gmm2->GetGaussianVector()[2]->SetCovars(covars3);
 
 	//Reading data and filling std::vector
 	std::vector<double> dataVector;
-	std::ifstream infile("gauss.txt");
-	int count = 55000;
+	std::ifstream infile("gauss3.txt");
+	int count = 40000;
 	double val = 0.;
 	while(count){
 		infile >> val;

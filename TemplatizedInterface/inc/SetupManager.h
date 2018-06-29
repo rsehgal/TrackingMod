@@ -101,17 +101,17 @@ typedef Tomography::Properties Detector;
           
           if(detType.compare("CMS")==0)
           {
-              for(int i = CmsRpcLowerLayerStartsAt ; i < fCmsRpcVector.size() ; i++)
+              for(unsigned int i = CmsRpcLowerLayerStartsAt ; i < fCmsRpcVector.size() ; i++)
               temp.push_back(fCmsRpcVector[i]);
           }
           if(detType.compare("GLASS")==0)
           {
-              for(int i = GlassRpcLowerLayerStartsAt ; i < fGlassRpcVector.size() ; i++)
+              for(unsigned int i = GlassRpcLowerLayerStartsAt ; i < fGlassRpcVector.size() ; i++)
               temp.push_back(fGlassRpcVector[i]);
           }
           if(detType.compare("TRG")==0)
           {
-              for(int i = TriggeringPlaneLowerLayerStartsAt ; i < fTriggeringPlaneVector.size() ; i++)
+              for(unsigned int i = TriggeringPlaneLowerLayerStartsAt ; i < fTriggeringPlaneVector.size() ; i++)
               temp.push_back(fTriggeringPlaneVector[i]);
           }
           return temp;
@@ -128,12 +128,17 @@ typedef Tomography::Properties Detector;
             return fTriggeringPlaneVector;
           if(detType.compare("PADDLE")==0)
             return fPaddleVector;
+
+          //Default return a blank DetectorVector, just to avoid warning
+          std::vector<Detector*> detVect;
+          return detVect;
+
         }
 
         void SetEfficiency(std::string detType){
           int numOfEvents = 0;
           int lcount = 0;
-          bool detected = false;
+          //bool detected = false;
           numOfEvents = Tracking::Tree::instance()->GetNumOfEvents();
           std::cout<<"Total Num of Events  : " <<  numOfEvents << std::endl;
           /*std::vector<Detector*> detVect = GetDetectorVector(detType);

@@ -71,6 +71,7 @@ for(int i = 0 ; i < fNumOfPlanes ; i++) {
 }
 }*/
 
+#if(0)
 void Properties::SetEventDetected(int evNo) {
   SetFiredStripsVector(evNo);
   fEventDetected = false;
@@ -108,6 +109,47 @@ for(int i = 0 ; i < fNumOfPlanes ; i++) {
 #endif
 
 }
+#endif
+
+void Properties::SetEventDetected(int evNo) {
+  SetFiredStripsVector(evNo);
+  fEventDetected = false;
+
+
+for(int i = 0 ; i < fNumOfPlanes ; i++) {
+
+#ifdef EFF_AND
+
+#ifdef CLUSTER_SIZE
+  if(i==0)
+  fEventDetected = (GetPlane(i)->GetFiredStripsVector().size() > 0. && GetPlane(i)->GetFiredStripsVector().size() <= fClusterSize); // GetPlane(i)->GetClusterSize());
+  else
+  fEventDetected &= (GetPlane(i)->GetFiredStripsVector().size() > 0. && GetPlane(i)->GetFiredStripsVector().size() <= fClusterSize); //GetPlane(i)->GetClusterSize());
+#else
+  if(i==0)
+  fEventDetected = GetPlane(i)->GetFiredStripsVector().size() > 0.;
+  else
+  fEventDetected &= GetPlane(i)->GetFiredStripsVector().size() > 0.;
+#endif
+
+#else
+
+#ifdef CLUSTER_SIZE
+  if(i==0)
+  fEventDetected = (GetPlane(i)->GetFiredStripsVector().size() > 0. && GetPlane(i)->GetFiredStripsVector().size() <= fClusterSize); // GetPlane(i)->GetClusterSize());
+  else
+  fEventDetected |=  (GetPlane(i)->GetFiredStripsVector().size() > 0. && GetPlane(i)->GetFiredStripsVector().size() <= fClusterSize); //GetPlane(i)->GetClusterSize());
+#else
+  if(i==0)
+  fEventDetected = GetPlane(i)->GetFiredStripsVector().size() > 0.;
+  else
+  fEventDetected |= GetPlane(i)->GetFiredStripsVector().size() > 0.;
+#endif
+
+#endif
+
+}
+
 
 #if(0)
   if(!GetDetectorType().compare("TRG")){ //if detector type is equal to TRG then update the event vector
@@ -136,6 +178,8 @@ for(int i = 0 ; i < fNumOfPlanes ; i++) {
          SetEventDetected(i);
          if(fEventDetected)
            count++;
+         //else
+        	// std::cout << "Event No : " <<  i << " NOT Detected" << std::endl;
         /*SetFiredStripsVector(i);
         #ifdef EFF_AND
         if(GetPlane(0)->GetFiredStripsVector().size() && GetPlane(1)->GetFiredStripsVector().size())
@@ -146,6 +190,7 @@ for(int i = 0 ; i < fNumOfPlanes ; i++) {
         #endif*/
      }
            //double tmp = ((double)(numOfEvents-count))*100.;
+     	   std::cout << "Efficiency Count : " << count << std::endl;
            fEfficiency = count/(double)numOfEvents*100;
    }
 
@@ -435,6 +480,10 @@ TH2F* Properties::GetStripsHitPlot3D(){
   TH2F *h3dHitPlot = new TH2F("ScintillatorPatter", "ScintillatorPattern", numOfBinsX , 0, GetPlane(0)->GetNumOfScintillators(), numOfBinsY, 0, GetPlane(1)->GetNumOfScintillators());
   h3dHitPlot->GetXaxis()->SetTitle("TopPlane");
   h3dHitPlot->GetYaxis()->SetTitle("BottomPlane");
+  h3dHitPlot->GetXaxis()->CenterTitle(true);
+  h3dHitPlot->GetYaxis()->CenterTitle(true);
+  h3dHitPlot->GetXaxis()->SetTitleOffset(1.6);
+  h3dHitPlot->GetYaxis()->SetTitleOffset(1.6);
   //TH2F *h3dHitPlot = new TH2F("h3dHitPlot", "3DHitPlot", 64, -fLength, fLength, 64, -fBreadth, fBreadth);
 
   //h3dHitPlot->SetMarkerSize(0.5);
@@ -516,18 +565,19 @@ void Properties::GetX_Y_And_ClusterHistograms()
  // TCanvas *c = new TCanvas((GetName()+"Cluster").c_str(), (GetName() + " ClusterSize").c_str(), 800, 600);
  // c->Divide(2,2);
 
-  int nxbins = 32;
-  int nybins = 32;
+  int nxbins = 31;
+  int nybins = 31;
   int pbins = 1024;
-  int xlow = 0;
+  int xlow = 1;
   int xhigh = 32;
-  int ylow = 0;
+  int ylow = 1;
   int yhigh = 32;
  
   TCanvas *histX = new TCanvas("HistX");
   TH1F *histogram_x = new TH1F(GetPlane(0)->GetName().c_str(), "Cluster Size of X Plane", nxbins, xlow, xhigh);
   TCanvas *histY = new TCanvas("HistY");
   TH1F *histogram_y = new TH1F(GetPlane(1)->GetName().c_str(), "Cluster Size of Y Plane", nybins, ylow, yhigh);
+
   TCanvas *histPixel = new TCanvas("HistPixel");
   TH1F *histogram_pixel = new TH1F(("Pixels-"+GetName()).c_str(), "Cluster Size of Pixels", pbins, 0, 1024);
  
@@ -536,25 +586,39 @@ void Properties::GetX_Y_And_ClusterHistograms()
   std::string plotsLocation = detectorMap->GetPlotsLocation();
   std::cout << "Plots Location from ClusterSize : " << plotsLocation << std::endl;
  
+  int zeroStripCouner = 0;
   for (int evNo = 0; evNo < numOfEvents; evNo++) 
   {
-      //SetFiredStripsVector(evNo);
-	  SetEventDetected(evNo);
-      histogram_x->Fill(GetPlane(0)->GetFiredStripsVector().size());
-      histogram_y->Fill(GetPlane(1)->GetFiredStripsVector().size());
+      SetFiredStripsVector(evNo);
+	  //SetEventDetected(evNo);
+	  //if(fEventDetected){
+      if(GetPlane(0)->GetFiredStripsVector().size()==0)
+    	  zeroStripCouner++;
+      if(GetPlane(0)->GetFiredStripsVector().size() > 0 && GetPlane(0)->GetFiredStripsVector().size() <= fClusterSize)
+      //if(GetPlane(0)->GetFiredStripsVector().size() <= fClusterSize)
+    	  histogram_x->Fill(GetPlane(0)->GetFiredStripsVector().size());
+      if(GetPlane(1)->GetFiredStripsVector().size() > 0 && GetPlane(1)->GetFiredStripsVector().size() <= fClusterSize)
+      //if(GetPlane(1)->GetFiredStripsVector().size() <= fClusterSize)
+    	  histogram_y->Fill(GetPlane(1)->GetFiredStripsVector().size());
+
       histogram_pixel->Fill(GetPlane(0)->GetFiredStripsVector().size() * GetPlane(1)->GetFiredStripsVector().size());
+	  //}
   }
+
+  std::cout<<"***************************************************************" << std::endl;
+  std::cout<<"Zero Strip Counter for : " << fName <<" : " << zeroStripCouner << std::endl;
+  std::cout<<"***************************************************************" << std::endl;
       
   //c->cd(1);
   histX->cd();
-  histogram_x->GetXaxis()->SetRangeUser(0,10);
+  histogram_x->GetXaxis()->SetRangeUser(1,10);
   histogram_x->Draw();
   histX->Modified();
   histX->Update();
 
   //c->cd(2);
   histY->cd();
-  histogram_y->GetXaxis()->SetRangeUser(0,10);
+  histogram_y->GetXaxis()->SetRangeUser(1,10);
   histogram_y->Draw();
   histY->Modified();
   histY->Update();
@@ -635,6 +699,44 @@ void Properties::WriteHitInfoToFile(){
 
 }
 
+
+void Properties::GetStripProfile(int planeNo)
+{
+  //TApplication *fApp = new TApplication("Histogram", NULL, NULL);
+  int numOfEvents = Tracking::Tree::instance()->GetNumOfEvents();
+  //TCanvas *c = new TCanvas((GetName()+"StripProfile"+std::to_string(numOfEvents)).c_str(),  (GetName() + " Strip Profile"+std::to_string(numOfEvents)).c_str(), 800, 600);
+  int nxbins = 64;
+  int xlow = 32;
+  int xhigh = 96;
+//  int xlow = 0;
+//  int xhigh = 63;
+  std::string histName="";
+  if(planeNo == 0)
+      histName = "X Plane "+GetName()+"  : "+ std::to_string(numOfEvents);
+  else
+	  histName = "Y Plane "+GetName()+"  : "+ std::to_string(numOfEvents);
+
+  TCanvas *c = new TCanvas((GetName()+"StripProfile_"+histName+std::to_string(numOfEvents)).c_str(),  (GetName() + " Strip Profile"+histName+std::to_string(numOfEvents)).c_str(), 800, 600);
+
+  TH1F *histogram = new TH1F((GetName()+histName).c_str(), (GetName()+histName).c_str(), nxbins, xlow, xhigh);
+
+  for (int evNo = 0; evNo < numOfEvents; evNo++)
+  {
+	  GetPlane(planeNo)->SetFiredStripsVector(evNo);
+	  int firedStripVectorSize = GetPlane(planeNo)->GetFiredStripsIDVector().size();
+	  std::cout <<"Fired Strip Vector Size : " << firedStripVectorSize << std::endl;
+	  if(firedStripVectorSize > 0 && firedStripVectorSize <= fClusterSize){
+	    for(int l = 0 ; l < firedStripVectorSize ; l++)
+	    {
+	       histogram->Fill(GetPlane(planeNo)->GetFiredStripsIDVector()[l]);
+	    }
+	  }
+  }
+  histogram->Draw();
+  c->Modified();
+  c->Update();
+
+}
 void Properties::GetStripProfile()
 {
   //TApplication *fApp = new TApplication("Histogram", NULL, NULL);
@@ -643,6 +745,9 @@ void Properties::GetStripProfile()
   int nxbins = 64;
   int xlow = 32;
   int xhigh = 96;
+//  int xlow = 0;
+//  int xhigh = 63;
+
   std::string histName = "Strip Profile of Full Detector "+GetName()+"  : "+ std::to_string(numOfEvents);
   TH1F *histogram = new TH1F(GetName().c_str(), histName.c_str(), nxbins, xlow, xhigh);
 
@@ -650,13 +755,15 @@ void Properties::GetStripProfile()
 
   for (int evNo = 0; evNo < numOfEvents; evNo++) 
   {
-     SetFiredStripsVector(evNo);
+#if(0)
+	  SetFiredStripsVector(evNo);
+#define VATSAL_ALGO
 #ifdef VATSAL_ALGO
      for(int k = 0 ; k < GetNumOfPlanes() ; k++)
      {
         for(int l = 0 ; l < GetPlane(k)->GetNumOfScintillators() ; l++)
         {
-            if(Tracking::Tree::instance()->GetEntry(GetPlane(k)->GetScintVector()[l]->GetName(),evNo)->size())
+            if(Tracking::Tree::instance()->GetEntry(GetPlane(k)->GetScintVector()[l]->GetName(),evNo)->size() == 1)
             {
               histogram->Fill(GetPlane(k)->GetScintVector()[l]->GetStripNum());
             }
@@ -676,6 +783,54 @@ void Properties::GetStripProfile()
       }
 
 #endif
+
+#endif
+
+#if(1)
+     //SetEventDetected(evNo);
+     SetFiredStripsVector(evNo);
+     //if(fEventDetected){
+         for(int k = 0 ; k < GetNumOfPlanes() ; k++)
+         {
+            //for(int l = 0 ; l < GetPlane(k)->GetNumOfScintillators() ; l++)
+        	//if(GetPlane(k)->GetFiredStripsIDVector().size()>=1)
+        	if( GetPlane(k)->GetFiredStripsIDVector().size() > 0 && GetPlane(k)->GetFiredStripsIDVector().size() <= fClusterSize)
+        	{
+        		for(int l = 0 ; l < GetPlane(k)->GetFiredStripsIDVector().size() ; l++)
+        		{
+                  histogram->Fill(GetPlane(k)->GetFiredStripsIDVector()[l]);
+        		}
+        		/*for(int l = 0 ; l < GetPlane(k)->GetFiredStripsVector().size() ; l++)
+        		{
+        		  histogram->Fill(GetPlane(k)->GetFiredStripsVector()[l]);
+        		}*/
+        	}
+         }
+
+     //}
+#endif
+
+
+
+#if(0)
+         for(int k = 0 ; k < GetNumOfPlanes() ; k++)
+         {
+            //for(int l = 0 ; l < GetPlane(k)->GetNumOfScintillators() ; l++)
+        	GetPlane(k)->SetFiredStripsVector(evNo);
+        	if(GetPlane(k)->GetFiredStripsIDVector().size()==1)
+        	{
+        		for(int l = 0 ; l < GetPlane(k)->GetFiredStripsIDVector().size() ; l++)
+        		{
+                  histogram->Fill(GetPlane(k)->GetFiredStripsIDVector()[l]);
+        		}
+        		//histogram->Fill(GetPlane(k)->GetFiredStripsIDVector()[0]);
+        	}
+          }
+
+
+#endif
+
+
   }
       
     histogram->Draw();

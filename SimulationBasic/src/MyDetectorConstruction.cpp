@@ -65,7 +65,8 @@ G4VPhysicalVolume* MyDetectorConstruction::Construct(){
 
  
   //Adding RPC layer, considering that it is made up of galactic, to avoid interaction in RPC itself
-  G4Box *rpc = new G4Box("RPC",2*50.*cm,2*50.*cm,0.5*cm);
+  //G4Box *rpc = new G4Box("RPC",2*50.*cm,2*50.*cm,0.5*cm);
+  G4Box *rpc = new G4Box("RPC",50.*cm,50.*cm,0.5*cm);
   G4LogicalVolume *logicalRPC = new G4LogicalVolume(rpc,galactic,"LogicalRPC");
   int rpcNum = -1;
 	for (int k = 0; k < 8; k++) {
@@ -84,8 +85,9 @@ G4VPhysicalVolume* MyDetectorConstruction::Construct(){
 
 
   //Lets try to build material from NIST database
+  //G4Box *leadBlock = new G4Box("LeadBlock",5.*cm,5.*cm,5.*cm);
   G4Box *leadBlock = new G4Box("LeadBlock",5.*cm,5.*cm,5.*cm);
-  G4Material *Pb=nist->FindOrBuildMaterial("G4_Pb");
+  G4Material *Pb=nist->FindOrBuildMaterial("G4_Fe");
   G4LogicalVolume *logicalLeadBlock = new G4LogicalVolume(leadBlock,Pb,"LogicalLeadBlock");
 /*
   G4VPhysicalVolume *phyLeadBlock = new G4PVPlacement(0,
@@ -119,22 +121,23 @@ G4VPhysicalVolume* MyDetectorConstruction::Construct(){
                                 checkOverlaps);
 */
 
-
+/*
   G4Box *feBlock = new G4Box("FeBlock",10.*cm,10.*cm,10.*cm);
   G4Material *Fe=nist->FindOrBuildMaterial("G4_Fe");
   G4LogicalVolume *logicalFeBlock = new G4LogicalVolume(feBlock,Fe,"LogicalFeBlock");
-
+*/
   new G4PVPlacement(0,
                                   //G4ThreeVector(),
                                   G4ThreeVector(0*cm,0.*cm,0.),
                                   logicalLeadBlock,
                                   "PhysicalWorld",
-                                  logicalFeBlock,
+                                  logicWorld,
+                                  //logicalFeBlock,
                                   false,
                                   0,
                                   checkOverlaps);
 
-  new G4PVPlacement(0,
+/*  new G4PVPlacement(0,
                                   //G4ThreeVector(),
                                   //G4ThreeVector(-20*cm,20.*cm,0.),
 		  	  	  	  	  	  	  G4ThreeVector(0.,0.,0.),
@@ -144,7 +147,7 @@ G4VPhysicalVolume* MyDetectorConstruction::Construct(){
                                   false,
                                   0,
                                   checkOverlaps);
-
+*/
 
 
 //#define VOXELIZE

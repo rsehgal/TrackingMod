@@ -84,9 +84,9 @@ G4VPhysicalVolume* MyDetectorConstruction::Construct(){
   G4LogicalVolume *planeE = CreateEBlock(planeE1Logical, planeE2Logical, 1.*cm, world_mat);
 
 for(int k=0; k < 8 ; k++){
-//if(k==0 || k==3 || k==4 || k==7)
+if(k==0 || k==3 || k==4 || k==7)
 //if(k==0 || k==7)
-if(k==3 || k==4)
+//if(k==3 || k==4)
 	continue;
  eBlockNum++;
  G4VPhysicalVolume *planeEPhy = new G4PVPlacement(0,
@@ -228,7 +228,7 @@ G4LogicalVolume* MyDetectorConstruction::GetBlock(std::string name,double halfX,
 		G4Material *mat,int numOfStrips, double stripHalfZ,int dir,std::string defaultName){
 
   G4bool checkOverlaps = true;
-  double stripLen = 2*halfX/numOfStrips;
+  double stripLen = (2*halfX-6.2*cm)/numOfStrips;
   double stripHalfLen = 0.5*stripLen;
   G4LogicalVolume *tempLogical =  new G4LogicalVolume( (new G4Box(name,halfX,halfY,halfZ)),mat, name+"Logical" );
   if(dir==1)
@@ -240,7 +240,7 @@ G4LogicalVolume* MyDetectorConstruction::GetBlock(std::string name,double halfX,
         G4ThreeVector temp(0.,0.,0.);
         
         if(dir==1){
-	temp.setX(-halfX + stripHalfLen + i*stripLen);
+	temp.setX(-halfX + stripHalfLen + i*stripLen + 2*mm);
 	G4VPhysicalVolume *blockPhy = new G4PVPlacement(0,//yRot,
 		            temp,		   
                             GetStrip("strip",stripHalfLen,halfY,stripHalfZ,mat),
@@ -252,7 +252,7 @@ G4LogicalVolume* MyDetectorConstruction::GetBlock(std::string name,double halfX,
                            checkOverlaps);
 	}
 	else{
-	temp.setY(-halfY + stripHalfLen + i*stripLen);
+	temp.setY(-halfY + stripHalfLen + i*stripLen + 2*mm);
 	G4VPhysicalVolume *blockPhy = new G4PVPlacement(0,//yRot,
 		            temp,		   
                             GetStrip("strip",halfX,stripHalfLen,stripHalfZ,mat),

@@ -230,7 +230,7 @@ G4VPhysicalVolume *phyTargetPbBlock = new G4PVPlacement(0,
                                   0,
                                   checkOverlaps);
 
-
+/*
   G4VPhysicalVolume *phySubTargetBlockU2 = new G4PVPlacement(0,
                                     //G4ThreeVector(),
                                     //G4ThreeVector(-15*cm,-15*cm,12*cm),
@@ -243,13 +243,14 @@ G4VPhysicalVolume *phyTargetPbBlock = new G4PVPlacement(0,
                                     false,
                                     0,
                                     checkOverlaps);
+*/
 #endif
 
 
 	//fScoringVolume = logicalLeadBlock;
    fScoringVolume = shelf->GetLogicalVolume();//logicalShelf;
 
-
+#undef VOXELIZE
 #ifdef VOXELIZE
    /* Trying to use Voxelator to visualize the VoxelizedVolume
    ** This is nothing to do with the simulation. Used just to

@@ -59,7 +59,8 @@ const char* input_filename = (argc>1)?argv[1]:"tracks.txt";
     //	hist->Fill(color);
     	//if((z/deno) > 15. || (z/deno) < 5.) continue;
     	pt.Set(x/deno,y/deno,z/deno);
-    	pt.SetColor(2+color*100);
+    	//pt.SetColor(2+color*100);
+    	pt.SetColor(color);
     	v->Register(slicer,pt);
     //v.Register(pt);
 /*

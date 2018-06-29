@@ -14,7 +14,8 @@ int main(){
 	Infile.open("regressionData2.txt");
 	std::vector<double> xVect, yVect;
 	int count=15;
-	while(count)
+	//while(count)
+	while(!Infile.eof())
 	{
 		double x = 0., y=0.;
 		Infile>> x >> y;

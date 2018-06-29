@@ -43,6 +43,10 @@
 #include "Imaging.h"
 #include "CommonFunc.h"
 
+//To Store the HitDistribution, which may be helpful,
+//for logical sampling
+#include "HitDistribution.h"
+
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 int B1EventAction::evNo = 0;
@@ -89,6 +93,7 @@ if(!(evNo%10000))
 void B1EventAction::EndOfEventAction(const G4Event*)
 {  
 	ofstream outfile("Hits.txt",std::ios::app);
+	ofstream plotfile("HitPlot.txt",std::ios::app);
  /* double E1,E2,th1,th2,phi1,phi2,erel,c12;   //declaration of energy and theta_phi
   th1=acos(z1/r);
   th2=acos(z2/r);
@@ -113,16 +118,22 @@ void B1EventAction::EndOfEventAction(const G4Event*)
 			  << " :: VertexEnergy : "<< vertexEnergy[1] <<" : Energy " << energy[1] << std::endl;
     }
 
+  plotfile << position[2].x() << "  " << position[2].y() << std::endl;
 //if(position.size() == 8){
   if(position.size() == 12){
+
+	//plotfile << position[0].x() << "  " << position[0].y() << std::endl;
 
 	for(int i = 0 ; i < position.size() ; ){
 		outfile << "Event No : " << effEvNo <<" : " << position[i].x() << "  " << position[i].y() << "  " << position[i].z() << std::endl;
 		i += 2;
 	}
+
+	run->GetHitDistribution()->Fill(position[2].x(),position[2].y());
 	effEvNo++;
 
 	outfile.close();
+	plotfile.close();
 
 //	std::cout << "Position : "<< position[0] << " :: ";
 //  std::cout << "Raman Position Vector Size : " << position.size() << std::endl;

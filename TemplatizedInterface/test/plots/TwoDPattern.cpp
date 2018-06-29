@@ -92,7 +92,7 @@ void GenerateTimingHistogram(std::string runNum) {
 #define RPC
 #ifdef RPC
   // Now Creating Real RPC
-  Detector *rpc = new GlassRpc(4, "SecondGlassRpc", 120, 31);
+  Detector *rpc = new GlassRpc(2, "SecondGlassRpc", 120, 31);
   rpc->SetClusterSize(1);
   std::vector<std::string> firedNameVector;
   std::vector<int> firedIDVector;
@@ -122,7 +122,7 @@ void GenerateTimingHistogram(std::string runNum) {
     			if (ch->size()) {
     				//Ideally 10 should not be there,
     				//it is used just to put some separation between trigger and detector data
-    				h2d->Fill(ch->at(0), firedIDVector[i]+10);
+    				h2d->Fill(ch->at(0), firedIDVector[i]);
     			}
     		}
     	}

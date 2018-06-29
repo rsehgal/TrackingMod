@@ -78,7 +78,7 @@ public:
   void SetEfficiency();
 
   void SetClusterSize(int clusterSize){fClusterSize = clusterSize;
-  for(int i=0 ; i < fScintillatorPlaneVector.size() ; i++)
+  for(unsigned int i=0 ; i < fScintillatorPlaneVector.size() ; i++)
 	  GetPlane(i)->SetClusterSize(fClusterSize);
   }
   int GetClusterSize(){return fClusterSize;}
@@ -134,6 +134,8 @@ public:
   ScintillatorPlane* GetPlane(int planeNo){return fScintillatorPlaneVector[planeNo];}
   std::string GetDetectorType(){return fDetectorType;}
   void GetStripProfile();
+  void GetStripProfile(int planeNo);
+
   void GetX_Y_And_ClusterHistograms();
   void GetHitPlot();
   void GetHitPlot3D();
@@ -154,15 +156,15 @@ public:
   }
 
   std::vector<int> GetFiredStripsVector(int planeNo){
-	  fScintillatorPlaneVector[planeNo]->GetFiredStripsVector();
+	return fScintillatorPlaneVector[planeNo]->GetFiredStripsVector();
   }
 
   std::vector<int> GetFiredStripsIDVector(int planeNo){
-  	  fScintillatorPlaneVector[planeNo]->GetFiredStripsIDVector();
+  	 return fScintillatorPlaneVector[planeNo]->GetFiredStripsIDVector();
     }
 
   std::vector<std::string> GetFiredStripsNameVector(int planeNo){
-    	  fScintillatorPlaneVector[planeNo]->GetFiredStripsNameVector();
+    	 return fScintillatorPlaneVector[planeNo]->GetFiredStripsNameVector();
     }
   double GetEfficiency(){return fEfficiency;}
 

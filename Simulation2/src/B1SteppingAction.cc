@@ -174,6 +174,7 @@ stepNum++;
  			 buttonLocationVector.push_back(G4ThreeVector(10*cm,-10*cm,0.));
 
 */
+#define USE_SPACERS
 #ifdef USE_SPACERS
 			 std::vector<G4ThreeVector> buttonLocationVector;
 			 	 	 	 buttonLocationVector.push_back(G4ThreeVector(20*cm,-40*cm,0.));
@@ -284,7 +285,7 @@ stepNum++;
 
 
 			 for(int i = 0 ; i < buttonLocationVector.size() ; i++){
-				 button |= (buttonLocationVector[i] - hitLocation).mag() < 5*mm;
+				 button |= (buttonLocationVector[i] - hitLocation).mag() < 8*mm;
 				 if(button)
 					 break;
 			 }
@@ -295,11 +296,13 @@ stepNum++;
 			 if(button){
 				//(B1RunAction::brMap[hittedStripName]).push_back((int)Tracking::Global::GenRandomDet(19450, 21000));
 				 std::cout << "Going through the spacer............. Should not get recored !!!! : Branch Name : " << hittedStripName << std::endl;
+				 B1EventAction::position.push_back(G4ThreeVector(0.,0.,0.));
 			 }else {
 			 (B1RunAction::brMap[hittedStripName]).push_back((int)Tracking::Global::GenRandomDet(19450, 21000));
+			 B1EventAction::position.push_back(point1->GetPosition());
 			 //std::cout<<"Hitted Strip  : " << hittedStripName << std::endl;
 			 }
-			 B1EventAction::position.push_back(point1->GetPosition());
+			 //B1EventAction::position.push_back(point1->GetPosition());
 			  //std::cout<<"Type : " << Tracking::Tree::instance()->GetTTree()->GetBranch(hittedStripName.c_str())->GetClassName() << std::endl;
 			// std::cout<<"Entering .... " << touch1->GetVolume(1)->GetName() << std::endl;
 		  }

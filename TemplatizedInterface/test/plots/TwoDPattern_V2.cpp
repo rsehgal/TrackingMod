@@ -32,9 +32,9 @@ void GenerateTimingHistogram(std::string runNum) {
   // ScintillatorPlane bottomPlane(2,8,"Bottom-Plane");
   Detector *topPlane = new TriggeringPlane(2, "TopPlane", -150, -1);
   Detector *bottomPlane = new TriggeringPlane(2, "BottomPlane", 150, 7);
-  int nxbins = 1000;
-  int xlow = 15000;
-  int xhigh = 23000;
+  int nxbins = 3500;
+  int xlow = -1000;
+  int xhigh = 45500;
   int nybins = 150;
   int ylow = -10;
   int yhigh = 140;

@@ -73,6 +73,11 @@ int main(int arc, char *argv[]){
 	int deviatedMuonCounter = 0;
 	int undeviatedMuonCounter = 0;
 
+	//numOfEvents = 3;
+	//Opening a file for storing fitted hit points
+	std::ofstream fitHitFile("FitHitPlot.txt");
+
+
 	for (int evNo = 0; evNo < numOfEvents; evNo++) {
 		//std::cout << "=============== Event No : " << evNo << " =========================== " << std::endl;
 		eventProcessor.ProcessEvent(evNo);
@@ -93,11 +98,17 @@ int main(int arc, char *argv[]){
 		std::vector<Tracking::Vector3D<double>> hitPointVector = eventProcessor.GetHitPointVector();
 		std::cout<<"Hit Point Vector Size : " << hitPointVector.size() << std::endl;
 
-//#define USE_FITTED_TRACK
+		//Copied from inside of some ifdef and kept here outside
+		Tomography::Track incoming, outgoing;
+		int numOfDetectors = detectorNamesVector.size();
+
+#define USE_FITTED_TRACK
 #ifdef USE_FITTED_TRACK
+
+
+#ifdef SCATTERER_PLACED
 		std::vector<Tracking::Vector3D<double>> incomingHitPointVector;
 		std::vector<Tracking::Vector3D<double>> outgoingHitPointVector;
-
 		int size = hitPointVector.size();
 		for(int i = 0 ; i < size ; i++){
 			if(i < size/2){
@@ -122,23 +133,34 @@ int main(int arc, char *argv[]){
 					 << fittedOutgoingHitPointVector[i].x() << "  " << fittedOutgoingHitPointVector[i].y() << "  " << fittedOutgoingHitPointVector[i].z() << std::endl;
 		}
 
-/*
-
-		//Just for cross check with real hit points
-		if(evNo==10)
-			break;
-		else
-			continue;
-*/
-
-
 
 		incomingHitPointVector.clear();
 		outgoingHitPointVector.clear();
+#else //Of IF OF SCATTERER_PLACED
 
-#else
-		Tomography::Track incoming, outgoing;
-		int numOfDetectors = 6;
+		for(int i = 0 ; i < hitPointVector.size() ; i++)
+			hitPointVector[i].SetX(hitPointVector[i].x()-30.);
+		std::vector<Tracking::Vector3D<double>> fittedHitPointVector = fitter.GetFittedTrack(hitPointVector);
+		for(int i = 0 ; i < fittedHitPointVector.size() ; i++){
+			std::cout << "HitPoint : " << hitPointVector[i].x() << "  " << hitPointVector[i].y() << "  " << hitPointVector[i].z()
+					  << "   :: Fitted :  "
+					  << fittedHitPointVector[i].x() << "  " << fittedHitPointVector[i].y() << "  " << fittedHitPointVector[i].z()
+					  << std::endl;
+
+		}
+		fitHitFile << fittedHitPointVector[1].x() << " " << fittedHitPointVector[1].y() << std::endl;
+
+		//return 0;
+		continue;
+
+#endif // of SCATTERER_PLACED
+
+#else //Of IF OF USE_FITTED_TRACK
+		//Tomography::Track incoming, outgoing;
+		/* NOTE : Keep a watch here, currently we are hardcoding the number of detectors here
+		 * , which should actually be calculated or set using DetectorMapping
+		 */
+//		int numOfDetectors = 6;
 		if(numOfDetectors==3){
 			incoming.Set(hitPointVector[0],hitPointVector[1]);
 			outgoing.Set(hitPointVector[1],hitPointVector[2]);
@@ -147,7 +169,11 @@ int main(int arc, char *argv[]){
 			incoming.Set(hitPointVector[0],hitPointVector[hitPointVector.size()/2-1]);
 			outgoing.Set(hitPointVector[hitPointVector.size()/2],hitPointVector[hitPointVector.size()-1]);
 		}
-#endif
+#endif // of USE_FITTED_TRACK
+
+		/* NOTE : "incoming" and "outgoing" MUST be set before reaching this point
+		 *
+		 */
 		Tomography::Track ref(Tracking::Vector3D<double>(0.,0.,0.),Tracking::Vector3D<double>(0.,0.,-1.));
 		//std::cout<<"INcoming vector : " ; incoming.Print();
 		//std::cout<<"OUTgoing vector : " ; outgoing.Print();
@@ -195,10 +221,10 @@ int main(int arc, char *argv[]){
 		//if(deviation < 1e-6)
 		if(!deviatedMuon){
 			std::cout << "FOUND UNDEVIATED MUON..........." << std::endl;
-			Tomography::EventHelper u(incoming,outgoing);
+			//Tomography::EventHelper u(incoming,outgoing);
 		 }
 		}else{
-			Tomography::EventHelper u(incoming,outgoing);
+			//Tomography::EventHelper u(incoming,outgoing);
 		}
 
 		//break;
@@ -209,13 +235,16 @@ int main(int arc, char *argv[]){
 		//if(detectedEventCount == 10)
 			//					break;
 
-	}
+	} // END OF EVENT LOOP
+
+	//Closing the fitHitPlot.txt file
+	fitHitFile.close();
 
 	std::cout << "Total Number of Detected Events : " << detectedEventCount << std::endl;
 	std::cout << "No of Unexpected deviation due to Mid point of Pixel are : " << deviatedMuonCounter << std::endl;
 	std::cout << "No of Expected Undeviated Muon even after taking Mid point of Pixel are : " << undeviatedMuonCounter << std::endl;
 //#undef RECONSTRUCT
-#define RECONSTRUCT
+//#define RECONSTRUCT
 #ifdef RECONSTRUCT
    Tomography::RunHelper *runHelper = new Tomography::RunHelper();
   //Now trying to calculate Radiation for the whole run

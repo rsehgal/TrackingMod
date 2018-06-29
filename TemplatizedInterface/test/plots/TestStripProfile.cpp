@@ -16,8 +16,6 @@
 #include <fstream>
 #include <stdio.h>
 
-#include <TStyle.h>
-
 typedef Tomography::Properties Detector;
 using namespace Tomography;
 
@@ -33,14 +31,12 @@ int main(int argc, char *argv[]) {
   std::string temp_str = std::to_string(numd-1);
   std::string daqinfofile = temp_str;
   temp_str += ".root";
-  int clusterSize = 10;
+  int clusterSize = 1;
 
 
 #ifdef INTERACTIVE
     TApplication *fApp = new TApplication("Test", NULL, NULL);
 #endif
-
-  gStyle->SetOptStat(0);
   Tracking::Tree::instance()->ReadTree(temp_str.c_str(), "BSC_DATA_TREE", 0);
 
   //Reading Detector data from file, instead of doing hard coding here.
@@ -57,14 +53,15 @@ int main(int argc, char *argv[]) {
     rpc->SetClusterSize(clusterSize);
     //rpc->GetHitPlot();
 
-    rpc->GetHitPlot3D_V2(2);
-    rpc->GetHitPlot3D_V2(3);
-    rpc->GetX_Y_And_ClusterHistograms();
-    rpc->GetStripProfile();
-    rpc->WriteHitInfoToFile();
+    //rpc->GetHitPlot3D_V2(2);
+    //rpc->GetHitPlot3D_V2(3);
+    //rpc->GetX_Y_And_ClusterHistograms();
+    rpc->GetStripProfile(0);
+    rpc->GetStripProfile(1);
+    //rpc->WriteHitInfoToFile();
     delete rpc;
   }
-
+/*
   Detector *trgPlanes = new Tomography::GenericXYDetector(2,"XYTriggeringPlanes",0,-1,8,100.,100.,1);
   trgPlanes->SetClusterSize(clusterSize);
   SetupManager::instance()->Register(trgPlanes);
@@ -74,7 +71,8 @@ int main(int argc, char *argv[]) {
 
   detectorMap->ReadDaqInfo(daqinfofile);
   detectorMap->PrintEfficiencyVector();
-#ifdef INTERACTIVE
+  */
+
   fApp->Run();
-#endif
+
 }

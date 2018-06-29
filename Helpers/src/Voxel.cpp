@@ -25,7 +25,7 @@ Voxel::Voxel() {
 Voxel::Voxel(Tracking::Vector3D<double> pocaPt){
 	fTotalVoxelsCreated++;
 	std::cout<<"New Voxel Created ........ " << std::endl;
-	fMinPointsInVoxel = 10;
+	fMinPointsInVoxel = 6;
 	fVectPointsInVoxel.push_back(pocaPt);
 	fPointCount = fVectPointsInVoxel.size();
 	fOutlier = fPointCount < fMinPointsInVoxel;
@@ -52,7 +52,7 @@ Voxel::Voxel(Tracking::Vector3D<double> pocaPt, int voxelNum, bool useEnclosingV
 	fScatteringDensity = 0.;
 	fSD = 0.;
 	fRL = 0.;
-	fMinPointsInVoxel = 30;
+	fMinPointsInVoxel = 6;
 	fTotalVoxelsCreated++;
 	//std::cout << "New Voxel Created ........ " << std::endl;
 	fVoxelNum = voxelNum;

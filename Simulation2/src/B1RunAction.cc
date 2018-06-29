@@ -103,9 +103,10 @@ void B1RunAction::BeginOfRunAction(const G4Run*)
   myfile->open("energy.txt");
   //inform the runManager to save random number seed
   G4RunManager::GetRunManager()->SetRandomNumberStore(false);
-
+#define STORE
 #ifdef STORE
   fRootFile = new TFile ("1234.root","RECREATE","My GEANT4 simulation") ;
+  //TFile f("file.root","RECREATE");
   fTree = new TTree ("BSC_DATA_TREE","My GEANT4 simulation") ;
 #endif
 
@@ -242,8 +243,15 @@ void B1RunAction::EndOfRunAction(const G4Run* run)
   fs.close();
 
 
+  //Just to store HitDistribution
+  //b1Run->GetHitDistribution()->Write("HitDistribution");
+
 #ifdef STORE
+  std::cout << "WRITING TREEEEEEEEEE>>>>>>>>>>>>>>>>>>>>.." <<std::endl;
+  fTree->SetDirectory(fRootFile);
   fTree->Write();
+
+  std::cout << "WRITING TREEEEEEEEEE DONEEEEEEEEEEEEE ....." <<std::endl;
   fRootFile->Close();
 #endif
 

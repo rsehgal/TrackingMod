@@ -29,14 +29,16 @@
 /// \brief Implementation of the B1Run class
 
 #include "B1Run.hh"
-
+#include "HitDistribution.h"
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 B1Run::B1Run()
 : G4Run(),
   fEdep(0.), 
   fEdep2(0.)
-{} 
+{
+	fHitDistribution = new Tomography::HitDistribution();
+}
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 

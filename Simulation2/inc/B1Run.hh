@@ -33,6 +33,7 @@
 
 #include "G4Run.hh"
 #include "globals.hh"
+#include "HitDistribution.h"
 
 class G4Event;
 
@@ -42,6 +43,7 @@ class G4Event;
 class B1Run : public G4Run
 {
 	std::vector<double> fScatteringAngleVect;
+	Tomography::HitDistribution *fHitDistribution;
 
   public:
     B1Run();
@@ -61,6 +63,8 @@ class B1Run : public G4Run
 
     }
     void FillScatteringAngleVector(double scatteringAngle){fScatteringAngleVect.push_back(scatteringAngle);}
+
+    Tomography::HitDistribution* GetHitDistribution() const { return fHitDistribution; }
 
   private:
     G4double  fEdep;

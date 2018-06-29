@@ -62,13 +62,13 @@ void MyPrimaryGeneratorAction::GeneratePrimaries(G4Event *event) {
 #else
 
 
-	Vector3D<double> pt1(Tracking::Global::GenRandomDet(-2*50.*cm,2*50.*cm),
-	                      Tracking::Global::GenRandomDet(-2*50.*cm,2*50.*cm),
+	Vector3D<double> pt1(Tracking::Global::GenRandomDet(-5.*cm,5.*cm),
+	                      Tracking::Global::GenRandomDet(-5.*cm,5.*cm),
 	                      //Tracking::Global::GenRandomDet(0.,50.)
 	                      120*cm);
 
-	  Vector3D<double> pt2(Tracking::Global::GenRandomDet(-2*50.*cm,2*50.*cm),
-	                      Tracking::Global::GenRandomDet(-2*50.*cm,2*50.*cm),
+	  Vector3D<double> pt2(Tracking::Global::GenRandomDet(-5.*cm,5.*cm),
+	                      Tracking::Global::GenRandomDet(-5.*cm,5.*cm),
 	                      -120*cm);
 	  //std::cout<< pt.Unit().x() << pt.Unit().y() << pt.Unit().z() << std::endl;
 	  //pt1.Set(0.,0.,0.);

@@ -20,12 +20,26 @@ using namespace Tomography;
 int main(int argc, char *argv[]) {
 
   Detector *rpc1 = new GlassRpc(2, "FirstGlassRpc", 30, 31);
-  //Detector *rpc2 = new GlassRpc(3, "SecondGlassRpc", -30, 31);
+  Detector *rpc2 = new GlassRpc(3, "SecondGlassRpc", -30, 31);
   Detector *rpc3 = new GlassRpc(4, "SecondGlassRpc", -30, 31);
   //Detector *rpc4 = new GlassRpc(5, "SecondGlassRpc", -30, 31);
-  rpc1->SetClusterSize(2);
+
+
+#ifndef CLUSTER_SIZE
+   //if CLUSTER_SIZE not define, then allow all the scintillator to be fired
+   rpc1->SetClusterSize(32);
+   rpc2->SetClusterSize(32);
+   rpc3->SetClusterSize(32);
+#else
+   rpc1->SetClusterSize(1);
+   rpc2->SetClusterSize(1);
+   rpc3->SetClusterSize(1);
+#endif
+
+
+  //rpc1->SetClusterSize(3);
   //rpc2->SetClusterSize(2);
-  rpc3->SetClusterSize(2);
+  //rpc3->SetClusterSize(3);
  // rpc4->SetClusterSize(2);
   bool verbose = true;
 
@@ -36,6 +50,7 @@ int main(int argc, char *argv[]) {
   temp_str += ".root";
 
   Tracking::Tree::instance()->ReadTree(temp_str.c_str(), "BSC_DATA_TREE", 0);
+
   rpc1->SetEfficiency();
   rpc1->GetPlane(0)->SetEfficiency();
   rpc1->GetPlane(1)->SetEfficiency();
@@ -45,7 +60,7 @@ int main(int argc, char *argv[]) {
     std::cout << "Eff w.r.t Plane 2 : " << rpc1->GetPlane(1)->GetEfficiency() << std::endl;
     std::cout << "--------------------------------------" << std::endl;
   }
-/*
+
   rpc2->SetEfficiency();
   rpc2->GetPlane(0)->SetEfficiency();
   rpc2->GetPlane(1)->SetEfficiency();
@@ -55,7 +70,7 @@ int main(int argc, char *argv[]) {
     std::cout << "Eff w.r.t Plane 2 : " << rpc2->GetPlane(1)->GetEfficiency() << std::endl;
     std::cout << "--------------------------------------" << std::endl;
   }
-*/
+
 
   rpc3->SetEfficiency();
     rpc3->GetPlane(0)->SetEfficiency();
@@ -75,7 +90,13 @@ int main(int argc, char *argv[]) {
     */
 
    Detector *trgPlanes = new Tomography::GenericXYDetector(2,"XYTriggeringPlanes",0,-1,8,100.,100.,1);
+#ifndef CLUSTER_SIZE
+   //if CLUSTER_SIZE not define, then allow all the scintillator to be fired
+   trgPlanes->SetClusterSize(8);
+#else
    trgPlanes->SetClusterSize(1);
+#endif
+   //trgPlanes->SetClusterSize(1);
    trgPlanes->SetEfficiency();
    trgPlanes->GetPlane(0)->SetEfficiency();
    trgPlanes->GetPlane(1)->SetEfficiency();
