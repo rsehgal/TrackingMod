@@ -6,7 +6,11 @@
  */
 
 #include "CryGeantInterface.h"
-
+#include "base/Vector3D.h"
+#include "CommonFunc.h"
+#include "Files.h"
+#include "DetectorMapping.h"
+#include "base/Global.h"
 CryGeantInterface::CryGeantInterface() {
 	// TODO Auto-generated constructor stub
 
@@ -18,6 +22,9 @@ CryGeantInterface::~CryGeantInterface() {
 
 
 void CryGeantInterface::GeneratePrimariesForCry(G4Event *anEvent){
+      
+    if(Tomography::EventBreak::instance()->BreakSimulation())
+        return;
 
 	  if (InputState != 0) {
 	    G4String* str = new G4String("CRY library was not successfully initialized");
@@ -51,9 +58,18 @@ void CryGeantInterface::GeneratePrimariesForCry(G4Event *anEvent){
 	    particleGun->SetParticleDefinition(particleTable->FindParticle((*vect)[j]->PDGid()));
 	    particleGun->SetParticleEnergy((*vect)[j]->ke()*MeV);
 	    //particleGun->SetParticlePosition(G4ThreeVector((*vect)[j]->x()*m, (*vect)[j]->y()*m, (*vect)[j]->z()*m));
-	    particleGun->SetParticlePosition(G4ThreeVector((*vect)[j]->x()*cm, (*vect)[j]->y()*cm, -120*cm));
-	    particleGun->SetParticleMomentumDirection(G4ThreeVector((*vect)[j]->u(), (*vect)[j]->v(), -(*vect)[j]->w()));
+        double gunZ = Tomography::DetectorMapping::instance()->GetGunZ();
+	    particleGun->SetParticlePosition(G4ThreeVector((*vect)[j]->x()*cm, (*vect)[j]->y()*cm, gunZ)); //150*cm));
+	    particleGun->SetParticleMomentumDirection(G4ThreeVector((*vect)[j]->u(), (*vect)[j]->v(), (*vect)[j]->w()));
 	    particleGun->SetParticleTime((*vect)[j]->t());
+
+        double angleIncoming = CommonFunc::Functions::instance()->
+                      GetAngleInRadian(Tracking::Vector3D<double>((*vect)[j]->u(),
+                                                                  (*vect)[j]->v(),
+                                                                  (*vect)[j]->w()),
+                                                          Tracking::Vector3D<double>(0.,0.,-1.));
+        double energy = (*vect)[j]->ke()*MeV;
+        Tomography::Files::instance()->Write("StatsFromGenerator.txt",2, angleIncoming,energy);
 
 		  //_____________________________________________________________________________________
 		  	  //Logic use to store real incoming muon angles in a vector of angle in Run

@@ -34,10 +34,44 @@ public:
 static double GenRandomDet(double min, double max) {
   return (rand() / (static_cast<double>(RAND_MAX) + 1.0)) * (max - min) + min;
 }
+
 };
 
 }//end of Tracking namespace
 
+namespace Tomography{
+
+ constexpr int start = 19000;
+ constexpr int end = 24500;
+
+ constexpr int minPointsInAVoxel = 10;
+
+ static int effEvNo = 0;
+
+ /* Singleton class to break the Simulation when desired number 
+ ** events are done.
+ */
+ class EventBreak{
+    EventBreak(){}
+    static EventBreak *fInstance;
+ public:
+    static EventBreak* instance(){
+        if(!fInstance){
+            fInstance = new EventBreak();
+            return fInstance;
+       }else{
+            return fInstance;
+        }
+    }
+    static int fNumOfEvents ;
+    static int fEffEvNo ;
+
+    static bool BreakSimulation(){
+        return fEffEvNo > fNumOfEvents ;
+    }
+ };
+ 
+}//end of Tomography namespace
 
 
 #endif /* BASE_GLOBAL_H_ */

@@ -9,11 +9,11 @@ int main() {
   Tracking::Tree::instance()->TreeW();
 
   // reading it back
-  Tracking::Tree::instance()->ReadTree("hello.root", "BSC_DATA_TREE", 0);
+  Tracking::Tree::instance()->ReadTree("1234.root", "BSC_DATA_TREE", 0);
   Tracking::Tree *tr = Tracking::Tree::instance()->GetTree();
   std::cout << "Num of Events : "<< tr->GetNumOfEvents() << std::endl;
-  Tracking::Channel *ch = tr->GetEntry("channel", 5);
-  std::cout << ch->at(0) << std::endl;
-  std::cout << ch->at(1) << std::endl;
-  std::cout << ch->at(2) << std::endl;
+//  Tracking::Channel *ch = tr->GetEntry("channel", 5);
+//  std::cout << ch->at(0) << std::endl;
+//  std::cout << ch->at(1) << std::endl;
+//  std::cout << ch->at(2) << std::endl;
 }

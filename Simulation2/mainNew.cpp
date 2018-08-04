@@ -38,7 +38,7 @@
 int main(int argc, char *argv[]){
 
   
-
+  system("rm -rf Hodoscope.gml");
   G4RunManager *runManager = new G4RunManager;
   //G4VUserPhysicsList* phyList = new MyPhysics;
 

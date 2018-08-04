@@ -20,6 +20,29 @@ RunHelper::RunHelper() {
      */
 
     //WARNING : DO NOT ALTER THE BELOW MENTIONED SEQUENCE
+    fFileType = "";
+    fVoxelVector = Voxel::GetVoxelVector();
+    FillPocaVector();
+    FillScatteringAngleVector();
+//    CalcSDOfEachVoxel();
+//    FillSDVector();
+//    CalcRLOfEachVoxel();
+//    FillRLVector();
+
+    WriteToFile();
+     
+
+}
+
+RunHelper::RunHelper(std::string fileType) {
+    // TODO Auto-generated constructor stub
+    /* Here we should do the stuff that we want to do at the end of Run
+     * Like..  Calculation of SD for the whole run.
+     *         Calculation of SD for individual voxel
+     */
+
+    //WARNING : DO NOT ALTER THE BELOW MENTIONED SEQUENCE
+    fFileType = fileType;
     fVoxelVector = Voxel::GetVoxelVector();
     FillPocaVector();
     FillScatteringAngleVector();
@@ -78,20 +101,7 @@ void RunHelper::FillPocaVector(){
     	        for(int j = 0 ; j  < pocaPointsVector.size() ; j++){
     	            Insert(pocaPointsVector[j]);
     	}
-
-    	/*
-    	 if(fVoxelVector[i]->IsOutlier()){
-
-        }else{
-        std::vector<Tracking::Vector3D<double>> pocaPointsVector = fVoxelVector[i]->GetPocaPointsVector();
-        for(int j = 0 ; j  < pocaPointsVector.size() ; j++){
-            Insert(pocaPointsVector[j]);
-        }
-    	}
-       */
-
     }
-
 }
 
 #ifdef STORE
@@ -133,13 +143,13 @@ void RunHelper::Store(){
 
 void RunHelper::WriteToFile(){
 #ifdef STORE
-	Store();
+	//Store();
 #endif
-    CommonFunc::Functions::instance()->WriteToFile("scattering.txt",fScatteringAngleVector);
-    CommonFunc::Functions::instance()->WriteToFile("PocaPt.txt",fPocaPtVector);
-    CommonFunc::Functions::instance()->WriteToFile("Voxels.txt",Tomography::Voxel::GetVoxelVector());
-    CommonFunc::Functions::instance()->WriteToFile("filteredVoxels.txt",Tomography::Voxel::GetFilteredVoxelVector());
-    CommonFunc::Functions::instance()->WriteToFile("filteredPocaPt.txt",Tomography::Voxel::GetFilteredPocaPtVector());
+    CommonFunc::Functions::instance()->WriteToFile("scatteringRunHelper-"+fFileType+".txt",fScatteringAngleVector);
+    CommonFunc::Functions::instance()->WriteToFile("PocaPtRunHelper-"+fFileType+".txt",fPocaPtVector);
+    CommonFunc::Functions::instance()->WriteToFile("VoxelsRunHelper-"+fFileType+".txt",Tomography::Voxel::GetVoxelVector());
+    CommonFunc::Functions::instance()->WriteToFile("filteredVoxelsRunHelper-"+fFileType+".txt",Tomography::Voxel::GetFilteredVoxelVector());
+    CommonFunc::Functions::instance()->WriteToFile("filteredPocaPtRunHelper-"+fFileType+".txt",Tomography::Voxel::GetFilteredPocaPtVector());
 
 
 }

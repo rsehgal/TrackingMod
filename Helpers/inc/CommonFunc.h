@@ -259,7 +259,7 @@ void WriteToFile(std::string fileName,std::vector<Tomography::Voxel*> voxelsVect
                  //<< " " << voxelsVector[i]->GetRadiationLength() <<  std::endl;
 								<< " " << voxelsVector[i]->GetRadiationLength() <<  " " <<
 								voxelsVector[i]->GetScatteringDensity() <<  std::endl;
-      std::cout << "UNEXPECTED VALUE SHOULD COME FROM HERE.......... : " << voxelsVector[i]->GetScatteringDensity() << std::endl;
+      //std::cout << "UNEXPECTED VALUE SHOULD COME FROM HERE.......... : " << voxelsVector[i]->GetScatteringDensity() << std::endl;
    }
    }
 

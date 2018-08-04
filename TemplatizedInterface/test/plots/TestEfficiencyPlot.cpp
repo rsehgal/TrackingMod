@@ -142,9 +142,11 @@ int main(int argc, char *argv[]) {
 */
 
   Tomography::DetectorMapping *detectorMap = Tomography::DetectorMapping::create("testMapping.txt");
-  std::vector<std::string> detectorNamesVector = detectorMap->GetDetectorNamesVector();
-  for(int i = 0 ; i < detectorNamesVector.size()-1; i++){
-  EfficiencyGraph *effGr = new EfficiencyGraph(detectorNamesVector[i]);
+  //std::vector<std::string> detectorNamesVector = detectorMap->GetDetectorNamesVector();
+  std::vector<Tomography::Mapping::Detector*> detectorVector = detectorMap->GetDetectorVector();
+  //for(int i = 0 ; i < detectorNamesVector.size()-1; i++){
+  for(int i = 0 ; i < detectorVector.size()-1; i++){
+  EfficiencyGraph *effGr = new EfficiencyGraph(detectorVector[i]->sDetectorName);
   effGr->ReadFile();
   effGr->cd();
   std::cout<<"========================================================" << std::endl;

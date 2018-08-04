@@ -60,13 +60,13 @@ void EventProcessor::ProcessEvent(int evNo){
             } // end of detector loop
 
 
-    int numOfDetectors = 4;
+    int numOfDetectors = detectors.size();
     if(numOfDetectors == 3){
     	fIncoming.Set(tempVect[0],tempVect[1]);
     	fOutgoing.Set(tempVect[1],tempVect[2]);
     }else{
-            fIncoming.Set(tempVect[0],tempVect[1]);
-            fOutgoing.Set(tempVect[2],tempVect[3]);
+            fIncoming.Set(tempVect[0],tempVect[numOfDetectors/2 - 1]);
+            fOutgoing.Set(tempVect[numOfDetectors/2],tempVect[numOfDetectors-1]);
     }
     }
 

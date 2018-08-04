@@ -43,8 +43,9 @@ class G4LogicalVolume;
 
 class B1SteppingAction : public G4UserSteppingAction
 {
-	static int stepNum;
+	// static int stepNum;
   public:
+    static int stepNum;
     B1SteppingAction(B1EventAction* eventAction);
     virtual ~B1SteppingAction();
 

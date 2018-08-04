@@ -42,9 +42,20 @@
 #include "Voxelator_Evolution.h"
 #include "Imaging.h"
 #include "CommonFunc.h"
+#include "DetectorMapping.h"
+
+#include "Files.h"
+#include "B1SteppingAction.hh"
+
+#include "base/Global.h"
+
+#include "Coordinates.h"
+
+#include "Fit2DLinear.h"
 
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+int B1EventAction::noTrigger = 0;
 int B1EventAction::evNo = 0;
 int B1EventAction::effEvNo = 0;
 int B1EventAction::evMultiplicity = 0;
@@ -53,6 +64,11 @@ std::vector<G4String> B1EventAction::volName({"Hello"});
 std::vector<G4double> B1EventAction::energy({0.});
 std::vector<G4double> B1EventAction::vertexEnergy({0.});
 std::vector<G4ThreeVector> B1EventAction::position({G4ThreeVector(0.,0.,0.)});
+double B1EventAction::eventEnergy = -1.;
+
+bool B1EventAction::topPlaneHit = false;
+bool B1EventAction::bottomPlaneHit = false;
+std::vector<std::string> B1EventAction::hittedStripNameVector({"StripName"});
 
 B1EventAction::B1EventAction()
 : G4UserEventAction(),
@@ -67,9 +83,22 @@ B1EventAction::~B1EventAction()
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 void B1EventAction::BeginOfEventAction(const G4Event*)
-{ evNo++;
-if(!(evNo%10000))
-  std::cout << "========  " << evNo << "  Events over... =======" << std::endl;
+{ //evNo++;
+//std::cout << "-------------------------------------------------------"<< std::endl;
+  //Settig topPlaneHit and bottomPlaneHit to false
+  // if(effEvNo > 100)
+  //   return;
+  if(Tomography::EventBreak::instance()->BreakSimulation())
+    return;
+
+  topPlaneHit = false;
+  bottomPlaneHit = false;
+  hittedStripNameVector.clear();
+
+  std::cout << "========  " << evNo << "  Started... =======" << std::endl;
+  B1SteppingAction::stepNum = -1;
+//if(!(evNo%10000))
+  //std::cout << "========  " << evNo << "  Started... =======" << std::endl;
   fEdep = 0.;
   evMultiplicity=0;
   volName.clear();
@@ -79,7 +108,16 @@ if(!(evNo%10000))
 
   B1RunAction::fScatteringAngle = 0.;
   InitializeBranchMap();
-  (B1RunAction::brMap["Module2_LE_CH31"]).push_back((int)Tracking::Global::GenRandomDet(19000, 24000));
+  //(B1RunAction::brMap["Module2_LE_CH31"]).push_back((int)Tracking::Global::GenRandomDet(19000, 24000));
+  (B1RunAction::brMap["Module2_LE_CH31"]).push_back(
+    (int)Tracking::Global::GenRandomDet(Tomography::start, Tomography::end));
+
+  //TODO : Create branches for TopPlane and BottomPlane
+  /*for(int i = 0 ; i  < 16 ; i++){
+  (B1RunAction::brMap["Module2_LE_CH"+std::to_string(i)]).push_back(
+    (int)Tracking::Global::GenRandomDet(Tomography::start, Tomography::end));}*/
+
+
 
 
 }
@@ -88,15 +126,16 @@ if(!(evNo%10000))
 
 void B1EventAction::EndOfEventAction(const G4Event*)
 {  
-	ofstream outfile("Hits.txt",std::ios::app);
- /* double E1,E2,th1,th2,phi1,phi2,erel,c12;   //declaration of energy and theta_phi
-  th1=acos(z1/r);
-  th2=acos(z2/r);
-  phi1=atan(y1/x1);
-  phi2=atan(y2/x2);
-  c12=cos(th1)*cos(th2)+(sin(th1)*sin(th2))*cos(phi1-phi2);
-  erel=(1/2)*(E1+E2-2*sqrt(E1*E2*C12));      // definition of relative energy
-*/
+//	ofstream outfile("Hits.txt",std::ios::app);
+ // Tomography::Files::instance()->Write("test3.txt",3, 5.,6.,7.);
+ 
+ if(Tomography::EventBreak::instance()->BreakSimulation())
+        return;
+  if(effEvNo == Tomography::EventBreak::instance()->fNumOfEvents){
+    std::cout <<"***********************************" << std::endl;
+    std::cout <<"========= Raman100 events done=========" << std::endl;
+    std::cout <<"***********************************" << std::endl;
+ }
   // accumulate statistics in B1Run
   B1Run* run 
     = static_cast<B1Run*>(
@@ -105,92 +144,171 @@ void B1EventAction::EndOfEventAction(const G4Event*)
  // Tracking::Tree::instance()->Fill();
  // std::cout << "======== Event no : "<< evNo << "  ended  =======" << std::endl;
   if(evMultiplicity == 2){
-  	  genuineEventCounter++;
-  	  std::cout<<"Event Num : "<< evNo <<" :: EventMultiplicity : " << evMultiplicity << " :: DetectorNames : "
-  			  << volName[0] << " : " << volName[1]
-			  << " :: Position : " << position[0] <<" : "<< position[1]
-			  << " :: VertexEnergy : "<< vertexEnergy[0] <<" : Energy " << energy[0]
-			  << " :: VertexEnergy : "<< vertexEnergy[1] <<" : Energy " << energy[1] << std::endl;
+      genuineEventCounter++;
+      std::cout<<"Event Num : "<< evNo <<" :: EventMultiplicity : " << evMultiplicity << " :: DetectorNames : "
+          << volName[0] << " : " << volName[1]
+        << " :: Position : " << position[0] <<" : "<< position[1]
+        << " :: VertexEnergy : "<< vertexEnergy[0] <<" : Energy " << energy[0]
+        << " :: VertexEnergy : "<< vertexEnergy[1] <<" : Energy " << energy[1] << std::endl;
     }
 
-//if(position.size() == 8){
-  if(position.size() == 12){
+Tomography::DetectorMapping *detectorMap = Tomography::DetectorMapping::instance();
+//std::vector<std::string> detNamesVector = detectorMap->GetDetectorNamesVector();
+std::vector<Tomography::Mapping::Detector*> detectorVector = detectorMap->GetDetectorVector();
+
+/*if(evNo != effEvNo){
+  std::cout<<"Ayush : " << evNo << std::endl;
+}*/
+
+/* Changing the below mentioned condition, coz its not necessary that all the detectors
+** will alway fire, it totally depends on efficieny of detector in real experiment.
+**
+** But what is must is that trigger should certainly come, then only we should store
+** data in ROOT tree
+*/
+//if(position.size() == (detNamesVector.size()-1)*2  && evNo==effEvNo){
+Tomography::Coordinates c;
+if(topPlaneHit && bottomPlaneHit) { // logic for two fold coincidence
+  std::vector<Vector3D<double>> pixelCentreCoordVector;
+  std::vector<Vector3D<double>> hitPointVector;
+
+//HARDCODING BE CAREFULLLLLLLLLL............
+if(position.size() == 14)
+{
 
 	for(int i = 0 ; i < position.size() ; ){
-		outfile << "Event No : " << effEvNo <<" : " << position[i].x() << "  " << position[i].y() << "  " << position[i].z() << std::endl;
-		i += 2;
+		//outfile << "Event No : " << effEvNo <<" : " << position[i].x() << "  " << position[i].y() << "  " << position[i].z() << std::endl;
+     Tomography::Files::instance()->Write("Hits.txt",3, position[i].x(), position[i].y(), position[i].z());
+     int xstripNum = c.GetStripNum(position[i].x());
+     int ystripNum = c.GetStripNum(position[i].y());
+     Vector3D<double> pixelCentreCoord = c.GetStripCoordinate(xstripNum,ystripNum,position[i].z());
+     pixelCentreCoordVector.push_back(pixelCentreCoord);
+     hitPointVector.push_back(Vector3D<double>(position[i].x(), position[i].y(), position[i].z()));
+     //std::cout << "-------------------------" << std::endl;
+     //Vector3D<double>(position[i].x(),position[i].y(),position[i].z()).Print(); 
+     //std::cout << "XStripNum : " << xstripNum <<" : YStripNum : " << ystripNum << std::endl;
+     //pixelCentreCoord.Print();
+     if(i==0)
+      i++;
+     else
+		  i += 2;
 	}
+
+  //Taking pixelCentreCoor only for RPC, by leaving first and last ScintPlane
+  std::vector<Vector3D<double>> pixelCentreCoordVectorRpc;
+  for(int i = 1 ; i < pixelCentreCoordVector.size()-1 ; i++){
+    pixelCentreCoordVectorRpc.push_back(pixelCentreCoordVector[i]);
+  }
+
+  //Taking hitPointVector only for RPC, by leaving first and last ScintPlane
+  std::vector<Vector3D<double>> hitPointVectorRpc;
+  for(int i = 1 ; i < hitPointVector.size()-1 ; i++){
+    hitPointVectorRpc.push_back(hitPointVector[i]);
+  }
+
+  int hitPointSize = pixelCentreCoordVectorRpc.size();
+  std::vector<Vector3D<double>> incomingHitPtVector;
+  std::vector<Vector3D<double>> outgoingHitPtVector;
+  std::vector<Vector3D<double>> incomingPixelHitPtVector;
+  std::vector<Vector3D<double>> outgoingPixelHitPtVector;
+
+  //Filling incoming hit point vector using top half detectors
+  for(int i = 0 ; i < hitPointSize/2 ; i++){
+    incomingPixelHitPtVector.push_back(pixelCentreCoordVectorRpc[i]);
+    incomingHitPtVector.push_back(hitPointVectorRpc[i]);
+  }
+
+  //Filling outgoing hit point vector using bottom half detectors
+  for(int i = hitPointSize/2; i < hitPointSize ; i++){
+    outgoingPixelHitPtVector.push_back(pixelCentreCoordVectorRpc[i]);
+    outgoingHitPtVector.push_back(hitPointVectorRpc[i]);
+  }
+
+  //Try to get fitted Hit point vector from pixel center points
+  Tomography::Fit2DLinear fitter;
+  std::vector<Tracking::Vector3D<double>> fittedIncomingHitPointVector = fitter.GetFittedTrack(incomingPixelHitPtVector);
+  std::vector<Tracking::Vector3D<double>> fittedOutgoingHitPointVector = fitter.GetFittedTrack(outgoingPixelHitPtVector);
+
+  for(int i = 0 ; i < incomingHitPtVector.size() ; i++){
+  Tomography::Files::instance()->Write("ActualAndFittedHits.txt",6, 
+                                       incomingHitPtVector[i].x(), 
+                                       incomingHitPtVector[i].y(), 
+                                       incomingHitPtVector[i].z(),
+                                       fittedIncomingHitPointVector[i].x(),
+                                       fittedIncomingHitPointVector[i].y(),
+                                       fittedIncomingHitPointVector[i].z()
+                                       );
+ }
+
+ for(int i = 0 ; i < outgoingHitPtVector.size() ; i++){
+  Tomography::Files::instance()->Write("ActualAndFittedHits.txt",6, 
+                                       outgoingHitPtVector[i].x(), 
+                                       outgoingHitPtVector[i].y(), 
+                                       outgoingHitPtVector[i].z(),
+                                       fittedOutgoingHitPointVector[i].x(),
+                                       fittedOutgoingHitPointVector[i].y(),
+                                       fittedOutgoingHitPointVector[i].z()
+                                       );
+ } 
+    
+
+  std::cout<<"======== Sehgal100 Writing to file : " << effEvNo << " =============" << std::endl;
+  Tomography::Files::instance()->Write("Hits.txt","===================================");
 	effEvNo++;
-
-	outfile.close();
-
-//	std::cout << "Position : "<< position[0] << " :: ";
-//  std::cout << "Raman Position Vector Size : " << position.size() << std::endl;
-
-
+  Tomography::effEvNo++;
+  //Tomography::Event::fEffEvNo++;
+  //Tomography::EventBreak::fEffEvNo++;
+  Tomography::EventBreak::instance()->fEffEvNo++;
 
   Tomography::Track ref(G4ThreeVector(0.,0.,0.),G4ThreeVector(0.,0.,-1.));
-   Tomography::Track incoming(CommonFunc::Functions::instance()->ConvertToVector3D(position[0]),
+  //Generating incoming track from exact hit point of first two detectors
+  Tomography::Track incoming(CommonFunc::Functions::instance()->ConvertToVector3D(position[0]),
                               CommonFunc::Functions::instance()->ConvertToVector3D(position[2]));
 
-   Tomography::Track outgoing(CommonFunc::Functions::instance()->ConvertToVector3D(position[5]),
-                              CommonFunc::Functions::instance()->ConvertToVector3D(position[7]));
+  //Generating outgoing track from exact hit point of last two detectors
+  Tomography::Track outgoing(CommonFunc::Functions::instance()->ConvertToVector3D(position[position.size()-3]),
+                              CommonFunc::Functions::instance()->ConvertToVector3D(position[position.size()-1]));
    
    double angleIncoming = CommonFunc::Functions::instance()->GetAngleInRadian(incoming,ref);
    double angleOutgoing = CommonFunc::Functions::instance()->GetAngleInRadian(outgoing,ref);
    double diff = angleOutgoing-angleIncoming;
+   Tomography::Files::instance()->Write("StatsFromEventAction.txt",5, evNo, angleIncoming,angleOutgoing,diff,eventEnergy);
+
    //if(diff < 0.)
-  	// std::cout<<"Negative comes............" << std::endl;
+   // std::cout<<"Negative comes............" << std::endl;
    run->FillScatteringAngleVector(diff);//angleOutgoing-angleIncoming);
-  //std::cout<<"-------------------------------------" << std::endl;
-   //std::cout<<"Diff from EventAction : " << diff << std::endl;
-   //run->FillInComingAngleVector(angleIncoming);
-   Tomography::EventHelper u(incoming,outgoing);
-}else{
+   Tomography::EventHelper u(incoming,outgoing,"PocaFromExactHit.txt");
+
+   /* In addition to get Poca from exact hit point, let see the results of Poca from
+   ** fitted hit points
+   */
+   Tomography::Track fittedIncoming(fittedIncomingHitPointVector[0],
+                                    fittedIncomingHitPointVector[fittedIncomingHitPointVector.size()-1]);
+   Tomography::Track fittedOutgoing(fittedOutgoingHitPointVector[0],
+                                    fittedOutgoingHitPointVector[fittedOutgoingHitPointVector.size()-1]);
+   Tomography::EventHelper u2(fittedIncoming,fittedOutgoing,"PocaFromFittedHit.txt");
+
+
+   //Generating the data for ROOT tree, which corresponds to TDC value
+  for(int i = 0 ; i < hittedStripNameVector.size() ; i++ ){
+   (B1RunAction::brMap[hittedStripNameVector[i]]).push_back((int)Tracking::Global::GenRandomDet(19450, 21000));
+  }
+
+} // end of if for positionSize check, currently checked for 18
+
+}
+else{
+  evNo++;
+  noTrigger++;
+  std::cout<<"Returning for EvNo : " << evNo << std::endl;
 	return;
 }
 
-
-  /*
-   //std::cout<<"Position Vector Size : "<< position.size() << std::endl;
-  G4ThreeVector incoming = position[2]-position[0];
-  G4ThreeVector outgoing = position[7]-position[5];
-  //Tomography::EventHelper u(incoming,outgoing);
-
-  //Filling Tracks
-  B1RunAction::fIncomingTrack.SetP1(Tracking::Vector3D<double>(position[0].x(),position[0].y(),position[0].z()));
-  B1RunAction::fIncomingTrack.SetP2(Tracking::Vector3D<double>(position[2].x(),position[2].y(),position[2].z()));
-  B1RunAction::fOutgoingTrack.SetP1(Tracking::Vector3D<double>(position[5].x(),position[5].y(),position[5].z()));
-  B1RunAction::fOutgoingTrack.SetP2(Tracking::Vector3D<double>(position[7].x(),position[7].y(),position[7].z()));
-
-  //std::cout << "Incoming Track : " ; B1RunAction::fIncomingTrack.Print();
-  //std::cout << "Outgoing Track : " ; B1RunAction::fOutgoingTrack.Print();
-  //std::cout <<"======================================================================" << std::endl;
-//  Tomography::EventHelper u(B1RunAction::fIncomingTrack,B1RunAction::fOutgoingTrack);
-  // Tomography::EventHelper u(B1RunAction::fIncomingTrack,B1RunAction::fOutgoingTrack);
-  //std::cout<<"-----------------------------------------------------------------------" << std::endl;
-
-  TVector3 incomingR(incoming.x(),incoming.y(),incoming.z());
-  TVector3 outgoingR(outgoing.x(),outgoing.y(),outgoing.z());
-  B1RunAction::fScatteringAngle = outgoingR.Angle(incomingR);
-  //std::cout<<"Scattering Angle : " << B1RunAction::fScatteringAngle << std::endl;
-  if(B1RunAction::fScatteringAngle > 0.002){
-	  run->FillScatteringAngleVector(B1RunAction::fScatteringAngle);
-	  Tomography::EventHelper u(B1RunAction::fIncomingTrack,B1RunAction::fOutgoingTrack);
-  }
-
-*/
-
-
-  //std::cout<<"ScatteringAngle from EventAction : " << B1RunAction::fScatteringAngle << std::endl;
-	  //(run->GetScatteringAngleVector()).push_back(B1RunAction::fScatteringAngle);
-  //Tracking::ImageReconstruction fIm;
-  //Vector3D<double> fPocaPt = fIm.POCA(B1RunAction::fIncomingTrack,B1RunAction::fOutgoingTrack);
-  //std::cout<< "POCA from EventAction : " ; fPocaPt.Print();
 #ifdef STORE
   B1RunAction::fTree->Fill();
 #endif
 
+evNo++;
 }
 
 void B1EventAction::InitializeBranchMap(){

@@ -8,6 +8,7 @@
 #include "EventHelper.h"
 #include "CommonFunc.h"
 #include "Voxelator_Evolution.h"
+#include "Files.h"
 
 using Tracking::Vector3D;
 
@@ -40,9 +41,13 @@ EventHelper::EventHelper(Track incoming, Track outgoing){
 
 }
 
+EventHelper::EventHelper(Track incoming, Track outgoing, std::string filename) : EventHelper(incoming,outgoing){
+	Tomography::Files::instance()->Write(filename,4, fPocaPt.x(), fPocaPt.y(), 
+																   fPocaPt.z(), fPocaPt.GetColor());
+}
+
 void EventHelper::CalculatePOCA(){
 	fPocaPt = fIm.POCA(fIncoming,fOutgoing);
-	//std::cout << "Scattering NewArch : " << fScatteringAngle << std::endl;
 	fPocaPt.SetColor(fScatteringAngle);
 	std::cout<< "POCA from EventHELPER : " ; fPocaPt.Print();
 }
@@ -61,18 +66,12 @@ void EventHelper::CalculateScatterAngle(){
  * there itself. This will make the processing faster
  */
 void EventHelper::CalculateVoxel(){
+	if(Tomography::evolution::Voxelator::instance()->IsGenuine(fPocaPt)){
 	int voxelNum = GetVoxelNum();
 	int voxNum = Voxel::IfVoxelExist(voxelNum);
-    //std::cout<<"VoxNum : " << voxNum << std::endl;
-
-	//Checking if the POCA point lie within the Voxelized Region,
-	//If yes then only insert it in the desired Voxel.
-	if(Tomography::evolution::Voxelator::instance()->IsGenuine(fPocaPt)){
-		if(voxNum < 0.){
+    	if(voxNum < 0.){
 			fVoxel = new Voxel(fPocaPt,voxelNum);
-		//oxel::InsertVoxel(new Voxel(fPocaPt,voxelNum),voxelNum);
 		}else{
-		//Voxel::GetVoxelVector()[voxNum]->Insert(fPocaPt,voxelNum);
 			fVoxel = Voxel::GetVoxelVector()[voxNum];
 			fVoxel->Insert(fPocaPt,voxelNum);
 		}
