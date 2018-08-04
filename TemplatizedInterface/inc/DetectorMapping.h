@@ -8,10 +8,30 @@
 
 namespace Tomography{
 
+namespace Mapping{
+struct Detector{
+	std::string sDetectorName;
+	std::string sDetectorType;
+	double sZCoordinate;
+	int sStartingChannel;
+	int sModule;
+
+	Detector(std::string detName,  double zCoord, 
+			int  startChannel, int module, std::string detType = "GLASS"):
+			sDetectorName(detName),sDetectorType(detType),sZCoordinate(zCoord)
+			,sStartingChannel(startChannel), sModule(module){}
+
+};
+
+}
+
 
 class DetectorMapping{
 	
 	private:
+		std::string fGunString;
+		double fGunZ;
+
 		std::string fileName;
 		int fNumOfDetectors;
 	    static DetectorMapping *s_instance;
@@ -19,6 +39,10 @@ class DetectorMapping{
 	    std::vector<int> fModuleVector;
 	    std::vector<int> fStartingChannelVector;
 	    std::vector<double> fZCoordinateVector;
+
+	    //New Structure
+	    std::vector<Mapping::Detector*> fDetectorVector;
+
 
 	    //Location to store all the plots
 	    std::string fPlotsLocation ;
@@ -54,14 +78,21 @@ class DetectorMapping{
 		std::vector<int> GetStartingChannelVector() const {return fStartingChannelVector;}
 		std::vector<double> GetZCoordinateVector() const {return fZCoordinateVector;}
 
+		//This will return the full DetectorMap
+		std::vector<Mapping::Detector*>  GetDetectorVector() const { return fDetectorVector; }
+
 		std::string GetPlotsLocation() const {return fPlotsLocation;}
 
 		//Function to read information from runnumber.daq file
 		void ReadDaqInfo(std::string daqfile);
 
-
 		//Some Printing function basically for debugging
 		void PrintEfficiencyVector() const;
+
+		//GetZ location of Gun
+		double GetGunZ() const {return fGunZ;}
+
+		int GetNumOfDetectors(std::string type);
 
 
 };

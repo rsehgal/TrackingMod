@@ -75,6 +75,25 @@ public:
   Vector3D<double> GetSpecificCoordinate(double zpos);
   int GetLength() { return det.size(); }
   void Print();
+
+  //Functions to be used only by Simulation
+  int GetStripNum(Detector *det, double val, bool top){
+    double stripLength = 0., stripWidth = 0.;
+    if(top){
+      stripLength = det->GetPlane(0)->GetScintVector()[0]->GetLength();
+      stripWidth = stripLength / det->GetPlane(0)->GetNumOfScintillators();
+    }
+    else{
+      stripLength = det->GetPlane(1)->GetScintVector()[0]->GetLength();
+      stripWidth = stripLength / det->GetPlane(1)->GetNumOfScintillators();
+    }
+    return (val+ stripLength/2)/stripWidth;
+  }
+
+  int GetStripNum( double val){
+    double stripLength = 1000., stripWidth = 31.25;
+    return (val+ stripLength/2)/stripWidth;
+  }
 };
 
 } // end of Tomography namespace

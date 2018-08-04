@@ -24,10 +24,11 @@ DetectorMapping* DetectorMapping::create(std::string filename) {
 
     }else{
     	s_instance->SetFileName(filename);
-    	s_instance->fModuleVector.clear();
-    	s_instance->fDetectorNameVector.clear();
-    	s_instance->fStartingChannelVector.clear();
-    	s_instance->fZCoordinateVector.clear();
+    	s_instance->fDetectorVector.clear();
+    	// s_instance->fModuleVector.clear();
+    	// s_instance->fDetectorNameVector.clear();
+    	// s_instance->fStartingChannelVector.clear();
+    	// s_instance->fZCoordinateVector.clear();
 
     	//clearing efficiency vectors
     	s_instance->fEfficienyTopVector.clear();
@@ -58,15 +59,24 @@ DetectorMapping::DetectorMapping(std::string filename){
 void DetectorMapping::ReadMapping(){
 	//std::cout<<"FileName from ReadMapping : " << fileName << std::endl;
 	std::ifstream in(fileName);
-	int count = -1 ;
+	int count = -2 ;
 	int detCounter = 0;
 	while(1){
 
 		if(!in.good()) break;
 		std::string detectorName = "";
+		std::string detectorType = "";
 		int module = 0;
 		int channelStart = 31;
 		double zCoordinate = 0.;
+		
+		//reading GunZ
+		if(count == -2){
+			count++;
+			in >> fGunString >> fGunZ;
+			continue;
+		}
+
 		//std::string plotsLocation;
 		if(count == -1){
 			count++;
@@ -76,21 +86,26 @@ void DetectorMapping::ReadMapping(){
 		if(count == 0){
 			count++;
 			std::string lmodule, lchannelstart, lzcoordinate;
-			in >> detectorName >> lmodule >> lchannelstart >> lzcoordinate ;
+			in >> detectorName >> lmodule >> lchannelstart >> lzcoordinate >> detectorType;
 			continue;
 		}
-		///else{
+		
 		if(count==1){
 			detCounter++;
-			in >> detectorName >> module >> channelStart >> zCoordinate ;
-			fDetectorNameVector.push_back(detectorName);
-			fModuleVector.push_back(module);
-			fStartingChannelVector.push_back(channelStart);
-			fZCoordinateVector.push_back(zCoordinate);
+			in >> detectorName >> module >> channelStart >> zCoordinate >> detectorType;
+			// fDetectorNameVector.push_back(detectorName);
+			// fModuleVector.push_back(module);
+			// fStartingChannelVector.push_back(channelStart);
+			// fZCoordinateVector.push_back(zCoordinate);
+
+			//Filling the Structure
+			fDetectorVector.push_back(new Mapping::Detector(detectorName,zCoordinate,channelStart,
+														    module,detectorType));
 		}
 	}
 	std::cout << "Stack Length from ReadMapping : " << detCounter << std::endl;
-	fNumOfDetectors = fDetectorNameVector.size();
+	//fNumOfDetectors = fDetectorNameVector.size();
+	fNumOfDetectors = fDetectorVector.size();
 	std::cout << "Num Of Detector from ReadMapping : " << fNumOfDetectors << std::endl;
 }
 
@@ -215,6 +230,17 @@ void DetectorMapping::PrintEfficiencyVector() const {
 	//}
 	outfile.close();
 	}
+}
+
+
+int DetectorMapping::GetNumOfDetectors(std::string type){
+	int numOfDetectors = 0;
+	for(int i = 0 ; i < fDetectorVector.size() ; i++){
+		if(fDetectorVector[i]->sDetectorType == type){
+			numOfDetectors++;
+		}
+	}
+	return numOfDetectors;
 }
 
 }

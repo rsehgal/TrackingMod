@@ -43,13 +43,22 @@ class B1EventAction : public G4UserEventAction
 {
 static int evNo;
 static int effEvNo;
+
+
 public:
+static int noTrigger;
+
 static int evMultiplicity;
 static int genuineEventCounter;
 static std::vector<G4String> volName;
 static std::vector<G4double> energy;
 static std::vector<G4double> vertexEnergy;
 static std::vector<G4ThreeVector> position;
+static double eventEnergy;
+
+static std::vector<std::string> hittedStripNameVector;
+static bool topPlaneHit;
+static bool bottomPlaneHit;
 
 
   public:

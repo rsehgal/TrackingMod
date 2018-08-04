@@ -9,6 +9,7 @@
 #include "CommonFunc.h"
 #include "Voxelator_Evolution.h"
 #include "G4SystemOfUnits.hh"
+#include "base/Global.h"
 
 namespace Tomography {
 #if(1)
@@ -18,14 +19,14 @@ std::vector<Voxel*> Voxel::fVoxelVector={};
 
 Voxel::Voxel() {
 	// TODO Auto-generated constructor stub
-	fMinPointsInVoxel = 10;
+	fMinPointsInVoxel = Tomography::minPointsInAVoxel;
 
 }
 
 Voxel::Voxel(Tracking::Vector3D<double> pocaPt){
 	fTotalVoxelsCreated++;
 	std::cout<<"New Voxel Created ........ " << std::endl;
-	fMinPointsInVoxel = 10;
+	fMinPointsInVoxel = Tomography::minPointsInAVoxel;
 	fVectPointsInVoxel.push_back(pocaPt);
 	fPointCount = fVectPointsInVoxel.size();
 	fOutlier = fPointCount < fMinPointsInVoxel;
@@ -52,7 +53,7 @@ Voxel::Voxel(Tracking::Vector3D<double> pocaPt, int voxelNum, bool useEnclosingV
 	fScatteringDensity = 0.;
 	fSD = 0.;
 	fRL = 0.;
-	fMinPointsInVoxel = 30;
+	fMinPointsInVoxel = Tomography::minPointsInAVoxel;
 	fTotalVoxelsCreated++;
 	//std::cout << "New Voxel Created ........ " << std::endl;
 	fVoxelNum = voxelNum;

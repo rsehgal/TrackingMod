@@ -53,6 +53,13 @@
 
 //#include "Tree.h"
 
+//Trying to use DetectorMapping
+#include "DetectorMapping.h"
+
+
+//Trying to File Mechanism
+#include "Files.h"
+
 using namespace std;
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
@@ -125,43 +132,54 @@ void B1RunAction::BeginOfRunAction(const G4Run*)
   fTree->Branch("OutgoingTrack", &fOutgoingTrack);
   fTree->Branch("ScatteringAngle",&fScatteringAngle);
   fTree->Branch("Module2_LE_CH31","Module2_LE_CH31",&brMap["Module2_LE_CH31"]);
-#endif
-  counter = 0;
-  for(int i = 2 ; i < 8 ; i++){
-
-  	for(int brNum = 32 ; brNum < 96 ; brNum++){
-  		counter++;
-
-  	  //Tracking::Channel *br = new Tracking::Channel();
-  	  std::string bName = "Module"+std::to_string(i)+"_LE_CH"+std::to_string(brNum);
-  	  brMap[bName] = *(new Tracking::Channel());
-
-#ifdef STORE
-  	  fTree->Branch(bName.c_str(),bName.c_str(),&brMap[bName]);
-#endif
-
-
-
-  	  //Tracking::Tree::instance()->CreateBranch<decltype(brMap[bName])>(bName.c_str(),brMap[bName]);
-  	  //CreateBranch(bName.c_str(),brMap[bName]);
-
-  		//Tracking::Channel b;
-
-  		//std::string bName = "Module"+std::to_string(i)+"_LE_CH"+std::to_string(brNum);
-  //		tree->CreateBranch<decltype(b)>(bName.c_str(),b);
-  		//CreateBranch(bName.c_str(),b);
-  	}
-
-  	}
-
-  for(int i = 0  ; i< 10 ; i++){
-	 // CreateBranch(("TestBranch_"+std::to_string(i)).c_str(), b.at(i) );
-	 // Tracking::Channel *br = new Tracking::Channel();
-	 // CreateBranch(("TestBrerer"+std::to_string(i)).c_str(),*(new Tracking::Channel()));
+  
+  //Creating branches for Scintillator planes
+  for(int brNum = 0 ; brNum < 16 ; brNum++){
+    std::string bName = "Module2_LE_CH"+std::to_string(brNum);
+      brMap[bName] = *(new Tracking::Channel());
+      fTree->Branch(bName.c_str(),bName.c_str(),&brMap[bName]);
   }
 
-  //Tracking::Channel *br = new Tracking::Channel();
-  //CreateBranch("TestBrerer",*br);
+#endif
+  counter = 0;
+
+  //Detector Mapping should be created here
+  Tomography::DetectorMapping *detectorMap = Tomography::DetectorMapping::instance();
+  //std::vector<std::string> detectorNamesVector = detectorMap->GetDetectorNamesVector();
+  //std::vector<int> startChannelVector = detectorMap->GetStartingChannelVector();
+  //std::vector<int> moduleVector = detectorMap->GetModuleVector();
+  std::vector<Tomography::Mapping::Detector*> detectorVector = detectorMap->GetDetectorVector();
+  //std::vector<double> zcoordinateVector = detectorMap->GetZCoordinateVector();
+
+  
+  //for(int i = 0 ; i < moduleVector.size()-1; i++){
+  for(int i = 0 ; i < detectorVector.size()-1; i++){
+
+    for(int brNum = 32 ; brNum < 96 ; brNum++){
+      counter++;
+
+      //Tracking::Channel *br = new Tracking::Channel();
+      //std::string bName = "Module"+std::to_string(moduleVector[i])+"_LE_CH"+std::to_string(brNum);
+      std::string bName = "Module"+std::to_string(detectorVector[i]->sModule)+"_LE_CH"+std::to_string(brNum);
+      brMap[bName] = *(new Tracking::Channel());
+
+#ifdef STORE
+      fTree->Branch(bName.c_str(),bName.c_str(),&brMap[bName]);
+#endif
+
+
+Tomography::Files::instance()->Open("Hits.txt",Tomography::operation::write);
+Tomography::Files::instance()->Open("StatsFromGenerator.txt",Tomography::operation::write);
+Tomography::Files::instance()->Open("StatsFromEventAction.txt",Tomography::operation::write);
+Tomography::Files::instance()->Open("PocaFromExactHit.txt",Tomography::operation::write);
+Tomography::Files::instance()->Open("ActualAndFittedHits.txt",Tomography::operation::write);
+Tomography::Files::instance()->Open("PocaFromFittedHit.txt",Tomography::operation::write);
+
+
+
+      
+    }
+  }
 
 }
 
@@ -184,10 +202,6 @@ void B1RunAction::EndOfRunAction(const G4Run* run)
   const MyDetectorConstruction* detectorConstruction
    = static_cast<const MyDetectorConstruction*>
      (G4RunManager::GetRunManager()->GetUserDetectorConstruction());
-  //G4double mass = detectorConstruction->GetScoringVolume()->GetMass();
-  //G4double dose = edep/mass;
-  //G4double rmsDose = rms/mass;
-
   // Run conditions
   //  note: There is no primary generator action object for "master"
   //        run manager for multi-threaded mode.
@@ -195,22 +209,6 @@ void B1RunAction::EndOfRunAction(const G4Run* run)
    = static_cast<const MyPrimaryGeneratorAction*>
      (G4RunManager::GetRunManager()->GetUserPrimaryGeneratorAction());
   G4String runCondition;
-/*
-  if (generatorAction)
-  {
-    const G4ParticleGun* particleGun1 = generatorAction->GetParticleGun1();
-    runCondition += particleGun1->GetParticleDefinition()->GetParticleName();
-    runCondition += " of ";
-    G4double particleEnergy = particleGun1->GetParticleEnergy();
-    runCondition += G4BestUnit(particleEnergy,"Energy\n");
-
-    const G4ParticleGun* particleGun2 = generatorAction->GetParticleGun2();
-        runCondition += particleGun2->GetParticleDefinition()->GetParticleName();
-        runCondition += " of ";
-        particleEnergy = particleGun2->GetParticleEnergy();
-        runCondition += G4BestUnit(particleEnergy,"Energy");
-  }
-*/
           
   // Print
   //  
@@ -253,8 +251,15 @@ void B1RunAction::EndOfRunAction(const G4Run* run)
   std::cout << "ScatteringAngleVector Size : " << b1Run->GetScatteringAngleVector().size() << std::endl;
     delete myfile;
 
-/*
-  Tomography::RunHelper *runHelper = new Tomography::RunHelper();
+  // Tomography::Files::instance()->Close("Hits.txt");
+  // Tomography::Files::instance()->Close("StatsFromGenerator.txt");
+  //Below line will close all the registered file in one shot.
+  Tomography::Files::instance()->Close();
+
+  /* Creating RunHelper, because its constructor will automatically  
+  ** call the functions in desired sequence to do filteration stuff
+  */
+  Tomography::RunHelper *runHelper = new Tomography::RunHelper("Exact");
   //Now trying to calculate Radiation for the whole run
   std::cout<<"@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@" << std::endl;
   std::cout<<"\033[1;31m                              SD : " << CommonFunc::Functions::instance()->StandardDeviation(runHelper->GetScatteringAngleVector()) << "  radians for 2 sigma  \033[0m\n" << std::endl;
@@ -263,7 +268,10 @@ void B1RunAction::EndOfRunAction(const G4Run* run)
   std::cout<<"\033[1;31m                              RL : " << CommonFunc::Functions::instance()->RadiationLength(runHelper->GetScatteringAngleVector(),10) << "  cms  \033[0m\n" <<  std::endl;
   //std::cout<<"                              RL : " << CommonFunc::Functions::instance()->RadiationLength(b1Run->GetScatteringAngleVector(),10) << std::endl;
   std::cout<<"@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@" << std::endl;
-*/
+  
+  std::cout << std::endl << "================================================================" << std::endl;
+  std::cout << "========== No of Missed Trigger : " << B1EventAction::noTrigger << "  =========" << std::endl;
+
 
 }
 

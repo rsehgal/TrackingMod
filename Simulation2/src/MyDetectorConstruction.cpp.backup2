@@ -48,7 +48,7 @@ G4VPhysicalVolume* MyDetectorConstruction::Construct(){
   //     
   // World
   //
-  G4double world_sizeXYZ = 300*cm;
+  G4double world_sizeXYZ = 200*cm;
   G4double world_sizeXY = 1.2*env_sizeXY;
   G4double world_sizeZ  = 1.2*env_sizeZ;
   
@@ -56,8 +56,7 @@ G4VPhysicalVolume* MyDetectorConstruction::Construct(){
 
   G4Box* solidWorld =    
     new G4Box("World",                       //its name
-      world_sizeXYZ, world_sizeXYZ, world_sizeXYZ);     //its size
-       //0.8*world_sizeXYZ, 0.8*world_sizeXYZ, 0.8*world_sizeXYZ);     //its size
+       0.8*world_sizeXYZ, 0.8*world_sizeXYZ, 0.8*world_sizeXYZ);     //its size
 
      
   G4LogicalVolume* logicWorld =                         
@@ -102,61 +101,14 @@ if(k==0 || k==3 || k==4 || k==7)
 }
 */
   Tomography::DetectorMapping *detectorMap = Tomography::DetectorMapping::create("testMapping.txt");
-  // std::vector<std::string> detectorNamesVector = detectorMap->GetDetectorNamesVector();
-  // std::vector<int> startChannelVector = detectorMap->GetStartingChannelVector();
-  // std::vector<int> moduleVector = detectorMap->GetModuleVector();
-  // std::vector<double> zcoordinateVector = detectorMap->GetZCoordinateVector();
+  std::vector<std::string> detectorNamesVector = detectorMap->GetDetectorNamesVector();
+  std::vector<int> startChannelVector = detectorMap->GetStartingChannelVector();
+  std::vector<int> moduleVector = detectorMap->GetModuleVector();
+  std::vector<double> zcoordinateVector = detectorMap->GetZCoordinateVector();
 
-  std::vector<Tomography::Mapping::Detector*>  detectorVector = detectorMap->GetDetectorVector();
+  std::cout << "Length of DetectorMapping from DetectorConstruction : " << detectorNamesVector.size() << std::endl;
 
-  //std::cout << "Length of DetectorMapping from DetectorConstruction : " << detectorNamesVector.size() << std::endl;
-  std::cout << "Length of DetectorMapping from DetectorConstruction : " << detectorVector.size() << std::endl;
-
-  for(int i = 0 ; i < detectorVector.size()-1; i++){
-    if(detectorVector[i]->sDetectorType == "GLASS"){
-    G4VPhysicalVolume *planeEPhy = new G4PVPlacement(0,
-                            G4ThreeVector(0.,0., detectorVector[i]->sZCoordinate),
-                            planeE,
-                            "Module"+std::to_string(detectorVector[i]->sModule),
-                            logicWorld,
-                            false,
-                            detectorVector[i]->sModule,
-                            checkOverlaps);
-  }
-  }
-
-  G4LogicalVolume *scintTopPlaneLogical = GetBlock("TopScintPlane",9*8*cm,90*cm,0.5*cm,Si,8,0.5*cm,1,0);
-  G4LogicalVolume *scintBottomPlaneLogical = GetBlock("BottomScintPlane",9*8*cm,90*cm,0.5*cm,Si,8,0.5*cm,1,8);
-
-  int plane = -1;
-  for(int i = 0 ; i < detectorVector.size()-1; i++){
-    if(detectorVector[i]->sDetectorType == "TRG"){
-    plane++;
-    if(plane == 0){
-    G4VPhysicalVolume *planeScintPhy = new G4PVPlacement(0,
-                            G4ThreeVector(0.,0., detectorVector[i]->sZCoordinate),
-                            scintTopPlaneLogical,
-                            "Module"+std::to_string(detectorVector[i]->sModule),
-                            logicWorld,
-                            false,
-                            detectorVector[i]->sModule,
-                            checkOverlaps);
-  }
-
-  if(plane == 1){
-    G4VPhysicalVolume *planeScintPhy = new G4PVPlacement(0,
-                            G4ThreeVector(0.,0., detectorVector[i]->sZCoordinate),
-                            scintBottomPlaneLogical,
-                            "Module"+std::to_string(detectorVector[i]->sModule),
-                            logicWorld,
-                            false,
-                            detectorVector[i]->sModule,
-                            checkOverlaps);
-  }
-  }
-  }
-
-  /*for(int i = 0 ; i < detectorNamesVector.size()-1; i++){
+  for(int i = 0 ; i < detectorNamesVector.size()-1; i++){
     std::cout << "Raman : DetZ : " << zcoordinateVector[i] << std::endl;
 
     G4VPhysicalVolume *planeEPhy = new G4PVPlacement(0,
@@ -167,7 +119,7 @@ if(k==0 || k==3 || k==4 || k==7)
                             false,
                             moduleVector[i],
                            checkOverlaps);
-  }*/
+  }
 
 
 /*G4Material *Pb=nist->FindOrBuildMaterial("G4_U");

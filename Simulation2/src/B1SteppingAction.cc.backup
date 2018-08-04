@@ -64,6 +64,26 @@ B1SteppingAction::~B1SteppingAction()
 void B1SteppingAction::UserSteppingAction(const G4Step* step)
 {
 stepNum++;
+/*
+  if (!fScoringVolume) { 
+    const MyDetectorConstruction* detectorConstruction
+      = static_cast<const MyDetectorConstruction*>
+        (G4RunManager::GetRunManager()->GetUserDetectorConstruction());
+    fScoringVolume = detectorConstruction->GetScoringVolume();   
+  }
+*/
+  // get volume of the current step
+  /*
+  G4LogicalVolume* volume 
+    = step->GetPreStepPoint()->GetTouchableHandle()
+      ->GetVolume()->GetLogicalVolume();
+      
+  // check if we are in scoring volume
+  if (volume != fScoringVolume) return;
+
+*/
+  // collect energy deposited in this step
+
   G4double edepStep = step->GetTotalEnergyDeposit();
   fEventAction->AddEdep(edepStep);  
 
@@ -73,49 +93,59 @@ stepNum++;
   G4TouchableHandle touch2 = point2->GetTouchableHandle();
 
   G4Track* track = step->GetTrack();
-  if(stepNum==0){
-	B1EventAction::eventEnergy = track->GetKineticEnergy();
-	std::cout << "KE : " << track->GetKineticEnergy() << std::endl;
-}
+  G4ThreeVector hitPre = track->GetPosition();
+  G4ThreeVector hitPost = track->GetPosition();
+  G4ThreeVector hitBeginOfPost = track->GetPosition();
 
+  //std::cout<<"@@@@@@@@@@ : " << point1->GetPhysicalVolume()->GetName() << " @@@@@@@@@@@@@@" << std::endl;
 
-  bool isPrimary = (track->GetParentID() == 0 );
-
-
+  if(point1->GetPhysicalVolume()->GetName()!="World")// && point2->GetPhysicalVolume()->GetName()!="World")
+  //if(point2->GetPhysicalVolume()->GetName()!="World")
   {
 
-  	 	//For Top Plane
-	  	for(int i = 0 ; i < 8 ; i++){
-	  		std::string scintName = "_LE_CH"+std::to_string(i);
-	  		//std::cout << "ScintName : "<< scintName << std::endl;
-	  		/*if(std::string(touch1->GetVolume()->GetName()) == scintName){
-	  			std::cout << "TopPlaneHitted ..." << std::endl;
-	  		}*/
-	  		if(isPrimary && std::string(touch1->GetVolume()->GetName()) == scintName
-	  			&&  point1->GetStepStatus()==fGeomBoundary){
-	  			B1EventAction::topPlaneHit = true;
-	  			break;
-	  		}
-	  	}
+/*
+	  if((touch1->GetVolume(2)->GetName()=="E0" &&  point1->GetStepStatus()==fGeomBoundary )||
+			  (touch1->GetVolume(2)->GetName()=="E1" &&  point1->GetStepStatus()==fGeomBoundary ) ||
+			  (touch1->GetVolume(2)->GetName()=="E2" &&  point1->GetStepStatus()==fGeomBoundary ) ||
+			  (touch1->GetVolume(2)->GetName()=="E3" &&  point1->GetStepStatus()==fGeomBoundary ) ||
+			  (touch1->GetVolume(2)->GetName()=="E4" &&  point1->GetStepStatus()==fGeomBoundary ))
+*/
+	//	std::cout<<"Processing Step Num : "<< stepNum  << std::endl;
+/*
+	  if((touch1->GetVolume(2)->GetName()=="Module2" ||
+			  touch1->GetVolume(2)->GetName()=="Module3" ||
+			  touch1->GetVolume(2)->GetName()=="Module4" ||
+			  touch1->GetVolume(2)->GetName()=="Module5")
+			  && point1->GetStepStatus()==fGeomBoundary)
+*/
+	  //std::cout<<"@@@@@@@@@@ : " << touch1->GetVolume()->GetName() << " @@@@@@@@@@@@@@" << std::endl;
+	  //Storing hit position where the step hits the module
+	  /*if((point1->GetPhysicalVolume()->GetName()=="Module2" ||
+			  point1->GetPhysicalVolume()->GetName()=="Module3" ||
+			  point1->GetPhysicalVolume()->GetName()=="Module4" ||
+			  point1->GetPhysicalVolume()->GetName()=="Module5")
+	  	  && point1->GetStepStatus()==fGeomBoundary){
 
-	  	//For Bottom plane 
-	  	for(int i = 8 ; i < 16 ; i++){
-	  		std::string scintName = "_LE_CH"+std::to_string(i);
-	  		//std::cout << "ScintName : "<< scintName << std::endl;
-	  		//std::cout << "ScintName-2 : " << touch1->GetVolume()->GetName() << std::endl;
- 	  		if(isPrimary && std::string(touch1->GetVolume()->GetName()) == scintName
-	  			&&  point1->GetStepStatus()==fGeomBoundary){
-	  			B1EventAction::bottomPlaneHit = true;
-	  			break;
-	  		}
-	  	}
+		 // std::cout<<"Entering .... " << touch1->GetVolume(1)->GetName() << std::endl;
+		  B1EventAction::position.push_back(point1->GetPosition());
+	  }*/
 
-	  // if(isPrimary && touch1->GetVolume()->GetName().substr(0,4) == "_LE_" 
-	  // && point1->GetStepStatus()==fGeomBoundary)
-	  // 	B1EventAction::bottomPlaneHit = true;
+//std::cout<<"MoveUpHistory : " << touch1->MoveUpHistory() << std::endl;
+//	  std::cout<<"Name : " << touch1->GetVolume()->GetName() << std::endl;
+//	  std::cout<<"Name : " << touch1->GetVolume()->GetName().substr(0,4) << std::endl;
+//if(touch1->GetVolume(2)){
+/*
+	  if((touch1->GetVolume(2)->GetName()=="Module2" ||
+	  			  touch1->GetVolume(2)->GetName()=="Module3" ||
+	  			  touch1->GetVolume(2)->GetName()=="Module4" ||
+	  			  touch1->GetVolume(2)->GetName()=="Module5")
+	  			  && point1->GetStepStatus()==fGeomBoundary)
+*/
+	  if(touch1->GetVolume()->GetName().substr(0,4) == "_LE_")
 
-	  if(isPrimary && touch1->GetVolume()->GetName().substr(0,4) == "_LE_" 
-		&& point1->GetStepStatus()==fGeomBoundary)
+	  //if(point1->GetStepStatus()==fGeomBoundary)
+
+	  //if(touch1->GetVolume()->GetName())
 	  {
 		  B1EventAction::evMultiplicity++;
 
@@ -124,35 +154,26 @@ stepNum++;
 		   * is non-zero.
 		   */
 
-		  /*if(step->GetStepLength()==0){
-			std::cout << "========= Ayush : Step with Zero Step Length ========" << std::endl;
-		  }*/
-
-
-		  if(step->GetStepLength()!=0.)
-		//else 
-		{	 std::string hittedStripName = ""; 
-			 if(touch1->GetVolume(1)->GetName().substr(0,6)=="Module")
-			 	hittedStripName = touch1->GetVolume(1)->GetName();
-			 if(touch1->GetVolume(2)->GetName().substr(0,6)=="Module")
-			 	hittedStripName = touch1->GetVolume(2)->GetName();
-			 //std::string hittedStripName = (touch1->GetVolume(2)->GetName()+ touch1->GetVolume()->GetName());
-			 hittedStripName += touch1->GetVolume()->GetName();
+		  if(step->GetStepLength()){
+			  std::string hittedStripName = (touch1->GetVolume(2)->GetName()+ touch1->GetVolume()->GetName());
 			 std::cout<< "Hitted Strip : "<< hittedStripName << "  : " ; //std::endl;
 			 G4ThreeVector hitLocation = point1->GetPosition();
 			 std::cout<< "HitLocation : "<< hitLocation.x() << "  " << hitLocation.y() << "  :  " << hitLocation.z() << std::endl;
 			 hitLocation.setZ(0.);
 
-			 /* False represent that muon does not pass through button
-			 ** and once USE_SPACERS are enable and muon pass through
-			 ** button location, then this will set to true and the muon
-			 ** should not get registered
-			 */
 			 bool button = false;
 
 			 //Filling Vector of Spacers location
+			 /*buttonLocationVector.push_back(G4ThreeVector(20*cm,20*cm,0.));
+			 buttonLocationVector.push_back(G4ThreeVector(-20*cm,20*cm,0.));
+			 buttonLocationVector.push_back(G4ThreeVector(-20*cm,-20*cm,0.));
+			 buttonLocationVector.push_back(G4ThreeVector(20*cm,-20*cm,0.));
+			 buttonLocationVector.push_back(G4ThreeVector(10*cm,10*cm,0.));
+			 buttonLocationVector.push_back(G4ThreeVector(-10*cm,10*cm,0.));
+ 			 buttonLocationVector.push_back(G4ThreeVector(-10*cm,-10*cm,0.));
+ 			 buttonLocationVector.push_back(G4ThreeVector(10*cm,-10*cm,0.));
 
-#undef USE_SPACERS
+*/
 #ifdef USE_SPACERS
 			 std::vector<G4ThreeVector> buttonLocationVector;
 			 	 	 	 buttonLocationVector.push_back(G4ThreeVector(20*cm,-40*cm,0.));
@@ -250,6 +271,18 @@ stepNum++;
 			  			 buttonLocationVector.push_back(G4ThreeVector(0*cm,40*cm,0.));
 
 
+/*
+			 for(int i = 4 ; i < 5 ; i++){
+				 for(int j = 0 ; j; i++){
+			 			 buttonLocationVector.push_back(G4ThreeVector((-40+i*10)*cm,(-40+j*10)*cm,0.));
+				 }
+			 }
+*/
+
+
+			 //G4ThreeVector buttonLocation(20*cm,20*cm,0.);
+
+
 			 for(int i = 0 ; i < buttonLocationVector.size() ; i++){
 				 button |= (buttonLocationVector[i] - hitLocation).mag() < 5*mm;
 				 if(button)
@@ -257,22 +290,13 @@ stepNum++;
 			 }
 #endif
 
-			 //ALGO : If muon passes through the button then DO NOT register it
+			 //bool button = (buttonLocation - hitLocation).mag() < 5*mm;
+			 //button = false;
 			 if(button){
 				//(B1RunAction::brMap[hittedStripName]).push_back((int)Tracking::Global::GenRandomDet(19450, 21000));
-				 //std::cout << "Going through the spacer............. Should not get recored !!!! : Branch Name : " << hittedStripName << std::endl;
+				 std::cout << "Going through the spacer............. Should not get recored !!!! : Branch Name : " << hittedStripName << std::endl;
 			 }else {
-			 
-			 //(B1RunAction::brMap[hittedStripName]).push_back((int)Tracking::Global::GenRandomDet(19450, 21000));
-			 /* For the time being moving the above statement in end of event action, where we store it only once
-			 ** we get the trigger, otherwise we will not store it. 
-			 ** 
-			 ** But now we need to store the hitted strip name in hittedStripNameVector of B1EventAction, so that
-			 ** it can be accessed there.
-			 */
-			 B1EventAction::hittedStripNameVector.push_back(hittedStripName);
-
-
+			 (B1RunAction::brMap[hittedStripName]).push_back((int)Tracking::Global::GenRandomDet(19450, 21000));
 			 //std::cout<<"Hitted Strip  : " << hittedStripName << std::endl;
 			 }
 			 B1EventAction::position.push_back(point1->GetPosition());
@@ -282,12 +306,40 @@ stepNum++;
 
 
 
-		  B1EventAction::volName.push_back(touch1->GetVolume(2)->GetName());
+			  B1EventAction::volName.push_back(touch1->GetVolume(2)->GetName());
 		  B1EventAction::energy.push_back(track->GetKineticEnergy());
 		  B1EventAction::vertexEnergy.push_back(track->GetVertexKineticEnergy());
-  }
+//		  B1EventAction::position.push_back(point1->GetPosition());
+		//  std::cout<<"GrandMa : "<< touch1->GetVolume(2)->GetName() << " :: StepStatus : " << point1->GetStepStatus() << std::endl;
+
+
+
+/*
+
+		  std::cout<<"PreStep : "<< hitPre.x()<<", "<<hitPre.y()<<", "<<hitPre.z()
+		   <<" :: PostStep : "<< hitBeginOfPost.x()<<", "<<hitBeginOfPost.y()<<", "<<hitBeginOfPost.z()
+		   <<" :: StepLength : " << step->GetStepLength()
+		   <<" :: EnergyDeposited in Step: "<< step->GetTotalEnergyDeposit()
+		   <<" :: PhysicalName : "<<  point1->GetPhysicalVolume()->GetName()
+  	  	   <<" :: Energy-Remaining : "<< point1->GetKineticEnergy()
+		   <<" :: GrandParentName Prestep: " << touch1->GetVolume(2)->GetName()  <<  std::endl;
+*/
+
+
+
+		   //<<" :: GrandParentName Prestep: " << touch1->GetVolume(2)->GetName()
+		   //<<" :: TrackID : "<< step->GetTrack()->GetTrackID() <<  std::endl;
+		   //<<" :: GrandParentName Poststep: " << touch2->GetVolume(2)->GetName() << std::endl;
+	  }
+  //}
  
   }
+
+
+  /*if(B1EventAction::evMultiplicity > 1){
+	  B1EventAction::genuineEventCounter++;
+	  std::cout<<"Event Num : "<< fEventAction->GetEventNum() <<" :: EventMultiplicity : " << B1EventAction::evMultiplicity << std::endl;
+  }*/
 
 }
 

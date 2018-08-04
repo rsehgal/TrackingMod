@@ -36,6 +36,7 @@ class EventHelper {
 public:
 	EventHelper();
 	EventHelper(Track incoming, Track outgoing);
+	EventHelper(Track incoming, Track outgoing, std::string filename);
 
 	//Getters
 	Track GetIncomingVector() const {return fIncoming;}

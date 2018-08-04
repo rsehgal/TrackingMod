@@ -1,4 +1,10 @@
 plotsLocation /var/www/html/Tomo/plot/
 DetectorName SlotNumber StartingChannelNum ZCoordinate
-RPC-MT1 2 31 45
-RPC-MT2 4 31 -45
+RPC-MT7 7 31 1350
+RPC-MT6 6 31 1050
+RPC-MT5 5 31 750
+RPC-MT4 4 31 450
+RPC-MT3 3 31 -450
+RPC-MT2 2 31 -750
+RPC-MT2 1 31 -1050
+RPC-MT2 0 31 -1350

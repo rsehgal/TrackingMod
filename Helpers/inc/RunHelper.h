@@ -25,6 +25,7 @@ class RunHelper {
 	std::vector<double> fSDOfVoxelsVector;
 	std::vector<double> fRLOfVoxelsVector;
 	std::vector<Voxel*> fVoxelVector;
+	std::string fFileType;
 
 #ifdef VOXELIZE
 	//std::vector<Voxel*> fVoxelVector;
@@ -34,6 +35,7 @@ class RunHelper {
  // std::vector<EventHelper*> fEventHelperVector;
 public:
 	RunHelper();
+	RunHelper(std::string fileType);
 
 	std::vector<double> GetScatteringAngleVector() const {return fScatteringAngleVector;}
 #ifdef VOXELIZE

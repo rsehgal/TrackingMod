@@ -56,5 +56,5 @@ file(GLOB sources ${PROJECT_SOURCE_DIR}/src/*.cpp ${PROJECT_SOURCE_DIR}/src/*.cc
 file(GLOB headers ${PROJECT_SOURCE_DIR}/inc/*.h ${PROJECT_SOURCE_DIR}/inc/*.hh ../../base/Vector3D.h) 
 
 add_executable(mainNew mainNew.cpp ${sources} ${headers})
-target_link_libraries(mainNew cryg4interface ${Geant4_LIBRARIES} Helpers)
+target_link_libraries(mainNew cryg4interface ${Geant4_LIBRARIES} Helpers ${TOMOLIB})
 #target_link_libraries(main ${Geant4_LIBRARIES} Tomo)

@@ -87,6 +87,7 @@ void Voxelator::SetVoxelator(double voxelizedVolHalfX,double voxelizedVolHalfY, 
 	CreateHistogram();
 }
 
+
 bool Voxelator::IsGenuine(Tracking::Vector3D<double> pocaPt){
 	return (std::fabs(pocaPt.x()) < ((double)fVoxelizedVolumeDim.x())/2.) &&
 		   (std::fabs(pocaPt.y()) < ((double)fVoxelizedVolumeDim.y())/2.) &&
@@ -131,29 +132,6 @@ std::vector<int> Voxelator::FindCandidateVoxels(Track incoming, Track outgoing,
 }
 #endif
 
-/*
-Vector3D<double> Voxelator::GetInsersection(Track t, double zVal, int select){
-	Vector3D<double> ptOfIntersection;
-	double x = 0.,y = 0., z = 0., dist = 0. ;
-
-	if(select == 1){
-		dist = (zVal - t.GetP2().z())/t.GetDirection().z();
-		ptOfIntersection = t.GetP2() + t.GetDirection()*dist;
-	}
-
-	if(select == 2){
-		dist = (zVal - t.GetP1().z())/(-t.GetDirection().z());
-		ptOfIntersection = t.GetP1() - t.GetDirection()*dist;
-	}
-
-	if(select == 3){
-		dist = (zVal - t.GetP1().z())/t.GetDirection().z();
-		ptOfIntersection = t.GetP1() + t.GetDirection()*dist;
-	}
-
-	return ptOfIntersection;
-}
-*/
 
 int Voxelator::GetVoxelNumber(double x, double y, double z){
 	int onX = (int)(x+fVoxelizedVolumeDim.x()/2.)/fEachVoxelDim.x();// + 1;
@@ -262,7 +240,7 @@ double Voxelator::GetAverageScatteringAngleInAVoxel(int x, int y, int z){
 }
 
 void Voxelator::Insert(double x, double y, double z, double w){
-std::cout<<"Inside INSERTTTTTTTTTTTTTTTTTTT...................." << std::endl;
+//std::cout<<"Inside INSERTTTTTTTTTTTTTTTTTTT...................." << std::endl;
 histVoxelCount->Fill(x,y,z);
 histVoxelValue->Fill(x,y,z,w);
 int voxelNumber = GetVoxelNumber(x,y,z);

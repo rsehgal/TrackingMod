@@ -26,7 +26,8 @@
 #include <TH1F.h>
 #include <G4SystemOfUnits.hh>
 #include "Fit2DLinear.h"
-
+#include "Files.h"
+#include "Factory.h"
 typedef Tomography::Properties Detector;
 
 int main(int arc, char *argv[]){
@@ -40,23 +41,49 @@ int main(int arc, char *argv[]){
 	std::ofstream fs("MuonAngles.txt");
 
 	Tomography::DetectorMapping *detectorMap = Tomography::DetectorMapping::create("testMapping.txt");
-	std::vector<std::string> detectorNamesVector = detectorMap->GetDetectorNamesVector();
-	std::vector<int> startChannelVector = detectorMap->GetStartingChannelVector();
-	std::vector<int> moduleVector = detectorMap->GetModuleVector();
-	std::vector<double> zcoordinateVector = detectorMap->GetZCoordinateVector();
+	// std::vector<std::string> detectorNamesVector = detectorMap->GetDetectorNamesVector();
+	// std::vector<int> startChannelVector = detectorMap->GetStartingChannelVector();
+	// std::vector<int> moduleVector = detectorMap->GetModuleVector();
+	// std::vector<double> zcoordinateVector = detectorMap->GetZCoordinateVector();
+	// int numOfDetectors = detectorNamesVector.size()-1;
+	
 
-	for(int i = 0 ; i < detectorNamesVector.size()-1; i++){
-	    std::cout << "Name of Detector : " << (i+1) << " : " << detectorNamesVector[i] << std::endl;
-	    Detector *rpc = new Tomography::GlassRpc(moduleVector[i], detectorNamesVector[i], zcoordinateVector[i], startChannelVector[i]);
+	std::vector<Tomography::Mapping::Detector*> detectorVector = detectorMap->GetDetectorVector();
+	int numOfDetectors = detectorVector.size();
+	std::cout << "=========================================================" << std::endl;
+	std::cout << "=========== Total Num of Detectors : " << detectorVector.size() << "=========" << std::endl;
+	std::cout << "=========================================================" << std::endl;
+	numOfDetectors--;
+
+	//for(int i = 0 ; i < detectorNamesVector.size()-1; i++){
+	for(int i = 0 ; i < detectorVector.size()-1; i++){
+	    //std::cout << "Name of Detector : " << (i+1) << " : " << detectorNamesVector[i] << std::endl;
+	    std::cout << "Name of Detector : " << (i+1) << " : " << detectorVector[i]->sDetectorName << std::endl;
+	    //Detector *rpc = new Tomography::GlassRpc(moduleVector[i], detectorNamesVector[i], zcoordinateVector[i], startChannelVector[i]);
+	    // Detector *rpc = new Tomography::GlassRpc(detectorVector[i]->sModule, detectorVector[i]->sDetectorName, 
+	    // 										 detectorVector[i]->sZCoordinate, detectorVector[i]->sStartingChannel);
+	    
+		Detector *rpc = Tomography::DetectorFactory::MakeInstance(detectorVector[i]->sModule, 
+																	  detectorVector[i]->sDetectorName, 
+	    									 						  detectorVector[i]->sZCoordinate,
+	    									 						  detectorVector[i]->sStartingChannel,
+	    									 						  detectorVector[i]->sDetectorType);	    
+	    
 	    rpc->SetClusterSize(1);
+		
 	}
 
+	std::vector<Detector*> rpcVector = Tomography::SetupManager::instance()->GetDetectorVector("GLASS");
+	numOfDetectors = rpcVector.size();
+
+    std::cout << "Number of Glass RPCs registered with SetupManger : " << numOfDetectors << std::endl;
 	fs << 3000 << " " << "G4_Fe" << " " << 100 << " ";
 
 	Tracking::Tree::instance()->ReadTree(temp_str.c_str(), "BSC_DATA_TREE", 0);
 	int numOfEvents = Tracking::Tree::instance()->GetNumOfEvents();
+	std::cout<<"Raman Num of Events : " << numOfEvents << std::endl;
 
-	/* We need EventProcess, because this guy will
+	/* We need EventProcessor, because this guy will
 	 * will give us the hit point vector for every
 	 * event.
 	 */
@@ -73,22 +100,19 @@ int main(int arc, char *argv[]){
 	int deviatedMuonCounter = 0;
 	int undeviatedMuonCounter = 0;
 
+	//Opening a file to store PocaPts from Reconstructed tracks.
+	std::string filename = "PocaFromReconHit.txt";
+	Tomography::Files::instance()->Open(filename,Tomography::operation::write);
+
 	for (int evNo = 0; evNo < numOfEvents; evNo++) {
-		//std::cout << "=============== Event No : " << evNo << " =========================== " << std::endl;
+		if(!(evNo%10000) && evNo)
+		std::cout << "======================= " << evNo << " Events Processed =========================== " << std::endl;
 		eventProcessor.ProcessEvent(evNo);
+		//setup->SetEventDetected("GLASS",evNo);
 		if(setup->EventDetected()){
 			std::cout << "==============  Event Detected..... : EvNo : " << evNo << "  ==================" <<  std::endl;
 			detectedEventCount++;
 
-
-		/*Tomography::Track incoming = eventProcessor.GetIncomingTrack();
-		//Tomography::Track outgoing = eventProcessor.GetOutgoingTrack();
-		Tomography::Track ref(G4ThreeVector(0.,0.,0.),G4ThreeVector(0.,0.,-1.));
-		//incoming.Print();
-		double angleIncoming = CommonFunc::Functions::instance()->GetAngleInRadian(incoming,ref);
-		hist->Fill(angleIncoming);
-		fs << angleIncoming << " ";
-		*/
 
 		std::vector<Tracking::Vector3D<double>> hitPointVector = eventProcessor.GetHitPointVector();
 		std::cout<<"Hit Point Vector Size : " << hitPointVector.size() << std::endl;
@@ -113,32 +137,31 @@ int main(int arc, char *argv[]){
 		Tomography::Track outgoing(fittedOutgoingHitPointVector[0],fittedOutgoingHitPointVector[fittedOutgoingHitPointVector.size()-1]);
 
 		for(int i = 0 ; i < fittedIncomingHitPointVector.size() ; i++){
-			std::cout << incomingHitPointVector[i].x() << "  " << incomingHitPointVector[i].y() << "  " << incomingHitPointVector[i].z() << "   ::  "
-					 << fittedIncomingHitPointVector[i].x() << "  " << fittedIncomingHitPointVector[i].y() << "  " << fittedIncomingHitPointVector[i].z() << std::endl;
+			std::cout << incomingHitPointVector[i].x() << "  " 
+					  << incomingHitPointVector[i].y() << "  " 
+					  << incomingHitPointVector[i].z() << " ::"
+					  << "  " << fittedIncomingHitPointVector[i].x() 
+					  << "  " << fittedIncomingHitPointVector[i].y() 
+					  << "  " << fittedIncomingHitPointVector[i].z() 
+					  << std::endl;
 		}
 
 		for(int i = 0 ; i < fittedOutgoingHitPointVector.size() ; i++){
-			std::cout << outgoingHitPointVector[i].x() << "  " << outgoingHitPointVector[i].y() << "  " << outgoingHitPointVector[i].z() << "   ::  "
-					 << fittedOutgoingHitPointVector[i].x() << "  " << fittedOutgoingHitPointVector[i].y() << "  " << fittedOutgoingHitPointVector[i].z() << std::endl;
+			std::cout << outgoingHitPointVector[i].x() << "  " 
+				 	  << outgoingHitPointVector[i].y() << "  " 
+				 	  << outgoingHitPointVector[i].z() << " ::"
+					  << "  " << fittedOutgoingHitPointVector[i].x() 
+					  << "  " << fittedOutgoingHitPointVector[i].y() 
+					  << "  " << fittedOutgoingHitPointVector[i].z() 
+					  << std::endl;
 		}
-
-/*
-
-		//Just for cross check with real hit points
-		if(evNo==10)
-			break;
-		else
-			continue;
-*/
-
-
 
 		incomingHitPointVector.clear();
 		outgoingHitPointVector.clear();
 
 #else
 		Tomography::Track incoming, outgoing;
-		int numOfDetectors = 6;
+		//int numOfDetectors = 6;
 		if(numOfDetectors==3){
 			incoming.Set(hitPointVector[0],hitPointVector[1]);
 			outgoing.Set(hitPointVector[1],hitPointVector[2]);
@@ -160,7 +183,10 @@ int main(int arc, char *argv[]){
 				  << " : Outgoing : " <<  outAngle
 				  << " : Diff : " << (inAngle-outAngle) << std::endl;
 
-		if(numOfDetectors == 6){
+		//if(numOfDetectors == 6){
+		if(numOfDetectors >= 6){
+
+		//Assuing there will always be even number of detectors
 
 		// ONLY FOR SIX DETECTOR SETUP, either Simulation or Experiment
 
@@ -173,51 +199,58 @@ int main(int arc, char *argv[]){
 		** suffer any scattering when travelling in air.
 		*/
 
-		//For incoming
+		double deviationIncoming = 0.;
+		double deviationOutgoing = 0.;
 		Tomography::Track in,out;
+
+		if(numOfDetectors==6){
+		//For incoming
+		
 		in.Set(hitPointVector[0],hitPointVector[1]);
 		out.Set(hitPointVector[1],hitPointVector[2]);
-		double deviationIncoming =  CommonFunc::Functions::instance()->GetAngleInRadian(in,out);
+		deviationIncoming =  CommonFunc::Functions::instance()->GetAngleInRadian(in,out);
 
 		in.Set(hitPointVector[3],hitPointVector[4]);
 		out.Set(hitPointVector[4],hitPointVector[5]);
-		double deviationOutgoing =  CommonFunc::Functions::instance()->GetAngleInRadian(in,out);
+		deviationOutgoing =  CommonFunc::Functions::instance()->GetAngleInRadian(in,out);
+		}else{
 
+			int halfNumOfDetectors = numOfDetectors / 2 ;
+			in.Set(hitPointVector[0],hitPointVector[halfNumOfDetectors/2 - 1]);
+			out.Set(hitPointVector[halfNumOfDetectors/2],hitPointVector[halfNumOfDetectors - 1]);
+			deviationIncoming =  CommonFunc::Functions::instance()->GetAngleInRadian(in,out);
 
-		//if(deviation > 1e-6)
+			in.Set(hitPointVector[halfNumOfDetectors],hitPointVector[halfNumOfDetectors + halfNumOfDetectors/2 -1]);
+			out.Set(hitPointVector[halfNumOfDetectors + halfNumOfDetectors/2 ],hitPointVector[numOfDetectors-1]);
+			deviationOutgoing =  CommonFunc::Functions::instance()->GetAngleInRadian(in,out);
+
+		}
+
 		bool deviatedMuon = (deviationIncoming > 1e-6 || deviationOutgoing > 1e-7);
 		if(deviatedMuon)
 			deviatedMuonCounter++;
-		else
+		else{
 			undeviatedMuonCounter++;
-
-		//Taking only undeviated events
-		//if(deviation < 1e-6)
-		if(!deviatedMuon){
-			std::cout << "FOUND UNDEVIATED MUON..........." << std::endl;
-			Tomography::EventHelper u(incoming,outgoing);
-		 }
-		}else{
-			Tomography::EventHelper u(incoming,outgoing);
+			//Tomography::EventHelper u(incoming,outgoing);	
+			Tomography::EventHelper u(incoming,outgoing,filename);	
 		}
-
-		//break;
-		}else{
-			//std::cout << "Event NOT Detected....." << std::endl;
+		
 		}
-
-		//if(detectedEventCount == 10)
-			//					break;
-
+	
 	}
 
+}
+
 	std::cout << "Total Number of Detected Events : " << detectedEventCount << std::endl;
-	std::cout << "No of Unexpected deviation due to Mid point of Pixel are : " << deviatedMuonCounter << std::endl;
+	std::cout << "No of Unexpected deviated Muons due to Mid point of Pixel are : " << deviatedMuonCounter << std::endl;
 	std::cout << "No of Expected Undeviated Muon even after taking Mid point of Pixel are : " << undeviatedMuonCounter << std::endl;
+
+
+Tomography::Files::instance()->Close(filename);
 //#undef RECONSTRUCT
 #define RECONSTRUCT
 #ifdef RECONSTRUCT
-   Tomography::RunHelper *runHelper = new Tomography::RunHelper();
+   Tomography::RunHelper *runHelper = new Tomography::RunHelper("Recons");
   //Now trying to calculate Radiation for the whole run
   std::cout<<"@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@" << std::endl;
   std::cout<<"\033[1;31m                              SD : " << CommonFunc::Functions::instance()->StandardDeviation(runHelper->GetScatteringAngleVector()) << "  radians for 2 sigma  \033[0m\n" << std::endl;
@@ -234,8 +267,5 @@ int main(int arc, char *argv[]){
 
 	fApp->Run();
 
-
 }
-
-
 

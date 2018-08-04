@@ -170,8 +170,12 @@ Vector3D<double> Coordinates::GetStripCoordinate(double x, double y, double z) {
   int tmp = 0;
   Vector3D<double> temp;
 
-  temp.SetX(floor((x + (double)50) / 3.125));
-  temp.SetY(floor((y + (double)50) / 3.125));
+  // temp.SetX(floor((x + (double)500) / 31.25));
+  // temp.SetY(floor((y + (double)500) / 31.25));
+  double stripWidth = 31.25;
+  double halfStripWidth = stripWidth/2.;
+  temp.SetX(-500 + x*stripWidth + halfStripWidth);
+  temp.SetY(-500 + y*stripWidth + halfStripWidth);
   temp.SetZ(z);
 
   return temp;
