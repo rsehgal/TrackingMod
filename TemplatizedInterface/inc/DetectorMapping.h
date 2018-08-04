@@ -31,6 +31,7 @@ class DetectorMapping{
 	private:
 		std::string fGunString;
 		double fGunZ;
+		int fMaxNumOfEvents;
 
 		std::string fileName;
 		int fNumOfDetectors;

@@ -173,10 +173,8 @@ Tomography::Files::instance()->Open("StatsFromGenerator.txt",Tomography::operati
 Tomography::Files::instance()->Open("StatsFromEventAction.txt",Tomography::operation::write);
 Tomography::Files::instance()->Open("PocaFromExactHit.txt",Tomography::operation::write);
 Tomography::Files::instance()->Open("ActualAndFittedHits.txt",Tomography::operation::write);
+Tomography::Files::instance()->Open("ActualHitAndPixelCenter.txt",Tomography::operation::write);
 Tomography::Files::instance()->Open("PocaFromFittedHit.txt",Tomography::operation::write);
-
-
-
       
     }
   }

@@ -73,7 +73,8 @@ void DetectorMapping::ReadMapping(){
 		//reading GunZ
 		if(count == -2){
 			count++;
-			in >> fGunString >> fGunZ;
+			in >> fGunString >> fGunZ >> fMaxNumOfEvents;
+			Tomography::EventBreak::instance()->SetMaxNumOfEvents(fMaxNumOfEvents);
 			continue;
 		}
 

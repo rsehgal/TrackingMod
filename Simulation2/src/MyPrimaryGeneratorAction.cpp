@@ -54,22 +54,17 @@ void MyPrimaryGeneratorAction::GeneratePrimaries(G4Event *event) {
    //  return;
   if(Tomography::EventBreak::instance()->BreakSimulation())
         return;
-   //fParticleGun->SetParticlePosition(G4ThreeVector(-50 * cm, 0., -120 * cm));
-   //fParticleGun->GeneratePrimaryVertex(event);
-
-  //Tracking::Global::GenRandomDet(-fLength/2.,fLength/2.),
-    //                              Tracking::Global::GenRandomDet(-fLength/2.
   
   //fParticleGun->SetParticlePosition(G4ThreeVector(0., 0., -120 * cm));
   Tomography::DetectorMapping *detectorMap = Tomography::DetectorMapping::instance();
   double gunZ = detectorMap->GetGunZ();
 
   std::cout << "Event No from MyPrimaryGeneratorAction : " << B1EventAction::GetEventNum() << std::endl;
-
-#ifdef USE_CRY
-//  GeneratePrimariesForCry(event);
-  if(Tomography::EventBreak::instance()->BreakSimulation())
+if(Tomography::EventBreak::instance()->BreakSimulation())
         return;
+#ifdef USE_CRY
+  // if(Tomography::EventBreak::instance()->BreakSimulation())
+  //       return;
 	std::cout << "Generating Event using CRY @@@@@@@@@@@@@@@@@@@@ " << std::endl;
 	cryG4Interface->GeneratePrimariesForCry(event);
 #else

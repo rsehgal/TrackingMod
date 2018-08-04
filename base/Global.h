@@ -69,6 +69,10 @@ namespace Tomography{
     static bool BreakSimulation(){
         return fEffEvNo > fNumOfEvents ;
     }
+
+    static void SetMaxNumOfEvents(int numOfEvents){
+        fNumOfEvents = numOfEvents;
+    }
  };
  
 }//end of Tomography namespace
