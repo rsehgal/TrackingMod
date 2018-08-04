@@ -5,6 +5,7 @@
  *      Author: rsehgal
  */
 
+#ifdef USE_MYSQL
 #include "Database.h"
 #include <iostream>
 #include <iomanip>
@@ -103,3 +104,5 @@ void Database::PrintQueryOutput(){
 }
 
 } /* namespace Tomography */
+
+#endif

@@ -240,7 +240,7 @@ if(position.size() == 14)
                                        );
  }
 
- for(int i = 0 ; i < outgoingHitPtVector.size() ; i++){
+  for(int i = 0 ; i < outgoingHitPtVector.size() ; i++){
   Tomography::Files::instance()->Write("ActualAndFittedHits.txt",6, 
                                        outgoingHitPtVector[i].x(), 
                                        outgoingHitPtVector[i].y(), 
@@ -248,6 +248,28 @@ if(position.size() == 14)
                                        fittedOutgoingHitPointVector[i].x(),
                                        fittedOutgoingHitPointVector[i].y(),
                                        fittedOutgoingHitPointVector[i].z()
+                                       );
+ }
+
+ for(int i = 0 ; i < incomingHitPtVector.size() ; i++){
+ Tomography::Files::instance()->Write("ActualHitAndPixelCenter.txt",6, 
+                                       incomingHitPtVector[i].x(), 
+                                       incomingHitPtVector[i].y(), 
+                                       incomingHitPtVector[i].z(),
+                                       incomingPixelHitPtVector[i].x(),
+                                       incomingPixelHitPtVector[i].y(),
+                                       incomingPixelHitPtVector[i].z()
+                                       );
+ }
+
+ for(int i = 0 ; i < incomingHitPtVector.size() ; i++){
+ Tomography::Files::instance()->Write("ActualHitAndPixelCenter.txt",6, 
+                                       incomingHitPtVector[i].x(), 
+                                       incomingHitPtVector[i].y(), 
+                                       incomingHitPtVector[i].z(),
+                                       outgoingPixelHitPtVector[i].x(),
+                                       outgoingPixelHitPtVector[i].y(),
+                                       outgoingPixelHitPtVector[i].z()
                                        );
  } 
     

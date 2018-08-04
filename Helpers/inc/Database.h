@@ -8,6 +8,8 @@
 #ifndef HELPERS_INC_DATABASE_H_
 #define HELPERS_INC_DATABASE_H_
 
+#ifdef USE_MYSQL
+
 #include <string>
 #include <mysql.h>
 #include <iostream>
@@ -67,5 +69,5 @@ int Database::Query(std::string query){
 
 
 } /* namespace Tomography */
-
+#endif //MYSQL ifdef
 #endif /* HELPERS_INC_DATABASE_H_ */
