@@ -39,8 +39,9 @@ const char* input_filename = (argc>1)?argv[1]:"tracks.txt";
 #endif
 
     Vector3D<double> pt;
-    std::ifstream ft;
-    ft.open(input_filename);
+    std::ifstream ft(input_filename);
+    //std::ifstream ft;
+    //ft.open(input_filename);
     double x=0.,y=0.,z=0;
     double color=0;
 
@@ -48,13 +49,13 @@ const char* input_filename = (argc>1)?argv[1]:"tracks.txt";
 
     Tomography::Slicer slicer(-500,500.,-500.,500.,-150.,150.);
     double deno=10.;
-    int count = atoi(argv[2]);
-    //while(!ft.eof()){
+    //int count = atoi(argv[2]);
+    while(!ft.eof()){
 
    
 
-    while(count){
-	count--;
+    //while(count){
+	//count--;
     	ft >> x >> y >> z >> color;
     //	hist->Fill(color);
     	//if((z/deno) > 15. || (z/deno) < 5.) continue;

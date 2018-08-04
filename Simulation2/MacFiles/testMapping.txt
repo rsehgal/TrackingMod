@@ -1,4 +1,5 @@
-gunZ_In_mm 2500 1000
+gunZ_In_mm 2500 
+numOfEvents 1000
 plotsLocation /var/www/html/Tomo/plot/
 DetectorName SlotNumber StartingChannelNum ZCoordinate DetectorType
 TOP 2 -1 2000 TRG
