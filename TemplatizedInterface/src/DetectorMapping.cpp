@@ -59,7 +59,7 @@ DetectorMapping::DetectorMapping(std::string filename){
 void DetectorMapping::ReadMapping(){
 	//std::cout<<"FileName from ReadMapping : " << fileName << std::endl;
 	std::ifstream in(fileName);
-	int count = -2 ;
+	int count = -3 ;
 	int detCounter = 0;
 	while(1){
 
@@ -71,9 +71,17 @@ void DetectorMapping::ReadMapping(){
 		double zCoordinate = 0.;
 		
 		//reading GunZ
-		if(count == -2){
+		if(count == -3){
 			count++;
-			in >> fGunString >> fGunZ >> fMaxNumOfEvents;
+			in >> fGunString >> fGunZ; 
+			continue;
+		}
+
+		//reading numOfEvents
+		if(count == -2){
+			std::string numOfEvt;
+			count++;
+			in >> numOfEvt >> fMaxNumOfEvents;
 			Tomography::EventBreak::instance()->SetMaxNumOfEvents(fMaxNumOfEvents);
 			continue;
 		}
