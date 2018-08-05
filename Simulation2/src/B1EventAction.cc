@@ -284,24 +284,19 @@ if(position.size() == 14)
 
   Tomography::Track ref(G4ThreeVector(0.,0.,0.),G4ThreeVector(0.,0.,-1.));
   //Generating incoming track from exact hit point of first two detectors
-  Tomography::Track incoming(CommonFunc::Functions::instance()->ConvertToVector3D(position[0]),
-                              CommonFunc::Functions::instance()->ConvertToVector3D(position[2]));
+  // Tomography::Track incoming(CommonFunc::Functions::instance()->ConvertToVector3D(position[0]),
+  //                             CommonFunc::Functions::instance()->ConvertToVector3D(position[2]));
+  Tomography::Track incoming(incomingHitPtVector[0],
+                               incomingHitPtVector[incomingHitPtVector.size()-1]);
 
   //Generating outgoing track from exact hit point of last two detectors
-  Tomography::Track outgoing(CommonFunc::Functions::instance()->ConvertToVector3D(position[position.size()-3]),
-                              CommonFunc::Functions::instance()->ConvertToVector3D(position[position.size()-1]));
+  // Tomography::Track outgoing(CommonFunc::Functions::instance()->ConvertToVector3D(position[position.size()-3]),
+  //                             CommonFunc::Functions::instance()->ConvertToVector3D(position[position.size()-1]));
+  Tomography::Track outgoing(outgoingHitPtVector[0],
+                               outgoingHitPtVector[outgoingHitPtVector.size()-1]);
+
    
-   double angleIncoming = CommonFunc::Functions::instance()->GetAngleInRadian(incoming,ref);
-   double angleOutgoing = CommonFunc::Functions::instance()->GetAngleInRadian(outgoing,ref);
-   double diff = angleOutgoing-angleIncoming;
-   Tomography::Files::instance()->Write("StatsFromEventAction.txt",5, evNo, angleIncoming,angleOutgoing,diff,eventEnergy);
-
-   //if(diff < 0.)
-   // std::cout<<"Negative comes............" << std::endl;
-   run->FillScatteringAngleVector(diff);//angleOutgoing-angleIncoming);
-   Tomography::EventHelper u(incoming,outgoing,"PocaFromExactHit.txt");
-
-   /* In addition to get Poca from exact hit point, let see the results of Poca from
+  /* In addition to get Poca from exact hit point, let see the results of Poca from
    ** fitted hit points
    */
    Tomography::Track fittedIncoming(fittedIncomingHitPointVector[0],
@@ -311,6 +306,33 @@ if(position.size() == 14)
    Tomography::EventHelper u2(fittedIncoming,fittedOutgoing,"PocaFromFittedHit.txt");
 
 
+   double angleIncoming = CommonFunc::Functions::instance()->GetAngleInRadian(incoming,ref);
+   double angleOutgoing = CommonFunc::Functions::instance()->GetAngleInRadian(outgoing,ref);
+   double diff = angleOutgoing-angleIncoming;
+
+   double angleFittedIncoming = CommonFunc::Functions::instance()->GetAngleInRadian(fittedIncoming,ref);
+   double angleFittedOutgoing = CommonFunc::Functions::instance()->GetAngleInRadian(fittedOutgoing,ref);
+   double diffFitted = angleFittedOutgoing-angleFittedIncoming;
+
+   Tomography::Files::instance()->Write("StatsFromEventAction.txt",7, angleIncoming,angleOutgoing,diff,
+                                        angleFittedIncoming,angleFittedOutgoing,diffFitted,eventEnergy);
+
+   //if(diff < 0.)
+   // std::cout<<"Negative comes............" << std::endl;
+   run->FillScatteringAngleVector(diff);//angleOutgoing-angleIncoming);
+   Tomography::EventHelper u(incoming,outgoing,"PocaFromExactHit.txt");
+
+   /* In addition to get Poca from exact hit point, let see the results of Poca from
+   ** fitted hit points
+   */
+   /*
+   Tomography::Track fittedIncoming(fittedIncomingHitPointVector[0],
+                                    fittedIncomingHitPointVector[fittedIncomingHitPointVector.size()-1]);
+   Tomography::Track fittedOutgoing(fittedOutgoingHitPointVector[0],
+                                    fittedOutgoingHitPointVector[fittedOutgoingHitPointVector.size()-1]);
+   Tomography::EventHelper u2(fittedIncoming,fittedOutgoing,"PocaFromFittedHit.txt");
+
+*/
    //Generating the data for ROOT tree, which corresponds to TDC value
   for(int i = 0 ; i < hittedStripNameVector.size() ; i++ ){
    (B1RunAction::brMap[hittedStripNameVector[i]]).push_back((int)Tracking::Global::GenRandomDet(19450, 21000));
