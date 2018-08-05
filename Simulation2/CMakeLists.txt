@@ -36,8 +36,8 @@ endif(STORE)
 
 if(CRY)
 add_definitions(-DUSE_CRY)
-Find_package(CRY REQUIRED)
-include_directories(${CRY_INCLUDE_DIR})
+#Find_package(CRY REQUIRED)
+#include_directories(${CRY_INCLUDE_DIR})
 endif(CRY)
 
 file(GLOB MAC_FILES ${PROJECT_SOURCE_DIR}/MacFiles/*)
