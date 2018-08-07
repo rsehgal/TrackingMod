@@ -53,6 +53,8 @@
 
 #include "Fit2DLinear.h"
 
+#include "TrackFinder.h"
+
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 int B1EventAction::noTrigger = 0;
@@ -229,6 +231,37 @@ if(position.size() == 14)
   std::vector<Tracking::Vector3D<double>> fittedIncomingHitPointVector = fitter.GetFittedTrack(incomingPixelHitPtVector);
   std::vector<Tracking::Vector3D<double>> fittedOutgoingHitPointVector = fitter.GetFittedTrack(outgoingPixelHitPtVector);
 
+  //Using sampling from Pixel and getting a Track from TrackFinder
+  Tomography::TrackFinder trackFinder;
+  trackFinder.SetPixelCenterVector(incomingPixelHitPtVector);
+  std::vector<Tracking::Vector3D<double>> fittedSampledIncomingHitPointVector = trackFinder.GetFittedTrackPointVector();
+  trackFinder.SetPixelCenterVector(outgoingPixelHitPtVector);
+  std::vector<Tracking::Vector3D<double>> fittedSampledOutgoingHitPointVector = trackFinder.GetFittedTrackPointVector();
+
+  for(int i = 0 ; i < incomingHitPtVector.size() ; i++){
+    Tomography::Files::instance()->Write("ActualAndSampledFittedHits.txt",6,
+                                         incomingHitPtVector[i].x(),
+                                         incomingHitPtVector[i].y(),
+                                         incomingHitPtVector[i].z(),
+                                         fittedSampledIncomingHitPointVector[i].x(),
+                                         fittedSampledIncomingHitPointVector[i].y(),
+                                         fittedSampledIncomingHitPointVector[i].z()
+                                         );
+   }
+
+    for(int i = 0 ; i < outgoingHitPtVector.size() ; i++){
+    Tomography::Files::instance()->Write("ActualAndSampledFittedHits.txt",6,
+                                         outgoingHitPtVector[i].x(),
+                                         outgoingHitPtVector[i].y(),
+                                         outgoingHitPtVector[i].z(),
+                                         fittedSampledOutgoingHitPointVector[i].x(),
+                                         fittedSampledOutgoingHitPointVector[i].y(),
+                                         fittedSampledOutgoingHitPointVector[i].z()
+                                         );
+   }
+
+
+
   for(int i = 0 ; i < incomingHitPtVector.size() ; i++){
   Tomography::Files::instance()->Write("ActualAndFittedHits.txt",6, 
                                        incomingHitPtVector[i].x(), 
@@ -304,6 +337,14 @@ if(position.size() == 14)
    Tomography::Track fittedOutgoing(fittedOutgoingHitPointVector[0],
                                     fittedOutgoingHitPointVector[fittedOutgoingHitPointVector.size()-1]);
    Tomography::EventHelper u2(fittedIncoming,fittedOutgoing,"PocaFromFittedHit.txt");
+
+
+   Tomography::Track fittedSampledIncomingTrack(fittedSampledIncomingHitPointVector[0],
+                                       fittedSampledIncomingHitPointVector[fittedSampledIncomingHitPointVector.size()-1]);
+   Tomography::Track fittedSampledOutgoingTrack(fittedSampledOutgoingHitPointVector[0],
+                                       fittedSampledOutgoingHitPointVector[fittedSampledOutgoingHitPointVector.size()-1]);
+
+   Tomography::EventHelper u3(fittedSampledIncomingTrack,fittedSampledOutgoingTrack,"PocaFromFittedSampledHit.txt");
 
 
    double angleIncoming = CommonFunc::Functions::instance()->GetAngleInRadian(incoming,ref);

@@ -48,7 +48,7 @@ file(GLOB MAC_FILES ${PROJECT_SOURCE_DIR}/MacFiles/*)
 message(STATUS ${MAC_FILES})
 file(COPY ${MAC_FILES} DESTINATION ${CMAKE_BINARY_DIR})
 
-file(GLOB SCRIPT_FILES ${PROJECT_SOURCE_DIR}/scripts/PlotPoca.sh)
+file(GLOB SCRIPT_FILES ${PROJECT_SOURCE_DIR}/scripts/PlotPoca.sh ${PROJECT_SOURCE_DIR}/scripts/PlotDistribution.sh)
 message(STATUS ${SCRIPT_FILES})
 file(COPY ${SCRIPT_FILES} DESTINATION ${CMAKE_BINARY_DIR})
 
@@ -289,7 +289,8 @@ ${CMAKE_SOURCE_DIR}/Helpers/src
 
 macro(collect_helpers HELPERS)
   foreach(HELPER ${HELPERS})
-    file(GLOB helpers ${helpers} ${HELPER}/*.cpp)
+    #file(GLOB helpers ${helpers} ${HELPER}/*.cpp ${CMAKE_SOURCE_DIR}/CoordinateGenerator/src/*.cpp)
+    file(GLOB helpers ${helpers} ${HELPER}/*.cpp )
   endforeach()
 endmacro()
 
