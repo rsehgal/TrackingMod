@@ -1,0 +1,41 @@
+/*
+ * Pixel.cpp
+ *
+ *  Created on: Aug 7, 2018
+ *      Author: raman
+ */
+
+#include "Pixel.h"
+#include "Coordinates.h"
+
+namespace Tomography {
+
+using Vec_t = Tracking::Vector3D<double>;
+
+Pixel::Pixel() {
+	// TODO Auto-generated constructor stub;
+	fPixelWidth = 31.25;
+	fHalfPixelWidth = fPixelWidth/2.;
+
+}
+
+Pixel::Pixel(Vec_t pixelCenter) {
+	fPixelWidth = 31.25;
+	fHalfPixelWidth = fPixelWidth/2.;
+	fPixelCenter = pixelCenter;
+	GenerateRandom();
+}
+
+Pixel::~Pixel() {
+	// TODO Auto-generated destructor stub
+}
+
+void Pixel::GenerateRandom(){
+	//Logic to get the random point within the pixel
+	fRandomPoint = fPixelCenter;
+	Coordinates c;
+	fRandomPoint.SetX(c.GenRandom(fPixelCenter.x()-fHalfPixelWidth,fPixelCenter.x()+fHalfPixelWidth));
+	fRandomPoint.SetY(c.GenRandom(fPixelCenter.y()-fHalfPixelWidth,fPixelCenter.y()+fHalfPixelWidth));
+}
+
+} /* namespace Tomography */

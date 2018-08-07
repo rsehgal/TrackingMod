@@ -175,7 +175,8 @@ Tomography::Files::instance()->Open("PocaFromExactHit.txt",Tomography::operation
 Tomography::Files::instance()->Open("ActualAndFittedHits.txt",Tomography::operation::write);
 Tomography::Files::instance()->Open("ActualHitAndPixelCenter.txt",Tomography::operation::write);
 Tomography::Files::instance()->Open("PocaFromFittedHit.txt",Tomography::operation::write);
-      
+Tomography::Files::instance()->Open("ActualAndSampledFittedHits.txt",Tomography::operation::write);
+Tomography::Files::instance()->Open("PocaFromFittedSampledHit.txt",Tomography::operation::write);
     }
   }
 

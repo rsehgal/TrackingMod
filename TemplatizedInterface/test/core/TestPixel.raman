@@ -1,0 +1,13 @@
+#include <Pixel.h>
+#include <iostream>
+#include "base/Vector3D.h"
+
+using Vec_t = Tracking::Vector3D<double>;
+
+int main(){
+	Vec_t pt(0.,0.,10.);
+	Tomography::Pixel p(pt);
+	//p.GetRandomPoint().Print();
+
+	return 0;
+}
