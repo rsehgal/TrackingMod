@@ -17,6 +17,19 @@ int Voxel::fTotalVoxelsCreated = 0;
 std::vector<int> Voxel::fVisitedVoxelNumVector={};
 std::vector<Voxel*> Voxel::fVoxelVector={};
 
+void Voxel::Reset(){
+	//Logic : Delete the objects and clear the vector.
+	for(int i = 0 ; i < fVoxelVector.size() ; i++){
+		delete fVoxelVector[i];
+	}
+	fVoxelVector.clear();
+
+	//fVectPointsInVoxel.clear();
+
+	fVisitedVoxelNumVector.clear();
+
+}
+
 Voxel::Voxel() {
 	// TODO Auto-generated constructor stub
 	fMinPointsInVoxel = Tomography::minPointsInAVoxel;

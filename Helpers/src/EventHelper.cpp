@@ -14,6 +14,7 @@ using Tracking::Vector3D;
 
 namespace Tomography {
 
+
 EventHelper::EventHelper() {
 	// TODO Auto-generated constructor stub
 
@@ -44,6 +45,43 @@ EventHelper::EventHelper(Track incoming, Track outgoing){
 EventHelper::EventHelper(Track incoming, Track outgoing, std::string filename) : EventHelper(incoming,outgoing){
 	Tomography::Files::instance()->Write(filename,4, fPocaPt.x(), fPocaPt.y(), 
 																   fPocaPt.z(), fPocaPt.GetColor());
+}
+
+EventHelper::EventHelper(std::string fileToRead, std::string fileToWrite){
+	/* This should go through the event loop and call other constructors
+	 * and create the desired file
+	 */
+	std::ifstream infile(fileToRead);
+	//12 variable to read xyz for two tracks
+	double incomingTrackP1X = 0.,incomingTrackP1Y = 0.,incomingTrackP1Z = 0.;
+	double incomingTrackP2X = 0.,incomingTrackP2Y = 0.,incomingTrackP2Z = 0.;
+	double outgoingTrackP1X = 0.,outgoingTrackP1Y = 0.,outgoingTrackP1Z = 0.;
+	double outgoingTrackP2X = 0.,outgoingTrackP2Y = 0.,outgoingTrackP2Z = 0.;
+
+	//Opening the file to store PocaPt
+	Tomography::Files::instance()->Open(fileToWrite,Tomography::operation::write);
+
+	//Resetting Voxel in the beginning of event loop
+    Voxel::Reset();
+
+	while(!infile.eof()){
+		infile >> incomingTrackP1X >> incomingTrackP1Y >> incomingTrackP1Z
+			   >> incomingTrackP2X >> incomingTrackP2Y >> incomingTrackP2Z
+			   >> outgoingTrackP1X >> outgoingTrackP1Y >> outgoingTrackP1Z
+			   >> outgoingTrackP2X >> outgoingTrackP2Y >> outgoingTrackP2Z;
+
+		Tomography::Track incoming(Tracking::Vector3D<double>(incomingTrackP1X,incomingTrackP1Y,incomingTrackP1Z),
+								   Tracking::Vector3D<double>(incomingTrackP2X,incomingTrackP2Y,incomingTrackP2Z));
+
+		Tomography::Track outgoing(Tracking::Vector3D<double>(outgoingTrackP1X,outgoingTrackP1Y,outgoingTrackP1Z),
+								   Tracking::Vector3D<double>(outgoingTrackP2X,outgoingTrackP2Y,outgoingTrackP2Z));
+
+		std::cout << "INCOMING : " ; incoming.Print();
+		std::cout << "OUTGOING : " ; outgoing.Print();
+
+		EventHelper(incoming,outgoing,fileToWrite);
+
+	}
 }
 
 void EventHelper::CalculatePOCA(){

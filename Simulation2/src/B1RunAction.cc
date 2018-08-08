@@ -50,12 +50,11 @@
 
 //Trying to use RunHelper
 #include "RunHelper.h"
-
+#include "EventHelper.h"
 //#include "Tree.h"
 
 //Trying to use DetectorMapping
 #include "DetectorMapping.h"
-
 
 //Trying to File Mechanism
 #include "Files.h"
@@ -177,6 +176,11 @@ Tomography::Files::instance()->Open("ActualHitAndPixelCenter.txt",Tomography::op
 Tomography::Files::instance()->Open("PocaFromFittedHit.txt",Tomography::operation::write);
 Tomography::Files::instance()->Open("ActualAndSampledFittedHits.txt",Tomography::operation::write);
 Tomography::Files::instance()->Open("PocaFromFittedSampledHit.txt",Tomography::operation::write);
+
+//Writing Track info to file for offline analysis
+Tomography::Files::instance()->Open("TrackExact.txt",Tomography::operation::write);
+Tomography::Files::instance()->Open("TrackFitted.txt",Tomography::operation::write);
+Tomography::Files::instance()->Open("TrackSampledFitted.txt",Tomography::operation::write);
     }
   }
 
@@ -258,6 +262,9 @@ void B1RunAction::EndOfRunAction(const G4Run* run)
   /* Creating RunHelper, because its constructor will automatically  
   ** call the functions in desired sequence to do filteration stuff
   */
+
+
+ /*
   Tomography::RunHelper *runHelper = new Tomography::RunHelper("Exact");
   //Now trying to calculate Radiation for the whole run
   std::cout<<"@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@" << std::endl;
@@ -270,6 +277,28 @@ void B1RunAction::EndOfRunAction(const G4Run* run)
   
   std::cout << std::endl << "================================================================" << std::endl;
   std::cout << "========== No of Missed Trigger : " << B1EventAction::noTrigger << "  =========" << std::endl;
+*/
+
+
+  std::cout << "======================================================================================" << std::endl;
+  std::cout << "================= @@@@@@@@@@@@@@  Trying NEW Stuff  @@@@@@@@@@@@@@@===================" << std::endl;
+  std::cout << "======================================================================================" << std::endl;
+  {
+  	Tomography::EventHelper u("TrackExact.txt","PocaPtEventHelperTrackExact.txt");
+  	Tomography::RunHelper r("Exact");
+  }
+
+  {
+  	Tomography::EventHelper u("TrackFitted.txt","PocaPtEventHelperTrackFitted.txt");
+  	Tomography::RunHelper r("Fitted");
+  }
+
+  {
+  	Tomography::EventHelper u("TrackSampledFitted.txt","PocaPtEventHelperTrackSampledFitted.txt");
+  	Tomography::RunHelper r("SampledFitted");
+  }
+
+
 
 
 }

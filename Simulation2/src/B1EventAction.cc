@@ -336,7 +336,7 @@ if(position.size() == 14)
                                     fittedIncomingHitPointVector[fittedIncomingHitPointVector.size()-1]);
    Tomography::Track fittedOutgoing(fittedOutgoingHitPointVector[0],
                                     fittedOutgoingHitPointVector[fittedOutgoingHitPointVector.size()-1]);
-   Tomography::EventHelper u2(fittedIncoming,fittedOutgoing,"PocaFromFittedHit.txt");
+   //Tomography::EventHelper u2(fittedIncoming,fittedOutgoing,"PocaFromFittedHit.txt");
 
 
    Tomography::Track fittedSampledIncomingTrack(fittedSampledIncomingHitPointVector[0],
@@ -344,7 +344,7 @@ if(position.size() == 14)
    Tomography::Track fittedSampledOutgoingTrack(fittedSampledOutgoingHitPointVector[0],
                                        fittedSampledOutgoingHitPointVector[fittedSampledOutgoingHitPointVector.size()-1]);
 
-   Tomography::EventHelper u3(fittedSampledIncomingTrack,fittedSampledOutgoingTrack,"PocaFromFittedSampledHit.txt");
+   //Tomography::EventHelper u3(fittedSampledIncomingTrack,fittedSampledOutgoingTrack,"PocaFromFittedSampledHit.txt");
 
 
    double angleIncoming = CommonFunc::Functions::instance()->GetAngleInRadian(incoming,ref);
@@ -355,13 +355,39 @@ if(position.size() == 14)
    double angleFittedOutgoing = CommonFunc::Functions::instance()->GetAngleInRadian(fittedOutgoing,ref);
    double diffFitted = angleFittedOutgoing-angleFittedIncoming;
 
-   Tomography::Files::instance()->Write("StatsFromEventAction.txt",7, angleIncoming,angleOutgoing,diff,
-                                        angleFittedIncoming,angleFittedOutgoing,diffFitted,eventEnergy);
+   double angleSampledFittedIncoming = CommonFunc::Functions::instance()->GetAngleInRadian(fittedSampledIncomingTrack,ref);
+   double angleSampledFittedOutgoing = CommonFunc::Functions::instance()->GetAngleInRadian(fittedSampledOutgoingTrack,ref);
+   double diffSampledFitted = angleSampledFittedOutgoing-angleSampledFittedIncoming;
+
+
+   Tomography::Files::instance()->Write("StatsFromEventAction.txt",10, angleIncoming,angleOutgoing,diff,
+                                        angleFittedIncoming,angleFittedOutgoing,diffFitted,
+                                        angleSampledFittedIncoming,angleSampledFittedOutgoing,
+                                        diffSampledFitted,eventEnergy);
 
    //if(diff < 0.)
    // std::cout<<"Negative comes............" << std::endl;
    run->FillScatteringAngleVector(diff);//angleOutgoing-angleIncoming);
-   Tomography::EventHelper u(incoming,outgoing,"PocaFromExactHit.txt");
+   //Tomography::EventHelper u(incoming,outgoing,"PocaFromExactHit.txt");
+   Tomography::Files::instance()->Write("TrackExact.txt",12,
+		   	   	   	   	   	   	   	    incoming.GetP1().x(),incoming.GetP1().y(),incoming.GetP1().z(),
+		   	   	   	   	   	   	   	    incoming.GetP2().x(),incoming.GetP2().y(),incoming.GetP2().z(),
+		   	   	   	   	   	   	   	    outgoing.GetP1().x(),outgoing.GetP1().y(),outgoing.GetP1().z(),
+		   	   	   	   	   	   	   	    outgoing.GetP2().x(),outgoing.GetP2().y(),outgoing.GetP2().z());
+
+   //Tomography::EventHelper u2(fittedIncoming,fittedOutgoing,"PocaFromFittedHit.txt");
+   Tomography::Files::instance()->Write("TrackFitted.txt",12,
+		   	   	   	   	   	   	   	   fittedIncoming.GetP1().x(),fittedIncoming.GetP1().y(),fittedIncoming.GetP1().z(),
+		   	   	   	   	   	   	   	   fittedIncoming.GetP2().x(),fittedIncoming.GetP2().y(),fittedIncoming.GetP2().z(),
+		   	   	   	   	   	   	   	   fittedOutgoing.GetP1().x(),fittedOutgoing.GetP1().y(),fittedOutgoing.GetP1().z(),
+		   	   	   	   	   	   	   	   fittedOutgoing.GetP2().x(),fittedOutgoing.GetP2().y(),fittedOutgoing.GetP2().z());
+
+   //Tomography::EventHelper u3(fittedSampledIncomingTrack,fittedSampledOutgoingTrack,"PocaFromFittedSampledHit.txt");
+   Tomography::Files::instance()->Write("TrackSampledFitted.txt",12,
+		   	   	   	   	   	   	   	   fittedSampledIncomingTrack.GetP1().x(),fittedSampledIncomingTrack.GetP1().y(),fittedSampledIncomingTrack.GetP1().z(),
+		   	   	   	   	   	   	   	   fittedSampledIncomingTrack.GetP2().x(),fittedSampledIncomingTrack.GetP2().y(),fittedSampledIncomingTrack.GetP2().z(),
+		   	   	   	   	   	   	   	   fittedSampledOutgoingTrack.GetP1().x(),fittedSampledOutgoingTrack.GetP1().y(),fittedSampledOutgoingTrack.GetP1().z(),
+		   	   	   	   	   	   	   	   fittedSampledOutgoingTrack.GetP2().x(),fittedSampledOutgoingTrack.GetP2().y(),fittedSampledOutgoingTrack.GetP2().z());
 
    /* In addition to get Poca from exact hit point, let see the results of Poca from
    ** fitted hit points
