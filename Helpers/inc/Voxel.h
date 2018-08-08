@@ -78,7 +78,7 @@ public:
 	void SetScatteringDensity(double scatteringDensity) { fScatteringDensity = scatteringDensity; }
 	//static std::vector<Tracking::Vector3D<double>> GetEightCorners_Of_ImaginaryVoxel_CentredAtPocaPoint(Tracking::Vector3D<double> pocaPt);
 
-
+	static void Reset();
 
 };
 

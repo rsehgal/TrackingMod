@@ -52,6 +52,9 @@ public:
 	void CalcRLOfEachVoxel();
 	void FillRLVector();
 	void WriteToFile();
+
+	//Function used to do resetting
+	void Reset();
 #ifdef STORE
 	void Store();
 #endif

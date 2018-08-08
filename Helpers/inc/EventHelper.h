@@ -38,6 +38,9 @@ public:
 	EventHelper(Track incoming, Track outgoing);
 	EventHelper(Track incoming, Track outgoing, std::string filename);
 
+	//This is a very special constructor and will be used during offline analysis
+	EventHelper(std::string fileToRead, std::string fileToWrite);
+
 	//Getters
 	Track GetIncomingVector() const {return fIncoming;}
 	Track GetOutgoingVector() const {return fOutgoing;}

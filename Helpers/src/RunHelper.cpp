@@ -12,6 +12,17 @@
 
 namespace Tomography {
 
+void RunHelper::Reset(){
+	fScatteringAngleVector.clear();
+	fPocaPtVector.clear();
+	fSDOfVoxelsVector.clear();
+	fRLOfVoxelsVector.clear();
+	for(int i = 0 ; i < fVoxelVector.size() ; i++){
+		delete fVoxelVector[i];
+	}
+	fVoxelVector.clear();
+}
+
 RunHelper::RunHelper() {
 	// TODO Auto-generated constructor stub
     /* Here we should do the stuff that we want to do at the end of Run
@@ -40,6 +51,9 @@ RunHelper::RunHelper(std::string fileType) {
      * Like..  Calculation of SD for the whole run.
      *         Calculation of SD for individual voxel
      */
+
+	//Resetting RunHelper
+	Reset();
 
     //WARNING : DO NOT ALTER THE BELOW MENTIONED SEQUENCE
     fFileType = fileType;
