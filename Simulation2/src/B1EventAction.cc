@@ -55,6 +55,10 @@
 
 #include "TrackFinder.h"
 
+//Included to check for NAN
+#include <cmath>
+#include <cfloat>
+
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 int B1EventAction::noTrigger = 0;
@@ -175,7 +179,10 @@ if(topPlaneHit && bottomPlaneHit) { // logic for two fold coincidence
   std::vector<Vector3D<double>> hitPointVector;
 
 //HARDCODING BE CAREFULLLLLLLLLL............
-if(position.size() == 14)
+int numOfDetectors = Tomography::DetectorMapping::instance()->GetNumOfDetectors();
+numOfDetectors -= 3;
+//if(position.size() == 14)
+if(position.size() == (2*numOfDetectors+2))
 {
 
 	for(int i = 0 ; i < position.size() ; ){
@@ -297,9 +304,9 @@ if(position.size() == 14)
 
  for(int i = 0 ; i < incomingHitPtVector.size() ; i++){
  Tomography::Files::instance()->Write("ActualHitAndPixelCenter.txt",6, 
-                                       incomingHitPtVector[i].x(), 
-                                       incomingHitPtVector[i].y(), 
-                                       incomingHitPtVector[i].z(),
+                                       outgoingHitPtVector[i].x(),
+                                       outgoingHitPtVector[i].y(),
+                                       outgoingHitPtVector[i].z(),
                                        outgoingPixelHitPtVector[i].x(),
                                        outgoingPixelHitPtVector[i].y(),
                                        outgoingPixelHitPtVector[i].z()
@@ -359,6 +366,14 @@ if(position.size() == 14)
    double angleSampledFittedOutgoing = CommonFunc::Functions::instance()->GetAngleInRadian(fittedSampledOutgoingTrack,ref);
    double diffSampledFitted = angleSampledFittedOutgoing-angleSampledFittedIncoming;
 
+   bool isNan = std::isnan(angleIncoming)
+   	   	   	    || std::isnan(angleOutgoing)
+   	   	   	    || std::isnan(angleFittedIncoming)
+   	   	   	    || std::isnan(angleFittedOutgoing)
+   	   	   	    || std::isnan(angleSampledFittedIncoming)
+   	    	    || std::isnan(angleSampledFittedOutgoing);
+
+   if(!isNan){
 
    Tomography::Files::instance()->Write("StatsFromEventAction.txt",10, angleIncoming,angleOutgoing,diff,
                                         angleFittedIncoming,angleFittedOutgoing,diffFitted,
@@ -405,7 +420,9 @@ if(position.size() == 14)
    (B1RunAction::brMap[hittedStripNameVector[i]]).push_back((int)Tracking::Global::GenRandomDet(19450, 21000));
   }
 
+   } // end of NAN
 } // end of if for positionSize check, currently checked for 18
+
 
 }
 else{
