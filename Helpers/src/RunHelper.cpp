@@ -121,7 +121,7 @@ void RunHelper::FillPocaVector(){
 #ifdef STORE
 void RunHelper::Store(){
 	Tomography::evolution::Voxelator *vox = Tomography::evolution::Voxelator::instance();
-	TFile flVox("voxel.root","recreate");
+	TFile flVox((fFileType+".root").c_str(),"recreate");
 	vox->Insert(fPocaPtVector); //Voxelized Poca Ready
 	std::ofstream voxTrack;
 	voxTrack.open("VoxelizedTracks.txt");
@@ -157,7 +157,7 @@ void RunHelper::Store(){
 
 void RunHelper::WriteToFile(){
 #ifdef STORE
-	//Store();
+	Store();
 #endif
     CommonFunc::Functions::instance()->WriteToFile("scatteringRunHelper-"+fFileType+".txt",fScatteringAngleVector);
     CommonFunc::Functions::instance()->WriteToFile("PocaPtRunHelper-"+fFileType+".txt",fPocaPtVector);

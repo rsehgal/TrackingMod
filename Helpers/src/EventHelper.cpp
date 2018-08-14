@@ -29,8 +29,10 @@ EventHelper::EventHelper(Track incoming, Track outgoing){
 	fOutgoing = outgoing;
 	CalculateScatterAngle();
 	//std::cout<<"ScattAngle from EventHelper : " << fScatteringAngle << std::endl;
-	CalculatePOCA();
-	CalculateVoxel();
+	if(fScatteringAngle!=0.){
+		CalculatePOCA();
+		CalculateVoxel();
+	}
 
 
 	//Uncomment them if one want Candidate voxel for an event
@@ -43,8 +45,10 @@ EventHelper::EventHelper(Track incoming, Track outgoing){
 }
 
 EventHelper::EventHelper(Track incoming, Track outgoing, std::string filename) : EventHelper(incoming,outgoing){
-	Tomography::Files::instance()->Write(filename,4, fPocaPt.x(), fPocaPt.y(), 
+	if(fScatteringAngle!=0.){
+	Tomography::Files::instance()->Write(filename,4, fPocaPt.x(), fPocaPt.y(),
 																   fPocaPt.z(), fPocaPt.GetColor());
+	}
 }
 
 EventHelper::EventHelper(std::string fileToRead, std::string fileToWrite){
@@ -60,6 +64,7 @@ EventHelper::EventHelper(std::string fileToRead, std::string fileToWrite){
 
 	//Opening the file to store PocaPt
 	Tomography::Files::instance()->Open(fileToWrite,Tomography::operation::write);
+
 
 	//Resetting Voxel in the beginning of event loop
     Voxel::Reset();
@@ -82,6 +87,9 @@ EventHelper::EventHelper(std::string fileToRead, std::string fileToWrite){
 		EventHelper(incoming,outgoing,fileToWrite);
 
 	}
+
+	Tomography::Files::instance()->Close(fileToWrite);
+	infile.close();
 }
 
 void EventHelper::CalculatePOCA(){
