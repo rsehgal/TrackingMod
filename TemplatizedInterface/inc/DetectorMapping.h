@@ -94,6 +94,8 @@ class DetectorMapping{
 		double GetGunZ() const {return fGunZ;}
 
 		int GetNumOfDetectors(std::string type);
+		std::vector<std::string> GetDetectorNamesVector(std::string type);
+
 
 
 };

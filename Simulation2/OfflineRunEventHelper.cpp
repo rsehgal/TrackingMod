@@ -12,20 +12,38 @@
 
 int main(){
 	Tomography::evolution::Voxelator::Create(50*cm,50*cm,45*cm,5*cm,5*cm,4.5*cm);
+
+
+
+/*
 	{
 		Tomography::EventHelper u("TrackExact.txt","EventHelperTrackExact.txt");
 		Tomography::RunHelper r("Exact");
 	}
 
+
+
+
+
+
+
 	{
 		Tomography::EventHelper u("TrackFitted.txt","EventHelperTrackFitted.txt");
 		Tomography::RunHelper r("Fitted");
 	}
+*/
+
+
+
+
+
+
 
 	{
 		Tomography::EventHelper u("TrackSampledFitted.txt","EventHelperTrackSampledFitted.txt");
 		Tomography::RunHelper r("SampledFitted");
 	}
+
 
 
 	return 0;
