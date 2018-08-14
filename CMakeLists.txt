@@ -332,7 +332,7 @@ macro(build_executables EXECUTABLES)
   foreach(EXECUTABLE ${EXECUTABLES})
     get_filename_component(TARGET_NAME ${EXECUTABLE} NAME_WE)
     add_executable(${TARGET_NAME} ${EXECUTABLE} ${headers})
-    target_link_libraries(${TARGET_NAME} ${TOMOLIB} ${HELPERSLIB} ${EMULATORLIB})
+    target_link_libraries(${TARGET_NAME} ${TOMOLIB} ${EMULATORLIB})
 #  if(EVE)
 #    target_link_libraries(${TARGET_NAME} ${ROOT_LIBRARIES} Geom Eve)
 #  else()
@@ -397,8 +397,13 @@ include(${Geant4_USE_FILE})
 #message(STATUS "--------- Following source file will be use for the creation of TOMO Shared library -----------")
 #message(STATUS ${sources})
 #message(STATUS "------------------------------------------------------------------------------------------")
-add_library(Tomo SHARED ${sources})
-target_link_libraries(Tomo ${EXTERNAL_LIBS} ${Geant4_LIBRARIES})
+add_library(Tomo SHARED ${sources} ${helpers})
+if(MYSQL)
+target_link_libraries(Tomo  ${XERCES_LIBRARIES} ${MYSQL_LIBRARIES} ${ROOT_LIBRARIES} ${Geant4_LIBRARIES} -lTreePlayer ) # cryg4interface)
+else()
+target_link_libraries(Tomo  ${XERCES_LIBRARIES} ${ROOT_LIBRARIES} ${Geant4_LIBRARIES} -lTreePlayer ) # cryg4interface)
+endif(MYSQL)
+target_link_libraries(Tomo ${EXTERNAL_LIBS} )
 set(TOMOLIB ${TOMOLIB}
 Tomo
 )
@@ -433,17 +438,21 @@ endif(CRY)
 #message(STATUS "--------- Following source files will be use for the creation of HELPERS Shared library -----------")
 #message(STATUS ${helpers})
 #message(STATUS "------------------------------------------------------------------------------------------")
-add_library(Helpers SHARED ${helpers} ) #G__Tree.cxx)
-if(MYSQL)
-target_link_libraries(Helpers  ${XERCES_LIBRARIES} ${MYSQL_LIBRARIES} ${ROOT_LIBRARIES} ${Geant4_LIBRARIES} -lTreePlayer ) # cryg4interface)
-else()
-target_link_libraries(Helpers  ${XERCES_LIBRARIES} ${ROOT_LIBRARIES} ${Geant4_LIBRARIES} -lTreePlayer ${TOMOLIB}) # cryg4interface)
-endif(MYSQL)
+
+#### 14.08.2018 ##################
+#add_library(Helpers SHARED ${helpers} ) #G__Tree.cxx)
+#if(MYSQL)
+#target_link_libraries(Helpers  ${XERCES_LIBRARIES} ${MYSQL_LIBRARIES} ${ROOT_LIBRARIES} ${Geant4_LIBRARIES} -lTreePlayer ) # cryg4interface)
+#else()
+#target_link_libraries(Helpers  ${XERCES_LIBRARIES} ${ROOT_LIBRARIES} ${Geant4_LIBRARIES} -lTreePlayer ${TOMOLIB}) # cryg4interface)
+#endif(MYSQL)
+#### 14.08.2018 ##################
 
 #target_link_libraries(Tomo ${EXTERNAL_LIBS})
-set(HELPERSLIB ${HELPERSLIB}
-Helpers
-)
+# 14.08.2018
+#set(HELPERSLIB ${HELPERSLIB}
+#Helpers
+#)
 
 #message(STATUS "HELPERS : ${HELPERSLIB}")
 
