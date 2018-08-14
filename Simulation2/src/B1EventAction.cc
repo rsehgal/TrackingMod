@@ -383,7 +383,7 @@ if(position.size() == (2*numOfDetectors+2))
    //if(diff < 0.)
    // std::cout<<"Negative comes............" << std::endl;
    run->FillScatteringAngleVector(diff);//angleOutgoing-angleIncoming);
-   //Tomography::EventHelper u(incoming,outgoing,"PocaFromExactHit.txt");
+   Tomography::EventHelper u(incoming,outgoing,"PocaFromExactHit.txt");
    Tomography::Files::instance()->Write("TrackExact.txt",12,
 		   	   	   	   	   	   	   	    incoming.GetP1().x(),incoming.GetP1().y(),incoming.GetP1().z(),
 		   	   	   	   	   	   	   	    incoming.GetP2().x(),incoming.GetP2().y(),incoming.GetP2().z(),
@@ -407,14 +407,14 @@ if(position.size() == (2*numOfDetectors+2))
    /* In addition to get Poca from exact hit point, let see the results of Poca from
    ** fitted hit points
    */
-   /*
+   
    Tomography::Track fittedIncoming(fittedIncomingHitPointVector[0],
                                     fittedIncomingHitPointVector[fittedIncomingHitPointVector.size()-1]);
    Tomography::Track fittedOutgoing(fittedOutgoingHitPointVector[0],
                                     fittedOutgoingHitPointVector[fittedOutgoingHitPointVector.size()-1]);
    Tomography::EventHelper u2(fittedIncoming,fittedOutgoing,"PocaFromFittedHit.txt");
 
-*/
+
    //Generating the data for ROOT tree, which corresponds to TDC value
   for(int i = 0 ; i < hittedStripNameVector.size() ; i++ ){
    (B1RunAction::brMap[hittedStripNameVector[i]]).push_back((int)Tracking::Global::GenRandomDet(19450, 21000));
