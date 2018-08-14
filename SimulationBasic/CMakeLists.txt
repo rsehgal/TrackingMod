@@ -61,5 +61,5 @@ file(GLOB headersSim ${CMAKE_CURRENT_SOURCE_DIR}/inc/*.h ${CMAKE_CURRENT_SOURCE_
 add_executable(mainBasic mainBasic.cpp ${sourcesSim} ${headersSim})
 #target_link_libraries(mainBasic ${Geant4_LIBRARIES} Helpers ${CRY_LIBRARIES})
 #target_link_libraries(mainBasic -L/home/rsehgal/BackBoneSoftwares/CRY/lib -lcryg4interface ${Geant4_LIBRARIES} Helpers)
-target_link_libraries(mainBasic cryg4interface ${Geant4_LIBRARIES} Helpers ${TOMOLIB})
+target_link_libraries(mainBasic cryg4interface ${Geant4_LIBRARIES} ${TOMOLIB})
 #target_link_libraries(main ${Geant4_LIBRARIES} Tomo)
