@@ -44,7 +44,7 @@ namespace Tomography{
  constexpr int start = 19000;
  constexpr int end = 24500;
 
- constexpr int minPointsInAVoxel = 10;
+ constexpr int minPointsInAVoxel = 3;
 
  static int effEvNo = 0;
 
@@ -75,6 +75,8 @@ namespace Tomography{
     }
  };
  
+ enum operation {read, write, append, close};
+
 }//end of Tomography namespace
 
 

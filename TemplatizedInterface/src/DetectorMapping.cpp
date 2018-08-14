@@ -252,5 +252,16 @@ int DetectorMapping::GetNumOfDetectors(std::string type){
 	return numOfDetectors;
 }
 
+std::vector<std::string> DetectorMapping::GetDetectorNamesVector(std::string type){
+	std::vector<std::string> detNamesVector;
+	for(int i = 0 ; i < fDetectorVector.size() ; i++){
+			if(fDetectorVector[i]->sDetectorType == type){
+				detNamesVector.push_back(fDetectorVector[i]->sDetectorName);
+			}
+	}
+
+	return detNamesVector;
+}
+
 }
 

@@ -391,17 +391,18 @@ ROOT_GENERATE_DICTIONARY(G__Tree Tree.h LINKDEF LinkDef.h)
 #collect_emulators("${HVEmulator}")
 #endif(EMULATOR)
 
+find_package(Geant4 REQUIRED)
+include(${Geant4_USE_FILE})
+
 #message(STATUS "--------- Following source file will be use for the creation of TOMO Shared library -----------")
 #message(STATUS ${sources})
 #message(STATUS "------------------------------------------------------------------------------------------")
 add_library(Tomo SHARED ${sources})
-target_link_libraries(Tomo ${EXTERNAL_LIBS})
+target_link_libraries(Tomo ${EXTERNAL_LIBS} ${Geant4_LIBRARIES})
 set(TOMOLIB ${TOMOLIB}
 Tomo
 )
 
-find_package(Geant4 REQUIRED)
-include(${Geant4_USE_FILE})
 
 if(CRY)
 message(STATUS "Creating library libcryg4interface.so")
@@ -436,7 +437,7 @@ add_library(Helpers SHARED ${helpers} ) #G__Tree.cxx)
 if(MYSQL)
 target_link_libraries(Helpers  ${XERCES_LIBRARIES} ${MYSQL_LIBRARIES} ${ROOT_LIBRARIES} ${Geant4_LIBRARIES} -lTreePlayer ) # cryg4interface)
 else()
-target_link_libraries(Helpers  ${XERCES_LIBRARIES} ${ROOT_LIBRARIES} ${Geant4_LIBRARIES} -lTreePlayer ) # cryg4interface)
+target_link_libraries(Helpers  ${XERCES_LIBRARIES} ${ROOT_LIBRARIES} ${Geant4_LIBRARIES} -lTreePlayer ${TOMOLIB}) # cryg4interface)
 endif(MYSQL)
 
 #target_link_libraries(Tomo ${EXTERNAL_LIBS})

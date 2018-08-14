@@ -9,166 +9,146 @@
 #define HELPERS_INC_FILES_H_
 
 #include <fstream>
+#include <sstream>
 #include <map>
 #include <iterator>
 #include <iostream>
- #include <cstdarg>
+#include <cstdarg>
+#include "base/Vector3D.h"
 namespace Tomography{
 
-enum operation {read, write, append, close};
-
-class FStream : public std::ifstream, public std::ofstream {
-    public:
-        int mode;
-
-};
 
 /* A Singleton class that will to open any file anywhere
 ** and write to that file anytime, and close anywhere anytime
 */
-class Files
-{
-    private:
-        /* Here will be the instance stored. */
-        static Files* fInstance;
-        std::map<std::string,FStream*>  fFileMap;
-        //std::map<std::string,std::fstream*>  fFileMap;
 
+struct FileMap {
+	operation sOp;
+	std::string sFileName;
+	std::fstream *sFileStream;
 
+	FileMap(std::string filename, operation op){
+		sOp = op;
+		sFileName = filename;
+		if(sOp == operation::read){
+			sFileStream = new std::fstream();
+			sFileStream->open(sFileName,std::ios::in);
+		}else if(sOp == operation::write){
+			sFileStream = new std::fstream();
+			sFileStream->open(sFileName,std::ios::out);
+		}else if(sOp == operation::append){
+			sFileStream = new std::fstream();
+			sFileStream->open(sFileName,std::ios::app);
+		}
+	}
 
-        /* Private constructor to prevent instancing. */
-        Files(){}
+	FileMap(FileMap& ob){
+		sOp = ob.sOp;
+		sFileName = ob.sFileName;
+		sFileStream = ob.sFileStream;
 
-    public:
-        /* Static access method. */
-        static Files* instance();
-        /* Function to open the file, 
-        ** mod = 0 , 1 , 2
-        ** 0 -> read
-        ** 1 -> write
-        ** 2 -> append
-        */
-        void Open(std::string filename, int mode){
-            FStream *streamObj;
+	}
 
-            /* if file is open in memory then just return and delete it from map
-            ** else open the file in desired mode and return
-            */
-            for (std::map<std::string,FStream*>::iterator it=fFileMap.begin(); it!=fFileMap.end(); ++it){
-                if(it->first == filename){
-                    return;
-                }
-            }
-
-            if(mode == operation::read){
-                streamObj = (FStream*)(new std::ifstream(filename));
-                fFileMap.insert(std::pair<std::string,FStream*>(filename,streamObj));
-
-            }else if(mode == operation::write){
-                streamObj = static_cast<FStream*>(new std::ofstream(filename));
-                fFileMap.insert(std::pair<std::string,FStream*>(filename,streamObj));
-
-            }else if(mode == operation::append){
-                //fFileMap.insert(std::pair<std::string,FStream*>(filename,new std::ofstream(filename,std::ios::app)));
-            }
-            streamObj->mode = mode;
-        }
-
-        
-        //Closes all the registered open files
-        void Close(){
-
-            for (std::map<std::string,FStream*>::iterator it=fFileMap.begin(); it!=fFileMap.end(); ++it){
-                //std::cout << it->first << " => " << it->second << '\n';
-
-                if(it->second->mode == operation::read)
-                    static_cast<std::ifstream*>(it->second)->close();
-                else
-                    static_cast<std::ofstream*>(it->second)->close();
-
-                it->second->mode = operation::close;
-            }
-
-        }
-
-        //Closes specified file
-        void Close(std::string filename){
-
-            for (std::map<std::string,FStream*>::iterator it=fFileMap.begin(); it!=fFileMap.end(); ++it){
-                //std::cout << it->first << " => " << it->second << '\n';
-                if(it->first == filename){
-                    
-                    if(it->second->mode == operation::read)
-                        static_cast<std::ifstream*>(it->second)->close();
-                    else
-                        static_cast<std::ofstream*>(it->second)->close();
-                    
-                    it->second->mode = operation::close;
-                    fFileMap.erase(it->first);
-
-                    break;
-                }
-            }
-
-        }
-
-        //Writing specific string to file
-        void Write(std::string filename, std::string data){
-            for (std::map<std::string,FStream*>::iterator it=fFileMap.begin(); it!=fFileMap.end(); ++it){
-                if(it->first == filename){
-                    if(it->second->mode == operation::read){
-                        std::cout << "This file is NOT opened in WRITE mode.." << std::endl;
-                    }else{
-                        *(static_cast<std::ofstream*>(it->second)) << data << std::endl;
-                    }
-                }
-            }
-        }
-
-        //Using Variadic function to write any number of doubles to the file
-        void Write(std::string filename, int fmt, ...){
-            for (std::map<std::string,FStream*>::iterator it=fFileMap.begin(); it!=fFileMap.end(); ++it){
-                if(it->first == filename){
-                    if(it->second->mode == operation::read){
-                        std::cout << "This file is NOT opened in WRITE mode.." << std::endl;
-                    }else{
-                            va_list args;
-                            va_start(args, fmt);
-                            double data;
-                            while (fmt) {
-                              data = va_arg(args, double);
-                              //  std::cout << d << '\n';
-                              fmt--;
-                              if(fmt)
-                                *(static_cast<std::ofstream*>(it->second)) << data << " " ;
-                              else
-                                *(static_cast<std::ofstream*>(it->second)) << data << std::endl;
-                            }
-                            va_end(args);
-                        
-                    }
-                }
-            }
-        }
-
-
-        void NumOfOpenedFiles(){std::cout << "Num of Opened files : " <<  fFileMap.size() << std::endl; }
 };
 
-/* Null, because instance will be initialized on demand. */
-/*
-Files* Files::fInstance = 0;
+class Files{
+	static Files* fInstance;
+	std::vector<FileMap*>  fFileMapVector;
 
-Files* Files::instance()
-{
-    if (fInstance == 0)
-    {
-        fInstance = new Files();
-    }
+	Files(){}
 
-    return fInstance;
-}
-*/
+public:
+	static Files* instance();
+
+	void Open(std::string filename, operation mode){
+		for(int i = 0 ; i < fFileMapVector.size() ; i++){
+			if(fFileMapVector[i]->sFileName == filename){
+				if(fFileMapVector[i]->sOp == operation::read){
+					std::cerr << "WARNING... File already opened in Read Mode..." << std::endl;
+					return;
+				}else if(fFileMapVector[i]->sOp == operation::write){
+					std::cerr << "WARNING... Be careful !!!! Some Process has already opened the file in Write Mode..." << std::endl;
+					return;
+				}
+			}
+		}
+		fFileMapVector.push_back(new FileMap(filename,mode));
+	}
+
+	void Close(){
+		for (int i = 0 ; i < fFileMapVector.size() ; i++){
+			fFileMapVector[i]->sFileStream->close();
+			fFileMapVector.erase(fFileMapVector.begin() + i);
+		}
+	}
+
+	//Closes specified file
+	void Close(std::string filename){
+		for (int i = 0 ; i < fFileMapVector.size() ; i++){
+			if(fFileMapVector[i]->sFileName == filename){
+				fFileMapVector[i]->sFileStream->close();
+				fFileMapVector.erase(fFileMapVector.begin() + i);
+				return;
+			}
+		}
+	}
+
+	//Writing specific string to file
+	void Write(std::string filename, std::string data){
+
+	}
+
+	FileMap* GetFileMap(std::string filename){
+		for (int i = 0 ; i < fFileMapVector.size() ; i++){
+			if(fFileMapVector[i]->sFileName == filename){
+			   	return fFileMapVector[i];
+			}
+		}
+	}
+
+	void Write(std::string filename, int fmt, ...){
+		FileMap* fileMap = GetFileMap(filename);
+		if(fileMap->sOp == operation::read){
+	   		std::cout << "This file is NOT opened in WRITE mode.." << std::endl;
+	    }else{
+	    	va_list args;
+	        va_start(args, fmt);
+	        double data;
+	        while (fmt) {
+	        	data = va_arg(args, double);
+	            fmt--;
+	            if(!fmt)
+	            	*(fileMap->sFileStream) << data ;
+	            else
+	            	*(fileMap->sFileStream) << data << " ";
+	        }
+	        *(fileMap->sFileStream) << std::endl;
+	        va_end(args);
+	    }
+	}
+
+
+	void NumOfOpenedFiles(){std::cout << "Num of Opened files : " <<  fFileMapVector.size() << std::endl; }
+
+	Tracking::Vector3D<double> ReadHit(std::string filename){
+		//Tracking::Vector3D<double> hit;
+		double actHitX = 0., actHitY = 0., actHitZ = 0.;
+		double fittedHitX = 0., fittedHitY = 0., fittedHitZ = 0.;
+		FileMap* fileMap = GetFileMap(filename);
+		*(fileMap->sFileStream) >> actHitX >> actHitY >> actHitZ >> fittedHitX
+				>> fittedHitY >> fittedHitZ;
+
+		return Tracking::Vector3D<double>(actHitX, actHitY, actHitZ);
+	}
+
+	std::string ReadLine(std::string filename){
+		std::string line = "hello";
+
+		return line;
+	}
+
+};
+
 
 }//end of Tomography namespace
 

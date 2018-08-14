@@ -1,0 +1,45 @@
+/*
+ * ReadOneEvent.cpp
+ *
+ *  Created on: Aug 12, 2018
+ *      Author: raman
+ */
+
+#include "ReadOneEvent.h"
+#include "DetectorMapping.h"
+#include "Files.h"
+#include <sstream>
+
+namespace Tomography{
+
+using Vec_t = Tracking::Vector3D<double>;
+
+ReadOneEvent::ReadOneEvent() {
+	// TODO Auto-generated constructor stub
+
+}
+
+ReadOneEvent::~ReadOneEvent() {
+	// TODO Auto-generated destructor stub
+}
+
+ReadOneEvent::ReadOneEvent(std::string filename){
+	//Read(filename);
+	Tomography::DetectorMapping *detectorMap =
+			Tomography::DetectorMapping::create("testMapping.txt");
+	fFileName = filename;
+	//std::vector<std::string> detNamesVector = detectorMap->GetDetectorNamesVector("GLASS");
+	fNumOfDetectors = detectorMap->GetNumOfDetectors("GLASS");
+}
+
+
+void ReadOneEvent::Read(){
+	fHitPointVector.clear();
+	for(int i = 0 ; i < fNumOfDetectors ; i++){
+		Files *filePtr = Files::instance();
+		fHitPointVector.push_back(filePtr->ReadHit(fFileName));
+	}
+
+}
+
+}
