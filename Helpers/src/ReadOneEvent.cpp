@@ -32,7 +32,10 @@ ReadOneEvent::ReadOneEvent(std::string filename){
 	fNumOfDetectors = detectorMap->GetNumOfDetectors("GLASS");
 }
 
-
+ReadOneEvent::ReadOneEvent(std::string filename, int numOfDetectors){
+	fFileName = filename;
+	fNumOfDetectors = numOfDetectors;
+}
 void ReadOneEvent::Read(){
 	fHitPointVector.clear();
 	for(int i = 0 ; i < fNumOfDetectors ; i++){

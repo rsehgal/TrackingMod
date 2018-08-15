@@ -8,8 +8,13 @@
 #include "ReadOneEvent.h"
 #include "base/Global.h"
 #include "Files.h"
+#include "base/Vector3D.h"
+#include "DetectorMapping.h"
+#include "SetupHitDistribution.h"
 
+using Vec_t = Tracking::Vector3D<double>;
 int main(){
+
 	std::string filename = "ActualAndFittedHits.txt";
 
 	//Opening the required file
@@ -23,6 +28,8 @@ int main(){
 		std::cout << "==================================" << std::endl;
 		r.Read();
 		r.Print();
+		std::vector<Vec_t> hitPtVector = r.GetHitPointVector();
+		std::cout<<"Hit Point Vector size : " << hitPtVector.size() << std::endl;
 	}
 
 	//Closing the file
