@@ -24,6 +24,7 @@ class ReadOneEvent {
 public:
 	ReadOneEvent();
 	ReadOneEvent(std::string filename);
+	ReadOneEvent(std::string filename, int numOfDetectors);
 	virtual ~ReadOneEvent();
 	void Read();
 
