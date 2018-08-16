@@ -36,13 +36,18 @@ ReadOneEvent::ReadOneEvent(std::string filename, int numOfDetectors){
 	fFileName = filename;
 	fNumOfDetectors = numOfDetectors;
 }
+
+/*
+template<bool exact>
 void ReadOneEvent::Read(){
 	fHitPointVector.clear();
 	for(int i = 0 ; i < fNumOfDetectors ; i++){
 		Files *filePtr = Files::instance();
-		fHitPointVector.push_back(filePtr->ReadHit(fFileName));
+		fHitPointVector.push_back(filePtr->ReadHit<exact>(fFileName));
+
 	}
 
 }
+*/
 
 }

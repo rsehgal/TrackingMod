@@ -103,7 +103,13 @@ void HitDistribution::Initialize4(){
 					  << fDetectorName << std::endl;
 			fHistVector.push_back(new Hist(fDetectorName,pixelNumber,xlow,xhigh,ylow,yhigh));
 		}
+
 	}
+
+	//Creating Histogram of full Detector
+	fFullDetectorHistX = new TH1F("FullDetectorHistogram-X","FullDetectorHistogram-X",32,-50*cm,50*cm);
+	fFullDetectorHistY = new TH1F("FullDetectorHistogram-Y","FullDetectorHistogram-Y",32,-50*cm,50*cm);
+
 }
 
 
@@ -157,6 +163,13 @@ void HitDistribution::Fill(double xval, double yval){
 	fHistVector[pixelIndex]->sXHist->Fill(xval);
 	fHistVector[pixelIndex]->sYHist->Fill(yval);
 	}
+
+	//storing values for hit graph
+	fXValueVector.push_back(xval);
+	fYValueVector.push_back(yval);
+	fFullDetectorHistX->Fill(xval);
+	fFullDetectorHistY->Fill(yval);
+
 	//fHistVector[pixelIndex]->sYHist->Fill(yval);
 	}
 }
@@ -184,7 +197,13 @@ void HitDistribution::Write(std::string fileName){
 	//TFile *rootFile = new TFile ( (fFileName+".root").c_str(),"RECREATE","Pixel Hit Distribution") ;
 	TFile *rootFile = new TFile ( (fileName+".root").c_str(),"RECREATE","Pixel Hit Distribution") ;
 
-
+	fHitGraph = new TGraph(fXValueVector.size(),&fXValueVector[0],&fYValueVector[0]);
+	fHitGraph->Draw();
+	fHitGraph->Write("ap");
+	fFullDetectorHistX->Draw();
+	fFullDetectorHistY->Draw();
+	fFullDetectorHistX->Write();
+	fFullDetectorHistY->Write();
 	for(int x = 0  ; x < numOfStrips ; x++){
 		for (int y = 0 ; y < numOfStrips ; y++) {
 				int pixelNumber = numOfStrips*x+y;
@@ -198,6 +217,8 @@ void HitDistribution::Write(std::string fileName){
 	for(int i = 0  ; i < numOfStrips ; i++)
 		fYHistVector[i]->Write();*/
 
+//	fHitGraph = new TGraph(fXValueVector.size(),&fXValueVector[0],&fYValueVector[0]);
+//	fHitGraph->Write();
 	rootFile->Close();
 }
 

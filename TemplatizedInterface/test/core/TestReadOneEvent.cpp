@@ -26,7 +26,7 @@ int main(){
 	//Accessing 10 events, but only one at a time
 	for(int i = 0 ;  i < 10 ; i++){
 		std::cout << "==================================" << std::endl;
-		r.Read();
+		r.Read<false>();
 		r.Print();
 		std::vector<Vec_t> hitPtVector = r.GetHitPointVector();
 		std::cout<<"Hit Point Vector size : " << hitPtVector.size() << std::endl;
