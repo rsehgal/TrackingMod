@@ -12,7 +12,7 @@
 #include <cstring>
 #include "base/Vector3D.h"
 #include <iostream>
-
+#include "Files.h"
 namespace Tomography{
 
 using Vec_t = Tracking::Vector3D<double>;
@@ -26,7 +26,16 @@ public:
 	ReadOneEvent(std::string filename);
 	ReadOneEvent(std::string filename, int numOfDetectors);
 	virtual ~ReadOneEvent();
-	void Read();
+	template<bool exact>
+	void Read(){
+		fHitPointVector.clear();
+			for(int i = 0 ; i < fNumOfDetectors ; i++){
+				Files *filePtr = Files::instance();
+				fHitPointVector.push_back(filePtr->ReadHit<exact>(fFileName));
+
+			}
+
+	}
 
 	//Some Required Getters
 	std::vector<Vec_t> GetHitPointVector() const {

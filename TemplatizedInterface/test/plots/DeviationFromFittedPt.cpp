@@ -12,6 +12,7 @@ int main(){
     TCanvas *c = new TCanvas("TestCanvas", "ScatteringAngleCanvas", 800, 600);
     Tomography::DetectorMapping *detectorMap = Tomography::DetectorMapping::create("testMapping.txt");
     int numOfRpcs = detectorMap->GetNumOfDetectors("GLASS");
+    std::cout << "Num Of Rpc :  "<< numOfRpcs << std::endl;
     int cols = 4;
     int rows = numOfRpcs / cols;
     if(numOfRpcs % cols)

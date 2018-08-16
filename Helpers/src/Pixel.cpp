@@ -34,8 +34,13 @@ void Pixel::GenerateRandom(){
 	//Logic to get the random point within the pixel
 	fRandomPoint = fPixelCenter;
 	Coordinates c;
+#ifdef UNIFORM
 	fRandomPoint.SetX(c.GenRandom(fPixelCenter.x()-fHalfPixelWidth,fPixelCenter.x()+fHalfPixelWidth));
 	fRandomPoint.SetY(c.GenRandom(fPixelCenter.y()-fHalfPixelWidth,fPixelCenter.y()+fHalfPixelWidth));
+#else
+	fRandomPoint.SetX(c.GenRandomGauss(fPixelCenter.x(),fHalfPixelWidth));
+	fRandomPoint.SetY(c.GenRandomGauss(fPixelCenter.y(),fHalfPixelWidth));
+#endif
 }
 
 } /* namespace Tomography */

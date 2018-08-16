@@ -130,6 +130,7 @@ public:
 
 	void NumOfOpenedFiles(){std::cout << "Num of Opened files : " <<  fFileMapVector.size() << std::endl; }
 
+	template<bool exact>
 	Tracking::Vector3D<double> ReadHit(std::string filename){
 		//Tracking::Vector3D<double> hit;
 		double actHitX = 0., actHitY = 0., actHitZ = 0.;
@@ -137,8 +138,10 @@ public:
 		FileMap* fileMap = GetFileMap(filename);
 		*(fileMap->sFileStream) >> actHitX >> actHitY >> actHitZ >> fittedHitX
 				>> fittedHitY >> fittedHitZ;
-
-		return Tracking::Vector3D<double>(actHitX, actHitY, actHitZ);
+		if(exact)
+			return Tracking::Vector3D<double>(actHitX, actHitY, actHitZ);
+		else
+			return Tracking::Vector3D<double>(fittedHitX, fittedHitY, fittedHitZ);
 	}
 
 	std::string ReadLine(std::string filename){

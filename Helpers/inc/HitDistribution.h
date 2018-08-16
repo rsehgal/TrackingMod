@@ -11,6 +11,7 @@
 #include <vector>
 #include <iostream>
 #include <TH1F.h>
+#include <TGraph.h>
 #include "Properties.h"
 namespace Tomography {
 
@@ -42,9 +43,14 @@ class HitDistribution {
 	std::vector<TH1F*>fXHistVector;
 	std::vector<TH1F*>fYHistVector;
 	std::vector<Hist*> fHistVector;
+	TGraph *fHitGraph;
 	std::string fFileName;
 	std::string fDetectorName ;//= "TestDetector";
 	Detector *fDetector;
+	std::vector<double> fXValueVector;
+	std::vector<double> fYValueVector;
+	TH1F* fFullDetectorHistX;
+	TH1F* fFullDetectorHistY;
 
 public:
 	HitDistribution();
