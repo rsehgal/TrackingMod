@@ -1,4 +1,5 @@
 #include "Coordinates.h"
+#include "Randomize.hh"
 #include <math.h>
 typedef Tomography::Properties Detector;
 namespace Tomography {
@@ -118,6 +119,11 @@ Vector3D<double> Coordinates::GetSpecificCoordinate(double zpos) {
   vec.SetY((InitialPoint.y() - coordinate[totalDetector - 1].y()) * temp + InitialPoint.y());
   vec.SetZ(zpos);
   return vec;
+}
+
+double Coordinates::GenRandomGauss(double mu, double sigma){
+
+	return G4RandGauss::shoot(mu,sigma);
 }
 
 Vector3D<double> Coordinates::GetInitialPoint() { return InitialPoint; }

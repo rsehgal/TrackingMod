@@ -71,6 +71,7 @@ public:
   void SetStrips();
   Tracking::Vector3D<double> GetStrip(int detector);
   double GenRandom(double min, double max);
+  double GenRandomGauss(double mean, double sigma);
   Vector3D<double> GetInitialPoint();
   Vector3D<double> GetSpecificCoordinate(double zpos);
   int GetLength() { return det.size(); }
