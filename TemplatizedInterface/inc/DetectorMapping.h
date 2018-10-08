@@ -29,6 +29,8 @@ struct Detector{
 class DetectorMapping{
 	
 	private:
+	    std::string fWorldSizeString;
+	    double fWorldHalfLength;
 		std::string fGunString;
 		double fGunZ;
 		int fMaxNumOfEvents;
@@ -92,6 +94,9 @@ class DetectorMapping{
 
 		//GetZ location of Gun
 		double GetGunZ() const {return fGunZ;}
+
+		//Get WorldHalfLength
+		double GetWorldHalfLength() const {return fWorldHalfLength;}
 
 		int GetNumOfDetectors(std::string type);
 		std::vector<std::string> GetDetectorNamesVector(std::string type);
