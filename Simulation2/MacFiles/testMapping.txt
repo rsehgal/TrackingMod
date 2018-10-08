@@ -1,3 +1,4 @@
+worldSizeHalfLength 3000
 gunZ_In_mm 2500 
 numOfEvents 1000
 plotsLocation /var/www/html/Tomo/plot/

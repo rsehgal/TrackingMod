@@ -54,6 +54,7 @@ G4VPhysicalVolume* MyDetectorConstruction::Construct(){
   
  G4Material* world_mat = nist->FindOrBuildMaterial("G4_Galactic");
 
+/*
   G4Box* solidWorld =    
     new G4Box("World",                       //its name
       world_sizeXYZ, world_sizeXYZ, world_sizeXYZ);     //its size
@@ -78,6 +79,7 @@ G4VPhysicalVolume* MyDetectorConstruction::Construct(){
                       false,                 //no boolean operation
                       0,                     //copy number
                       checkOverlaps);        //overlaps checking
+*/
 
 
  G4Material *Si=nist->FindOrBuildMaterial("G4_AIR");
@@ -106,6 +108,26 @@ if(k==0 || k==3 || k==4 || k==7)
   // std::vector<int> startChannelVector = detectorMap->GetStartingChannelVector();
   // std::vector<int> moduleVector = detectorMap->GetModuleVector();
   // std::vector<double> zcoordinateVector = detectorMap->GetZCoordinateVector();
+
+  double worldHalfLength = detectorMap->GetWorldHalfLength();
+  G4Box* solidWorld =
+    new G4Box("World",                       //its name
+      worldHalfLength,worldHalfLength,worldHalfLength);     //its size
+
+  G4LogicalVolume* logicWorld =
+    new G4LogicalVolume(solidWorld,          //its solid
+                        world_mat,           //its material
+                        "World");            //its name
+
+  G4VPhysicalVolume* physWorld =
+    new G4PVPlacement(0,                     //no rotation
+                      G4ThreeVector(),       //at (0,0,0)
+                      logicWorld,            //its logical volume
+                      "World",               //its name
+                      0,                     //its mother  volume
+                      false,                 //no boolean operation
+                      0,                     //copy number
+                      checkOverlaps);        //overlaps checking
 
   std::vector<Tomography::Mapping::Detector*>  detectorVector = detectorMap->GetDetectorVector();
 

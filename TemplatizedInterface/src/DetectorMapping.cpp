@@ -59,7 +59,7 @@ DetectorMapping::DetectorMapping(std::string filename){
 void DetectorMapping::ReadMapping(){
 	//std::cout<<"FileName from ReadMapping : " << fileName << std::endl;
 	std::ifstream in(fileName);
-	int count = -3 ;
+	int count = -4 ;
 	int detCounter = 0;
 	while(1){
 
@@ -70,6 +70,13 @@ void DetectorMapping::ReadMapping(){
 		int channelStart = 31;
 		double zCoordinate = 0.;
 		
+		//reading WorldHalfLength;
+		if(count == -4){
+			count++;
+			in >> fWorldSizeString >> fWorldHalfLength;
+			continue;
+		}
+
 		//reading GunZ
 		if(count == -3){
 			count++;
