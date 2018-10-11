@@ -109,10 +109,13 @@ double StandardDeviation(std::vector<double> scatteringVect){
 
 
 double StandardDeviation(std::vector<double> scatteringVect,bool forVoxel = false, int numOfBins = 1000){
-	//std::cout<<"@@@@@@@@@@@@@@@@@@@@@@@ SD Called........ @@@@@@@@@@@@@@@@@@@@@@@" << std::endl;
+	std::cout<<"@@@@@@@@@@@@@@@@@@@@@@@ SD Called........ @@@@@@@@@@@@@@@@@@@@@@@" << std::endl;
 
-	if(scatteringVect.size() <= 1)
+	std::cout << "Found Scattering Vector Size : " << scatteringVect.size() << " : " << __FILE__ << " : " << __LINE__ << std::endl;
+	if(scatteringVect.size() <= 1){
+
 		return 0;
+	}
 	double max = *std::max_element(scatteringVect.begin(),scatteringVect.end());
 	double min = *std::min_element(scatteringVect.begin(),scatteringVect.end());
 	//std::cout<<"Min : " << min <<" : Max : "<< max << std::endl;
@@ -120,13 +123,14 @@ double StandardDeviation(std::vector<double> scatteringVect,bool forVoxel = fals
 	for(int i = 0 ; i < scatteringVect.size() ; i++)
 		histogram->Fill(scatteringVect[i]);
 	double sd = histogram->GetStdDev();
+	std::cout << "====================== SD of Voxel : " << sd <<" =====================" << std::endl;
 	if(forVoxel){
 		delete histogram;
 		return sd;
 	}
 	//return sd;
 	//delete histogram;
-	std::cout<<"SD from hist : " << sd << std::endl;
+	std::cout<<"AYUSH SD from hist : " << sd << std::endl;
 	histogram->Fit("gaus","","",-2*sd, 2*sd);
 	TF1 *fit = histogram->GetFunction("gaus");
 	double chi2 = fit->GetChisquare();
@@ -246,21 +250,24 @@ void WriteToFile(std::string fileName,std::vector<Tomography::Voxel*> voxelsVect
    for(int i = 0 ; i < voxelsVector.size() ; i++){
       Tracking::Vector3D<double> voxCenter = voxelsVector[i]->GetVoxelCenter();
       count++;
+      double sd = voxelsVector[i]->GetStandardDeviation();
       if(count==0){
          Tracking::Vector3D<int> dim = Tomography::evolution::Voxelator::instance()->GetEachVoxelDim();
          fileHandle << dim.x() << " " << dim.y() << " " << dim.z() << " " << dummy << std::endl;
-         fileHandle << std::setprecision(20.) << voxCenter.x() << " " << voxCenter.y() << " " << voxCenter.z()
-                    //<< " " << voxelsVector[i]->GetRadiationLength() <<  std::endl;
-						<< " " << voxelsVector[i]->GetRadiationLength() <<  " " <<
-						voxelsVector[i]->GetScatteringDensity() <<  std::endl;
-
+         //Storing values only when SD is NOT equal to ZERO, to avoid division by zero
+         if(sd != 0.){
+         fileHandle << std::setprecision(20.) << voxCenter.x() << " " << voxCenter.y() << " " << voxCenter.z();
+  		 fileHandle << " " << sd <<  " " << voxelsVector[i]->GetRadiationLength() <<  std::endl;
+			//voxelsVector[i]->GetScatteringDensity() <<  std::endl;
+		}
       }else{
-      fileHandle << std::setprecision(20.) << voxCenter.x() << " " << voxCenter.y() << " " << voxCenter.z()
-                 //<< " " << voxelsVector[i]->GetRadiationLength() <<  std::endl;
-								<< " " << voxelsVector[i]->GetRadiationLength() <<  " " <<
-								voxelsVector[i]->GetScatteringDensity() <<  std::endl;
+    	  if(sd != 0.){
+    		  fileHandle << std::setprecision(20.) << voxCenter.x() << " " << voxCenter.y() << " " << voxCenter.z() ;
+              fileHandle << " " << sd <<  " " << voxelsVector[i]->GetRadiationLength() <<  std::endl;
+      		  //voxelsVector[i]->GetScatteringDensity() <<  std::endl;
+    	  }
       //std::cout << "UNEXPECTED VALUE SHOULD COME FROM HERE.......... : " << voxelsVector[i]->GetScatteringDensity() << std::endl;
-   }
+      }
    }
 
    }
