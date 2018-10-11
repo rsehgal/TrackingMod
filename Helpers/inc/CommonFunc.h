@@ -252,7 +252,7 @@ void WriteToFile(std::string fileName,std::vector<Tomography::Voxel*> voxelsVect
       count++;
       double sd = voxelsVector[i]->GetStandardDeviation();
       if(count==0){
-         Tracking::Vector3D<int> dim = Tomography::evolution::Voxelator::instance()->GetEachVoxelDim();
+         Tracking::Vector3D<double> dim = Tomography::evolution::Voxelator::instance()->GetEachVoxelDim();
          fileHandle << dim.x() << " " << dim.y() << " " << dim.z() << " " << dummy << std::endl;
          //Storing values only when SD is NOT equal to ZERO, to avoid division by zero
          if(sd != 0.){
@@ -302,7 +302,7 @@ int GetVoxelNum(Tracking::Vector3D<double> pt){
 #ifdef USE_ENCLOSING_VOXELS
 std::vector<Tracking::Vector3D<double>> GetEightCorners_Of_ImaginaryVoxel_CentredAtPocaPoint(Tracking::Vector3D<double> pocaPt){
 	int count = 0;
-	Tracking::Vector3D<int> voxelDim = Tomography::evolution::Voxelator::instance()->GetEachVoxelDim();
+	Tracking::Vector3D<double> voxelDim = Tomography::evolution::Voxelator::instance()->GetEachVoxelDim();
 	std::vector<Tracking::Vector3D<double>> corners;
 	for(int i=-1 ; i <= 1 ; i=i+2  ) // X axis
 		  for(int j=-1 ; j <= 1 ; j=j+2  ) // Y axis

@@ -123,11 +123,11 @@ void RunHelper::Store(){
 	vox->Insert(fPocaPtVector); //Voxelized Poca Ready
 	std::ofstream voxTrack;
 	voxTrack.open("VoxelizedTracks.txt");
-	Vector3D<int> voxelatorDim = vox->GetVoxelatorDim();
+	Vector3D<double> voxelatorDim = vox->GetVoxelatorDim();
 	std::cout<< " -+-+-+-+--+-+-+--+--+-+--+-------+---++- " << std::endl;
 	voxelatorDim.Print();
-	Vector3D<int> voxelizedVolumeDim = vox->GetVoxelizedVolumeDim();
-	Vector3D<int> voxelDim = vox->GetEachVoxelDim();
+	Vector3D<double> voxelizedVolumeDim = vox->GetVoxelizedVolumeDim();
+	Vector3D<double> voxelDim = vox->GetEachVoxelDim();
 	for(int x = 0 ; x < voxelatorDim.x()-1 ; x++){
 	    for(int y = 0 ; y < voxelatorDim.y()-1 ; y++){
 	      for(int z = 0 ; z < voxelatorDim.z()-1 ; z++){

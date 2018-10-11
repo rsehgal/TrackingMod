@@ -27,9 +27,9 @@ namespace Tomography{
 namespace evolution{
 class Voxelator{
 private:
-  Vector3D<int> fVoxelizedVolumeDim; // This should be set using the detector size
-  Vector3D<int> fEachVoxelDim; // voxel width in x, y and z
-  Vector3D<int> fVoxelatorDim;
+  Vector3D<double> fVoxelizedVolumeDim; // This should be set using the detector size
+  Vector3D<double> fEachVoxelDim; // voxel width in x, y and z
+  Vector3D<double> fVoxelatorDim;
   TH3F *histVoxelValue; // = new TH3F("glvoxel", "glvoxel", 50, -500., 500., 50, -500., 500., 50, -500., 500.);
   TH3F *histVoxelCount;
   TH1F *fVoxelsIn1D;
@@ -92,7 +92,7 @@ public:
 
   void PrintVoxelCenters();
 
-  Vector3D<int> GetVoxelatorDim(){return fVoxelatorDim;}
+
   double GetAverageScatteringAngleInAVoxel(Vector3D<double> vox);
   double GetAverageScatteringAngleInAVoxel(double x, double y, double z){}
   double GetAverageScatteringAngleInAVoxel(int x, int y, int z);
@@ -103,9 +103,12 @@ public:
   void AverageOut();
   TH3F* GetVoxelizedHist(){return histVoxelValue;}
   TH3F* GetVoxelizedCount(){return histVoxelCount;}
-  Vector3D<int> GetVoxelizedVolumeDim(){return fVoxelizedVolumeDim;}
-  Vector3D<int> GetEachVoxelDim(){return fEachVoxelDim;}
   bool IsGenuine(Tracking::Vector3D<double> pocaPt);
+
+  Vector3D<double> GetVoxelizedVolumeDim(){return fVoxelizedVolumeDim;}
+  Vector3D<double> GetEachVoxelDim(){return fEachVoxelDim;}
+  Vector3D<double> GetVoxelatorDim(){return fVoxelatorDim;}
+
 
 
 
