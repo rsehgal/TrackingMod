@@ -26,10 +26,7 @@ class Voxel {
 	double fSD;
 	double fRL;
 
-
-	//Minimum num of point in a Voxel to make it genuine voxel
-	int fMinPointsInVoxel;
-
+	int fMinPointsInVoxel; //Minimum num of point in a Voxel to make it genuine voxel
 	static int fTotalVoxelsCreated;
 
 	// This is basically a weight value that represent scattering Density for the voxel
@@ -81,9 +78,6 @@ public:
 	static void Reset();
 
 };
-
-//std::vector<Voxel*> Voxel::fVoxelVector = {0};
-
 
 } /* namespace Tomography */
 

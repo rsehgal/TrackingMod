@@ -62,7 +62,8 @@ Voxel::Voxel(Tracking::Vector3D<double> pocaPt, int voxelNum, bool useEnclosingV
 	fPointCount = fVectPointsInVoxel.size();
 	fOutlier = fPointCount < fMinPointsInVoxel;*/
 	//fDim = voxelDim;
-	fDim.Set(5*cm,5*cm,4.5*cm);
+	//fDim.Set(5*cm,5*cm,4.5*cm);
+	fDim = Tomography::evolution::Voxelator::instance()->GetEachVoxelDim();
 	fScatteringDensity = 0.;
 	fSD = 0.;
 	fRL = 0.;
