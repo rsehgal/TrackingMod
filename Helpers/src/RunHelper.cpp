@@ -60,10 +60,10 @@ RunHelper::RunHelper(std::string fileType) {
     fVoxelVector = Voxel::GetVoxelVector();
     FillPocaVector();
     FillScatteringAngleVector();
-//    CalcSDOfEachVoxel();
-//    FillSDVector();
-//    CalcRLOfEachVoxel();
-//    FillRLVector();
+    CalcSDOfEachVoxel();
+    FillSDVector();
+    CalcRLOfEachVoxel();
+    FillRLVector();
 
     WriteToFile();
      
@@ -71,7 +71,6 @@ RunHelper::RunHelper(std::string fileType) {
 }
 
 void RunHelper::FillSDVector(){
-    
      for(int i = 0 ; i < fVoxelVector.size() ; i++){
         fSDOfVoxelsVector.push_back(fVoxelVector[i]->GetStandardDeviation());
      }
@@ -85,7 +84,6 @@ void RunHelper::FillRLVector(){
 }
 
 void RunHelper::CalcSDOfEachVoxel(){
-    
      for(int i = 0 ; i < fVoxelVector.size() ; i++){
         fVoxelVector[i]->CalcSD();
      }

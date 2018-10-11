@@ -106,6 +106,7 @@ std::vector<Tracking::Vector3D<double>> Voxel::GetEightCorners_Of_ImaginaryVoxel
 
 void Voxel::Insert(Tracking::Vector3D<double> pocaPt, int voxelNum, bool useEnclosingVoxels , double scatteringDensity){
 	//std::cout<<"Inserted Point in the found voxel........." << std::endl;
+#if(1)
 	if(useEnclosingVoxels)
 		fScatteringDensity += scatteringDensity;
 	else{
@@ -129,6 +130,8 @@ void Voxel::Insert(Tracking::Vector3D<double> pocaPt, int voxelNum, bool useEncl
 
 	fScatteringDensity += scatteringDensity;
 	}
+#endif
+
 }
 
 
@@ -151,9 +154,13 @@ int Voxel::IfVoxelExist(int voxelNum){
 
 std::vector<double> Voxel::GetScatteringVector(){
 	std::vector<double> scatteringVect;
+	std::cout << "fPointCount : " << fPointCount <<" : " << __FILE__ << " : " << __LINE__ << std::endl;
+	std::cout << "----------------------------------------" << std::endl;
 	for(int i = 0  ; i < fPointCount ; i++){
+		std::cout << "ScatteringValue : " << fVectPointsInVoxel[i].GetColor() << std::endl;
 		scatteringVect.push_back(fVectPointsInVoxel[i].GetColor());///1000.);
 	}
+	std::cout << "----------------------------------------" << std::endl;
 	return scatteringVect;
 }
 
@@ -172,6 +179,8 @@ void Voxel::CalcRadiationLength(){
 }
 
 void Voxel::CalcSD(){
+	std::vector<double> scatteringAngleVector = GetScatteringVector();
+	std::cout << "ScatteringAngleVectorSize for Voxel : " << scatteringAngleVector.size() << " : " << __FILE__ << " : " << __LINE__ << std::endl;
 	fSD = CommonFunc::Functions::instance()->StandardDeviation(GetScatteringVector(),true);
 }
 
