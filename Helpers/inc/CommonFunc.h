@@ -19,9 +19,11 @@
 #include <algorithm>
 #include <TF1.h>
 #include "base/Global.h"
+#include "TColor.h"
 using Tracking::Vector3D;
 
 namespace CommonFunc{
+
 
 static Precision Distance(Vector3D<Precision> p, Vector3D<Precision> q){
 	return (p-q).Mag();
@@ -32,6 +34,37 @@ class Functions{
 	Functions(){}
 public:
 
+//Converting the double value corresponds to
+//Scatering value or RL or SD to proper color value from
+//ROOT Color palette. Giving good results
+static double CreateColorVal(double color){
+		 TColor::SetPalette(1, 0);
+		 const Int_t nCol = 150;//TColor::GetNumberOfColors();
+		 float min = 0, max = 50.; // your range of values
+		 double colorVal = TColor::GetColorPalette((color - min)/(max-min) * nCol);
+		 return colorVal;
+}
+
+//Below to converter functions needs to be checked.
+//Function to convert RGB value to a double
+static double PackColor(Vector3D<double> color) {
+	    return color.x() + color.y() * 256.0 + color.z() * 256.0 * 256.0;
+	}
+//Function to convert the double to RGB components
+static Vector3D<double> UnpackColor(double f) {
+		Vector3D<double> color;
+		double b = std::floor(f / 256.0 / 256.0);
+		double g = std::floor((f - b * 256.0 * 256.0) / 256.0);
+		double r = std::floor(f - b * 256.0 * 256.0 - g * 256.0);
+		// now we have a vec3 with the 3 components in range [0..255]. Let's normalize it!
+		b /= 255.0;
+		g /= 255.0;
+		r /= 255.0;
+
+		return Vector3D<double>(r, g, b);
+		//return color / 255.0;
+
+}
 
 static Functions *instance(){
 	if(!finstance){
@@ -91,8 +124,8 @@ double Mean(std::vector<double> scatteringVect){
    return sum/scatteringVect.size();
 }
 
-#if(0)
-double StandardDeviation(std::vector<double> scatteringVect){
+#if(1)
+double StandardDeviation(std::vector<double> scatteringVect,bool forVoxel = false, int numOfBins = 1000){
    double mean = Mean(scatteringVect);
    std::cout<<"Mean : " << mean << std::endl;
    for(int i = 0 ; i < scatteringVect.size() ; i++){
@@ -107,7 +140,7 @@ double StandardDeviation(std::vector<double> scatteringVect){
 }
 #endif
 
-
+#if(0)
 double StandardDeviation(std::vector<double> scatteringVect,bool forVoxel = false, int numOfBins = 1000){
 	std::cout<<"@@@@@@@@@@@@@@@@@@@@@@@ SD Called........ @@@@@@@@@@@@@@@@@@@@@@@" << std::endl;
 
@@ -138,7 +171,7 @@ double StandardDeviation(std::vector<double> scatteringVect,bool forVoxel = fals
 	delete histogram;
 	return p1;
 }
-
+#endif
 
 void WriteToFile(std::string fileName, std::vector<double> scatteringVect){
    std::cout<<"Writing file " << fileName << "....  ";

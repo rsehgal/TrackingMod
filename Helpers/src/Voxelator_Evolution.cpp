@@ -2,6 +2,7 @@
 #include <cmath>
 #include "Delta.h"
 #include "CommonFunc.h"
+#include <cmath>
 
 namespace Tomography {
 namespace evolution{
@@ -228,6 +229,9 @@ void Voxelator::CreateHistogram(){
 	fVoxelsIn1D = new TH1F("IDHistOfVoxels","IDHistOfVoxels",GetTotalNumberOfVoxels(), 0, GetTotalNumberOfVoxels());
 	fVoxelsIn1DCount = new TH1F("IDHistOfVoxelsCount","IDHistOfVoxelsCount",GetTotalNumberOfVoxels(), 0, GetTotalNumberOfVoxels());
 
+	fSDInVoxels = new TH1F("SDInVoxels","SDInVoxels",100,0,.30);
+	fRLInVoxels = new TH1F("RLInVoxels","RLInVoxels",100,0,20.);
+
 }
 
 double Voxelator::GetAverageScatteringAngleInAVoxel(Vector3D<double> vox){
@@ -304,6 +308,40 @@ for (auto &pocaPt : pocaPtVect) {
       Insert(pocaPt);
   }
 AverageOut();
+}
+
+void Voxelator::FillSDAndRLHist(){
+	std::vector<Voxel*> fVoxelVector = Voxel::GetVoxelVector();
+	for (auto &voxel : fVoxelVector) {
+		int voxelNumber = voxel->GetVoxelNum();
+		double sd = voxel->GetStandardDeviation();
+		double rl = voxel->GetRadiationLength();
+		if(sd != 0.){
+			//fSDInVoxels->Fill(voxelNumber,sd);
+			fSDInVoxels->Fill(sd);
+		}
+		if(rl < 10){
+			//fRLInVoxels->Fill(voxelNumber,rl);
+			fRLInVoxels->Fill(rl);
+		}
+	}
+}
+
+void Voxelator::SetMaxMinSDAndRL(){
+	std::vector<Voxel*> fVoxelVector = Voxel::GetVoxelVector();
+	std::vector<double> sdVect, rlVect;
+	for (auto &voxel : fVoxelVector) {
+		double sd = voxel->GetStandardDeviation();
+		double rl = voxel->GetRadiationLength();
+		if(std::isfinite(sd) && std::isfinite(rl) ){
+			sdVect.push_back(sd);
+			rlVect.push_back(rl);
+		}
+	}
+	fMaxSD = *max_element(sdVect.begin(), sdVect.end());
+	fMinSD = *min_element(sdVect.begin(), sdVect.end());
+	fMaxRL = *max_element(rlVect.begin(), rlVect.end());
+	fMinRL = *min_element(rlVect.begin(), rlVect.end());
 }
 
 }//end of evolution namespace

@@ -15,6 +15,7 @@
 #include "ObjectChecker.h"
 #include "Track.h"
 #include <TGraph.h>
+#include "Voxel.h"
 
 using Slice = std::vector<std::vector<Tracking::Vector3D<double>>>;
 using VoxelCenters = std::vector<Slice>;
@@ -34,6 +35,16 @@ private:
   TH3F *histVoxelCount;
   TH1F *fVoxelsIn1D;
   TH1F *fVoxelsIn1DCount;
+
+  //Some more histogram to that represent SD and RL for each voxel
+  TH1F *fSDInVoxels;
+  TH1F *fRLInVoxels;
+
+  //Data member to store max and min SD and RL
+  //Currently these will be used by EveVisualizer
+  double fMinSD, fMaxSD;
+  double fMinRL, fMaxRL;
+
   //TGraph *fGraphSD;// = new TGraph(dim, &x[0], &y[0]);
 
 
@@ -74,6 +85,16 @@ public:
   //VoxelCenters
   TH1F* GetVoxelIn1D(){return fVoxelsIn1D;}
   TH1F* GetVoxelIn1DCount(){return fVoxelsIn1DCount;}
+  TH1F* GetSDInVoxelsHist(){return fSDInVoxels;}
+  TH1F* GetRLInVoxelsHist(){return fRLInVoxels;}
+  void FillSDAndRLHist();
+  void SetMaxMinSDAndRL();
+  double GetMaxSD() const {return fMaxSD;}
+  double GetMinSD() const {return fMinSD;}
+  double GetMaxRL() const {return fMaxRL;}
+  double GetMinRL() const {return fMinRL;}
+
+
   std::vector<Tracking::Vector3D<double>> GetVoxelCenters(){return fVoxelCenters; }
   Tracking::Vector3D<double> GetVoxelCenter(double x, double y, double z);
   Tracking::Vector3D<double> GetVoxelCenter(Tracking::Vector3D<double> vox);
@@ -82,6 +103,14 @@ public:
   int GetVoxelNumber(double x,double y, double z);
   int GetVoxelNumber(Tracking::Vector3D<double> vox);
   int GetTotalNumberOfVoxels(){return fVoxelatorDim.x()*fVoxelatorDim.y()*fVoxelatorDim.z();}
+
+
+  //Function to return the std::vector of filled Voxels
+  std::vector<Voxel*> GetVoxelVector() const {
+	  return Voxel::GetVoxelVector();
+  }
+
+
 
 
 

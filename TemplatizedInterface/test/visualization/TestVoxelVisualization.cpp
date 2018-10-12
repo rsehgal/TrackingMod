@@ -18,12 +18,9 @@ using Vec_t = Tracking::Vector3D<double>;
 int main(int argc, char *argv[]) {
 	TApplication *fApp = new TApplication("Test", NULL, NULL);
 	//VisualizationHelper v;
-	Tomography::VisualizationHelper *v =
-			Tomography::VisualizationHelper::instance();
+	Tomography::VisualizationHelper *v = Tomography::VisualizationHelper::instance();
 	v->InitializeVisualizer();
-	gStyle->SetPalette(kRainBow);
-
-//Reading Voxels.txt
+	//gStyle->SetPalette(kRainBow);
 
 	std::ifstream filehandle(argv[1]);
 	int numOfEvents = atoi(argv[2]);
@@ -42,7 +39,11 @@ int main(int argc, char *argv[]) {
 		std::cout << x << " , " << y << " , " << z << " , " << colorSD << " , "
 				<< rl << std::endl;
 		Vec_t voxCenter(x, y, z);
-		v->Register(voxDim, voxCenter, colorSD * 1000);
+		//v->Register(voxDim, voxCenter, colorSD * 1000);
+		double upperRLVal = 50.;
+		if(rl < upperRLVal)
+			//v->Register(voxDim, voxCenter, rl);
+			v->Register(voxDim, voxCenter, rl);
 		numOfEvents--;
 	}
 
