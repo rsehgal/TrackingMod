@@ -23,6 +23,7 @@ class TEveStraightLineSet;
 class TGeoShape;
 class TEvePointSet;
 class TEvePointSetArray;
+class TColor;
 
 namespace Tracking {
 
@@ -41,6 +42,7 @@ public:
   EveVisualizer();
   void AddEveShape(std::string shapeName,TGeoBBox *shape, TGeoHMatrix &mat);
   void AddEveShape(std::string shapeName,TGeoBBox *shape, TGeoHMatrix &mat,int color);
+  void AddEveShape(std::string shapeName,TGeoBBox *shape, TGeoHMatrix &mat,double color);
   void AddEveShape(TEveGeoShape *eveShape, TGeoHMatrix &mat);
   void AddEveShape(std::string shapeName,TGeoShape *shape, TGeoHMatrix &mat, int color);
   void AddEveShape(std::string shapeName,TGeoShape *shape, TGeoHMatrix &mat);
@@ -57,6 +59,13 @@ public:
   void CloseBins();
   void CreatePointSetArray();
   void InitializeVisualizer();
+  TColor* CreateColor(double val);
+  double CreateColorVal(double val);
+
+protected:
+  Tracking::Vector3D<double> UnpackColor(double val);
+  double PackColor(Tracking::Vector3D<double>);
+
 };
 
 } //end of Tracking namespace

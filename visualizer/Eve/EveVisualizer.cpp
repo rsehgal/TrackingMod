@@ -23,10 +23,26 @@
 
 #include "TEvePointSet.h"
 #include "TColor.h"
+#include "CommonFunc.h"
 //#include "TEvePointSetArray.h"
 namespace Tracking {
 
 //TEveElementList* EveVisualizer::fEveGeomList = 0;
+
+Tracking::Vector3D<double> EveVisualizer::UnpackColor(double val){
+	return CommonFunc::Functions::instance()->UnpackColor(val);
+}
+
+double EveVisualizer::PackColor(Tracking::Vector3D<double> color){
+	return CommonFunc::Functions::instance()->PackColor(color);
+}
+
+TColor* EveVisualizer::CreateColor(double val){
+	  TColor *color = gROOT->GetColor(10);
+	  Tracking::Vector3D<double> colVect = CommonFunc::Functions::instance()->UnpackColor(val);
+	  color->SetRGB(colVect.x(),colVect.y(),colVect.z());
+	  return color;
+  }
 
   void EveVisualizer::InitializeVisualizer(){
     CreatePointSetArray();
@@ -231,6 +247,44 @@ if(gEve){
   fEveShape->SetShape(shape);
   fEveShape->SetMainColor(color);
   fEveShape->SetMainTransparency(50);
+  fEveShape->SetTransMatrix(mat);
+  //fEveGeomList->AddElement(fEveShape);
+  Singleton::instance()->AddElement(fEveShape);
+ }
+}
+
+double EveVisualizer::CreateColorVal(double color){
+	 TColor::SetPalette(1, 0);
+	 const Int_t nCol = 100;//TColor::GetNumberOfColors();
+	 float min = 0, max = 50.; // your range of values
+	 double colorVal = TColor::GetColorPalette((color - min)/(max-min) * nCol);
+	 return colorVal;
+  }
+
+void EveVisualizer::AddEveShape(std::string shapeName,TGeoBBox *shape,  TGeoHMatrix &mat , double color){
+std::cout << "From ADDEVESHAPE of " << __FILE__ << " : " << __LINE__ << std::endl;
+if(gEve){
+  fEveShape = new TEveGeoShape(shapeName.c_str());
+  fEveShape->SetShape(shape);
+  TColor *col = CreateColor(color);
+  //------
+/*
+  TColor::SetPalette(1, 0);
+  //TColor::SetPalette(53);
+  const Int_t nCol = 100;//TColor::GetNumberOfColors();
+  float min = 0, max = 50.; // your range of values
+  double colorVal = TColor::GetColorPalette((color - min)/(max-min) * nCol);
+  fEveShape->SetMainColor(colorVal);
+  //------
+  //fEveShape->SetMainColor(color);
+  double setcolor = PackColor(UnpackColor(color));
+  std::cout << "Actual Color : " << color <<" : SetColor : " << setcolor << std::endl;
+  //fEveShape->SetFillColor(setcolor*255);
+*/
+  //double colorVal = CreateColorVal(color);
+  double colorVal = CommonFunc::Functions::instance()->CreateColorVal(color);
+  fEveShape->SetMainColor(colorVal);
+  fEveShape->SetMainTransparency(colorVal);
   fEveShape->SetTransMatrix(mat);
   //fEveGeomList->AddElement(fEveShape);
   Singleton::instance()->AddElement(fEveShape);

@@ -27,6 +27,11 @@ class RunHelper {
 	std::vector<Voxel*> fVoxelVector;
 	std::string fFileType;
 
+	//Data member to store max and min SD and RL
+	//Currently these will be used by EveVisualizer
+	double fMinSD, fMaxSD;
+	double fMinRL, fMaxRL;
+
 #ifdef VOXELIZE
 	//std::vector<Voxel*> fVoxelVector;
 #endif
@@ -52,6 +57,14 @@ public:
 	void CalcRLOfEachVoxel();
 	void FillRLVector();
 	void WriteToFile();
+	void SetMaxMinSDAndRL();
+
+	//Getters
+	double GetMaxSD() const {return fMaxSD;}
+	double GetMinSD() const {return fMinSD;}
+	double GetMaxRL() const {return fMaxRL;}
+	double GetMinRL() const {return fMinRL;}
+	void PrintMaxMinSDAndRL() const;
 
 	//Function used to do resetting
 	void Reset();

@@ -3,6 +3,7 @@
 #include "base/Vector3D.h"
 #include <iostream>
 #include <fstream>
+#include "CommonFunc.h"
 
 using Tomography::VisualizationHelper;
 using Tracking::Vector3D;
@@ -60,7 +61,9 @@ const char* input_filename = (argc>1)?argv[1]:"tracks.txt";
     //	hist->Fill(color);
     	//if((z/deno) > 15. || (z/deno) < 5.) continue;
     	pt.Set(x/deno,y/deno,z/deno);
-    	pt.SetColor(2+color*100);
+    	double colorVal = CommonFunc::Functions::instance()->CreateColorVal(color*1000.);
+    	pt.SetColor(colorVal);
+    	//pt.SetColor(2+color*100);
     	v->Register(slicer,pt);
     //v.Register(pt);
 /*

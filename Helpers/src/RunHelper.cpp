@@ -9,6 +9,7 @@
 #include "Voxel.h"
 #include "CommonFunc.h"
 #include <TFile.h>
+#include "Voxelator_Evolution.h"
 
 namespace Tomography {
 
@@ -64,10 +65,25 @@ RunHelper::RunHelper(std::string fileType) {
     FillSDVector();
     CalcRLOfEachVoxel();
     FillRLVector();
+    SetMaxMinSDAndRL();
+
 
     WriteToFile();
      
 
+}
+
+void RunHelper::PrintMaxMinSDAndRL() const{
+	std::cout << "MinSD : " << fMinSD << " : MaxSD : " << fMaxSD << std::endl;
+	std::cout << "MinRL : " << fMinRL << " : MaxRL : " << fMaxRL << std::endl;
+}
+
+void RunHelper::SetMaxMinSDAndRL(){
+	Tomography::evolution::Voxelator::instance()->SetMaxMinSDAndRL();
+	fMaxSD = Tomography::evolution::Voxelator::instance()->GetMaxSD();
+	fMinSD = Tomography::evolution::Voxelator::instance()->GetMinSD();
+	fMaxRL = Tomography::evolution::Voxelator::instance()->GetMaxRL();
+	fMinRL = Tomography::evolution::Voxelator::instance()->GetMinRL();
 }
 
 void RunHelper::FillSDVector(){
@@ -119,6 +135,8 @@ void RunHelper::FillPocaVector(){
 #ifdef STORE
 void RunHelper::Store(){
 	Tomography::evolution::Voxelator *vox = Tomography::evolution::Voxelator::instance();
+	vox->FillSDAndRLHist();
+
 	TFile flVox((fFileType+".root").c_str(),"recreate");
 	vox->Insert(fPocaPtVector); //Voxelized Poca Ready
 	std::ofstream voxTrack;
@@ -141,6 +159,10 @@ void RunHelper::Store(){
 
 	vox->GetVoxelIn1D()->Write();
 	vox->GetVoxelIn1DCount()->Write();
+	vox->GetSDInVoxelsHist()->Write();
+	vox->GetRLInVoxelsHist()->Draw("COLZ");
+	vox->GetRLInVoxelsHist()->Write();
+
 
 	#ifdef STORE_SLICE
 	std::set<Tomography::ObjectChecker> histSet = vox->GetObjectChecker().GetSet();
