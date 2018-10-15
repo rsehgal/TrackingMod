@@ -59,7 +59,7 @@ DetectorMapping::DetectorMapping(std::string filename){
 void DetectorMapping::ReadMapping(){
 	//std::cout<<"FileName from ReadMapping : " << fileName << std::endl;
 	std::ifstream in(fileName);
-	int count = -4 ;
+	int count = -6 ;
 	int detCounter = 0;
 	while(1){
 
@@ -69,7 +69,22 @@ void DetectorMapping::ReadMapping(){
 		int module = 0;
 		int channelStart = 31;
 		double zCoordinate = 0.;
-		
+
+		//reading NumOfStripsInEachPlane;
+		if(count == -6){
+			count++;
+			in >> fStartStripNumOfEachDetectorString >> fStartStripNumOfEachDetector;
+			continue;
+		}
+
+
+		//reading NumOfStripsInEachPlane;
+		if(count == -5){
+			count++;
+			in >> fNumOfStripsInEachPlaneString >> fNumOfStripsInEachPlane;
+			continue;
+		}
+
 		//reading WorldHalfLength;
 		if(count == -4){
 			count++;

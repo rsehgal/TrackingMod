@@ -85,8 +85,11 @@ G4VPhysicalVolume* MyDetectorConstruction::Construct(){
  G4Material *Si=nist->FindOrBuildMaterial("G4_AIR");
 //  G4LogicalVolume *planeLogical = GetBlock("planeDeltaE",2.5*cm,2.5*cm,0.0025*cm,Si,16,0.0025*cm,1);
 
-  G4LogicalVolume *planeE1Logical = GetBlock("planeE1",50*cm,50*cm,0.5*cm,Si,32,0.5*cm,1);
-  G4LogicalVolume *planeE2Logical = GetBlock("planeE2",50*cm,50*cm,0.5*cm,Si,32,0.5*cm,2);
+ Tomography::DetectorMapping *detectorMap = Tomography::DetectorMapping::create("testMapping.txt");
+ int numberOfStripsInEachPlane = detectorMap->GetNumberOfStripsInEachPlane();
+
+  G4LogicalVolume *planeE1Logical = GetBlock("planeE1",50*cm,50*cm,0.5*cm,Si,numberOfStripsInEachPlane,0.5*cm,1);
+  G4LogicalVolume *planeE2Logical = GetBlock("planeE2",50*cm,50*cm,0.5*cm,Si,numberOfStripsInEachPlane,0.5*cm,2);
   G4LogicalVolume *planeE = CreateEBlock(planeE1Logical, planeE2Logical, 1.*cm, Si);
 
 /*for(int k=0; k < 8 ; k++){
@@ -103,7 +106,7 @@ if(k==0 || k==3 || k==4 || k==7)
                            checkOverlaps);
 }
 */
-  Tomography::DetectorMapping *detectorMap = Tomography::DetectorMapping::create("testMapping.txt");
+  //Tomography::DetectorMapping *detectorMap = Tomography::DetectorMapping::create("testMapping.txt");
   // std::vector<std::string> detectorNamesVector = detectorMap->GetDetectorNamesVector();
   // std::vector<int> startChannelVector = detectorMap->GetStartingChannelVector();
   // std::vector<int> moduleVector = detectorMap->GetModuleVector();

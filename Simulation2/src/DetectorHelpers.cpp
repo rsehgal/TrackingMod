@@ -43,7 +43,7 @@ G4LogicalVolume* DetectorHelpers::GetBlock(std::string name,double halfX,double 
 	  //stripNum = 32;
       stripNum = start;
   else
-	  stripNum = 64;
+	  stripNum = start + numOfStrips;
   for(int i = 0 ; i < numOfStrips ; i++){
 
         G4ThreeVector temp(0.,0.,0.);

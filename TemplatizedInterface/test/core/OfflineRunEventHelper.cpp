@@ -26,8 +26,8 @@ int main(){
 
 
 	{
-		Tomography::EventHelper u("TrackSampledFitted.txt","EventHelperTrackSampledFitted.txt");
-		Tomography::RunHelper r("SampledFitted");
+		//Tomography::EventHelper u("TrackSampledFitted.txt","EventHelperTrackSampledFitted.txt");
+		//Tomography::RunHelper r("SampledFitted");
 	}
 
 	return 0;
