@@ -29,6 +29,10 @@ struct Detector{
 class DetectorMapping{
 	
 	private:
+		std::string fNumOfStripsInEachPlaneString;
+		int fNumOfStripsInEachPlane;
+		std::string fStartStripNumOfEachDetectorString;
+		int fStartStripNumOfEachDetector;
 	    std::string fWorldSizeString;
 	    double fWorldHalfLength;
 		std::string fGunString;
@@ -97,6 +101,12 @@ class DetectorMapping{
 
 		//Get WorldHalfLength
 		double GetWorldHalfLength() const {return fWorldHalfLength;}
+
+		//Get NumberOfStripsInEachPlane
+		int GetNumberOfStripsInEachPlane() const {return fNumOfStripsInEachPlane;}
+
+		//Get StartStripNumOfEachDetector
+		int GetStartStripNumOfEachDetector() const {return fStartStripNumOfEachDetector;}
 
 		int GetNumOfDetectors(std::string type);
 		std::vector<std::string> GetDetectorNamesVector(std::string type);

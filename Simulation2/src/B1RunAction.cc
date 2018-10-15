@@ -150,11 +150,14 @@ void B1RunAction::BeginOfRunAction(const G4Run*)
   std::vector<Tomography::Mapping::Detector*> detectorVector = detectorMap->GetDetectorVector();
   //std::vector<double> zcoordinateVector = detectorMap->GetZCoordinateVector();
 
-  
+  //Reading numberOfStripsInEachPlane from DetectorMapping
+  int numberOfStripsInEachPlane = detectorMap->GetNumberOfStripsInEachPlane();
+  int startStripNum = detectorMap->GetStartStripNumOfEachDetector();
   //for(int i = 0 ; i < moduleVector.size()-1; i++){
   for(int i = 0 ; i < detectorVector.size()-1; i++){
 
-    for(int brNum = 32 ; brNum < 96 ; brNum++){
+    //for(int brNum = 32 ; brNum < 96 ; brNum++){
+	  for(int brNum = startStripNum ; brNum < (startStripNum + 2*numberOfStripsInEachPlane) ; brNum++){
       counter++;
 
       //Tracking::Channel *br = new Tracking::Channel();
