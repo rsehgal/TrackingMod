@@ -1,5 +1,5 @@
 startStripNumOfEachDetector 32
-numberOfStringInEachPlane 64
+numberOfStringInEachPlane 32 
 worldSizeHalfLength 3000
 gunZ_In_mm 2500 
 numOfEvents 1000
