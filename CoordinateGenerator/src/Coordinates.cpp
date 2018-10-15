@@ -1,6 +1,7 @@
 #include "Coordinates.h"
 #include "Randomize.hh"
 #include <math.h>
+#include "DetectorMapping.h"
 typedef Tomography::Properties Detector;
 namespace Tomography {
 
@@ -178,10 +179,13 @@ Vector3D<double> Coordinates::GetStripCoordinate(double x, double y, double z) {
 
   // temp.SetX(floor((x + (double)500) / 31.25));
   // temp.SetY(floor((y + (double)500) / 31.25));
-  double stripWidth = 31.25;
+  //double stripWidth = 31.25;
+	double stripWidth =
+			Tomography::DetectorMapping::instance()->GetDetectorVector()[3]->sDetectorLength
+					/ Tomography::DetectorMapping::instance()->GetNumberOfStripsInEachPlane();
   double halfStripWidth = stripWidth/2.;
-  temp.SetX(-500 + x*stripWidth + halfStripWidth);
-  temp.SetY(-500 + y*stripWidth + halfStripWidth);
+  temp.SetX(-Tomography::DetectorMapping::instance()->GetDetectorVector()[3]->sDetectorLength/2. + x*stripWidth + halfStripWidth);
+  temp.SetY(-Tomography::DetectorMapping::instance()->GetDetectorVector()[3]->sDetectorLength/2. + y*stripWidth + halfStripWidth);
   temp.SetZ(z);
 
   return temp;
