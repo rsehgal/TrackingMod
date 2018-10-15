@@ -209,6 +209,7 @@ G4VPhysicalVolume *brickLanePhy = new G4PVPlacement(0,
                            checkOverlaps);
 */
 
+/*
     G4Material *Pb=nist->FindOrBuildMaterial("G4_Pb");
     G4Box *leadBox = new G4Box("LeadBox",10*cm,10*cm,10*cm);
     G4LogicalVolume *logicalLeadBox = new G4LogicalVolume(leadBox,Pb,"LogicalLeadBox");
@@ -220,6 +221,102 @@ G4VPhysicalVolume *brickLanePhy = new G4PVPlacement(0,
                             false,
                             0,
                             checkOverlaps);  
+*/
+
+    G4Material *Pb=nist->FindOrBuildMaterial("G4_Pb");
+    G4Material *Fe=nist->FindOrBuildMaterial("G4_Fe");
+    G4Material *Al=nist->FindOrBuildMaterial("G4_Al");
+    G4Material *U=nist->FindOrBuildMaterial("G4_U");
+
+#if(1)
+
+    G4Box *target = new G4Box("Target",5*cm,5*cm,5*cm);
+
+  G4LogicalVolume *fLogicTargetPb = new G4LogicalVolume(target,Pb,"LogicalTargetBlock");
+  G4LogicalVolume *fLogicTargetFe = new G4LogicalVolume(target,Fe,"LogicalTargetFeBlock");
+  G4LogicalVolume *fLogicTargetAl = new G4LogicalVolume(target,Al,"LogicalTargetAlBlock");
+  G4LogicalVolume *fLogicTargetU = new G4LogicalVolume(target,U,"LogicalTargetUBlock");
+
+  //G4Box *targetAl = new G4Box("Target",7*cm,7*cm,18*cm);
+  G4Box *subtargetU = new G4Box("Target",3*cm,3*cm,7*cm);
+  //G4LogicalVolume *fLogicTargetAl = new G4LogicalVolume(targetAl,Al,"LogicalTargetAlBlock");
+
+
+  G4LogicalVolume *fLogicSubTargetU = new G4LogicalVolume(subtargetU,U,"LogicalSubTargetUBlock");
+
+/*G4VPhysicalVolume *phyTargetBlock = new G4PVPlacement(0,
+                            //G4ThreeVector(),
+                            G4ThreeVector(25*cm,15.*cm,13.5*cm),
+                           fLogicTarget,
+                            "TargetPhysical",
+                            world->GetLogicalVolume(),//logicWorld,
+                            false,
+                            0,
+                            checkOverlaps);
+*/
+
+  G4VPhysicalVolume *phyTargetBlock = new G4PVPlacement(0,
+                            G4ThreeVector(15*cm,-15*cm,0*cm),//-39*cm),
+                           fLogicTargetPb,
+                            "TargetPhysical_Pb",
+                            logicWorld,
+                            false,
+                            0,
+                            checkOverlaps);
+
+  G4VPhysicalVolume *phyTargetBlock2 = new G4PVPlacement(0,
+                              G4ThreeVector(-15*cm,15*cm,0*cm),//-39*cm),
+                             fLogicTargetU,
+                              "TargetPhysical_U",
+                             logicWorld,
+                              false,
+                              0,
+                              checkOverlaps);
+
+  G4VPhysicalVolume *phyTargetBlock3 = new G4PVPlacement(0,
+                                G4ThreeVector(-15*cm,-15*cm,0*cm),//-39*cm),
+                               fLogicTargetAl,
+                                "TargetPhysical_Al",
+                               logicWorld,
+                                false,
+                                0,
+                                checkOverlaps);
+
+  G4VPhysicalVolume *phyTargetBlock4 = new G4PVPlacement(0,
+                                 G4ThreeVector(25*cm,25*cm,0*cm),//-39*cm),
+                                 fLogicTargetFe,
+                                  "TargetPhysical_Fe",
+                                  logicWorld,
+                                  false,
+                                  0,
+                                  checkOverlaps);
+
+/*
+G4VPhysicalVolume *phySubTargetBlockU = new G4PVPlacement(0,
+                               G4ThreeVector(0*cm,0*cm,0*cm),//-39*cm),
+								fLogicSubTargetU,
+                                  "TargetSubPhysical_U",
+                                  fLogicTargetAl,
+
+                                  false,
+                                  0,
+                                  checkOverlaps);
+
+
+  G4VPhysicalVolume *phySubTargetBlockU2 = new G4PVPlacement(0,
+                                   G4ThreeVector(0*cm,0*cm,0*cm),//-39*cm),
+  								fLogicSubTargetU,
+                                    "TargetSubPhysical_U",
+                                    //world->GetLogicalVolume(),//logicWorld,
+  								  fLogicTarget,
+
+                                    false,
+                                    0,
+                                    checkOverlaps);
+*/
+#endif
+
+
 
 
   G4GDMLParser parser;

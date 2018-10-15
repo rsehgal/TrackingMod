@@ -11,10 +11,11 @@
 
 
 int main(){
-	Tomography::evolution::Voxelator::Create(50*cm,50*cm,50*cm,5*cm,5*cm,5*cm);
+	Tomography::evolution::Voxelator::Create(50*cm,50*cm,50*cm,2.5*cm,2.5*cm,2.5*cm);
 	{
 		Tomography::EventHelper u("TrackExact.txt","EventHelperTrackExact.txt");
 		Tomography::RunHelper r("Exact");
+		r.PrintMaxMinSDAndRL();
 	}
 
 

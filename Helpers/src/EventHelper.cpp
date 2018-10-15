@@ -48,6 +48,18 @@ EventHelper::EventHelper(Track incoming, Track outgoing, std::string filename) :
 	if(fScatteringAngle!=0.){
 	Tomography::Files::instance()->Write(filename,4, fPocaPt.x(), fPocaPt.y(),
 																   fPocaPt.z(), fPocaPt.GetColor());
+
+	//Storing InfoForMLEM, required by TUSHAR
+	Tomography::Track ref(Tracking::Vector3D<double>(0.,0.,0.),Tracking::Vector3D<double>(0.,0.,-1.));
+	double inAngle = CommonFunc::Functions::instance()->GetAngleInRadian(incoming,ref);
+	double outAngle = CommonFunc::Functions::instance()->GetAngleInRadian(outgoing,ref);
+	Tomography::Files::instance()->Write("InfoForMLEM.txt",12,
+										 incoming.GetP2().x(),incoming.GetP2().y(),incoming.GetP2().z(),
+										 inAngle,
+										 outgoing.GetP1().x(),outgoing.GetP1().y(),outgoing.GetP1().z(),
+										 outAngle,
+										 fPocaPt.x(), fPocaPt.y(),fPocaPt.z(),
+										 fScatteringAngle);
 	}
 }
 
@@ -64,6 +76,11 @@ EventHelper::EventHelper(std::string fileToRead, std::string fileToWrite){
 
 	//Opening the file to store PocaPt
 	Tomography::Files::instance()->Open(fileToWrite,Tomography::operation::write);
+
+	//Opening the file to store P2 of incoming track, P1 of outgoing track, PoCA Point
+	//and scattering angle. Required by TUSHAR, may be useful information for MLEM.
+	std::string filename = CommonFunc::Functions::instance()->GetFileName(fileToRead);
+	Tomography::Files::instance()->Open(filename+"-InfoForMLEM.txt",Tomography::operation::write);
 
 
 	//Resetting Voxel in the beginning of event loop
@@ -89,6 +106,7 @@ EventHelper::EventHelper(std::string fileToRead, std::string fileToWrite){
 	}
 
 	Tomography::Files::instance()->Close(fileToWrite);
+	Tomography::Files::instance()->Close("InfoForMLEM.txt");
 	infile.close();
 }
 

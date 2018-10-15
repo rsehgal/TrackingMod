@@ -20,6 +20,7 @@
 #include <TF1.h>
 #include "base/Global.h"
 #include "TColor.h"
+#include "TStyle.h"
 using Tracking::Vector3D;
 
 namespace CommonFunc{
@@ -34,12 +35,20 @@ class Functions{
 	Functions(){}
 public:
 
+static std::string GetFileName(std::string fullFilename){
+	int length = fullFilename.length();
+	std::string filename = fullFilename.substr(0,length-4);
+	return filename;
+}
+
 //Converting the double value corresponds to
 //Scatering value or RL or SD to proper color value from
 //ROOT Color palette. Giving good results
 static double CreateColorVal(double color){
 		 TColor::SetPalette(1, 0);
-		 const Int_t nCol = 150;//TColor::GetNumberOfColors();
+		 //gStyle->SetPalette(kDarkBodyRadiator);
+		//gStyle->SetPalette(kTemperatureMap);
+		 const Int_t nCol = 100;//TColor::GetNumberOfColors();
 		 float min = 0, max = 50.; // your range of values
 		 double colorVal = TColor::GetColorPalette((color - min)/(max-min) * nCol);
 		 return colorVal;
