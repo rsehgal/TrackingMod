@@ -8,6 +8,7 @@
 #include "Properties.h"
 #include "SetupManager.h"
 #include "ScintillatorPlane.h"
+#include "DetectorMapping.h"
 
 typedef Tomography::Properties Detector;
 using namespace Tracking;
@@ -92,7 +93,10 @@ public:
   }
 
   int GetStripNum( double val){
-    double stripLength = 1000., stripWidth = 31.25;
+    double stripLength = 1000.;
+    double stripWidth =
+    			Tomography::DetectorMapping::instance()->GetDetectorVector()[3]->sDetectorLength
+    					/ Tomography::DetectorMapping::instance()->GetNumberOfStripsInEachPlane();
     return (val+ stripLength/2)/stripWidth;
   }
 };

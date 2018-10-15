@@ -235,7 +235,9 @@ if(position.size() == (2*numOfDetectors+2))
 
   //Try to get fitted Hit point vector from pixel center points
   Tomography::Fit2DLinear fitter;
+  //std::vector<Tracking::Vector3D<double>> fittedIncomingHitPointVector = fitter.GetFittedTrack(incomingHitPtVector); //incomingPixelHitPtVector);
   std::vector<Tracking::Vector3D<double>> fittedIncomingHitPointVector = fitter.GetFittedTrack(incomingPixelHitPtVector);
+  //std::vector<Tracking::Vector3D<double>> fittedOutgoingHitPointVector = fitter.GetFittedTrack(outgoingHitPtVector); //outgoingPixelHitPtVector);
   std::vector<Tracking::Vector3D<double>> fittedOutgoingHitPointVector = fitter.GetFittedTrack(outgoingPixelHitPtVector);
 
   //Using sampling from Pixel and getting a Track from TrackFinder

@@ -15,9 +15,12 @@ struct Detector{
 	double sZCoordinate;
 	int sStartingChannel;
 	int sModule;
+	double sDetectorLength;
+	double sDetectorBreadth;
 
 	Detector(std::string detName,  double zCoord, 
 			int  startChannel, int module, std::string detType = "GLASS"):
+			sDetectorLength(1000.),sDetectorBreadth(1000.),
 			sDetectorName(detName),sDetectorType(detType),sZCoordinate(zCoord)
 			,sStartingChannel(startChannel), sModule(module){}
 
