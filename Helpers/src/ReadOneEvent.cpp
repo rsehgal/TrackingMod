@@ -30,6 +30,20 @@ ReadOneEvent::ReadOneEvent(std::string filename){
 	fFileName = filename;
 	//std::vector<std::string> detNamesVector = detectorMap->GetDetectorNamesVector("GLASS");
 	fNumOfDetectors = detectorMap->GetNumOfDetectors("GLASS");
+
+}
+
+void ReadOneEvent::Fill(){
+	fActualHitPointVector.clear();
+	fFittedHitPointVector.clear();
+	Vec_t actHitPt, fittedHitPt;
+	for (int i = 0; i < fNumOfDetectors; i++) {
+		Files::instance()->FillHit(fFileName,actHitPt,fittedHitPt);
+		fActualHitPointVector.push_back(actHitPt);
+		fFittedHitPointVector.push_back(fittedHitPt);
+
+	}
+
 }
 
 ReadOneEvent::ReadOneEvent(std::string filename, int numOfDetectors){

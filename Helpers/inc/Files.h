@@ -55,6 +55,10 @@ class Files{
 	static Files* fInstance;
 	std::vector<FileMap*>  fFileMapVector;
 
+	//Additional Stuff required to read one HIT
+	double fActHitX , fActHitY , fActHitZ ;
+	double fFittedHitX , fFittedHitY , fFittedHitZ ;
+
 	Files(){}
 
 public:
@@ -129,6 +133,22 @@ public:
 
 
 	void NumOfOpenedFiles(){std::cout << "Num of Opened files : " <<  fFileMapVector.size() << std::endl; }
+
+	void FillHit(std::string filename, Tracking::Vector3D<double> &actHit, Tracking::Vector3D<double> &fittedHit ){
+		FileMap* fileMap = GetFileMap(filename);
+		*(fileMap->sFileStream) >> fActHitX >> fActHitY >> fActHitZ >> fFittedHitX
+						>> fFittedHitY >> fFittedHitZ;
+		actHit.Set(fActHitX,fActHitY,fActHitZ);
+		fittedHit.Set(fFittedHitX,fFittedHitY,fFittedHitZ);
+	}
+
+	template<bool exact>
+	Tracking::Vector3D<double> ReadHit(){
+		if(exact)
+			return Tracking::Vector3D<double>(fActHitX, fActHitY, fActHitZ);
+		else
+			return Tracking::Vector3D<double>(fFittedHitX, fFittedHitY, fFittedHitZ);
+	}
 
 	template<bool exact>
 	Tracking::Vector3D<double> ReadHit(std::string filename){

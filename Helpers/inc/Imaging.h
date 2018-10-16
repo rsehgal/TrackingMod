@@ -11,7 +11,8 @@
 #include "base/Vector3D.h"
 #include "base/Global.h"
 #include "Track.h"
-#define Vec_t Vector3D<Precision>
+//#define Vec_tVector3D<Precision>
+using Vec_t = Tracking::Vector3D<Precision>;
 using Tomography::Track;
 namespace Tracking{
 
