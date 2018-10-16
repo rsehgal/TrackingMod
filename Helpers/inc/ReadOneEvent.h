@@ -21,6 +21,11 @@ class ReadOneEvent {
 	std::string fFileName;
 	int fNumOfDetectors;
 	std::vector<Vec_t> fHitPointVector;
+
+	//Two new vector to hold Actual and Fitted hit point Vectors
+	std::vector<Vec_t> fActualHitPointVector;
+	std::vector<Vec_t> fFittedHitPointVector;
+
 public:
 	ReadOneEvent();
 	ReadOneEvent(std::string filename);
@@ -31,11 +36,17 @@ public:
 		fHitPointVector.clear();
 			for(int i = 0 ; i < fNumOfDetectors ; i++){
 				Files *filePtr = Files::instance();
+				//filePtr->FillHit(fFileName);
+				//fHitPointVector.push_back(filePtr->ReadHit<exact>());
 				fHitPointVector.push_back(filePtr->ReadHit<exact>(fFileName));
 
 			}
 
 	}
+
+	void Fill();
+	std::vector<Vec_t> GetActualHitPointVector() const {return fActualHitPointVector;}
+	std::vector<Vec_t> GetFittedHitPointVector() const {return fFittedHitPointVector;}
 
 	//Some Required Getters
 	std::vector<Vec_t> GetHitPointVector() const {

@@ -41,6 +41,12 @@ static std::string GetFileName(std::string fullFilename){
 	return filename;
 }
 
+Tomography::Track CreateTrackFromHitPointVector(std::vector<Tracking::Vector3D<double>> hitPointVector){
+	for(int i = 0 ; i < hitPointVector.size() ; i++){
+		return Tomography::Track(hitPointVector[hitPointVector.size()-1],hitPointVector[0]);
+	}
+}
+
 //Converting the double value corresponds to
 //Scatering value or RL or SD to proper color value from
 //ROOT Color palette. Giving good results

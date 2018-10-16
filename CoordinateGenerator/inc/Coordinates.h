@@ -64,7 +64,8 @@ public:
   // void CoGenerator(std::vector <Detector*> det,int N1=0);
   void CoGenerator();
   Vector3D<double> GetCoordinate(int detector); // Enter value between 0 < detector < total detectors
-  Vector3D<double> GetStripCoordinate(double x, double y, double z);
+  Vector3D<double> GetStripCoordinate(double x, double y, double z = 0. );
+  //Vector3D<double> GetStripCoordinate(double x, double y);
   Vector3D<double> GetStripCoordinate(Detector *det, double x, double y, double z);
   void SetStrips(double x, double y, double z);
   void SetStripCoordinates();
