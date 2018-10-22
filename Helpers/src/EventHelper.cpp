@@ -31,7 +31,7 @@ EventHelper::EventHelper(Track incoming, Track outgoing){
 	//std::cout<<"ScattAngle from EventHelper : " << fScatteringAngle << std::endl;
 	if(fScatteringAngle!=0.){
 		CalculatePOCA();
-		CalculateVoxel();
+		CalculateVoxel_V2();
 	}
 
 
@@ -53,6 +53,7 @@ EventHelper::EventHelper(Track incoming, Track outgoing, std::string filename) :
 	Tomography::Track ref(Tracking::Vector3D<double>(0.,0.,0.),Tracking::Vector3D<double>(0.,0.,-1.));
 	double inAngle = CommonFunc::Functions::instance()->GetAngleInRadian(incoming,ref);
 	double outAngle = CommonFunc::Functions::instance()->GetAngleInRadian(outgoing,ref);
+/*
 	Tomography::Files::instance()->Write("InfoForMLEM.txt",12,
 										 incoming.GetP2().x(),incoming.GetP2().y(),incoming.GetP2().z(),
 										 inAngle,
@@ -60,6 +61,7 @@ EventHelper::EventHelper(Track incoming, Track outgoing, std::string filename) :
 										 outAngle,
 										 fPocaPt.x(), fPocaPt.y(),fPocaPt.z(),
 										 fScatteringAngle);
+*/
 	}
 }
 
@@ -84,7 +86,9 @@ EventHelper::EventHelper(std::string fileToRead, std::string fileToWrite){
 
 
 	//Resetting Voxel in the beginning of event loop
-    Voxel::Reset();
+    //Voxel::Reset();
+	//Resetting Voxelator in the beginning of event loop
+	Tomography::evolution::Voxelator::instance()->Reset();
 
 	while(!infile.eof()){
 		infile >> incomingTrackP1X >> incomingTrackP1Y >> incomingTrackP1Z
@@ -106,7 +110,7 @@ EventHelper::EventHelper(std::string fileToRead, std::string fileToWrite){
 	}
 
 	Tomography::Files::instance()->Close(fileToWrite);
-	Tomography::Files::instance()->Close("InfoForMLEM.txt");
+	//Tomography::Files::instance()->Close("InfoForMLEM.txt");
 	infile.close();
 }
 
@@ -181,6 +185,23 @@ void EventHelper::CalculateVoxel(){
 
 #endif
 */
+}
+
+void EventHelper::CalculateVoxel_V2(){
+	if(Tomography::evolution::Voxelator::instance()->IsGenuine(fPocaPt)){
+	int voxelNum = GetVoxelNum();
+	int voxNum = Tomography::evolution::Voxelator::instance()->IfVoxelExist(voxelNum);
+    	if(voxNum < 0.){
+			//fVoxel = new Voxel(fPocaPt,voxelNum);
+    		//Tomography::evolution::Voxelator::instance()->Insert(fPocaPt,voxelNum);
+    		Tomography::evolution::Voxelator::instance()->GetVoxelVector().push_back(new Voxel(fPocaPt,voxelNum));
+    		Tomography::evolution::Voxelator::instance()->GetVisitedVoxelNumVector().push_back(voxelNum);
+		}else{
+			//fVoxel = Voxel::GetVoxelVector()[voxNum];
+			Tomography::evolution::Voxelator::instance()->GetVoxelVector()[voxNum]->Insert(fPocaPt);
+			//fVox->Insert(fPocaPt,voxelNum);
+		}
+	}
 }
 
 #ifdef FIND_CANDIDATE_VOXEL

@@ -21,6 +21,11 @@ private:
 	double fC;
 	std::vector<double> fParams;
 
+#ifdef USE_ROOT_FITTING
+	double fSlope;
+	double fIntercept;
+#endif
+
 	void FillParams();
 	double SumX(std::vector<double> vect){
 		return GetSum(vect);
@@ -60,6 +65,7 @@ public:
 	void PrintFitModel();
 
 	void Fit(std::vector<double> vectX, std::vector<double> vectY);
+	void FitROOT(std::vector<double> vectX, std::vector<double> vectY);
 
 
 	//-------------- Specific to our Application --------------------
@@ -78,6 +84,8 @@ public:
 	//Trying to get fitted track
 	std::vector<Tracking::Vector3D<double>> GetFittedTrack(std::vector<Tracking::Vector3D<double>> hitPointVect);
 	std::vector<double> GetFittedValue(std::vector<double> zVect);
+
+	std::vector<Tracking::Vector3D<double>> EstimatePreFitter(std::vector<Tracking::Vector3D<double>> hitPointVect);
 
 
 };

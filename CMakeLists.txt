@@ -78,6 +78,17 @@ option(FIND_CANDIDATE_VOXEL "Does the calculation to find Candidate Voxels that 
 option(GEANT4 "Enable Geant4 to do simulation" OFF)
 option(SHOWPLOTS "Show various plots, Useful when operating in Interactive mode" OFF)
 option(MYSQL "Include MYSQL" OFF)
+option(USE_ROOT_FITTING "Use Root Fitting" OFF)
+option(ROBUST_FIT "Use ROBUST Fitting" OFF)
+
+if(USE_ROOT_FITTING)
+add_definitions(-DUSE_ROOT_FITTING)
+endif(USE_ROOT_FITTING)
+
+if(ROBUST_FIT)
+add_definitions(-DROBUST_FIT)
+endif(ROBUST_FIT)
+
 
 if(SHOWPLOTS)
 add_definitions(-DINTERACTIVE)

@@ -57,6 +57,11 @@ private:
   Vector3D<double> fHitPtInput;
   Vector3D<double> fHitPtOutput;
 
+
+  //Some data member taken from Voxe. This is the correct place for them
+  std::vector<int> fVisitedVoxelNumVector ;
+  std::vector<Voxel*> fVoxelVector ;
+
   static Voxelator *s_instance;
   Voxelator();
   Voxelator(double voxelizedVolHalfX,double voxelizedVolHalfY, double voxelizedVolHalfZ,
@@ -106,9 +111,20 @@ public:
 
 
   //Function to return the std::vector of filled Voxels
-  std::vector<Voxel*> GetVoxelVector() const {
-	  return Voxel::GetVoxelVector();
+ std::vector<Voxel*> GetVoxelVector() const {
+	  //return Voxel::GetVoxelVector();
+	  return fVoxelVector;
   }
+
+ std::vector<int> GetVisitedVoxelNumVector() const {
+ 	  return fVisitedVoxelNumVector;
+   }
+
+
+  //Some new functions taken from Voxel. This is correct place for them
+  int IfVoxelExist(int voxelNum);
+  void Insert(Tracking::Vector3D<double>, int voxelNum, bool useEnclosingVoxels = false , double scatteringDensity = 0.);
+  void Reset();
 
 
 
