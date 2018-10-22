@@ -7,6 +7,32 @@
 namespace Tomography {
 namespace evolution{
 Voxelator *Voxelator::s_instance = 0;
+
+int Voxelator::IfVoxelExist(int voxelNum){
+//std::cout<< "VoxelVectorSize : " << run->fVoxelVector.size() << std::endl;
+	if(fVisitedVoxelNumVector.size()){
+		for(int i = 0 ; i < fVisitedVoxelNumVector.size() ; i++){
+			if(fVisitedVoxelNumVector[i] == voxelNum){
+				//std::cout<<"Voxel Hit.........Found previously created Voxel... :  "  << fVisitedVoxelNumVector[i] << std::endl;
+				//return fVisitedVoxelNumVector[i];
+				return i;
+			}
+		}
+		return -1;
+	}else{
+		return -1;
+	}
+}
+
+void Voxelator::Insert(Tracking::Vector3D<double>, int voxelNum, bool useEnclosingVoxels, double scatteringDensity){
+
+}
+
+void Voxelator::Reset(){
+	fVisitedVoxelNumVector.clear();
+	fVoxelVector.clear();
+}
+
 Voxelator* Voxelator::instance(double voxelizedVolHalfX,double voxelizedVolHalfY, double voxelizedVolHalfZ,
 			 double voxelX,double voxelY, double voxelZ) {
         if (!s_instance)

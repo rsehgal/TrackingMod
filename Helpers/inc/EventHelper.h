@@ -55,6 +55,7 @@ public:
 	void CalculatePOCA();
 	void CalculateScatterAngle();
 	void CalculateVoxel();
+	void CalculateVoxel_V2();
 	int GetVoxelNum();
 	int GetVoxelNum(Tracking::Vector3D<double> pt);
 	void CalculateCandidateVoxels();

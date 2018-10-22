@@ -91,6 +91,12 @@ void Voxel::Insert(Tracking::Vector3D<double> pocaPt, int voxelNum, bool useEncl
 }
 
 
+void Voxel::Insert(Tracking::Vector3D<double> point){
+	this->fVectPointsInVoxel.push_back(point);
+	this->fPointCount = fVectPointsInVoxel.size();
+	this->fOutlier = fPointCount < fMinPointsInVoxel;
+}
+
 int Voxel::IfVoxelExist(int voxelNum){
 //std::cout<< "VoxelVectorSize : " << run->fVoxelVector.size() << std::endl;
 	if(fVisitedVoxelNumVector.size()){

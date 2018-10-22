@@ -236,6 +236,7 @@ if(position.size() == (2*numOfDetectors+2))
   //Try to get fitted Hit point vector from pixel center points
   Tomography::Fit2DLinear fitter;
   //std::vector<Tracking::Vector3D<double>> fittedIncomingHitPointVector = fitter.GetFittedTrack(incomingHitPtVector); //incomingPixelHitPtVector);
+  //std::vector<Tracking::Vector3D<double>> fittedIncomingHitPointVector = fitter.GetFittedTrack(fitter.EstimatePreFitter(incomingPixelHitPtVector));
   std::vector<Tracking::Vector3D<double>> fittedIncomingHitPointVector = fitter.GetFittedTrack(incomingPixelHitPtVector);
   //std::vector<Tracking::Vector3D<double>> fittedOutgoingHitPointVector = fitter.GetFittedTrack(outgoingHitPtVector); //outgoingPixelHitPtVector);
   std::vector<Tracking::Vector3D<double>> fittedOutgoingHitPointVector = fitter.GetFittedTrack(outgoingPixelHitPtVector);
@@ -270,7 +271,12 @@ if(position.size() == (2*numOfDetectors+2))
    }
 
 
-
+  bool goahead = true;
+  for(int j = 0 ; j < fittedIncomingHitPointVector.size() ; j++){
+	goahead &= (fittedIncomingHitPointVector[j].GetColor() != -100000) ;
+  }
+  if(goahead)
+  {
   for(int i = 0 ; i < incomingHitPtVector.size() ; i++){
   Tomography::Files::instance()->Write("ActualAndFittedHits.txt",6, 
                                        incomingHitPtVector[i].x(), 
@@ -281,7 +287,13 @@ if(position.size() == (2*numOfDetectors+2))
                                        fittedIncomingHitPointVector[i].z()
                                        );
  }
-
+ }
+  goahead = true;
+    for(int j = 0 ; j < fittedOutgoingHitPointVector.size() ; j++){
+  	goahead &= (fittedOutgoingHitPointVector[j].GetColor() != -100000) ;
+    }
+    if(goahead)
+    {
   for(int i = 0 ; i < outgoingHitPtVector.size() ; i++){
   Tomography::Files::instance()->Write("ActualAndFittedHits.txt",6, 
                                        outgoingHitPtVector[i].x(), 
@@ -292,6 +304,7 @@ if(position.size() == (2*numOfDetectors+2))
                                        fittedOutgoingHitPointVector[i].z()
                                        );
  }
+    }
 
  for(int i = 0 ; i < incomingHitPtVector.size() ; i++){
  Tomography::Files::instance()->Write("ActualHitAndPixelCenter.txt",6, 
