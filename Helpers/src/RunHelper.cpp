@@ -33,7 +33,8 @@ RunHelper::RunHelper() {
 
     //WARNING : DO NOT ALTER THE BELOW MENTIONED SEQUENCE
     fFileType = "";
-    fVoxelVector = Voxel::GetVoxelVector();
+    //fVoxelVector = Voxel::GetVoxelVector();
+    fVoxelVector = Tomography::evolution::Voxelator::instance()->GetVoxelVector();
     FillPocaVector();
     FillScatteringAngleVector();
 //    CalcSDOfEachVoxel();
@@ -54,12 +55,13 @@ RunHelper::RunHelper(std::string fileType) {
      */
 
 	//Resetting RunHelper
-	Reset();
+	//Reset();
 
     //WARNING : DO NOT ALTER THE BELOW MENTIONED SEQUENCE
     fFileType = fileType;
     //fVoxelVector = Voxel::GetVoxelVector();
     fVoxelVector = Tomography::evolution::Voxelator::instance()->GetVoxelVector();
+    std::cout << "Hello : VoxelVectorSize :  " << fVoxelVector.size() << std::endl;
     FillPocaVector();
     FillScatteringAngleVector();
     CalcSDOfEachVoxel();
@@ -70,7 +72,9 @@ RunHelper::RunHelper(std::string fileType) {
 
 
     WriteToFile();
-     
+
+    //Resetting RunHelper in the help, This will do the resetting process for next processing
+    Reset();
 
 }
 
@@ -127,8 +131,10 @@ void RunHelper::FillPocaVector(){
     for(int i = 0 ; i < fVoxelVector.size() ; i++){
 
     	std::vector<Tracking::Vector3D<double>> pocaPointsVector = fVoxelVector[i]->GetPocaPointsVector();
+        //std::vector<Tracking::Vector3D<double>*> pocaPointsVector = fVoxelVector[i]->GetPocaPointsVector();
     	        for(int j = 0 ; j  < pocaPointsVector.size() ; j++){
     	            Insert(pocaPointsVector[j]);
+    	        	//Insert(Tracking::Vector3D<double>(pocaPointsVector[j]->x(),pocaPointsVector[j]->y(),pocaPointsVector[j]->z()));
     	}
     }
 }

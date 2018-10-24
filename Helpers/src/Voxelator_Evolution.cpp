@@ -3,6 +3,7 @@
 #include "Delta.h"
 #include "CommonFunc.h"
 #include <cmath>
+#include "VoxelV2.h"
 
 namespace Tomography {
 namespace evolution{
@@ -24,11 +25,22 @@ int Voxelator::IfVoxelExist(int voxelNum){
 	}
 }
 
-void Voxelator::Insert(Tracking::Vector3D<double>, int voxelNum, bool useEnclosingVoxels, double scatteringDensity){
-
+void Voxelator::Insert(Tracking::Vector3D<double> point, int voxelNum, bool useEnclosingVoxels, double scatteringDensity){
+	fVoxelVector.push_back(new Voxel_V2(point,voxelNum));
+		fVisitedVoxelNumVector.push_back(voxelNum);
 }
 
+/*
+void Voxelator::Insert(Tracking::Vector3D<double>, int voxelNum){
+	fVoxelVector.push_back(new Voxel(fPocaPt,voxelNum));
+	fVisitedVoxelNumVector.push_back(voxelNum);
+}
+*/
+
 void Voxelator::Reset(){
+	for(int i = 0 ; i < fVoxelVector.size() ; i++){
+		fVoxelVector[i]->Reset_V2();
+	}
 	fVisitedVoxelNumVector.clear();
 	fVoxelVector.clear();
 }
@@ -337,7 +349,8 @@ AverageOut();
 }
 
 void Voxelator::FillSDAndRLHist(){
-	std::vector<Voxel*> fVoxelVector = Voxel::GetVoxelVector();
+	//std::vector<Voxel*> fVoxelVector = Voxel::GetVoxelVector();
+	std::vector<Voxel_V2*> fVoxelVector = Tomography::evolution::Voxelator::instance()->GetVoxelVector();
 	for (auto &voxel : fVoxelVector) {
 		int voxelNumber = voxel->GetVoxelNum();
 		double sd = voxel->GetStandardDeviation();
@@ -354,7 +367,8 @@ void Voxelator::FillSDAndRLHist(){
 }
 
 void Voxelator::SetMaxMinSDAndRL(){
-	std::vector<Voxel*> fVoxelVector = Voxel::GetVoxelVector();
+	//std::vector<Voxel*> fVoxelVector = Voxel::GetVoxelVector();
+	std::vector<Voxel_V2*> fVoxelVector = Tomography::evolution::Voxelator::instance()->GetVoxelVector();
 	std::vector<double> sdVect, rlVect;
 	for (auto &voxel : fVoxelVector) {
 		double sd = voxel->GetStandardDeviation();
@@ -364,10 +378,12 @@ void Voxelator::SetMaxMinSDAndRL(){
 			rlVect.push_back(rl);
 		}
 	}
+	/*
 	fMaxSD = *max_element(sdVect.begin(), sdVect.end());
 	fMinSD = *min_element(sdVect.begin(), sdVect.end());
 	fMaxRL = *max_element(rlVect.begin(), rlVect.end());
 	fMinRL = *min_element(rlVect.begin(), rlVect.end());
+	*/
 }
 
 }//end of evolution namespace

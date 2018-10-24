@@ -76,7 +76,9 @@ public:
 			fColor=w;
 	}
 
-	~Vector3D(){}
+	~Vector3D(){
+		fGaussProb.clear();
+	}
 
 	TRACKING_INLINE
 	void Set(Type x, Type y, Type z){
