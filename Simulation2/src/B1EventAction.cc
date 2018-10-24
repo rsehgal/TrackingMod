@@ -71,6 +71,7 @@ std::vector<G4double> B1EventAction::energy({0.});
 std::vector<G4double> B1EventAction::vertexEnergy({0.});
 std::vector<G4ThreeVector> B1EventAction::position({G4ThreeVector(0.,0.,0.)});
 double B1EventAction::eventEnergy = -1.;
+double B1EventAction::scattererHitted = 0.;
 
 bool B1EventAction::topPlaneHit = false;
 bool B1EventAction::bottomPlaneHit = false;
@@ -124,6 +125,8 @@ void B1EventAction::BeginOfEventAction(const G4Event*)
     (int)Tracking::Global::GenRandomDet(Tomography::start, Tomography::end));}*/
 
 
+  //Setting scattererHitted to false
+  scattererHitted = 0.;
 
 
 }
@@ -398,36 +401,38 @@ if(position.size() == (2*numOfDetectors+2))
    //if(diff < 0.)
    // std::cout<<"Negative comes............" << std::endl;
    run->FillScatteringAngleVector(diff);//angleOutgoing-angleIncoming);
-   Tomography::EventHelper u(incoming,outgoing,"PocaFromExactHit.txt");
-   Tomography::Files::instance()->Write("TrackExact.txt",12,
+   //Tomography::EventHelper u(incoming,outgoing,"PocaFromExactHit.txt");
+   Tomography::Files::instance()->Write("TrackExact.txt",13,
 		   	   	   	   	   	   	   	    incoming.GetP1().x(),incoming.GetP1().y(),incoming.GetP1().z(),
 		   	   	   	   	   	   	   	    incoming.GetP2().x(),incoming.GetP2().y(),incoming.GetP2().z(),
 		   	   	   	   	   	   	   	    outgoing.GetP1().x(),outgoing.GetP1().y(),outgoing.GetP1().z(),
-		   	   	   	   	   	   	   	    outgoing.GetP2().x(),outgoing.GetP2().y(),outgoing.GetP2().z());
+		   	   	   	   	   	   	   	    outgoing.GetP2().x(),outgoing.GetP2().y(),outgoing.GetP2().z(),scattererHitted);
 
    //Tomography::EventHelper u2(fittedIncoming,fittedOutgoing,"PocaFromFittedHit.txt");
-   Tomography::Files::instance()->Write("TrackFitted.txt",12,
+   Tomography::Files::instance()->Write("TrackFitted.txt",13,
 		   	   	   	   	   	   	   	   fittedIncoming.GetP1().x(),fittedIncoming.GetP1().y(),fittedIncoming.GetP1().z(),
 		   	   	   	   	   	   	   	   fittedIncoming.GetP2().x(),fittedIncoming.GetP2().y(),fittedIncoming.GetP2().z(),
 		   	   	   	   	   	   	   	   fittedOutgoing.GetP1().x(),fittedOutgoing.GetP1().y(),fittedOutgoing.GetP1().z(),
-		   	   	   	   	   	   	   	   fittedOutgoing.GetP2().x(),fittedOutgoing.GetP2().y(),fittedOutgoing.GetP2().z());
+		   	   	   	   	   	   	   	   fittedOutgoing.GetP2().x(),fittedOutgoing.GetP2().y(),fittedOutgoing.GetP2().z(),scattererHitted);
 
    //Tomography::EventHelper u3(fittedSampledIncomingTrack,fittedSampledOutgoingTrack,"PocaFromFittedSampledHit.txt");
-   Tomography::Files::instance()->Write("TrackSampledFitted.txt",12,
+   Tomography::Files::instance()->Write("TrackSampledFitted.txt",13,
 		   	   	   	   	   	   	   	   fittedSampledIncomingTrack.GetP1().x(),fittedSampledIncomingTrack.GetP1().y(),fittedSampledIncomingTrack.GetP1().z(),
 		   	   	   	   	   	   	   	   fittedSampledIncomingTrack.GetP2().x(),fittedSampledIncomingTrack.GetP2().y(),fittedSampledIncomingTrack.GetP2().z(),
 		   	   	   	   	   	   	   	   fittedSampledOutgoingTrack.GetP1().x(),fittedSampledOutgoingTrack.GetP1().y(),fittedSampledOutgoingTrack.GetP1().z(),
-		   	   	   	   	   	   	   	   fittedSampledOutgoingTrack.GetP2().x(),fittedSampledOutgoingTrack.GetP2().y(),fittedSampledOutgoingTrack.GetP2().z());
+		   	   	   	   	   	   	   	   fittedSampledOutgoingTrack.GetP2().x(),fittedSampledOutgoingTrack.GetP2().y(),fittedSampledOutgoingTrack.GetP2().z(),scattererHitted);
 
    /* In addition to get Poca from exact hit point, let see the results of Poca from
    ** fitted hit points
    */
    
+/*
    Tomography::Track fittedIncoming(fittedIncomingHitPointVector[0],
                                     fittedIncomingHitPointVector[fittedIncomingHitPointVector.size()-1]);
    Tomography::Track fittedOutgoing(fittedOutgoingHitPointVector[0],
                                     fittedOutgoingHitPointVector[fittedOutgoingHitPointVector.size()-1]);
    Tomography::EventHelper u2(fittedIncoming,fittedOutgoing,"PocaFromFittedHit.txt");
+*/
 
 
    //Generating the data for ROOT tree, which corresponds to TDC value
