@@ -75,6 +75,7 @@ EventHelper::EventHelper(std::string fileToRead, std::string fileToWrite){
 	double incomingTrackP2X = 0.,incomingTrackP2Y = 0.,incomingTrackP2Z = 0.;
 	double outgoingTrackP1X = 0.,outgoingTrackP1Y = 0.,outgoingTrackP1Z = 0.;
 	double outgoingTrackP2X = 0.,outgoingTrackP2Y = 0.,outgoingTrackP2Z = 0.;
+	double scattererHitted = 0.;
 
 	//Opening the file to store PocaPt
 	Tomography::Files::instance()->Open(fileToWrite,Tomography::operation::write);
@@ -94,7 +95,8 @@ EventHelper::EventHelper(std::string fileToRead, std::string fileToWrite){
 		infile >> incomingTrackP1X >> incomingTrackP1Y >> incomingTrackP1Z
 			   >> incomingTrackP2X >> incomingTrackP2Y >> incomingTrackP2Z
 			   >> outgoingTrackP1X >> outgoingTrackP1Y >> outgoingTrackP1Z
-			   >> outgoingTrackP2X >> outgoingTrackP2Y >> outgoingTrackP2Z;
+			   >> outgoingTrackP2X >> outgoingTrackP2Y >> outgoingTrackP2Z
+			   >> scattererHitted;
 
 		Tomography::Track incoming(Tracking::Vector3D<double>(incomingTrackP1X,incomingTrackP1Y,incomingTrackP1Z),
 								   Tracking::Vector3D<double>(incomingTrackP2X,incomingTrackP2Y,incomingTrackP2Z));

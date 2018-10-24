@@ -5,6 +5,7 @@
 #include <vector>
 #include <string>
 #include <iostream>
+#include "base/Vector3D.h"
 
 namespace Tomography{
 
@@ -26,8 +27,16 @@ struct Detector{
 
 };
 
-}
+struct Scatterer{
+	std::string sName;
+	std::string sMaterial;
+	Tracking::Vector3D<double> sDim;
+	Tracking::Vector3D<double> sLocation;
 
+	Scatterer(std::string name, std::string material, Tracking::Vector3D<double> dim, Tracking::Vector3D<double> location) :
+		sName(name), sMaterial(material), sDim(dim), sLocation(location){}
+};
+}
 
 class DetectorMapping{
 	
@@ -41,6 +50,12 @@ class DetectorMapping{
 		std::string fGunString;
 		double fGunZ;
 		int fMaxNumOfEvents;
+
+		//For Scatterer
+		std::string fNumOfScatterersString;
+		int fNumOfScatterers;
+		std::vector<Mapping::Scatterer*> fScattererVector;
+
 
 		std::string fileName;
 		int fNumOfDetectors;
@@ -90,6 +105,9 @@ class DetectorMapping{
 
 		//This will return the full DetectorMap
 		std::vector<Mapping::Detector*>  GetDetectorVector() const { return fDetectorVector; }
+
+		//Get Scatterer Vectgor
+		std::vector<Mapping::Scatterer*>  GetScattererVector() const { return fScattererVector; }
 
 		std::string GetPlotsLocation() const {return fPlotsLocation;}
 

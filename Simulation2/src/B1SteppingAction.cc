@@ -114,6 +114,11 @@ stepNum++;
 	  // && point1->GetStepStatus()==fGeomBoundary)
 	  // 	B1EventAction::bottomPlaneHit = true;
 
+	  	if(isPrimary && touch1->GetVolume()->GetName().substr(0,6) == "Target"
+	  			&& point1->GetStepStatus()==fGeomBoundary){
+	  		B1EventAction::scattererHitted = 1.;
+	  	}
+
 	  if(isPrimary && touch1->GetVolume()->GetName().substr(0,4) == "_LE_" 
 		&& point1->GetStepStatus()==fGeomBoundary)
 	  {
