@@ -56,6 +56,18 @@ DetectorMapping::DetectorMapping(std::string filename){
 	ReadMapping();
 }
 
+void DetectorMapping::CalculateScattererExtent(){
+	for(int i = 0 ; i < fScattererVector.size() ; i++){
+		scattererMin.push_back(Tracking::Vector3D<double>(fScattererVector[i]->sLocation.x()-fScattererVector[i]->sDim.x(),
+				                                          fScattererVector[i]->sLocation.y()-fScattererVector[i]->sDim.y(),
+														  fScattererVector[i]->sLocation.z()-fScattererVector[i]->sDim.z()));
+
+		scattererMax.push_back(Tracking::Vector3D<double>(fScattererVector[i]->sLocation.x()+fScattererVector[i]->sDim.x(),
+                										  fScattererVector[i]->sLocation.y()+fScattererVector[i]->sDim.y(),
+														  fScattererVector[i]->sLocation.z()+fScattererVector[i]->sDim.z()));
+	}
+}
+
 void DetectorMapping::ReadMapping(){
 	//std::cout<<"FileName from ReadMapping : " << fileName << std::endl;
 	std::ifstream in(fileName);
@@ -152,6 +164,9 @@ void DetectorMapping::ReadMapping(){
 	//fNumOfDetectors = fDetectorNameVector.size();
 	fNumOfDetectors = fDetectorVector.size();
 	std::cout << "Num Of Detector from ReadMapping : " << fNumOfDetectors << std::endl;
+
+	//Calculating the Extent vector
+	CalculateScattererExtent();
 }
 
 void DetectorMapping::ReadDaqInfo(std::string daqfile){

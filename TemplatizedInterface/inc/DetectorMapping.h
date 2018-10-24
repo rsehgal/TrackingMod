@@ -55,6 +55,8 @@ class DetectorMapping{
 		std::string fNumOfScatterersString;
 		int fNumOfScatterers;
 		std::vector<Mapping::Scatterer*> fScattererVector;
+		std::vector<Tracking::Vector3D<double>> scattererMin;
+		std::vector<Tracking::Vector3D<double>> scattererMax;
 
 
 		std::string fileName;
@@ -108,6 +110,12 @@ class DetectorMapping{
 
 		//Get Scatterer Vectgor
 		std::vector<Mapping::Scatterer*>  GetScattererVector() const { return fScattererVector; }
+
+		//Calculate Extent of Scatterer
+		void CalculateScattererExtent();
+
+		std::vector<Tracking::Vector3D<double>> GetScattererMinExtent() const {return scattererMin;}
+		std::vector<Tracking::Vector3D<double>> GetScattererMaxExtent() const {return scattererMax;}
 
 		std::string GetPlotsLocation() const {return fPlotsLocation;}
 

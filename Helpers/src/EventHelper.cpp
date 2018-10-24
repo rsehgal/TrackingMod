@@ -9,6 +9,7 @@
 #include "CommonFunc.h"
 #include "Voxelator_Evolution.h"
 #include "Files.h"
+#include "DetectorMapping.h"
 
 using Tracking::Vector3D;
 
@@ -24,7 +25,7 @@ EventHelper::~EventHelper() {
 	// TODO Auto-generated destructor stub
 }
 
-EventHelper::EventHelper(Track incoming, Track outgoing){
+void EventHelper::Test2EventHelper(Track incoming, Track outgoing){
 	fIncoming = incoming;
 	fOutgoing = outgoing;
 	CalculateScatterAngle();
@@ -44,7 +45,9 @@ EventHelper::EventHelper(Track incoming, Track outgoing){
 
 }
 
-EventHelper::EventHelper(Track incoming, Track outgoing, std::string filename) : EventHelper(incoming,outgoing){
+//void EventHelper::TestEventHelper(Track incoming, Track outgoing, std::string filename) : EventHelper(incoming,outgoing){
+void EventHelper::TestEventHelper(Track incoming, Track outgoing, std::string filename) {
+	Test2EventHelper(incoming,outgoing);
 	if(fScatteringAngle!=0.){
 	Tomography::Files::instance()->Write(filename,4, fPocaPt.x(), fPocaPt.y(),
 																   fPocaPt.z(), fPocaPt.GetColor());
@@ -62,10 +65,15 @@ EventHelper::EventHelper(Track incoming, Track outgoing, std::string filename) :
 										 fPocaPt.x(), fPocaPt.y(),fPocaPt.z(),
 										 fScatteringAngle);
 */
+	//if(!IsFalsePositivePoca<true>()){
+		//		genuinePocaCounter++;
+			//	std::cout << "Genunie PocaPt Counter : " << genuinePocaCounter << std::endl;
+	//}
 	}
 }
 
 EventHelper::EventHelper(std::string fileToRead, std::string fileToWrite){
+	genuinePocaCounter = 0;
 	/* This should go through the event loop and call other constructors
 	 * and create the desired file
 	 */
@@ -91,12 +99,18 @@ EventHelper::EventHelper(std::string fileToRead, std::string fileToWrite){
 	//Resetting Voxelator in the beginning of event loop
 	//Tomography::evolution::Voxelator::instance()->Reset();
 
+	int hitCounter = 0.;
+	//int genuinePocaCounter = 0;
+
 	while(!infile.eof()){
 		infile >> incomingTrackP1X >> incomingTrackP1Y >> incomingTrackP1Z
 			   >> incomingTrackP2X >> incomingTrackP2Y >> incomingTrackP2Z
 			   >> outgoingTrackP1X >> outgoingTrackP1Y >> outgoingTrackP1Z
 			   >> outgoingTrackP2X >> outgoingTrackP2Y >> outgoingTrackP2Z
 			   >> scattererHitted;
+
+		if(scattererHitted == 1)
+			hitCounter++;
 
 		Tomography::Track incoming(Tracking::Vector3D<double>(incomingTrackP1X,incomingTrackP1Y,incomingTrackP1Z),
 								   Tracking::Vector3D<double>(incomingTrackP2X,incomingTrackP2Y,incomingTrackP2Z));
@@ -107,14 +121,28 @@ EventHelper::EventHelper(std::string fileToRead, std::string fileToWrite){
 		std::cout << "INCOMING : " ; incoming.Print();
 		std::cout << "OUTGOING : " ; outgoing.Print();
 
-		EventHelper(incoming,outgoing,fileToWrite);
+
+		TestEventHelper(incoming,outgoing,fileToWrite);
+
+		if(!IsFalsePositivePoca<true>())
+			genuinePocaCounter++;
 
 	}
 
 	Tomography::Files::instance()->Close(fileToWrite);
 	//Tomography::Files::instance()->Close("InfoForMLEM.txt");
 	infile.close();
+	std::cout << "ActualHit Counter : " << hitCounter << " :: GenuinePoca Counter : " << genuinePocaCounter << std::endl;
 }
+
+
+/*
+bool EventHelper::IsFalsePositivePoca(){
+	Tomography::DetectorMapping *detectorMap = Tomography::DetectorMapping::create("testMapping.txt");
+	std::vector<Tomography::Mapping::Scatterer*>  scattererVector = detectorMap->GetScattererVector();
+
+}
+*/
 
 void EventHelper::CalculatePOCA(){
 	fPocaPt = fIm.POCA(fIncoming,fOutgoing);
