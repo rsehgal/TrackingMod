@@ -10,7 +10,7 @@
 
 #include <vector>
 #include "base/Vector3D.h"
-#include "Voxel.h"
+#include "VoxelV2.h"
 #include "Voxelator_Evolution.h"
 //#include "Voxel.h"
 
@@ -24,7 +24,7 @@ class RunHelper {
 	std::vector<Vector3D<double>> fPocaPtVector;
 	std::vector<double> fSDOfVoxelsVector;
 	std::vector<double> fRLOfVoxelsVector;
-	std::vector<Voxel*> fVoxelVector;
+	std::vector<Voxel_V2*> fVoxelVector;
 	std::string fFileType;
 
 	//Data member to store max and min SD and RL
@@ -44,7 +44,7 @@ public:
 
 	std::vector<double> GetScatteringAngleVector() const {return fScatteringAngleVector;}
 #ifdef VOXELIZE
-	std::vector<Voxel*> GetVoxelVector() const {return fVoxelVector;}
+	std::vector<Voxel_V2*> GetVoxelVector() const {return fVoxelVector;}
 #endif
 	std::vector<Vector3D<double>> GetPocaPtVector() const {return fPocaPtVector;}
 

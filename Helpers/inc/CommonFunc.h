@@ -13,7 +13,7 @@
 #include "base/Vector3D.h"
 #include "Track.h"
 #include <fstream>
-#include "Voxel.h"
+#include "VoxelV2.h"
 #include "Voxelator_Evolution.h"
 #include <G4ThreeVector.hh>
 #include <algorithm>
@@ -288,7 +288,7 @@ void WriteToFile(std::string fileName,std::vector<Tomography::Voxel*> voxelsVect
 */
 
 
-void WriteToFile(std::string fileName,std::vector<Tomography::Voxel*> voxelsVector ){
+void WriteToFile(std::string fileName,std::vector<Tomography::Voxel_V2*> voxelsVector ){
    std::cout<<"Writing file " << fileName << "....  ";
    float dummy = 0.;
    std::ofstream fileHandle(fileName);
@@ -346,7 +346,7 @@ int GetVoxelNum(Tracking::Vector3D<double> pt){
 	return voxNum;
 }
 
-#define USE_ENCLOSING_VOXELS
+//#define USE_ENCLOSING_VOXELS
 #ifdef USE_ENCLOSING_VOXELS
 std::vector<Tracking::Vector3D<double>> GetEightCorners_Of_ImaginaryVoxel_CentredAtPocaPoint(Tracking::Vector3D<double> pocaPt){
 	int count = 0;

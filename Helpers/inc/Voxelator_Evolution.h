@@ -15,7 +15,7 @@
 #include "ObjectChecker.h"
 #include "Track.h"
 #include <TGraph.h>
-#include "Voxel.h"
+#include "VoxelV2.h"
 
 using Slice = std::vector<std::vector<Tracking::Vector3D<double>>>;
 using VoxelCenters = std::vector<Slice>;
@@ -60,7 +60,7 @@ private:
 
   //Some data member taken from Voxe. This is the correct place for them
   std::vector<int> fVisitedVoxelNumVector ;
-  std::vector<Voxel*> fVoxelVector ;
+  std::vector<Voxel_V2*> fVoxelVector ;
 
   static Voxelator *s_instance;
   Voxelator();
@@ -111,7 +111,7 @@ public:
 
 
   //Function to return the std::vector of filled Voxels
- std::vector<Voxel*> GetVoxelVector() const {
+ std::vector<Voxel_V2*> GetVoxelVector() const {
 	  //return Voxel::GetVoxelVector();
 	  return fVoxelVector;
   }
@@ -123,7 +123,8 @@ public:
 
   //Some new functions taken from Voxel. This is correct place for them
   int IfVoxelExist(int voxelNum);
-  void Insert(Tracking::Vector3D<double>, int voxelNum, bool useEnclosingVoxels = false , double scatteringDensity = 0.);
+  void Insert(Tracking::Vector3D<double> point, int voxelNum, bool useEnclosingVoxels = false , double scatteringDensity = 0.);
+  //void Insert(Tracking::Vector3D<double>, int voxelNum);
   void Reset();
 
 

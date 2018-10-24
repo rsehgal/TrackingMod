@@ -88,7 +88,7 @@ EventHelper::EventHelper(std::string fileToRead, std::string fileToWrite){
 	//Resetting Voxel in the beginning of event loop
     //Voxel::Reset();
 	//Resetting Voxelator in the beginning of event loop
-	Tomography::evolution::Voxelator::instance()->Reset();
+	//Tomography::evolution::Voxelator::instance()->Reset();
 
 	while(!infile.eof()){
 		infile >> incomingTrackP1X >> incomingTrackP1Y >> incomingTrackP1Z
@@ -188,14 +188,16 @@ void EventHelper::CalculateVoxel(){
 }
 
 void EventHelper::CalculateVoxel_V2(){
-	if(Tomography::evolution::Voxelator::instance()->IsGenuine(fPocaPt)){
+	bool isGenuine = Tomography::evolution::Voxelator::instance()->IsGenuine(fPocaPt);
+	if(isGenuine){
 	int voxelNum = GetVoxelNum();
 	int voxNum = Tomography::evolution::Voxelator::instance()->IfVoxelExist(voxelNum);
     	if(voxNum < 0.){
 			//fVoxel = new Voxel(fPocaPt,voxelNum);
     		//Tomography::evolution::Voxelator::instance()->Insert(fPocaPt,voxelNum);
-    		Tomography::evolution::Voxelator::instance()->GetVoxelVector().push_back(new Voxel(fPocaPt,voxelNum));
-    		Tomography::evolution::Voxelator::instance()->GetVisitedVoxelNumVector().push_back(voxelNum);
+    		//Tomography::evolution::Voxelator::instance()->GetVoxelVector().push_back(new Voxel(fPocaPt,voxelNum));
+    		//Tomography::evolution::Voxelator::instance()->GetVisitedVoxelNumVector().push_back(voxelNum);
+    		Tomography::evolution::Voxelator::instance()->Insert(fPocaPt,voxelNum);
 		}else{
 			//fVoxel = Voxel::GetVoxelVector()[voxNum];
 			Tomography::evolution::Voxelator::instance()->GetVoxelVector()[voxNum]->Insert(fPocaPt);
