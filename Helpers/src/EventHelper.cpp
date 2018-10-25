@@ -132,7 +132,8 @@ EventHelper::EventHelper(std::string fileToRead, std::string fileToWrite){
 
 		TestEventHelper(incoming,outgoing,fileToWrite);
 
-		if(!IsFalsePositivePoca<true>()){
+		//if(!IsFalsePositivePoca<true>()){
+		if(!CommonFunc::Functions::instance()->IsFalsePositivePoca<true>(fPocaPt)){
 			genuinePocaCounter++;
 			Tomography::Files::instance()->Write(genuinefileName,4, fPocaPt.x(), fPocaPt.y(),
 																			   fPocaPt.z(), fPocaPt.GetColor());

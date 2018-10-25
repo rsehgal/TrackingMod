@@ -21,6 +21,7 @@
 #include "base/Global.h"
 #include "TColor.h"
 #include "TStyle.h"
+#include "DetectorMapping.h"
 using Tracking::Vector3D;
 
 namespace CommonFunc{
@@ -54,7 +55,7 @@ static double CreateColorVal(double color){
 		 TColor::SetPalette(1, 0);
 		 //gStyle->SetPalette(kDarkBodyRadiator);
 		//gStyle->SetPalette(kTemperatureMap);
-		 const Int_t nCol = 100;//TColor::GetNumberOfColors();
+		 const Int_t nCol = 10;//TColor::GetNumberOfColors();
 		 float min = 0, max = 50.; // your range of values
 		 double colorVal = TColor::GetColorPalette((color - min)/(max-min) * nCol);
 		 return colorVal;
@@ -80,6 +81,29 @@ static Vector3D<double> UnpackColor(double f) {
 		//return color / 255.0;
 
 }
+
+template <bool ForSimulation>
+static bool IsFalsePositivePoca(Tracking::Vector3D<double> fPocaPt){
+	bool truePositive = true;
+	if(!ForSimulation)
+		return !truePositive;
+	else{
+		//Logic to check if the Calculated PoCA lie with the extent of any scatterer
+		std::vector<Tracking::Vector3D<double>> scattererMinExtentVector = Tomography::DetectorMapping::create("testMapping.txt")->GetScattererMinExtent();
+		std::vector<Tracking::Vector3D<double>> scattererMaxExtentVector = Tomography::DetectorMapping::instance()->GetScattererMaxExtent();
+
+		for(int i = 0 ; i < scattererMinExtentVector.size() ; i++){
+			truePositive &=    (fPocaPt.x() >= scattererMinExtentVector[i].x() && fPocaPt.x() <= scattererMaxExtentVector[i].x())
+						    && (fPocaPt.y() >= scattererMinExtentVector[i].y() && fPocaPt.y() <= scattererMaxExtentVector[i].y())
+							&& (fPocaPt.z() >= scattererMinExtentVector[i].z() && fPocaPt.z() <= scattererMaxExtentVector[i].z());
+			if(truePositive)
+				break;
+		}
+		return !truePositive;
+	}
+
+}
+
 
 static Functions *instance(){
 	if(!finstance){
