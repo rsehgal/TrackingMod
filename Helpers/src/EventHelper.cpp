@@ -85,13 +85,21 @@ EventHelper::EventHelper(std::string fileToRead, std::string fileToWrite){
 	double outgoingTrackP2X = 0.,outgoingTrackP2Y = 0.,outgoingTrackP2Z = 0.;
 	double scattererHitted = 0.;
 
-	//Opening the file to store PocaPt
+	//Opening the file to store All PocaPt
 	Tomography::Files::instance()->Open(fileToWrite,Tomography::operation::write);
+
+
 
 	//Opening the file to store P2 of incoming track, P1 of outgoing track, PoCA Point
 	//and scattering angle. Required by TUSHAR, may be useful information for MLEM.
 	std::string filename = CommonFunc::Functions::instance()->GetFileName(fileToRead);
 	Tomography::Files::instance()->Open(filename+"-InfoForMLEM.txt",Tomography::operation::write);
+
+	/* Opening the file to store Only Genuine PocaPt
+	 * Genuinie PoCA points are those which lie within the scatterer region
+	 */
+	std::string genuinefileName = filename+"PocaPtGenuine.txt";
+	Tomography::Files::instance()->Open(genuinefileName,Tomography::operation::write);
 
 
 	//Resetting Voxel in the beginning of event loop
@@ -124,12 +132,16 @@ EventHelper::EventHelper(std::string fileToRead, std::string fileToWrite){
 
 		TestEventHelper(incoming,outgoing,fileToWrite);
 
-		if(!IsFalsePositivePoca<true>())
+		if(!IsFalsePositivePoca<true>()){
 			genuinePocaCounter++;
+			Tomography::Files::instance()->Write(genuinefileName,4, fPocaPt.x(), fPocaPt.y(),
+																			   fPocaPt.z(), fPocaPt.GetColor());
+		}
 
 	}
 
 	Tomography::Files::instance()->Close(fileToWrite);
+	Tomography::Files::instance()->Close(genuinefileName);
 	//Tomography::Files::instance()->Close("InfoForMLEM.txt");
 	infile.close();
 	std::cout << "ActualHit Counter : " << hitCounter << " :: GenuinePoca Counter : " << genuinePocaCounter << std::endl;
