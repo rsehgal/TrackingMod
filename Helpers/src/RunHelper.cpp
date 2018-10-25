@@ -192,8 +192,8 @@ void RunHelper::WriteToFile(){
 //    CommonFunc::Functions::instance()->WriteToFile("filteredVoxelsRunHelper-"+fFileType+".txt",Tomography::Voxel::GetFilteredVoxelVector());
 //    CommonFunc::Functions::instance()->WriteToFile("filteredPocaPtRunHelper-"+fFileType+".txt",Tomography::Voxel::GetFilteredPocaPtVector());
     CommonFunc::Functions::instance()->WriteToFile("VoxelsRunHelper-"+fFileType+".txt",Tomography::evolution::Voxelator::instance()->GetVoxelVector());
-    //CommonFunc::Functions::instance()->WriteToFile("filteredVoxelsRunHelper-"+fFileType+".txt",Tomography::evolution::Voxelator::GetFilteredVoxelVector());
-    //CommonFunc::Functions::instance()->WriteToFile("filteredPocaPtRunHelper-"+fFileType+".txt",Tomography::evolution::Voxelator::GetFilteredPocaPtVector());
+    CommonFunc::Functions::instance()->WriteToFile("filteredVoxelsRunHelper-"+fFileType+".txt",Tomography::evolution::Voxelator::instance()->GetFilteredVoxelVector());
+    CommonFunc::Functions::instance()->WriteToFile("filteredPocaPtRunHelper-"+fFileType+".txt",Tomography::evolution::Voxelator::instance()->GetFilteredPocaPtVector());
 
 
 }

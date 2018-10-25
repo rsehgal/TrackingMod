@@ -25,6 +25,34 @@ int Voxelator::IfVoxelExist(int voxelNum){
 	}
 }
 
+std::vector<Voxel_V2*> Voxelator::GetFilteredVoxelVector(){
+	std::vector<Voxel_V2*> filteredVoxelVector;
+	for(int i= 0 ; i < fVoxelVector.size() ; i++){
+		if(!fVoxelVector[i]->IsOutlier()){
+			filteredVoxelVector.push_back(fVoxelVector[i]);
+
+		}
+	}
+
+	std::cout <<  "@@@@@@@@@@@ Filtered Voxel Vector Size : "<< filteredVoxelVector.size() << " @@@@@@@@@@@@ " << std::endl;
+	return filteredVoxelVector;
+}
+
+std::vector<Tracking::Vector3D<double>> Voxelator::GetFilteredPocaPtVector(){
+	std::vector<Voxel_V2*> filteredVoxelVector = GetFilteredVoxelVector();
+	std::vector<Tracking::Vector3D<double>> filteredPocaVector;
+	for(int i = 0 ; i < filteredVoxelVector.size() ; i++){
+		for(int j = 0 ; j < filteredVoxelVector[i]->GetPocaPointsVector().size() ; j++){
+			filteredPocaVector.push_back(filteredVoxelVector[i]->GetPocaPointsVector()[j]);
+		}
+	}
+
+	std::cout <<  "@@@@@@@@@@@ Filtered Poca Vector Size : "<< filteredPocaVector.size() << " @@@@@@@@@@@@ " << std::endl;
+	return filteredPocaVector;
+
+}
+
+
 void Voxelator::Insert(Tracking::Vector3D<double> point, int voxelNum, bool useEnclosingVoxels, double scatteringDensity){
 	fVoxelVector.push_back(new Voxel_V2(point,voxelNum));
 		fVisitedVoxelNumVector.push_back(voxelNum);

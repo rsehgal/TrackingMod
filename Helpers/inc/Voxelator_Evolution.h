@@ -126,6 +126,8 @@ public:
   void Insert(Tracking::Vector3D<double> point, int voxelNum, bool useEnclosingVoxels = false , double scatteringDensity = 0.);
   //void Insert(Tracking::Vector3D<double>, int voxelNum);
   void Reset();
+  std::vector<Voxel_V2*> GetFilteredVoxelVector();
+  std::vector<Tracking::Vector3D<double>> GetFilteredPocaPtVector();
 
 
 
