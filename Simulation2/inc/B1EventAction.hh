@@ -55,6 +55,7 @@ static std::vector<G4double> energy;
 static std::vector<G4double> vertexEnergy;
 static std::vector<G4ThreeVector> position;
 static double eventEnergy;
+static double scattererHitted;
 
 static std::vector<std::string> hittedStripNameVector;
 static bool topPlaneHit;

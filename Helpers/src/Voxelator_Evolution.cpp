@@ -3,10 +3,76 @@
 #include "Delta.h"
 #include "CommonFunc.h"
 #include <cmath>
+#include "VoxelV2.h"
 
 namespace Tomography {
 namespace evolution{
 Voxelator *Voxelator::s_instance = 0;
+
+int Voxelator::IfVoxelExist(int voxelNum){
+//std::cout<< "VoxelVectorSize : " << run->fVoxelVector.size() << std::endl;
+	if(fVisitedVoxelNumVector.size()){
+		for(int i = 0 ; i < fVisitedVoxelNumVector.size() ; i++){
+			if(fVisitedVoxelNumVector[i] == voxelNum){
+				//std::cout<<"Voxel Hit.........Found previously created Voxel... :  "  << fVisitedVoxelNumVector[i] << std::endl;
+				//return fVisitedVoxelNumVector[i];
+				return i;
+			}
+		}
+		return -1;
+	}else{
+		return -1;
+	}
+}
+
+std::vector<Voxel_V2*> Voxelator::GetFilteredVoxelVector(){
+	std::vector<Voxel_V2*> filteredVoxelVector;
+	for(int i= 0 ; i < fVoxelVector.size() ; i++){
+		if(!fVoxelVector[i]->IsOutlier()){
+			filteredVoxelVector.push_back(fVoxelVector[i]);
+
+		}
+	}
+
+	std::cout <<  "@@@@@@@@@@@ Filtered Voxel Vector Size : "<< filteredVoxelVector.size() << " @@@@@@@@@@@@ " << std::endl;
+	return filteredVoxelVector;
+}
+
+std::vector<Tracking::Vector3D<double>> Voxelator::GetFilteredPocaPtVector(){
+	std::vector<Voxel_V2*> filteredVoxelVector = GetFilteredVoxelVector();
+	std::vector<Tracking::Vector3D<double>> filteredPocaVector;
+	for(int i = 0 ; i < filteredVoxelVector.size() ; i++){
+		for(int j = 0 ; j < filteredVoxelVector[i]->GetPocaPointsVector().size() ; j++){
+			filteredPocaVector.push_back(filteredVoxelVector[i]->GetPocaPointsVector()[j]);
+		}
+	}
+
+	std::cout <<  "@@@@@@@@@@@ Filtered Poca Vector Size : "<< filteredPocaVector.size() << " @@@@@@@@@@@@ " << std::endl;
+	return filteredPocaVector;
+
+}
+
+
+void Voxelator::Insert(Tracking::Vector3D<double> point, int voxelNum, bool useEnclosingVoxels, double scatteringDensity){
+	fVoxelVector.push_back(new Voxel_V2(point,voxelNum));
+		fVisitedVoxelNumVector.push_back(voxelNum);
+}
+
+/*
+void Voxelator::Insert(Tracking::Vector3D<double>, int voxelNum){
+	fVoxelVector.push_back(new Voxel(fPocaPt,voxelNum));
+	fVisitedVoxelNumVector.push_back(voxelNum);
+}
+*/
+
+void Voxelator::Reset(){
+	for(int i = 0 ; i < fVoxelVector.size() ; i++){
+		fVoxelVector[i]->Reset_V2();
+	}
+	fVisitedVoxelNumVector.clear();
+	fVoxelVector.clear();
+}
+
 Voxelator* Voxelator::instance(double voxelizedVolHalfX,double voxelizedVolHalfY, double voxelizedVolHalfZ,
 			 double voxelX,double voxelY, double voxelZ) {
         if (!s_instance)
@@ -311,7 +377,8 @@ AverageOut();
 }
 
 void Voxelator::FillSDAndRLHist(){
-	std::vector<Voxel*> fVoxelVector = Voxel::GetVoxelVector();
+	//std::vector<Voxel*> fVoxelVector = Voxel::GetVoxelVector();
+	std::vector<Voxel_V2*> fVoxelVector = Tomography::evolution::Voxelator::instance()->GetVoxelVector();
 	for (auto &voxel : fVoxelVector) {
 		int voxelNumber = voxel->GetVoxelNum();
 		double sd = voxel->GetStandardDeviation();
@@ -328,7 +395,8 @@ void Voxelator::FillSDAndRLHist(){
 }
 
 void Voxelator::SetMaxMinSDAndRL(){
-	std::vector<Voxel*> fVoxelVector = Voxel::GetVoxelVector();
+	//std::vector<Voxel*> fVoxelVector = Voxel::GetVoxelVector();
+	std::vector<Voxel_V2*> fVoxelVector = Tomography::evolution::Voxelator::instance()->GetVoxelVector();
 	std::vector<double> sdVect, rlVect;
 	for (auto &voxel : fVoxelVector) {
 		double sd = voxel->GetStandardDeviation();
@@ -338,10 +406,12 @@ void Voxelator::SetMaxMinSDAndRL(){
 			rlVect.push_back(rl);
 		}
 	}
+	/*
 	fMaxSD = *max_element(sdVect.begin(), sdVect.end());
 	fMinSD = *min_element(sdVect.begin(), sdVect.end());
 	fMaxRL = *max_element(rlVect.begin(), rlVect.end());
 	fMinRL = *min_element(rlVect.begin(), rlVect.end());
+	*/
 }
 
 }//end of evolution namespace

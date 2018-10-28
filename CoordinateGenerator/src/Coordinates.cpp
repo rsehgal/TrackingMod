@@ -184,12 +184,38 @@ Vector3D<double> Coordinates::GetStripCoordinate(double x, double y, double z) {
 			Tomography::DetectorMapping::instance()->GetDetectorVector()[3]->sDetectorLength
 					/ Tomography::DetectorMapping::instance()->GetNumberOfStripsInEachPlane();
   double halfStripWidth = stripWidth/2.;
-  temp.SetX(-Tomography::DetectorMapping::instance()->GetDetectorVector()[3]->sDetectorLength/2. + x*stripWidth + halfStripWidth);
-  temp.SetY(-Tomography::DetectorMapping::instance()->GetDetectorVector()[3]->sDetectorLength/2. + y*stripWidth + halfStripWidth);
+//  temp.SetX(-Tomography::DetectorMapping::instance()->GetDetectorVector()[3]->sDetectorLength/2. + x*stripWidth + halfStripWidth);
+//  temp.SetY(-Tomography::DetectorMapping::instance()->GetDetectorVector()[3]->sDetectorLength/2. + y*stripWidth + halfStripWidth);
+  temp.SetX(-Tomography::DetectorMapping::instance()->GetDetectorVector()[3]->sDetectorLength/2. + (x+0.5)*stripWidth);
+  temp.SetY(-Tomography::DetectorMapping::instance()->GetDetectorVector()[3]->sDetectorLength/2. + (y+0.5)*stripWidth);
+
+//  temp.SetX(-Tomography::DetectorMapping::instance()->GetDetectorVector()[3]->sDetectorLength/2. + (y+1)*halfStripWidth);
+//  temp.SetY(-Tomography::DetectorMapping::instance()->GetDetectorVector()[3]->sDetectorLength/2. + (x+1)*halfStripWidth);
   temp.SetZ(z);
 
   return temp;
 }
+
+/*
+Vector3D<double> Coordinates::GetStripCoordinate(double x, double y) {
+  int tmp = 0;
+  Vector3D<double> temp;
+
+  // temp.SetX(floor((x + (double)500) / 31.25));
+  // temp.SetY(floor((y + (double)500) / 31.25));
+  //double stripWidth = 31.25;
+	double stripWidth =
+			Tomography::DetectorMapping::instance()->GetDetectorVector()[3]->sDetectorLength
+					/ Tomography::DetectorMapping::instance()->GetNumberOfStripsInEachPlane();
+  double halfStripWidth = stripWidth/2.;
+  temp.SetX(-Tomography::DetectorMapping::instance()->GetDetectorVector()[3]->sDetectorLength/2. + (y+1)*halfStripWidth);
+  temp.SetY(-Tomography::DetectorMapping::instance()->GetDetectorVector()[3]->sDetectorLength/2. + (x+1)*halfStripWidth);
+  temp.SetZ(0.);
+
+  return temp;
+}
+*/
+
 
 #if(0)
 Vector3D<double> Coordinates::GetStripCoordinate(Detector *det, double x, double y, double z) {

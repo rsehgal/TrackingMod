@@ -42,22 +42,78 @@ Vec_t ImageReconstruction::POCA(Vec_t p, Vec_t u, Vec_t q, Vec_t v, Vec_t &p1, V
 	// std::cout<<"S : "<<s<<std::endl;
 
 
-	t = (uDotv*(pDotu-qDotu) - uMag2*(pDotv-qDotv))/(uDotv*uDotv - uMag2*vMag2);
+	double numer = (uDotv*(pDotu-qDotu) - uMag2*(pDotv-qDotv));
+	double deno = (uDotv*uDotv - uMag2*vMag2);
+	t = numer / deno;
 	// std::cout<<"T : "<<t<<std::endl;
 
 	//Vec_t
 	p1 = p + u*s;
 	//Vec_t
 	q1 = q + v*t;
+
+	std::cout <<"S : " << s <<" : T : " << t << std::endl;
 	return (p1+q1)/2.;
 	//return s;
 	}
+
+
+Vec_t ImageReconstruction::POCA_V4( Track incoming, Track outgoing){
+	//Algo from : http://etheses.whiterose.ac.uk/10432/1/Tim_Blackwell_PhD_Thesis.pdf
+	Vec_t u = (incoming.GetP2() - incoming.GetP1()).Unit();
+	Vec_t v = (outgoing.GetP1() - outgoing.GetP2()).Unit();
+	Vec_t w = (incoming.GetP1() - outgoing.GetP2());
+	double a = u.Dot(u);
+	double b = u.Dot(v);
+	double c = v.Dot(v);
+	double d = u.Dot(w);
+	double e = v.Dot(w);
+	double deno = (a*c-b*b);
+//	if(!deno)
+//		deno = 1e-9;
+	//double s = (b*e-c*d)/(a*c-b*b);
+	double s = (b*e-c*d)/deno;
+	//double t = (a*e-b*d)/(a*c-b*b);
+	double t = (a*e-b*d)/deno;
+	Vec_t Ps = incoming.GetP1() + u*s;
+	Vec_t Qt = outgoing.GetP2() + v*t;
+	std::cout << "S : " << s << " : T : " << t << std::endl;
+	return (Ps+Qt)/2.;
+
+}
+
+double ImageReconstruction::cpa_time(Track Tr1, Track Tr2){
+	Vec_t dv = Tr1.GetDirCosine() - Tr2.GetDirCosine();
+	double dv2 = dv.Dot(dv);
+	if(dv2 < 1e-9)
+		return 0.;
+
+	Vec_t w0 = Tr1.GetP1() - Tr2.GetP1();
+	double cpatime = w0.Dot(dv)/dv2;
+	return cpatime;
+}
+
+Vec_t ImageReconstruction::POCA_V3( Track incoming, Track outgoing){
+	double ctime = cpa_time(incoming,outgoing);
+	Vec_t P1 = incoming.GetP1() + incoming.GetDirCosine()*ctime;
+	Vec_t P2 = outgoing.GetP1() + outgoing.GetDirCosine()*ctime;
+	std::cout << "CTIME : " << ctime << std::endl;
+	std::cout << "P1 : " ; P1.Print();
+	std::cout << "P2 : " ; P2.Print();
+	double doca =  Distance(P1,P2);
+	return (P1+P2)/2.;
+}
+
+Vec_t ImageReconstruction::POCA_V2(Vec_t p, Vec_t u, Vec_t q, Vec_t v, Vec_t &p1, Vec_t &q1){
+
+}
 
 Vec_t ImageReconstruction::POCA( Track incoming, Track outgoing){
 	Vec_t p1(0.,0.,0.),q1(0.,0.,0.);
 	//std::cout<<"INComing Track : "; incoming.Print();
 	//std::cout<<"OUTGoing Track : "; outgoing.Print();
 	return POCA(incoming.GetP1(),incoming.GetDirCosine(),outgoing.GetP1(), outgoing.GetDirCosine(),p1,q1);
+	//return POCA_V3(incoming,outgoing);
 }
 
 //Vec_t ImageReconstruction::POCA_Iterative(Vec_t p, Vec_t u, Vec_t q, Vec_t v, Vec_t &p1, Vec_t &q1){

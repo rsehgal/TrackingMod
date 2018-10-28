@@ -9,6 +9,8 @@
 #include <iostream>
 #include <cmath>
 #include <fstream>
+#include "TGraph.h"
+#include "TF1.h"
 
 namespace Tomography {
 
@@ -35,7 +37,35 @@ Fit2DLinear::Fit2DLinear(double a, double b, double c){
 	FillParams();
 }
 
+std::vector<Tracking::Vector3D<double>> Fit2DLinear::EstimatePreFitter(std::vector<Tracking::Vector3D<double>> hitPointVect){
+	std::vector<Tracking::Vector3D<double>> newHitsVector;
+
+	//3-2 -> 1
+	Tracking::Vector3D<double> dir = (hitPointVect[1]-hitPointVect[2]);
+	double dist = (hitPointVect[0].z()-hitPointVect[2].z())/dir.z();
+	Tracking::Vector3D<double> newPt = hitPointVect[2]+dir*dist;
+	newHitsVector.push_back(newPt);
+
+	//1-3 -> 2
+	dir = (hitPointVect[2]-hitPointVect[0]);
+	dist = (hitPointVect[1].z()-hitPointVect[0].z())/dir.z();
+	newPt = hitPointVect[0]+dir*dist;
+	newHitsVector.push_back(newPt);
+
+	//1-2 --> 3
+	dir = (hitPointVect[1]-hitPointVect[0]);
+	dist = (hitPointVect[2].z()-hitPointVect[0].z())/dir.z();
+	newPt = hitPointVect[0]+dir*dist;
+	newHitsVector.push_back(newPt);
+
+
+	return newHitsVector;
+}
+
 void Fit2DLinear::Fit(std::vector<double> vectX, std::vector<double> vectY){
+#ifdef USE_ROOT_FITTING
+	FitROOT(vectX, vectY);
+#else
 	double vectSizeInv = 1./vectX.size();
 	double x = SumX(vectX) * vectSizeInv;
 	double y = SumY(vectY) * vectSizeInv;
@@ -54,7 +84,25 @@ void Fit2DLinear::Fit(std::vector<double> vectX, std::vector<double> vectY){
 	}
 	fC = -(fA*x + fB*y);
 	FillParams();
+#endif
+
 }
+
+#ifdef USE_ROOT_FITTING
+void Fit2DLinear::FitROOT(std::vector<double> vectX, std::vector<double> vectY){
+	 TGraph *gr = new TGraph(vectX.size(), &vectX[0],&vectY[0]);
+	 TF1 *fit = new TF1("ffit1", "pol1", -500, 500);
+//#define ROBUST_FIT
+#ifdef ROBOUST_FIT
+	 gr->Fit(fit, "+rob=0.95");
+#else
+	 gr->Fit(fit);
+#endif
+	 fIntercept = fit->GetParameter(0);
+	 fSlope = fit->GetParameter(1);
+	 std::cout << "Slope : " << fSlope <<" : Intercept : " << fIntercept << std::endl;
+}
+#endif
 
 double Fit2DLinear::GetSum(std::vector<double> vect){
 
@@ -138,17 +186,27 @@ std::vector<Tracking::Vector3D<double>> Fit2DLinear::GetFittedTrack(std::vector<
 
 	std::vector<Tracking::Vector3D<double>> fittedHitValueVector;
 	for(int i = 0 ; i < hitPointVect.size() ; i++){
-		fittedHitValueVector.push_back(Tracking::Vector3D<double>(xValueFitted[i], yValueFitted[i], zVect[i] ));
+		Tracking::Vector3D<double> temp(xValueFitted[i], yValueFitted[i], zVect[i]);
+		//fittedHitValueVector.push_back(Tracking::Vector3D<double>(xValueFitted[i], yValueFitted[i], zVect[i] ));
+		if(isinf(xValueFitted[i]) || isinf(yValueFitted[i])){
+			temp.SetColor(-100000);
+		}
+		fittedHitValueVector.push_back(temp);
 	}
 	return fittedHitValueVector;
 
 }
 
+
 std::vector<double> Fit2DLinear::GetFittedValue(std::vector<double> zVect){
 	std::vector<double> fitValueVector;
 	fitValueVector.clear();
 	for(int i = 0 ; i < zVect.size() ; i++){
+#ifdef USE_ROOT_FITTING
+		fitValueVector.push_back((zVect[i]-fIntercept)/fSlope);
+#else
 		fitValueVector.push_back((-fC - fB*zVect[i])/fA);
+#endif
 	}
 	return fitValueVector;
 }

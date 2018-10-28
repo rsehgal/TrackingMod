@@ -56,10 +56,22 @@ DetectorMapping::DetectorMapping(std::string filename){
 	ReadMapping();
 }
 
+void DetectorMapping::CalculateScattererExtent(){
+	for(int i = 0 ; i < fScattererVector.size() ; i++){
+		scattererMin.push_back(Tracking::Vector3D<double>(fScattererVector[i]->sLocation.x()-fScattererVector[i]->sDim.x(),
+				                                          fScattererVector[i]->sLocation.y()-fScattererVector[i]->sDim.y(),
+														  fScattererVector[i]->sLocation.z()-fScattererVector[i]->sDim.z()));
+
+		scattererMax.push_back(Tracking::Vector3D<double>(fScattererVector[i]->sLocation.x()+fScattererVector[i]->sDim.x(),
+                										  fScattererVector[i]->sLocation.y()+fScattererVector[i]->sDim.y(),
+														  fScattererVector[i]->sLocation.z()+fScattererVector[i]->sDim.z()));
+	}
+}
+
 void DetectorMapping::ReadMapping(){
 	//std::cout<<"FileName from ReadMapping : " << fileName << std::endl;
 	std::ifstream in(fileName);
-	int count = -6 ;
+	int count = -7 ;
 	int detCounter = 0;
 	while(1){
 
@@ -69,6 +81,20 @@ void DetectorMapping::ReadMapping(){
 		int module = 0;
 		int channelStart = 31;
 		double zCoordinate = 0.;
+
+		//reading Scatterer info
+		if(count == -7){
+			count++;
+			in >> fNumOfScatterersString >> fNumOfScatterers;
+			std::cout << "fNumOfScatterersString : " << fNumOfScatterersString << " : fNumOfScatterers : " << fNumOfScatterers << std::endl;
+			for(int i = 0 ; i < fNumOfScatterers ; i++){
+				std::string scattererName, scattererMaterial;
+				double dimX,dimY,dimZ,locX,locY,locZ;
+				in >> scattererName >> scattererMaterial >> dimX >> dimY >> dimZ >> locX >> locY >> locZ ;
+				std::cout << scattererName << " : " << scattererMaterial << " : " << dimX << ", " << dimY << ", " << dimZ <<" :: " << locX << ", " <<locY << ", " << locZ <<std::endl;
+				fScattererVector.push_back(new Mapping::Scatterer(scattererName,scattererMaterial,Tracking::Vector3D<double>(dimX,dimY,dimZ),Tracking::Vector3D<double>(locX,locY,locZ)));
+			}
+		}
 
 		//reading NumOfStripsInEachPlane;
 		if(count == -6){
@@ -138,6 +164,9 @@ void DetectorMapping::ReadMapping(){
 	//fNumOfDetectors = fDetectorNameVector.size();
 	fNumOfDetectors = fDetectorVector.size();
 	std::cout << "Num Of Detector from ReadMapping : " << fNumOfDetectors << std::endl;
+
+	//Calculating the Extent vector
+	CalculateScattererExtent();
 }
 
 void DetectorMapping::ReadDaqInfo(std::string daqfile){

@@ -258,6 +258,9 @@ G4VPhysicalVolume *brickLanePhy = new G4PVPlacement(0,
                             checkOverlaps);
 */
 
+
+/*
+ // WILL TRY TO READ SCATTERER INFORMATION FROM DetectorMapping.txt AS BELOW
   G4VPhysicalVolume *phyTargetBlock = new G4PVPlacement(0,
                             G4ThreeVector(15*cm,-15*cm,0*cm),//-39*cm),
                            fLogicTargetPb,
@@ -293,6 +296,23 @@ G4VPhysicalVolume *brickLanePhy = new G4PVPlacement(0,
                                   false,
                                   0,
                                   checkOverlaps);
+*/
+  std::vector<Tomography::Mapping::Scatterer*>  scattererVector = detectorMap->GetScattererVector();
+  for(int i = 0 ; i < scattererVector.size() ; i++){
+	  Tomography::Mapping::Scatterer *scatterer = scattererVector[i];
+	  G4Material *material=nist->FindOrBuildMaterial((scatterer->sMaterial).c_str());
+	  std::string scattererName = scatterer->sName;
+	  G4Box *target = new G4Box(scattererName,(scatterer->sDim).x(),(scatterer->sDim).y(),(scatterer->sDim).z());
+	  G4LogicalVolume *logicalScattererer = new G4LogicalVolume(target,material,("Logical-"+scattererName).c_str());
+	  G4VPhysicalVolume *physicalTarget = new G4PVPlacement(0,
+	                               G4ThreeVector((scatterer->sLocation).x(),(scatterer->sLocation).y(),(scatterer->sLocation).z()),
+	                               logicalScattererer,
+	                               scattererName.c_str(),
+	                               logicWorld,
+	                                false,
+	                                0,
+	                                checkOverlaps);
+  }
 
 /*
 G4VPhysicalVolume *phySubTargetBlockU = new G4PVPlacement(0,

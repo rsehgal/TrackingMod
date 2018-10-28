@@ -13,7 +13,7 @@
 #include "base/Vector3D.h"
 #include "Track.h"
 #include <fstream>
-#include "Voxel.h"
+#include "VoxelV2.h"
 #include "Voxelator_Evolution.h"
 #include <G4ThreeVector.hh>
 #include <algorithm>
@@ -21,6 +21,7 @@
 #include "base/Global.h"
 #include "TColor.h"
 #include "TStyle.h"
+#include "DetectorMapping.h"
 using Tracking::Vector3D;
 
 namespace CommonFunc{
@@ -41,6 +42,12 @@ static std::string GetFileName(std::string fullFilename){
 	return filename;
 }
 
+Tomography::Track CreateTrackFromHitPointVector(std::vector<Tracking::Vector3D<double>> hitPointVector){
+	for(int i = 0 ; i < hitPointVector.size() ; i++){
+		return Tomography::Track(hitPointVector[hitPointVector.size()-1],hitPointVector[0]);
+	}
+}
+
 //Converting the double value corresponds to
 //Scatering value or RL or SD to proper color value from
 //ROOT Color palette. Giving good results
@@ -48,7 +55,7 @@ static double CreateColorVal(double color){
 		 TColor::SetPalette(1, 0);
 		 //gStyle->SetPalette(kDarkBodyRadiator);
 		//gStyle->SetPalette(kTemperatureMap);
-		 const Int_t nCol = 100;//TColor::GetNumberOfColors();
+		 const Int_t nCol = 10;//TColor::GetNumberOfColors();
 		 float min = 0, max = 50.; // your range of values
 		 double colorVal = TColor::GetColorPalette((color - min)/(max-min) * nCol);
 		 return colorVal;
@@ -74,6 +81,29 @@ static Vector3D<double> UnpackColor(double f) {
 		//return color / 255.0;
 
 }
+
+template <bool ForSimulation>
+static bool IsFalsePositivePoca(Tracking::Vector3D<double> fPocaPt){
+	bool truePositive = true;
+	if(!ForSimulation)
+		return !truePositive;
+	else{
+		//Logic to check if the Calculated PoCA lie with the extent of any scatterer
+		std::vector<Tracking::Vector3D<double>> scattererMinExtentVector = Tomography::DetectorMapping::create("testMapping.txt")->GetScattererMinExtent();
+		std::vector<Tracking::Vector3D<double>> scattererMaxExtentVector = Tomography::DetectorMapping::instance()->GetScattererMaxExtent();
+
+		for(int i = 0 ; i < scattererMinExtentVector.size() ; i++){
+			truePositive &=    (fPocaPt.x() >= scattererMinExtentVector[i].x() && fPocaPt.x() <= scattererMaxExtentVector[i].x())
+						    && (fPocaPt.y() >= scattererMinExtentVector[i].y() && fPocaPt.y() <= scattererMaxExtentVector[i].y())
+							&& (fPocaPt.z() >= scattererMinExtentVector[i].z() && fPocaPt.z() <= scattererMaxExtentVector[i].z());
+			if(truePositive)
+				break;
+		}
+		return !truePositive;
+	}
+
+}
+
 
 static Functions *instance(){
 	if(!finstance){
@@ -282,7 +312,7 @@ void WriteToFile(std::string fileName,std::vector<Tomography::Voxel*> voxelsVect
 */
 
 
-void WriteToFile(std::string fileName,std::vector<Tomography::Voxel*> voxelsVector ){
+void WriteToFile(std::string fileName,std::vector<Tomography::Voxel_V2*> voxelsVector ){
    std::cout<<"Writing file " << fileName << "....  ";
    float dummy = 0.;
    std::ofstream fileHandle(fileName);
@@ -340,7 +370,7 @@ int GetVoxelNum(Tracking::Vector3D<double> pt){
 	return voxNum;
 }
 
-#define USE_ENCLOSING_VOXELS
+//#define USE_ENCLOSING_VOXELS
 #ifdef USE_ENCLOSING_VOXELS
 std::vector<Tracking::Vector3D<double>> GetEightCorners_Of_ImaginaryVoxel_CentredAtPocaPoint(Tracking::Vector3D<double> pocaPt){
 	int count = 0;

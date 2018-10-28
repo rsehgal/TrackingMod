@@ -5,6 +5,7 @@
 #include <vector>
 #include <string>
 #include <iostream>
+#include "base/Vector3D.h"
 
 namespace Tomography{
 
@@ -26,8 +27,16 @@ struct Detector{
 
 };
 
-}
+struct Scatterer{
+	std::string sName;
+	std::string sMaterial;
+	Tracking::Vector3D<double> sDim;
+	Tracking::Vector3D<double> sLocation;
 
+	Scatterer(std::string name, std::string material, Tracking::Vector3D<double> dim, Tracking::Vector3D<double> location) :
+		sName(name), sMaterial(material), sDim(dim), sLocation(location){}
+};
+}
 
 class DetectorMapping{
 	
@@ -41,6 +50,14 @@ class DetectorMapping{
 		std::string fGunString;
 		double fGunZ;
 		int fMaxNumOfEvents;
+
+		//For Scatterer
+		std::string fNumOfScatterersString;
+		int fNumOfScatterers;
+		std::vector<Mapping::Scatterer*> fScattererVector;
+		std::vector<Tracking::Vector3D<double>> scattererMin;
+		std::vector<Tracking::Vector3D<double>> scattererMax;
+
 
 		std::string fileName;
 		int fNumOfDetectors;
@@ -90,6 +107,15 @@ class DetectorMapping{
 
 		//This will return the full DetectorMap
 		std::vector<Mapping::Detector*>  GetDetectorVector() const { return fDetectorVector; }
+
+		//Get Scatterer Vectgor
+		std::vector<Mapping::Scatterer*>  GetScattererVector() const { return fScattererVector; }
+
+		//Calculate Extent of Scatterer
+		void CalculateScattererExtent();
+
+		std::vector<Tracking::Vector3D<double>> GetScattererMinExtent() const {return scattererMin;}
+		std::vector<Tracking::Vector3D<double>> GetScattererMaxExtent() const {return scattererMax;}
 
 		std::string GetPlotsLocation() const {return fPlotsLocation;}
 
