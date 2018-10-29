@@ -17,6 +17,7 @@ int main(int argc, char *argv[]){
 				  << "Following are possible values : Exact OR Fitted \n\n"
 				  << "./OfflineRunEventHelper <Exact/Fitted>\n"
 				  << "=======================================\n";
+		return 1;
 	}
 	std::string type = std::string(argv[1]);
 	Tomography::evolution::Voxelator::Create(50*cm,50*cm,45*cm,5*cm,5*cm,4.5*cm);
