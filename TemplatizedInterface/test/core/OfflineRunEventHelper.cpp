@@ -11,6 +11,13 @@
 
 
 int main(int argc, char *argv[]){
+	if(argc == 1){
+		std::cerr << "=======================================\n"
+				  << "Please provided the required argument \n\n"
+				  << "Following are possible values : Exact OR Fitted \n\n"
+				  << "./OfflineRunEventHelper <Exact/Fitted>\n"
+				  << "=======================================\n";
+	}
 	std::string type = std::string(argv[1]);
 	Tomography::evolution::Voxelator::Create(50*cm,50*cm,45*cm,5*cm,5*cm,4.5*cm);
 	{
