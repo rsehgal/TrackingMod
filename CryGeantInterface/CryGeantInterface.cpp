@@ -32,7 +32,7 @@ void CryGeantInterface::GeneratePrimariesForCry(G4Event *anEvent){
 	    G4Exception("PrimaryGeneratorAction", "1",
 	                RunMustBeAborted, *str);
 	  }
-	  G4String particleName;
+	  std::string particleName;
 	  vect->clear();
 	  gen->genEvent(vect);
 
@@ -57,21 +57,21 @@ void CryGeantInterface::GeneratePrimariesForCry(G4Event *anEvent){
 
 	    particleGun->SetParticleDefinition(particleTable->FindParticle((*vect)[j]->PDGid()));
 	    particleGun->SetParticleEnergy((*vect)[j]->ke()*MeV);
-	    //particleGun->SetParticlePosition(G4ThreeVector((*vect)[j]->x()*m, (*vect)[j]->y()*m, (*vect)[j]->z()*m));
-        double gunZ = Tomography::DetectorMapping::instance()->GetGunZ();
-	    particleGun->SetParticlePosition(G4ThreeVector((*vect)[j]->x()*cm, (*vect)[j]->y()*cm, gunZ)); //150*cm));
+	    double gunZ = Tomography::DetectorMapping::instance()->GetGunZ();
+	    particleGun->SetParticlePosition(G4ThreeVector((*vect)[j]->x()*m, (*vect)[j]->y()*m, gunZ)); //150*cm));
 	    particleGun->SetParticleMomentumDirection(G4ThreeVector((*vect)[j]->u(), (*vect)[j]->v(), (*vect)[j]->w()));
 	    particleGun->SetParticleTime((*vect)[j]->t());
 
-        double angleIncoming = CommonFunc::Functions::instance()->
+        double solidAngleIncoming = CommonFunc::Functions::instance()->
                       GetAngleInRadian(Tracking::Vector3D<double>((*vect)[j]->u(),
                                                                   (*vect)[j]->v(),
-                                                                  (*vect)[j]->w()),
+                                                                  (*vect)[j]->w()).Unit(),
                                                           Tracking::Vector3D<double>(0.,0.,-1.));
         double energy = (*vect)[j]->ke()*MeV;
-        Tomography::Files::instance()->Write("StatsFromGenerator.txt",2, angleIncoming,energy);
+        if(particleName == "muon")
+        	Tomography::Files::instance()->Write("StatsFromGenerator.txt",3,1., solidAngleIncoming,energy);
 
-		  //_____________________________________________________________________________________
+        //_____________________________________________________________________________________
 		  	  //Logic use to store real incoming muon angles in a vector of angle in Run
 /*
 		  	  B1Run* run

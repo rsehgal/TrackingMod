@@ -43,7 +43,7 @@ public:
 	void TestEventHelper(Track incoming, Track outgoing, std::string filename);
 
 	//This is a very special constructor and will be used during offline analysis
-	EventHelper(std::string fileToRead, std::string fileToWrite);
+	EventHelper(std::string fileToRead, std::string fileToWrite,bool forSimulation=true);
 
 	//Getters
 	Track GetIncomingVector() const {return fIncoming;}

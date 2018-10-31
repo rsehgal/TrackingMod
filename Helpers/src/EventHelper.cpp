@@ -72,7 +72,7 @@ void EventHelper::TestEventHelper(Track incoming, Track outgoing, std::string fi
 	}
 }
 
-EventHelper::EventHelper(std::string fileToRead, std::string fileToWrite){
+EventHelper::EventHelper(std::string fileToRead, std::string fileToWrite,bool forSimulation){
 	genuinePocaCounter = 0;
 	/* This should go through the event loop and call other constructors
 	 * and create the desired file
@@ -88,16 +88,22 @@ EventHelper::EventHelper(std::string fileToRead, std::string fileToWrite){
 	//Opening the file to store All PocaPt
 	Tomography::Files::instance()->Open(fileToWrite,Tomography::operation::write);
 
+	std::string filename = CommonFunc::Functions::instance()->GetFileName(fileToRead);
 
-
+	if(forSimulation){
 	//Opening the file to store P2 of incoming track, P1 of outgoing track, PoCA Point
 	//and scattering angle. Required by TUSHAR, may be useful information for MLEM.
-	std::string filename = CommonFunc::Functions::instance()->GetFileName(fileToRead);
 	Tomography::Files::instance()->Open(filename+"-InfoForMLEM.txt",Tomography::operation::write);
+	}
 
 	/* Opening the file to store Only Genuine PocaPt
 	 * Genuinie PoCA points are those which lie within the scatterer region
+	 *
+	 * Can be done only when you know the exact location of scatterers,
+	 * For Simulation certainly yes, but for real experiments,
+	 * it may be useful for test, when we know the location of scatterer.
 	 */
+
 	std::string genuinefileName = filename+"PocaPtGenuine.txt";
 	Tomography::Files::instance()->Open(genuinefileName,Tomography::operation::write);
 
