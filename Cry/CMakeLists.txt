@@ -35,6 +35,9 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${PROJECT_SOURCE_DIR}/cmake/modules)
 
 include(MacroUtilities)
 ################################################################################
+file(COPY ${PROJECT_SOURCE_DIR}/setup.file DESTINATION ${CMAKE_BINARY_DIR})
+find_package(ROOT REQUIRED)
+include_directories(${ROOT_INCLUDE_DIR})
 
 # see if we have CCACHE ( to avoid recompilation on branch switches )
 find_program(CCACHE_FOUND ccache)
@@ -51,13 +54,12 @@ file(GLOB sourcesCry ${sourcesCry} ${CMAKE_CURRENT_SOURCE_DIR}/src/*.cc)
 add_library(cry SHARED ${sourcesCry})
 add_executable(testMain ${CMAKE_CURRENT_SOURCE_DIR}/test/testMain.cc)
 target_link_libraries(testMain cry)
+add_executable(testDistribution ${CMAKE_CURRENT_SOURCE_DIR}/test/testDistribution.cc)
+target_link_libraries(testDistribution cry ${ROOT_LIBRARIES})
 
 add_executable(testOut ${CMAKE_CURRENT_SOURCE_DIR}/test/testOut.cc)
 target_link_libraries(testOut cry)
 
-
-find_package(ROOT REQUIRED)
-include_directories(${ROOT_INCLUDE_DIR})
 add_executable(testRoot ${CMAKE_CURRENT_SOURCE_DIR}/test/testRoot.cc)
 target_link_libraries(testRoot cry ${ROOT_LIBRARIES})
 
