@@ -119,13 +119,15 @@ int main( int argc, const char *argv[]) {
 
 
   TH1F *solidAngleCorrectedHist = new TH1F("Solid angle corrected AngularDistribution From CRY","Solid angle corrected AngularDistribution From CRY",numOfBins,0.,M_PI/2.);
+  std::ofstream outfile("zenithAngle.txt");
       for(int i =0  ; i < numOfBins ; i++){
       	double binCenter = solidAngleHist->GetXaxis()->GetBinCenter(i);
       	double binContent = solidAngleHist->GetBinContent(i);
+      	outfile << binCenter <<" " << binContent << std::endl;
       	std::cout << "binContent : " << binContent << " : binCenter : " << binCenter << std::endl;
-      	solidAngleCorrectedHist->SetBinContent(i,binContent/(std::sin(binCenter)));
+      	solidAngleCorrectedHist->SetBinContent(i,binContent/(2*M_PI*std::sin(binCenter)*std::cos(binCenter)));
       }
-
+  outfile.close();
 
   std::cout << "Run completed.\n";
   std::cout << "Total time simulated: " << gen.timeSimulated() << " seconds\n";
