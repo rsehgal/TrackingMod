@@ -152,6 +152,7 @@ EventHelper::EventHelper(std::string fileToRead, std::string fileToWrite,bool fo
 	//Tomography::Files::instance()->Close("InfoForMLEM.txt");
 	infile.close();
 	std::cout << "ActualHit Counter : " << hitCounter << " :: GenuinePoca Counter : " << genuinePocaCounter << std::endl;
+	std::cout << "PoCAAccuracyRatio : " << double(genuinePocaCounter)/hitCounter << std::endl;
 }
 
 
