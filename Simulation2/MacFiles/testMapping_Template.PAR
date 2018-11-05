@@ -1,0 +1,17 @@
+numberOfScatterer 1 
+TargetMaterial G4_Material 50 50 50 0 0 0
+startStripNumOfEachDetector 32
+numberOfStripsInEachPlane 32 
+worldSizeHalfLength 3000
+gunZ_In_mm 2500 
+numOfEvents NumOfEvents
+plotsLocation /var/www/html/Tomo/plot/
+DetectorName SlotNumber StartingChannelNum ZCoordinate DetectorType
+TOP 2 -1 2000 TRG
+BOT 2 7 -2000 TRG
+RPC-MT6 8 31 1050 GLASS
+RPC-MT5 7 31 750 GLASS
+RPC-MT4 6 31 450 GLASS
+RPC-MT3 5 31 -450 GLASS
+RPC-MT2 4 31 -750 GLASS
+RPC-MT1 3 31 -1050 GLASS
