@@ -116,6 +116,8 @@ EventHelper::EventHelper(std::string fileToRead, std::string fileToWrite,bool fo
 	int hitCounter = 0.;
 	//int genuinePocaCounter = 0;
 
+	std::ofstream parHandle("Par.txt",std::ios::app);
+
 	while(!infile.eof()){
 		infile >> incomingTrackP1X >> incomingTrackP1Y >> incomingTrackP1Z
 			   >> incomingTrackP2X >> incomingTrackP2Y >> incomingTrackP2Z
@@ -152,7 +154,11 @@ EventHelper::EventHelper(std::string fileToRead, std::string fileToWrite,bool fo
 	//Tomography::Files::instance()->Close("InfoForMLEM.txt");
 	infile.close();
 	std::cout << "ActualHit Counter : " << hitCounter << " :: GenuinePoca Counter : " << genuinePocaCounter << std::endl;
-	std::cout << "PoCAAccuracyRatio : " << double(genuinePocaCounter)/hitCounter << std::endl;
+	double par = double(genuinePocaCounter)/hitCounter;
+	std::cout << "PoCAAccuracyRatio : " << par << std::endl;
+	parHandle << par << " ";
+	parHandle.close();
+
 }
 
 
