@@ -1,8 +1,13 @@
+numberOfScatterer 4
+TargetU G4_Fe 50 50 50 -150 150 0
+TargetPb G4_Pb 50 50 50 150 -150 0
+TargetFe G4_Fe 50 50 50 150 150 0
+TargetAl G4_Al 50 50 50 -150 -150 0
 startStripNumOfEachDetector 32
-numberOfStringInEachPlane 32 
+numberOfStripsInEachPlane 32 
 worldSizeHalfLength 3000
 gunZ_In_mm 2500 
-numOfEvents 1000
+numOfEvents 50000
 plotsLocation /var/www/html/Tomo/plot/
 DetectorName SlotNumber StartingChannelNum ZCoordinate DetectorType
 TOP 2 -1 2000 TRG

@@ -283,6 +283,7 @@ void B1RunAction::EndOfRunAction(const G4Run* run)
 */
 
 
+/*
   std::cout << "======================================================================================" << std::endl;
   std::cout << "================= @@@@@@@@@@@@@@  Trying NEW Stuff  @@@@@@@@@@@@@@@===================" << std::endl;
   std::cout << "======================================================================================" << std::endl;
@@ -301,6 +302,7 @@ void B1RunAction::EndOfRunAction(const G4Run* run)
   	Tomography::RunHelper r("SampledFitted");
   }
 
+*/
 
 
 
