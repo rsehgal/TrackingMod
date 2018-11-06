@@ -90,6 +90,7 @@ int main( int argc, const char *argv[]) {
   int numOfBins = 40;
   TH1F *solidAngleHist = new TH1F("AngularDistribution From CRY","AngularDistribution From CRY",numOfBins,0.,M_PI/2.);
   TVector3 ref(0.,0.,-1.);
+  solidAngleHist->SetStats(0);
 
   // Generate the events
   std::vector<CRYParticle*> *ev=new std::vector<CRYParticle*>;
@@ -119,6 +120,7 @@ int main( int argc, const char *argv[]) {
 
 
   TH1F *solidAngleCorrectedHist = new TH1F("Solid angle corrected AngularDistribution From CRY","Solid angle corrected AngularDistribution From CRY",numOfBins,0.,M_PI/2.);
+  solidAngleCorrectedHist->SetStats(0);
   std::ofstream outfile("zenithAngle.txt");
       for(int i =0  ; i < numOfBins ; i++){
       	double binCenter = solidAngleHist->GetXaxis()->GetBinCenter(i);
@@ -147,6 +149,13 @@ int main( int argc, const char *argv[]) {
 				<< prob << std::endl;
 		std::cout << "CHI2/ndf = " << (chi2 / ndf) << std::endl;
 	}
+
+  TCanvas *solidAngle = new TCanvas();
+  solidAngleHist->Draw();
+
+  TCanvas *correctSolidAngle = new TCanvas();
+  solidAngleCorrectedHist->Draw();
+  solidAngleCorrectedHist->Fit("cosSqr");
 
   fApp->Run();
 

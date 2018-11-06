@@ -11,12 +11,13 @@
 #include <iostream>
 #include <fstream>
 #include "CommonFunc.h"
-
+#include <fstream>
 //using Tomography::VisualizationHelper;
 using Tracking::Vector3D;
 
 int main(int argc, char *argv[]){
 	Tomography::DetectorMapping::create("testMapping.txt");
+	std::ofstream rocHandle("Roc.txt",std::ios::app);
 	const char* filename = argv[1];
 	int truePositive = 0 ;
 	int falsePositive = 0 ;
@@ -37,6 +38,8 @@ int main(int argc, char *argv[]){
 
     std::cout << "TruePositive : " << truePositive << " : FalsePositive : " << falsePositive << std::endl;
     std::cout << "TPR : " << tpr <<" : FPR : " << fpr << std::endl;
+    rocHandle << tpr << " ";
+    rocHandle.close();
 
     return 0;
 
