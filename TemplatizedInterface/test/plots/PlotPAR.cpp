@@ -45,8 +45,13 @@ int main(){
 	}
 
 	TGraph *grNew = new TGraph(materialCode.size(),&materialCode[0],&parVector[0]);
+	//grNew->SetMinimum(0.);
+	//grNew->SetMaximum(1.);
 	grNew->SetMarkerStyle(kStar);
 	TAxis *xax = grNew->GetXaxis();
+	//xax->LabelsOption("v");
+	xax->SetLabelOffset(0.006);
+	xax->SetLabelSize(0.045);
 	i = 1;
 	while (i < xax->GetXmax()) {
 		int bin_index = xax->FindBin(i);
@@ -55,6 +60,7 @@ int main(){
 	}
 
 	grNew->Draw("AP");
+	grNew->Draw();
 	fApp->Run();
 }
 
