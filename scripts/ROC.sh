@@ -23,7 +23,7 @@ do
 		#Running Offline Analysis
         	./OfflineRunEventHelper Exact
 
-		mv TrackExact.txt TrackExact_$filename
+		mv TrackExact.txt "TrackExact_"$filename
 
 		./TestROC PocaPtRunHelper-Exact.txt
 
