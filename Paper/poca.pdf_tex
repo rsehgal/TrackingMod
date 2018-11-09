@@ -1,0 +1,67 @@
+%% Creator: Inkscape inkscape 0.92.3, www.inkscape.org
+%% PDF/EPS/PS + LaTeX output extension by Johan Engelen, 2010
+%% Accompanies image file 'poca.pdf' (pdf, eps, ps)
+%%
+%% To include the image in your LaTeX document, write
+%%   \input{<filename>.pdf_tex}
+%%  instead of
+%%   \includegraphics{<filename>.pdf}
+%% To scale the image, write
+%%   \def\svgwidth{<desired width>}
+%%   \input{<filename>.pdf_tex}
+%%  instead of
+%%   \includegraphics[width=<desired width>]{<filename>.pdf}
+%%
+%% Images with a different path to the parent latex file can
+%% be accessed with the `import' package (which may need to be
+%% installed) using
+%%   \usepackage{import}
+%% in the preamble, and then including the image with
+%%   \import{<path to file>}{<filename>.pdf_tex}
+%% Alternatively, one can specify
+%%   \graphicspath{{<path to file>/}}
+%% 
+%% For more information, please see info/svg-inkscape on CTAN:
+%%   http://tug.ctan.org/tex-archive/info/svg-inkscape
+%%
+\begingroup%
+  \makeatletter%
+  \providecommand\color[2][]{%
+    \errmessage{(Inkscape) Color is used for the text in Inkscape, but the package 'color.sty' is not loaded}%
+    \renewcommand\color[2][]{}%
+  }%
+  \providecommand\transparent[1]{%
+    \errmessage{(Inkscape) Transparency is used (non-zero) for the text in Inkscape, but the package 'transparent.sty' is not loaded}%
+    \renewcommand\transparent[1]{}%
+  }%
+  \providecommand\rotatebox[2]{#2}%
+  \newcommand*\fsize{\dimexpr\f@size pt\relax}%
+  \newcommand*\lineheight[1]{\fontsize{\fsize}{#1\fsize}\selectfont}%
+  \ifx\svgwidth\undefined%
+    \setlength{\unitlength}{449.68617399bp}%
+    \ifx\svgscale\undefined%
+      \relax%
+    \else%
+      \setlength{\unitlength}{\unitlength * \real{\svgscale}}%
+    \fi%
+  \else%
+    \setlength{\unitlength}{\svgwidth}%
+  \fi%
+  \global\let\svgwidth\undefined%
+  \global\let\svgscale\undefined%
+  \makeatother%
+  \begin{picture}(1,0.8480378)%
+    \lineheight{1}%
+    \setlength\tabcolsep{0pt}%
+    \put(0,0){\includegraphics[width=\unitlength,page=1]{poca.pdf}}%
+    \put(0.0623018,0.86339693){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\begin{minipage}{0.12866117\unitlength}\raggedright \end{minipage}}}%
+    \put(0.06134876,0.85910824){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\begin{minipage}{0.11841591\unitlength}\raggedright P1\end{minipage}}}%
+    \put(0.27675289,0.74101958){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\begin{minipage}{0.11841591\unitlength}\raggedright P2\end{minipage}}}%
+    \put(0.49023507,0.23566722){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\begin{minipage}{0.11841591\unitlength}\raggedright Qc\end{minipage}}}%
+    \put(0.10163076,0.05387373){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\begin{minipage}{0.11841591\unitlength}\raggedright Q1\end{minipage}}}%
+    \put(0.30431768,0.130659){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\begin{minipage}{0.11841591\unitlength}\raggedright Q2\end{minipage}}}%
+    \put(0.46680079,0.65223371){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\begin{minipage}{0.11841591\unitlength}\raggedright Pc\end{minipage}}}%
+    \put(0.51131754,0.44709064){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\begin{minipage}{0.08930471\unitlength}\raggedright \end{minipage}}}%
+    \put(0.50999519,0.39878726){\color[rgb]{0,0,0}\makebox(0,0)[lt]{\lineheight{1.25}\smash{\begin{tabular}[t]{l}PoCA\end{tabular}}}}%
+  \end{picture}%
+\endgroup%

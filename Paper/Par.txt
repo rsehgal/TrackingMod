@@ -1,0 +1,3 @@
+numOfMaterials 4
+Al Fe Pb U
+0.794632 0.816109 0.82693 0.822137 
