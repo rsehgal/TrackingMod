@@ -53,9 +53,10 @@ Tomography::Track CreateTrackFromHitPointVector(std::vector<Tracking::Vector3D<d
 //ROOT Color palette. Giving good results
 static double CreateColorVal(double color){
 		 TColor::SetPalette(1, 0);
+		// gStyle->SetPalette(55);
 		 //gStyle->SetPalette(kDarkBodyRadiator);
 		//gStyle->SetPalette(kTemperatureMap);
-		 const Int_t nCol = 10;//TColor::GetNumberOfColors();
+		 const Int_t nCol = 150;//TColor::GetNumberOfColors();
 		 float min = 0, max = 50.; // your range of values
 		 double colorVal = TColor::GetColorPalette((color - min)/(max-min) * nCol);
 		 return colorVal;

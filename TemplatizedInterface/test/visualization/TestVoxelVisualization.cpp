@@ -23,7 +23,7 @@ int main(int argc, char *argv[]) {
 	//gStyle->SetPalette(kRainBow);
 
 	std::ifstream filehandle(argv[1]);
-	int numOfEvents = atoi(argv[2]);
+	//int numOfEvents = atoi(argv[2]);
 	double x = 0., y = 0., z = 0.;
 	double colorSD = 0.;
 	double rl = 0.;
@@ -33,7 +33,8 @@ int main(int argc, char *argv[]) {
 
 	int i = 0;
 
-	while (numOfEvents) {
+	//while (numOfEvents) {
+	while(!filehandle.eof()){
 		i++;
 		filehandle >> x >> y >> z >> colorSD >> rl;
 		std::cout << x << " , " << y << " , " << z << " , " << colorSD << " , "
@@ -44,7 +45,8 @@ int main(int argc, char *argv[]) {
 		if(rl < upperRLVal)
 			//v->Register(voxDim, voxCenter, rl);
 			v->Register(voxDim, voxCenter, rl);
-		numOfEvents--;
+
+		//numOfEvents--;
 	}
 
 	v->Lock();
