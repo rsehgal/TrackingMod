@@ -1,12 +1,16 @@
 #!/bin/sh
-rm -rf Par.txt
+rm -rf Tpr.txt Fpr.txt
+rm -rf TprData
+mkdir TprData
 echo "numOfMaterials 4" > Tpr.txt
 echo "Al Fe Pb U" >> Tpr.txt
-echo "1000 5000 10000 15000 20000" >> Tpr.txt
+echo "numberOfEvents 6" >> Tpr.txt
+echo "5000. 10000. 20000. 30000. 50000. 100000." >> Tpr.txt
+cp Tpr.txt Fpr.txt
 #numOfEvents=10000
 for material in Al Fe Pb U
 do
-	for numOfEvents in 1000 5000 10000 15000 20000
+	for numOfEvents in 5000 10000 20000 30000 50000 100000
 	do
 		filename=$material"_"$numOfEvents".txt"
 
@@ -22,15 +26,18 @@ do
 
 		#Running Offline Analysis
         	./OfflineRunEventHelper Exact
+		./TestTpr PocaPtRunHelper-Exact.txt
 
-		mv TrackExact.txt "TrackExact_"$filename
+		mv TrackExact.txt "TprData/TrackExact_"$filename
+		mv Exact.root "TprData/Exact_"$filename".root"
 
-		./TestROC PocaPtRunHelper-Exact.txt
 
 		#
 	done
-
 	echo "" >> Tpr.txt
+	echo "" >> Fpr.txt
+
+
 
 done
 
