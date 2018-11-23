@@ -84,7 +84,7 @@ static Vector3D<double> UnpackColor(double f) {
 
 template <bool ForSimulation>
 static bool IsFalsePositivePoca(Tracking::Vector3D<double> fPocaPt){
-	bool truePositive = true;
+	bool truePositive = false;//true;
 	if(!ForSimulation)
 		return !truePositive;
 	else{
@@ -93,7 +93,7 @@ static bool IsFalsePositivePoca(Tracking::Vector3D<double> fPocaPt){
 		std::vector<Tracking::Vector3D<double>> scattererMaxExtentVector = Tomography::DetectorMapping::instance()->GetScattererMaxExtent();
 
 		for(int i = 0 ; i < scattererMinExtentVector.size() ; i++){
-			truePositive &=    (fPocaPt.x() >= scattererMinExtentVector[i].x() && fPocaPt.x() <= scattererMaxExtentVector[i].x())
+			truePositive |=    (fPocaPt.x() >= scattererMinExtentVector[i].x() && fPocaPt.x() <= scattererMaxExtentVector[i].x())
 						    && (fPocaPt.y() >= scattererMinExtentVector[i].y() && fPocaPt.y() <= scattererMaxExtentVector[i].y())
 							&& (fPocaPt.z() >= scattererMinExtentVector[i].z() && fPocaPt.z() <= scattererMaxExtentVector[i].z());
 			if(truePositive)
