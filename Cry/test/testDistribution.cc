@@ -89,6 +89,8 @@ int main( int argc, const char *argv[]) {
   cosSqr->SetParameters(1,2);
   int numOfBins = 40;
   TH1F *solidAngleHist = new TH1F("AngularDistribution From CRY","AngularDistribution From CRY",numOfBins,0.,M_PI/2.);
+  solidAngleHist->GetYaxis()->SetTitle("#frac{dN}{d#theta}");
+  solidAngleHist->GetXaxis()->SetTitle("#theta (radian)");
   TVector3 ref(0.,0.,-1.);
 
   // Generate the events
@@ -119,6 +121,8 @@ int main( int argc, const char *argv[]) {
 
 
   TH1F *solidAngleCorrectedHist = new TH1F("Solid angle corrected AngularDistribution From CRY","Solid angle corrected AngularDistribution From CRY",numOfBins,0.,M_PI/2.);
+  solidAngleCorrectedHist->GetYaxis()->SetTitle("I_{#theta}  ( cm^{-2}sec^{-1}st^{-1})");
+  solidAngleCorrectedHist->GetXaxis()->SetTitle("#theta (radian)");
   std::ofstream outfile("zenithAngle.txt");
       for(int i =0  ; i < numOfBins ; i++){
       	double binCenter = solidAngleHist->GetXaxis()->GetBinCenter(i);
@@ -147,6 +151,13 @@ int main( int argc, const char *argv[]) {
 				<< prob << std::endl;
 		std::cout << "CHI2/ndf = " << (chi2 / ndf) << std::endl;
 	}
+
+  new TCanvas();
+  solidAngleHist->Draw();
+
+  new TCanvas();
+  solidAngleCorrectedHist->Draw();
+  solidAngleCorrectedHist->Fit("cosSqr");
 
   fApp->Run();
 
