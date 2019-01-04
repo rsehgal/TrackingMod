@@ -15,6 +15,7 @@
 #include <TMatrixD.h>
 #include <TMatrix.h>
 #include "ScatteringDensityV2.h"
+#include <fstream>
 
 namespace Tomography {
 
@@ -186,9 +187,20 @@ struct EachMuonData{
 		this->sScatteringData.sExy = scatteringData.sExy;
 		this->sScatteringData.sPr = scatteringData.sPr;
 
+		WriteScatteringData();
 		CreateWeightedMatrix();
 		SetCovarianceMatrix();
 		SetConditionalExpectation();
+	}
+
+	void WriteScatteringData(){
+		std::ofstream outfile("ScatteringData.txt",std::ios::app);
+		outfile << this->sScatteringData.sDeltaThetaX << " "
+				<< this->sScatteringData.sDeltaThetaY << " "
+				<< this->sScatteringData.sDeltaX << " "
+				<< this->sScatteringData.sDeltaY << " "
+				<< this->sScatteringData.sPr << std::endl;
+		outfile.close();
 	}
 
 	//Variables to store covariance matrix

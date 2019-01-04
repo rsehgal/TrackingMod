@@ -106,6 +106,7 @@ void MLEM::VoxelFinder(Tomography::Track trackIncoming,Tomography::Track trackOu
 	std::cout << "-------------------- Start to Mid ---------------------------" << std::endl;
 	double epsilon = 0.00001;
 	double T1 = 0.;
+	double pocaStep = 0.;
 	//////////////////////////////////////////////////////////////////////////////////
 	{
 		VoxelNavigator voxelNavigator;
@@ -151,9 +152,12 @@ void MLEM::VoxelFinder(Tomography::Track trackIncoming,Tomography::Track trackOu
 		Tracking::Vector3D<double> finalPocaPt = voxelHitPt + dir * stepFinal;
 		std::cout << "Final Poca Point : "; finalPocaPt.Print();
 		double L = stepFinal;
+		pocaStep = stepFinal;
 		T += L;
 		T1 += L;
-		fLTVectorForOneTrack.push_back(LTOfEachVoxel(pocaPtVoxelNum,L,T));
+		//fLTVectorForOneTrack.push_back(LTOfEachVoxel(pocaPtVoxelNum,L,T));
+
+
 		//fLTVectorForOneTrack.push_back(LTOfEachVoxel(pocaPtVoxelNum,L,T,trackIncoming,trackOutgoing));
 
 	}
@@ -174,7 +178,10 @@ void MLEM::VoxelFinder(Tomography::Track trackIncoming,Tomography::Track trackOu
 			Tracking::Vector3D<double> dir = tr.GetDirCosine();
 			Tracking::Vector3D<double> voxelHitPt = startPoint + dir * epsilon;
 			hitPointVoxelNum = voxelator->GetVoxelNumber(voxelHitPt);
+			int count = 0;
 			while (endPtVoxelNum != hitPointVoxelNum) {
+				count++;
+
 				//voxelHitPt.SetZ(voxelHitPt.z() - epsilon);
 				//
 				int voxelNum = voxelator->GetVoxelNumber(voxelHitPt);
@@ -186,6 +193,7 @@ void MLEM::VoxelFinder(Tomography::Track trackIncoming,Tomography::Track trackOu
 				double step = voxelNavigator.ComputeStep(voxelHitPt, dir,
 						voxelCenter);
 				std::cout << "Calculated Step value :  " << step << std::endl;
+
 				voxelHitPt = voxelHitPt + dir * (step+epsilon);
 				std::cout << "Moved POINT : "; voxelHitPt.Print();
 				hitPointVoxelNum = voxelator->GetVoxelNumber(voxelHitPt);;
@@ -193,7 +201,13 @@ void MLEM::VoxelFinder(Tomography::Track trackIncoming,Tomography::Track trackOu
 				T += L;
 				//std::cout << "T : " << T << std::endl;
 				T2 += L;
+
+				if (count == 1) {
+				  pocaStep += step;
+				  fLTVectorForOneTrack.push_back(LTOfEachVoxel(voxelNum,pocaStep,T));
+			   }else{
 				fLTVectorForOneTrack.push_back(LTOfEachVoxel(voxelNum,L,T));
+			   }
 				//fLTVectorForOneTrack.push_back(LTOfEachVoxel(voxelNum,L,T,trackIncoming,trackOutgoing));
 
 			}
@@ -404,9 +418,10 @@ LambdaUpdater::~LambdaUpdater() {
 void MLEM::EMUpdate(){
 
 	//Iteration loop
-	for (int i = 0; i < 10; i++) {
+	for (int i = 0; i < 1; i++) {
 
 		std::cout << "ITERNO : " << i << std::endl;
+		std::cout << "VectorOfLTVector Size : " << fVectorOfLTVector.size() << std::endl;
 
 		fVectorOfMuonData.clear();
 
@@ -417,6 +432,7 @@ void MLEM::EMUpdate(){
 					fVectorOfMuonTrack[j].sOutgoing);
 			//Below logic should be applied to all the muons
 			EachMuonData muonData(fVectorOfLTVector[j], s);
+			muonData.Print();
 			//muonData.sLTVectorForEachMuon
 			fVectorOfMuonData.push_back(muonData);
 
