@@ -18,11 +18,13 @@ using Tomography::Track;
 //using Vector3D<double> = Tracking::Vector3D<double>;
 using Tracking::Vector3D;//<double>;
 
+/*
 #ifdef VERBOSE
 bool verbose = true;
 #else
 bool verbose = false;
 #endif
+*/
 
 /* if xdir set to true then this will return the
  * displacement in X direction, otherwise in
@@ -42,6 +44,15 @@ bool verbose = false;
  */
 class Delta{
 public:
+
+/*
+#ifdef VERBOSE
+bool verbose = true;
+#else
+bool verbose = false;
+#endif
+*/
+
 template<bool xdir>
 static double DeltaLinear(Track incoming, Track outgoing){
 	if(xdir){
@@ -66,8 +77,10 @@ static double DeltaLinear(Track incoming, Track outgoing, double FirstBottomDete
 
 	Track newIncoming(incoming.GetP1(), Vector3D<double>(0.,0.,0.));
 	double L = (FirstBottomDetectorZ - incoming.GetP2().z())/incoming.GetDirection().z();
-	if(verbose)
+	//if(verbose)
+#ifdef VERBOSE
 		std::cout << "DistaneTravelled : " << L << std::endl;
+#endif
 	Vector3D<double> p2(incoming.GetP2().x() + incoming.GetDirection().x() * L,
 			incoming.GetP2().y() + incoming.GetDirection().y() * L,
 			FirstBottomDetectorZ);
@@ -118,8 +131,10 @@ static double DeltaAngular(Track incoming, Track outgoing){
 	double thetaIncoming = CommonFunc::Functions::instance()->GetAngleInRadian(newIncoming,refIncoming);
 	double thetaOutgoing = CommonFunc::Functions::instance()->GetAngleInRadian(newOutgoing,refOutgoing);
 
-	if(verbose)
+//	if(verbose)
+#ifdef VERBOSE
 		std::cout<<"ThetaIncoming : " <<  thetaIncoming <<" : ThetaOutgoing : " << thetaOutgoing << std::endl;
+#endif
 	return (thetaOutgoing-thetaIncoming) ;
 }
 

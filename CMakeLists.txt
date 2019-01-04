@@ -80,6 +80,12 @@ option(SHOWPLOTS "Show various plots, Useful when operating in Interactive mode"
 option(MYSQL "Include MYSQL" OFF)
 option(USE_ROOT_FITTING "Use Root Fitting" OFF)
 option(ROBUST_FIT "Use ROBUST Fitting" OFF)
+option(GMM "Use Gaussian Mixture Model for filtering and Clustering" OFF)
+
+if(GMM)
+add_subdirectory(gmm)
+endif(GMM)
+	
 
 if(USE_ROOT_FITTING)
 add_definitions(-DUSE_ROOT_FITTING)
@@ -254,6 +260,7 @@ ${CMAKE_SOURCE_DIR}/Helpers/inc
 ${CMAKE_SOURCE_DIR}/inc
 ${CMAKE_SOURCE_DIR}
 ${CMAKE_SOURCE_DIR}/CryGeantInterface
+${CMAKE_SOURCE_DIR}/base
 )
 
 if(EVE)

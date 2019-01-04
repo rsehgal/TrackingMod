@@ -22,13 +22,42 @@
 #include "TColor.h"
 #include "TStyle.h"
 #include "DetectorMapping.h"
+#include "Track.h"
 using Tracking::Vector3D;
+
 
 namespace CommonFunc{
 
 
 static Precision Distance(Vector3D<Precision> p, Vector3D<Precision> q){
 	return (p-q).Mag();
+}
+
+static void GetTracksVector(std::string fileToRead, std::vector<Track> &incomingTrackVector,std::vector<Track> &outgoingTrackVector){
+	std::ifstream infile(fileToRead);
+	//12 variable to read xyz for two tracks
+	double incomingTrackP1X = 0.,incomingTrackP1Y = 0.,incomingTrackP1Z = 0.;
+	double incomingTrackP2X = 0.,incomingTrackP2Y = 0.,incomingTrackP2Z = 0.;
+	double outgoingTrackP1X = 0.,outgoingTrackP1Y = 0.,outgoingTrackP1Z = 0.;
+	double outgoingTrackP2X = 0.,outgoingTrackP2Y = 0.,outgoingTrackP2Z = 0.;
+	double scattererHitted = 0.;
+
+	while(!infile.eof()){
+			infile >> incomingTrackP1X >> incomingTrackP1Y >> incomingTrackP1Z
+				   >> incomingTrackP2X >> incomingTrackP2Y >> incomingTrackP2Z
+				   >> outgoingTrackP1X >> outgoingTrackP1Y >> outgoingTrackP1Z
+				   >> outgoingTrackP2X >> outgoingTrackP2Y >> outgoingTrackP2Z
+				   >> scattererHitted;
+
+	     	Tomography::Track incoming(Tracking::Vector3D<double>(incomingTrackP1X,incomingTrackP1Y,incomingTrackP1Z),
+									   Tracking::Vector3D<double>(incomingTrackP2X,incomingTrackP2Y,incomingTrackP2Z));
+
+			Tomography::Track outgoing(Tracking::Vector3D<double>(outgoingTrackP1X,outgoingTrackP1Y,outgoingTrackP1Z),
+									   Tracking::Vector3D<double>(outgoingTrackP2X,outgoingTrackP2Y,outgoingTrackP2Z));
+
+			incomingTrackVector.push_back(incoming);
+			outgoingTrackVector.push_back(outgoing);
+	}
 }
 
 class Functions{

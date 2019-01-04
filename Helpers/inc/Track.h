@@ -20,6 +20,7 @@ class Track {
 	Tracking::Vector3D<double> fP2;
 	Tracking::Vector3D<double> fDirCosine;
 	Tracking::Vector3D<double> fDirection;
+	Tracking::Vector3D<double> fDirectionRatio;
 public:
   Track();
   Track(Tracking::Vector3D<double> p1,Tracking::Vector3D<double> p2);
@@ -42,6 +43,7 @@ public:
 
   Tracking::Vector3D<double> GetDirCosine(){return fDirCosine;}
   Tracking::Vector3D<double> GetDirection(){return fDirection;}
+  Tracking::Vector3D<double> GetDirectionRatio(){return fDirectionRatio;}
   void Print(){fP1.Print(); std::cout<<" : " ; fP2.Print();}
 
   //Overloading operator

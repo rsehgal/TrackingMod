@@ -37,6 +37,7 @@ Track::Track(G4ThreeVector p1,G4ThreeVector p2){
 void Track::CalculateDirCosine(){
 	fDirCosine = (fP2-fP1).Unit();
 	fDirection = (fP2-fP1).Unit();
+	fDirectionRatio = (fP2-fP1);
 }
 
 void Track::operator = (const Track &newVal){
@@ -44,6 +45,7 @@ void Track::operator = (const Track &newVal){
 	this->fP2 = newVal.fP2;
 	this->fDirCosine = newVal.fDirCosine;
 	this->fDirection = newVal.fDirection;
+	this->fDirectionRatio = newVal.fDirectionRatio;
 }
 
 } /* namespace Tomography */
