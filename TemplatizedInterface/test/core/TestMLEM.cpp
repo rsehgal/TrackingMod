@@ -32,10 +32,11 @@ int main(int argc, char *argv[]){
 
 	std::vector<Tomography::Track> incomingTrackVector;
 	std::vector<Tomography::Track> outgoingTrackVector;
+	std::vector<double> momentumVector;
 
 	std::string type = std::string(argv[1]);
 	//Tomography::evolution::Voxelator::Create(50*cm,50*cm,75*cm,20*cm,20*cm,30*cm);
-	Tomography::evolution::Voxelator::Create(50*cm,50*cm,45*cm,20*cm,20*cm,18*cm);
+	Tomography::evolution::Voxelator::Create(50*cm,50*cm,45*cm,5*cm,5*cm,4.5*cm);
 		//{
 			std::string fileToRead = "Track"+type+".txt";
 			std::string fileToWrite = "EventHelperTrack"+type+".txt";
@@ -52,17 +53,27 @@ int main(int argc, char *argv[]){
 		//Doing Real test now
 
 
-		CommonFunc::GetTracksVector(fileToRead,incomingTrackVector,outgoingTrackVector);
+
+		CommonFunc::GetTracksVector(fileToRead,incomingTrackVector,outgoingTrackVector, momentumVector);
 		std::cout << "Ayush : Total Number of Tracks : " << incomingTrackVector.size() << std::endl;
 		for(int i = 0 ; i < incomingTrackVector.size() ; i++){
 		//for(int i = 0 ; i < 10 ; i++){
 			std::cout << "Shachi : Processing Event no : " << i << std::endl;
 			Tomography::Track incoming = incomingTrackVector[i];
 			Tomography::Track outgoing = outgoingTrackVector[i];
-			mlem.VoxelFinder(incoming,outgoing);
+			double momentum = momentumVector[i];
+			mlem.VoxelFinder(incoming,outgoing,momentum);
 
 		}
 
+
+		//-225.578 -46.7443 1060 -227.629 23.2416 460 -235.187 137.855 -440 -243.484 213.768 -1040 0
+/*
+		Tomography::Track incoming(Tracking::Vector3D<double>(-225.578, -46.7443, 1060),Tracking::Vector3D<double>(-227.629, 23.2416, 460));
+		Tomography::Track outgoing(Tracking::Vector3D<double>(-235.187, 137.855, -440),Tracking::Vector3D<double>(-243.484 ,213.768, -1040));
+		mlem.VoxelFinder(incoming,outgoing);
+
+*/
 		mlem.EMUpdate();
 
 		std::ofstream outfile("mlem.txt");

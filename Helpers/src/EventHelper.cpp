@@ -84,6 +84,7 @@ EventHelper::EventHelper(std::string fileToRead, std::string fileToWrite,bool fo
 	double outgoingTrackP1X = 0.,outgoingTrackP1Y = 0.,outgoingTrackP1Z = 0.;
 	double outgoingTrackP2X = 0.,outgoingTrackP2Y = 0.,outgoingTrackP2Z = 0.;
 	double scattererHitted = 0.;
+	double momentum = 0.;
 
 	//Opening the file to store All PocaPt
 	Tomography::Files::instance()->Open(fileToWrite,Tomography::operation::write);
@@ -123,7 +124,7 @@ EventHelper::EventHelper(std::string fileToRead, std::string fileToWrite,bool fo
 			   >> incomingTrackP2X >> incomingTrackP2Y >> incomingTrackP2Z
 			   >> outgoingTrackP1X >> outgoingTrackP1Y >> outgoingTrackP1Z
 			   >> outgoingTrackP2X >> outgoingTrackP2Y >> outgoingTrackP2Z
-			   >> scattererHitted;
+			   >> scattererHitted >> momentum;
 
 		if(scattererHitted == 1)
 			hitCounter++;
