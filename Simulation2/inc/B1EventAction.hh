@@ -61,6 +61,9 @@ static std::vector<std::string> hittedStripNameVector;
 static bool topPlaneHit;
 static bool bottomPlaneHit;
 
+//Required for MLEM
+static double momentum;
+static double meanMomentum;
 
   public:
 	static int GetEventMultiplicity(){return evMultiplicity;}
@@ -74,6 +77,8 @@ static bool bottomPlaneHit;
     void AddEdep(G4double edep) { fEdep += edep; }
 
     void InitializeBranchMap();
+
+    static int GetEffectiveEventNumbers()  {return effEvNo;}
 
   private:
     G4double  fEdep;

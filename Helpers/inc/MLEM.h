@@ -176,6 +176,10 @@ struct EachMuonData{
 	ScatteringData sScatteringData;
 	std::vector<double> sNewLambdaFromMuon;
 
+
+	//Flag to store validity of Covariance Matrix
+	bool sIsInvertibleCovarianceMatrix;
+
 	EachMuonData(std::vector<LTOfEachVoxel> ltVectorForEachTrack):sLTVectorForEachMuon(ltVectorForEachTrack){}
 	EachMuonData(std::vector<LTOfEachVoxel> ltVectorForEachTrack, ScatteringData scatteringData):sLTVectorForEachMuon(ltVectorForEachTrack){
 		this->sScatteringData.sDeltaThetaX = scatteringData.sDeltaThetaX;
@@ -187,10 +191,22 @@ struct EachMuonData{
 		this->sScatteringData.sExy = scatteringData.sExy;
 		this->sScatteringData.sPr = scatteringData.sPr;
 
+		sIsInvertibleCovarianceMatrix = true;
+
 		WriteScatteringData();
 		CreateWeightedMatrix();
+		Print();
 		SetCovarianceMatrix();
 		SetConditionalExpectation();
+	}
+
+	//Just changed the position of this function for readability
+	void CreateWeightedMatrix() {
+		int size = sLTVectorForEachMuon.size();
+		for (int j = 0; j < size; j++) {
+			double totalPathLength = sLTVectorForEachMuon[size - 1].sT;
+			sLTVectorForEachMuon[j].CreateWeightedMatrix(totalPathLength);
+		}
 	}
 
 	void WriteScatteringData(){
@@ -207,6 +223,8 @@ struct EachMuonData{
 	double sCx;
 	double sCy;
 	double sCxy;
+
+
 
 	double Trace(TMatrixD T) {
 		double trace = 0;
@@ -244,7 +262,9 @@ struct EachMuonData{
 
 		if (CDet<=0) {
 			cerr<<"MuonEventData::SetConditionalExpectation(): WARNING: Covariance matrix inversion failed (determinant is zero or negative)!"<<endl;
-			exit(1);
+			//exit(1);
+			sIsInvertibleCovarianceMatrix = false;
+			return ;
 		}
 
 		TMatrixD CInv(2,2);
@@ -418,13 +438,7 @@ struct EachMuonData{
 		std::cout <<"\n ======================================================" << std::endl;
 	}
 
-	void CreateWeightedMatrix() {
-		int size = sLTVectorForEachMuon.size();
-		for (int j = 0; j < size; j++) {
-			double totalPathLength = sLTVectorForEachMuon[size - 1].sT;
-			sLTVectorForEachMuon[j].CreateWeightedMatrix(totalPathLength);
-		}
-	}
+
 
 };
 
@@ -458,7 +472,9 @@ public:
 struct MuonTrack{
 	Tomography::Track sIncoming;
 	Tomography::Track sOutgoing;
+	double sPr;
 	MuonTrack(Tomography::Track incoming, Tomography::Track outgoing):sIncoming(incoming), sOutgoing(outgoing){}
+	MuonTrack(Tomography::Track incoming, Tomography::Track outgoing, double pr):sIncoming(incoming), sOutgoing(outgoing),sPr(pr){}
 };
 
 
@@ -490,8 +506,8 @@ public:
 	virtual ~MLEM();
 	void DoExpectation();
 	void DoMaximization();
-	ScatteringData SetScatteringData(Tomography::Track trackIncoming,Tomography::Track trackOutgoing);
-	void VoxelFinder(Tomography::Track trackIncoming,Tomography::Track trackOutgoing);
+	ScatteringData SetScatteringData(Tomography::Track trackIncoming,Tomography::Track trackOutgoing, double pr);
+	void VoxelFinder(Tomography::Track trackIncoming,Tomography::Track trackOutgoing, double pr = 1.);
 	void CreateWeightedMatrix();
 	void EMUpdate();
 	void UpdateScatteringDensity(LambdaUpdater  lambdaUpdater);

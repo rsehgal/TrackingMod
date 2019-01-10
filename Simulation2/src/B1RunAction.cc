@@ -262,6 +262,10 @@ void B1RunAction::EndOfRunAction(const G4Run* run)
   //Below line will close all the registered file in one shot.
   Tomography::Files::instance()->Close();
 
+  std::cerr << "Total Num Of Events : " << nofEvents << std::endl;
+  std::cerr << "Effective Num Of Events : " << B1EventAction::GetEffectiveEventNumbers() << std::endl;
+  std::cerr << "Mean Momentum : " << ((B1EventAction::meanMomentum / 1000. ) / B1EventAction::GetEffectiveEventNumbers()) << std::endl;
+
   /* Creating RunHelper, because its constructor will automatically  
   ** call the functions in desired sequence to do filteration stuff
   */

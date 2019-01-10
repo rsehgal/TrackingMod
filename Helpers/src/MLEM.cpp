@@ -72,15 +72,15 @@ void MLEM::CreateWeightedMatrix(){
 
 //This should do the work of finding the voxel and L,T pair for each muon and store the
 //data in fVectorOfLTVector
-void MLEM::VoxelFinder(Tomography::Track trackIncoming,Tomography::Track trackOutgoing){
+void MLEM::VoxelFinder(Tomography::Track trackIncoming,Tomography::Track trackOutgoing, double pr){
 
 	//Very important
 	fLTVectorForOneTrack.clear();
 
 	//Calculating the Scattering data in X and Y direction.
 	//The first step of MLEM Algo
-	ScatteringData s = SetScatteringData(trackIncoming,trackOutgoing);
-	fVectorOfMuonTrack.push_back(MuonTrack(trackIncoming,trackOutgoing));
+	ScatteringData s = SetScatteringData(trackIncoming,trackOutgoing,pr);
+	fVectorOfMuonTrack.push_back(MuonTrack(trackIncoming,trackOutgoing,pr));
 
 
 	std::cout << "======== Entering Voxel Finder=======" << std::endl;
@@ -249,113 +249,6 @@ void MLEM::VoxelFinder(Tomography::Track trackIncoming,Tomography::Track trackOu
 
 	//////////////////////////////////////////////////////////////////////////////////////
 
-	/*
-
-
-	{
-	Tomography::Track tr(inComingHitPt, pocaPt);
-	Tracking::Vector3D<double> startPoint = tr.GetP1();
-	Tracking::Vector3D<double> midPoint = tr.GetP2();
-//	double T = 0.;
-	std::cout << "VoxelatorDim.Z : " << voxelator->GetVoxelatorDim().z() << std::endl;
-	for (int i = 0; i < voxelator->GetVoxelatorDim().z(); i++) {
-
-		double nextZIntersection = (voxelator->GetVoxelizedVolumeDim().z() / 2.) - (i * voxelator->GetEachVoxelDim().z());
-		std::cout << "nextZIntersection : " << nextZIntersection << std::endl;
-		if(nextZIntersection < pocaPt.z()){
-			std::cout << "**** Break Condition Triggered ********" << std::endl;
-			break;
-		}
-		Tracking::Vector3D<double> voxelHitPt = Delta::GetIntersection(tr, nextZIntersection , 3);
-		voxelHitPt.SetZ(voxelHitPt.z() + epsilon);
-
-		std::cout << "Voxel Hit Point for Slice : " << i << " : VoxelNumber : "
-				<< voxelator->GetVoxelNumber(voxelHitPt) << std::endl;
-		//<< " : PocaPt_VoxelNumber : " << GetVoxelNumber(fPocaPt) << " : Voxel Point ";
-		voxelHitPt.Print();
-		vectOfVoxels.push_back(voxelator->GetVoxelNumber(voxelHitPt));
-
-		if (i != 0) {
-			double voxelDist = CommonFunc::Distance(voxelHitPt, startPoint);
-			std::cout << " VoxelDist : " << voxelDist << std::endl;
-		}
-
-
-		int voxelNum = voxelator->GetVoxelNumber(startPoint);
-		double L = CommonFunc::Distance(startPoint,voxelHitPt);
-		T += L;
-		T1 += L;
-		fLTVectorForOneTrack.push_back(LTOfEachVoxel(voxelNum,L,T));
-
-		startPoint = voxelHitPt;
-	}
-	//std::cout << "Start Point : " ; startPoint.Print();
-	int voxelNum = voxelator->GetVoxelNumber(startPoint);
-	double L = CommonFunc::Distance(startPoint,midPoint);
-	//std::cout << "Tail Distance : " << L << std::endl;
-	T += L;
-	T1 += L;
-	fLTVectorForOneTrack.push_back(LTOfEachVoxel(voxelNum,L,T));
-	}
-
-	std::cout << "Distance from Start To Mid : " << CommonFunc::Distance(inComingHitPt, pocaPt) <<" :: Cumulative distance Calculated in Steps : " << T << std::endl;
-	std::cout << "-------------------- Mid to End ---------------------------" << std::endl;
-
-	double T2 = 0.;
-	{
-	Tomography::Track tr(pocaPt,outGoingHitPt);
-	Tracking::Vector3D<double> startPoint = tr.GetP1();
-	Tracking::Vector3D<double> endPoint = tr.GetP2();
-	//double T = 0.;
-	for (int i = 0; i <= voxelator->GetVoxelatorDim().z(); i++) {
-
-		double nextZIntersection = (voxelator->GetVoxelizedVolumeDim().z() / 2.) - (i * voxelator->GetEachVoxelDim().z());
-		if(nextZIntersection > startPoint.z()){
-			std::cout << "Continuing to bypass slices before PocaPt ......" << std::endl;
-			continue;
-		}
-		Tracking::Vector3D<double> voxelHitPt = Delta::GetIntersection(tr, nextZIntersection , 3);
-		voxelHitPt.SetZ(voxelHitPt.z() + epsilon);
-
-		std::cout << "Voxel Hit Point for Slice : " << i << " : VoxelNumber : "
-				<< voxelator->GetVoxelNumber(voxelHitPt) << std::endl;
-		//<< " : PocaPt_VoxelNumber : " << GetVoxelNumber(fPocaPt) << " : Voxel Point ";
-		voxelHitPt.Print();
-		vectOfVoxels.push_back(voxelator->GetVoxelNumber(voxelHitPt));
-
-		if (i != 0) {
-			double voxelDist = CommonFunc::Distance(voxelHitPt, startPoint);
-			std::cout << " VoxelDist : " << voxelDist << std::endl;
-		}
-
-
-		int voxelNum = voxelator->GetVoxelNumber(startPoint);
-		double L = CommonFunc::Distance(startPoint,voxelHitPt);
-		T += L;
-		//std::cout << "T : " << T << std::endl;
-		T2 += L;
-		fLTVectorForOneTrack.push_back(LTOfEachVoxel(voxelNum,L,T));
-
-		startPoint = voxelHitPt;
-	}
-
-	int voxelNum = voxelator->GetVoxelNumber(startPoint);
-	double L = CommonFunc::Distance(startPoint,endPoint);
-	T += L;
-	T2 += L;
-	fLTVectorForOneTrack.push_back(LTOfEachVoxel(voxelNum,L,T));
-
-	}
-
-	std::cout << "Distance from Mid To End : " << CommonFunc::Distance(pocaPt, outGoingHitPt) <<" :: Cumulative distance Calculated in Steps : " << T2 << std::endl;
-
-	std::cout << "Total Distance Travelled T1 + T2 : " << (T1+T2) <<" :: T : " << T << std::endl;
-
-
-	fVectorOfLTVector.push_back(fLTVectorForOneTrack);
-   */
-
-
 }
 
 //------------------------------------------------------------------------------------------------------------
@@ -429,12 +322,15 @@ void MLEM::EMUpdate(){
 		for (unsigned int j = 0; j < fVectorOfLTVector.size(); j++) {
 			ScatteringData s = SetScatteringData(
 					fVectorOfMuonTrack[j].sIncoming,
-					fVectorOfMuonTrack[j].sOutgoing);
+					fVectorOfMuonTrack[j].sOutgoing,
+					fVectorOfMuonTrack[j].sPr);
 			//Below logic should be applied to all the muons
 			EachMuonData muonData(fVectorOfLTVector[j], s);
 			muonData.Print();
 			//muonData.sLTVectorForEachMuon
-			fVectorOfMuonData.push_back(muonData);
+			if(muonData.sIsInvertibleCovarianceMatrix){
+				fVectorOfMuonData.push_back(muonData);
+			}
 
 		}
 		LambdaUpdater lambdaUpdater(fVectorOfMuonData);
@@ -467,7 +363,7 @@ void MLEM::UpdateScatteringDensity(LambdaUpdater lambdaUpdater) {
 }
 
 //-------------------------------------------------------------------------------------------------------------
-ScatteringData MLEM::SetScatteringData(Tomography::Track trackIncoming,Tomography::Track trackOutgoing){
+ScatteringData MLEM::SetScatteringData(Tomography::Track trackIncoming,Tomography::Track trackOutgoing, double pr){
 
 	ScatteringData s;
 
@@ -502,7 +398,11 @@ ScatteringData MLEM::SetScatteringData(Tomography::Track trackIncoming,Tomograph
 	double Exy= 0.; //2.*pow(fSigmaPosZ*sqrt(12)/OuterPlaneZSeparation,2)*InnerPlaneZSeparation;//rad*cm
 
 	//Set it carefully
-	double pr = 1.;
+	//double pr = 1.; //Now pr is comming from VoxelFinder
+
+	pr/=Tomography::refMomentum;
+
+	std::cout <<"RamanPr : " << pr << std::endl;
 
 	s.SetScatteringData(DeltaThetaX,DeltaThetaY,DeltaX,DeltaY,pr,Ex,Ey,Exy);
 	fScatteringDataVector.push_back(s);
