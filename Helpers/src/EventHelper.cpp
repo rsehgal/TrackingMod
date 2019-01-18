@@ -10,11 +10,16 @@
 #include "Voxelator_Evolution.h"
 #include "Files.h"
 #include "DetectorMapping.h"
+#include "VoxelNavigator.h"
+#include "Delta.h"
+#include <G4SystemOfUnits.hh>
+
 
 using Tracking::Vector3D;
 
-namespace Tomography {
 
+namespace Tomography {
+int EventHelper::fUnscatteredCounter = 0;
 
 EventHelper::EventHelper() {
 	// TODO Auto-generated constructor stub
@@ -29,8 +34,16 @@ void EventHelper::Test2EventHelper(Track incoming, Track outgoing){
 	fIncoming = incoming;
 	fOutgoing = outgoing;
 	CalculateScatterAngle();
-	//std::cout<<"ScattAngle from EventHelper : " << fScatteringAngle << std::endl;
-	if(fScatteringAngle!=0.){
+	std::cout<<"FABS of ScattAngle from EventHelper : " << std::fabs(fScatteringAngle) << std::endl;
+#ifdef USE_UNSCATTERED_TRACKS
+	if (std::fabs(fScatteringAngle) < 1e-8){
+		fUnscatteredCounter++;
+		CalculateVoxel_V3(incoming,outgoing);
+	}else
+#endif
+
+//	if(fScatteringAngle!=0.)
+	{
 		CalculatePOCA();
 		CalculateVoxel_V2();
 	}
@@ -248,6 +261,8 @@ void EventHelper::CalculateVoxel_V2(){
 	bool isGenuine = Tomography::evolution::Voxelator::instance()->IsGenuine(fPocaPt);
 	if(isGenuine){
 	int voxelNum = GetVoxelNum();
+	if(voxelNum < 0 || voxelNum > Tomography::evolution::Voxelator::instance()->GetTotalNumberOfVoxels())
+		return;
 	int voxNum = Tomography::evolution::Voxelator::instance()->IfVoxelExist(voxelNum);
     	if(voxNum < 0.){
 			//fVoxel = new Voxel(fPocaPt,voxelNum);
@@ -261,6 +276,70 @@ void EventHelper::CalculateVoxel_V2(){
 			//fVox->Insert(fPocaPt,voxelNum);
 		}
 	}
+}
+
+void EventHelper::CalculateVoxel_V3(Tomography::Track trackIncoming,Tomography::Track trackOutgoing){
+std::cout << "Entered CalculateVoxel_V3 ..........." << std::endl;
+std::cout << "Scattering VAlue : " << fScatteringAngle << std::endl;
+	//if (fScatteringAngle < 1e-8)
+	{
+
+
+			Tomography::evolution::Voxelator *voxelator = Tomography::evolution::Voxelator::instance();
+			Tracking::Vector3D<double> inComingHitPt = Delta::GetIntersection(trackIncoming,voxelator->GetVoxelizedVolumeDim().z()/2.,1);
+			Tracking::Vector3D<double> outGoingHitPt = Delta::GetIntersection(trackOutgoing,-1*(voxelator->GetVoxelizedVolumeDim().z()/2.),2);
+			std::cout << "Incoming Hit Point : " << __FILE__ <<" : " << __LINE__ <<"  :  "; inComingHitPt.Print();
+			std::cout << "Outgoing Hit Point : " << __FILE__ <<" : " << __LINE__  << "  :  "; outGoingHitPt.Print();
+			std::vector<int> cleanHittedVoxelNumVect = VoxelFinder(Tomography::Track(inComingHitPt,outGoingHitPt));
+			for (int i = 0; i < cleanHittedVoxelNumVect.size(); i++) {
+				if(cleanHittedVoxelNumVect[i] > voxelator->GetTotalNumberOfVoxels() || cleanHittedVoxelNumVect[i] < 0.){
+					std::cout << "BAD Voxel Encountered, hence skipping the event......." << std::endl;
+					return;
+				}
+
+				int voxelNum = cleanHittedVoxelNumVect[i];
+				int voxNum = Tomography::evolution::Voxelator::instance()->IfVoxelExist(voxelNum);
+				if (voxNum < 0. ) {
+					Tomography::evolution::Voxelator::instance()->InsertCleanVoxel(voxelNum);
+					//Tomography::evolution::Voxelator::instance()->Insert(Tracking::Vector3D<double>(0.,0.,0.),voxelNum);
+				} else {
+					Tomography::evolution::Voxelator::instance()->GetVoxelVector()[voxNum]->IncrementCleanCount(); // Insert(fPocaPt);
+				}
+			}
+
+			Tomography::evolution::Voxelator::instance()->PrintCleanVoxelNumAndCleanCount(cleanHittedVoxelNumVect);
+
+
+	}
+}
+
+std::vector<int> EventHelper::VoxelFinder(Tomography::Track track){
+
+	std::cout << "Entered Voxel Finder : " << __FILE__ <<" : " << __LINE__ << std::endl;
+
+	VoxelNavigator voxelNavigator;
+	std::vector<int> cleanHittedVoxelNumVector;
+	Tracking::Vector3D<double> dir = track.GetDirCosine();
+	double epsilon = 1e-8;
+	Tracking::Vector3D<double> startPoint = track.GetP1() + dir * epsilon;
+	Tracking::Vector3D<double> endPoint = track.GetP2() - dir * epsilon;
+	Tomography::evolution::Voxelator *voxelator = Tomography::evolution::Voxelator::instance();
+	int endPointVoxelNum = voxelator->GetVoxelNumber(endPoint);
+	int hitPointVoxelNum = voxelator->GetVoxelNumber(startPoint);
+	std::cout << "HitPointVoxelNum : " << hitPointVoxelNum <<" : endPointVoxelNum : " << endPointVoxelNum << " : " << __FILE__ <<" : " << __LINE__ << std::endl;
+
+	//The condition should be applied only to valid tracks
+	while(hitPointVoxelNum != endPointVoxelNum){
+		int voxelNum = voxelator->GetVoxelNumber(startPoint);
+		cleanHittedVoxelNumVector.push_back(voxelNum);
+		Tracking::Vector3D<double> voxelCenter = voxelator->GetVoxelCenter(voxelNum);
+		double step = voxelNavigator.ComputeStep(startPoint, dir, voxelCenter);
+		startPoint = startPoint + dir * (step+epsilon);
+		hitPointVoxelNum = voxelator->GetVoxelNumber(startPoint);
+
+	}
+	cleanHittedVoxelNumVector.push_back(endPointVoxelNum);
+	return cleanHittedVoxelNumVector;
 }
 
 #ifdef FIND_CANDIDATE_VOXEL

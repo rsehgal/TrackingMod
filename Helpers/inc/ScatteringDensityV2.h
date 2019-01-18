@@ -18,6 +18,8 @@ class ScatteringDensityV2 {
 
 	int sNumOfVoxels;
 	std::vector<double> sLambda;
+
+	std::vector<double> sTotalPathLength;
 	ScatteringDensityV2();
 
 public:
@@ -30,8 +32,26 @@ public:
 			//std::cout << "VoxelNum : " << voxelNum << __FILE__ << " : " << __LINE__ << std::endl;
 			if(voxelNum > 0 && voxelNum < Tomography::evolution::Voxelator::instance()->GetTotalNumberOfVoxels()){
 				sLambda[voxelNum] = value;
+
 			}
 
+	}
+
+
+	void InitializeZero(){
+				if(iniflag)
+					return;
+
+				iniflag = true;
+				for(unsigned int i = 0 ; i < sNumOfVoxels ; i++ ){
+					//Initializing to default value of zero
+					sLambda.push_back(0.);
+					sTotalPathLength.push_back(0.);
+				}
+	}
+
+	void AddPathLengthInVoxel(unsigned voxelNum, double pathLength){
+		sTotalPathLength[voxelNum] += pathLength;
 	}
 
 	void Initialize(){
@@ -42,6 +62,7 @@ public:
 			for(unsigned int i = 0 ; i < sNumOfVoxels ; i++ ){
 				//Initializing to default value of zero
 				sLambda.push_back(0.);
+				sTotalPathLength.push_back(0.);
 			}
 
 			std::vector<Voxel_V2*> voxelVector = Tomography::evolution::Voxelator::instance()->GetVoxelVector();
@@ -50,8 +71,12 @@ public:
 				double rl = voxelVector[i]->GetRadiationLength();
 				if(rl != 0.){
 					//sLambda[voxelNum] = (1./rl);
+					std::cout <<"Sehgal : RL :  " << rl << std::endl;
+
 					FillLambdaValue(voxelNum,(1./rl));
 				}
+				//FillLambdaValue(voxelNum,(1.e-5));
+
 			}
 		}
 
@@ -69,6 +94,7 @@ public:
 	}
 
 	std::vector<double> GetLambda() const {return sLambda;}
+	std::vector<double> GetTotalPathLengthVector() const {return sTotalPathLength;}
 };
 
 } /* namespace Tomography */

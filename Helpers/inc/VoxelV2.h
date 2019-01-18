@@ -28,22 +28,33 @@ class Voxel_V2 {
 	// This is basically a weight value that represent scattering Density for the voxel
 	// Required for implementing TUSHAR ROY's idea.
 	double fScatteringDensity;
+
+	//To store if the voxel is clean
+	int fCleanCount;
 public:
 	Voxel_V2();
 	Voxel_V2(Tracking::Vector3D<double> pocaPt, int voxelNum);
+	//Special constructor to create clean voxels
+	Voxel_V2(int voxelNum);
 	void Reset_V2();
 	void Insert(Tracking::Vector3D<double> point);
 	void CalcSD();
 	void CalcRadiationLength();
 	double GetRadiationLength(){return fRL;}
 	double GetStandardDeviation(){return fSD;}
-	std::vector<Tracking::Vector3D<double>> GetPocaPointsVector(){return fVectPointsInVoxel;}
+	std::vector<Tracking::Vector3D<double>> GetPocaPointsVector(){//std::cout << "PocaPtVectorSize : " << fVectPointsInVoxel.size() << std::endl;
+																	return fVectPointsInVoxel;}
 	Tracking::Vector3D<double> GetVoxelCenter(){return fVoxelCenter;}
 	std::vector<double> GetScatteringVector();
 	int GetVoxelNum(){return fVoxelNum;}
 	void SetMinPointsInAVoxel(int minPts) {fMinPointsInVoxel = minPts;}
 	int GetMinPointsInAVoxel() const { return fMinPointsInVoxel;}
 	bool IsOutlier(){return fOutlier;}
+	void IncrementCleanCount(){fCleanCount++;}
+	int GetCleanVoxelCount()const {return fCleanCount;}
+
+	void Print();
+
 	virtual ~Voxel_V2();
 
 };

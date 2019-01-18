@@ -23,11 +23,43 @@
 #include "TStyle.h"
 #include "DetectorMapping.h"
 #include "Track.h"
+#include <fstream>
 using Tracking::Vector3D;
 
 
 namespace CommonFunc{
 
+static void ConvertData(std::string inputFile, std::string outputFile){
+	std::ifstream infile(inputFile);
+	std::ofstream outfile(outputFile);
+
+	double x1,y1,z1;
+	double x2,y2,z2;
+	double x3,y3,z3;
+	double x4,y4,z4;
+	unsigned hit = 0;
+	double momentum = 0.;
+
+	x1 = y1 = z1 = 0.;
+	x2 = y2 = z2 = 0.;
+	x3 = y3 = z3 = 0.;
+	x4 = y4 = z4 = 0.;
+
+	int evNo =0;
+	while(!infile.eof()){
+		evNo++;
+		infile >> x1 >> y1 >> z1
+			   >> x2 >> y2 >> z2
+			   >> x3 >> y3 >> z3
+			   >> x4 >> y4 >> z4
+			   >> hit >> momentum;
+		outfile << evNo << " " << x1 << " " << y1 << " " << x2 << " " << y2
+			   << " " << x3 << " " << y3 << " " << x4 << " " << y4 << " " << momentum/1000. << std::endl;
+	}
+
+	infile.close();
+	outfile.close();
+}
 
 static Precision Distance(Vector3D<Precision> p, Vector3D<Precision> q){
 	return (p-q).Mag();

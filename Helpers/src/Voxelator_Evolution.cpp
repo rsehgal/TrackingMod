@@ -38,6 +38,7 @@ std::vector<Voxel_V2*> Voxelator::GetFilteredVoxelVector(){
 	return filteredVoxelVector;
 }
 
+
 std::vector<Tracking::Vector3D<double>> Voxelator::GetFilteredPocaPtVector(){
 	std::vector<Voxel_V2*> filteredVoxelVector = GetFilteredVoxelVector();
 	std::vector<Tracking::Vector3D<double>> filteredPocaVector;
@@ -52,12 +53,85 @@ std::vector<Tracking::Vector3D<double>> Voxelator::GetFilteredPocaPtVector(){
 
 }
 
+std::vector<Voxel_V2*> Voxelator::GetFilteredVoxelVectorUsingCleanVoxel(){
+	std::vector<Voxel_V2*> filteredVoxelVector;
+	int signalVoxelCounter = 0;
+	for (int i = 0; i < fVoxelVector.size(); i++) {
+		if (fVoxelVector[i]->GetCleanVoxelCount() < 500) {
+			signalVoxelCounter++;
+
+			filteredVoxelVector.push_back(fVoxelVector[i]);
+
+		}
+	}
+
+	std::cout << "SignalVoxelCounter : " << signalVoxelCounter << std::endl;
+
+	return filteredVoxelVector;
+}
+
+/*std::vector<Tracking::Vector3D<double>> Voxelator::GetFilteredPocaPtVectorUsingCleanedVoxel(){
+	std::vector<Voxel_V2*> filteredVoxelVector = GetFilteredVoxelVectorUsingCleanVoxel();
+		std::vector<Tracking::Vector3D<double>> filteredPocaVector;
+		for(int i = 0 ; i < filteredVoxelVector.size() ; i++){
+			int voxelNum = filteredVoxelVector[i]->GetVoxelNum();
+			if(voxelNum < 0 || voxelNum > Tomography::evolution::Voxelator::instance()->GetTotalNumberOfVoxels())
+				continue;
+			for(int j = 0 ; j < filteredVoxelVector[i]->GetPocaPointsVector().size() ; j++){
+				filteredPocaVector.push_back(filteredVoxelVector[i]->GetPocaPointsVector()[j]);
+			}
+		}
+		return filteredPocaVector;
+}*/
+
+//std::vector<Tracking::Vector3D<double>>
+void Voxelator::GetFilteredPocaPtVectorUsingCleanedVoxel(std::vector<Tracking::Vector3D<double>> &pocaPtVector){
+	Tomography::evolution::Voxelator *voxelator = Tomography::evolution::Voxelator::instance();
+	std::vector<Tomography::Voxel_V2*> voxelVector = voxelator->GetVoxelVector();
+	//std::vector<Tracking::Vector3D<double>> filteredPocaPtVector = voxelator->GetFilteredPocaPtVectorUsingCleanedVoxel();
+	std::vector<Tomography::Voxel_V2*> filteredVoxelVectorUsingCleanedVoxel = voxelator->GetFilteredVoxelVectorUsingCleanVoxel();
+	//std::cout << "FilteredVoxelVectorUsingCleanedVoxel Size : "	<< filteredVoxelVectorUsingCleanedVoxel.size() << std::endl;
+
+	//int pocaCounter = 0;
+	for (int i = 0; i < filteredVoxelVectorUsingCleanedVoxel.size(); i++) {
+		//pocaCounter += (filteredVoxelVectorUsingCleanedVoxel[i]->GetPocaPointsVector()).size();
+		//std::cout << "FilteredVoxel Num : " << i << std::endl;
+		//filteredVoxelVectorUsingCleanedVoxel[i]->Print();
+		Voxel_V2 *voxel = filteredVoxelVectorUsingCleanedVoxel[i];
+		  int voxelNum = voxel->GetVoxelNum();
+		  if(voxelNum < 0 || voxelNum > Tomography::evolution::Voxelator::instance()->GetTotalNumberOfVoxels())
+				return;
+			//std::cout << "Total Num Of PocaPoint in Voxel : " << fVoxelNum << " :: " << fVectPointsInVoxel.size() << std::endl;
+		    std::vector<Tracking::Vector3D<double>> vectPointsInVoxel = voxel->GetPocaPointsVector();
+			for(int i = 0 ; i < vectPointsInVoxel.size() ; i++){
+				pocaPtVector.push_back(vectPointsInVoxel[i]);//.Print();
+			}
+			//std::cout << std::endl;
+	}
+
+	//return pocaPtVector;
+
+}
 
 void Voxelator::Insert(Tracking::Vector3D<double> point, int voxelNum, bool useEnclosingVoxels, double scatteringDensity){
 	fVoxelVector.push_back(new Voxel_V2(point,voxelNum));
 		fVisitedVoxelNumVector.push_back(voxelNum);
 }
 
+void Voxelator::InsertCleanVoxel(int voxelNum){
+	fVoxelVector.push_back(new Voxel_V2(voxelNum));
+	fVisitedVoxelNumVector.push_back(voxelNum);
+}
+
+void Voxelator::PrintCleanVoxelNumAndCleanCount(std::vector<int> cleanHittedVoxelNumVector){
+	std::cout <<"=========== Hitted Clean Voxel Number and CleanCount ===========" << std::endl;
+		for(int i = 0 ; i < cleanHittedVoxelNumVector.size() ; i++){
+			std::cout << "Clean Voxel Num : " << cleanHittedVoxelNumVector[i] << " :: CleanCount : " <<
+					GetVoxelFromVoxelator(cleanHittedVoxelNumVector[i])->GetCleanVoxelCount() << std::endl;
+		}
+		std::cout << "===============================================================" << std::endl;
+		std::cout << "CleanHittedVoxelVectorSize : " << cleanHittedVoxelNumVector.size() << std::endl;
+}
 /*
 void Voxelator::Insert(Tracking::Vector3D<double>, int voxelNum){
 	fVoxelVector.push_back(new Voxel(fPocaPt,voxelNum));
@@ -122,6 +196,8 @@ Voxelator::Voxelator(double voxelizedVolHalfX,double voxelizedVolHalfY, double v
     CalculateVoxelCenters();
 	fVoxelizedVolumeDim.Print();
 	fVoxelatorDim.Print();
+	int totalNumOfVoxels = fVoxelatorDim.x()*fVoxelatorDim.y()*fVoxelatorDim.z();
+
 
 }
 
@@ -374,6 +450,10 @@ for (auto &pocaPt : pocaPtVect) {
       Insert(pocaPt);
   }
 AverageOut();
+}
+
+void Voxelator::InsertCleanVoxels(std::vector<Vector3D<double>> ptVect){
+
 }
 
 void Voxelator::FillSDAndRLHist(){

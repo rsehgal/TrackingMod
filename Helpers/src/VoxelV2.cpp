@@ -31,10 +31,40 @@ Voxel_V2::Voxel_V2(Tracking::Vector3D<double> pocaPt, int voxelNum) {
 	fPointCount = fVectPointsInVoxel.size();
 	fOutlier = fPointCount < fMinPointsInVoxel;
 	fVoxelCenter = Tomography::evolution::Voxelator::instance()->GetVoxelCenter(fVoxelNum);
+	fCleanCount = 0;
+}
+
+Voxel_V2::Voxel_V2(int voxelNum){
+	fVectPointsInVoxel.push_back(Tracking::Vector3D<double>(0.,0.,0.));
+	fVoxelNum = voxelNum;
+	fDim = Tomography::evolution::Voxelator::instance()->GetEachVoxelDim();
+	fScatteringDensity = 0.;
+	fSD = 0.;
+	fRL = 0.;
+	fMinPointsInVoxel = Tomography::minPointsInAVoxel;
+	fPointCount = 0;
+	fOutlier = false;// Setting specifically to false // (fPointCount < fMinPointsInVoxel);
+	fVoxelCenter = Tomography::evolution::Voxelator::instance()->GetVoxelCenter(fVoxelNum);
+	fCleanCount = 1;
+
+}
+
+
+void Voxel_V2::Print(){
+	std::cout << "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@" << std::endl;
+	if(fVoxelNum < 0 || fVoxelNum > Tomography::evolution::Voxelator::instance()->GetTotalNumberOfVoxels())
+		return;
+	std::cout << "Total Num Of PocaPoint in Voxel : " << fVoxelNum << " :: " << fVectPointsInVoxel.size() << std::endl;
+	for(int i = 0 ; i < fVectPointsInVoxel.size() ; i++){
+		fVectPointsInVoxel[i].Print();
+	}
+	std::cout << std::endl;
+	std::cout << "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@" << std::endl;
 }
 
 void Voxel_V2::Reset_V2(){
 	fVectPointsInVoxel.clear();
+	fCleanCount = 0;
 }
 
 void Voxel_V2::Insert(Tracking::Vector3D<double> point){
