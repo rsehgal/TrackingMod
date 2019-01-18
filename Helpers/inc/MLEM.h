@@ -519,6 +519,9 @@ public:
 	//Some debugging function to understand various steps in MLEm
 	//May be deleted later
 	void Debugger();
+
+	//Function to get VectorofLTVector
+	std::vector<std::vector<LTOfEachVoxel>> GetVectorOfLTVector() const {return fVectorOfLTVector;}
 };
 
 } /* namespace Tomography */

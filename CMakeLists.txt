@@ -81,6 +81,13 @@ option(MYSQL "Include MYSQL" OFF)
 option(USE_ROOT_FITTING "Use Root Fitting" OFF)
 option(ROBUST_FIT "Use ROBUST Fitting" OFF)
 option(GMM "Use Gaussian Mixture Model for filtering and Clustering" OFF)
+option(USE_UNSCATTERED_TRACKS "Use Unscattered tracks to do some filtering" OFF)
+
+
+if(USE_UNSCATTERED_TRACKS)
+add_definitions(-DUSE_UNSCATTERED_TRACKS)
+endif(USE_UNSCATTERED_TRACKS)
+
 
 if(GMM)
 add_subdirectory(gmm)
@@ -317,6 +324,7 @@ SET(TESTSDIR ${TESTSDIR}
 ${CMAKE_SOURCE_DIR}/CoordinateGenerator/test
 ${CMAKE_SOURCE_DIR}/TemplatizedInterface/test
 ${CMAKE_SOURCE_DIR}/TemplatizedInterface/test/core
+${CMAKE_SOURCE_DIR}/TemplatizedInterface/test/core/MLEM_Tests
 ${CMAKE_SOURCE_DIR}/TemplatizedInterface/test/plots
 if(GEANT4)
 ${CMAKE_SOURCE_DIR}/Simulations/MST/test

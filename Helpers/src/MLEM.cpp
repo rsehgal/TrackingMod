@@ -88,6 +88,18 @@ void MLEM::VoxelFinder(Tomography::Track trackIncoming,Tomography::Track trackOu
 	std::vector<int> vectOfVoxels;
 	Tracking::Vector3D<double> inComingHitPt = Delta::GetIntersection(trackIncoming,voxelator->GetVoxelizedVolumeDim().z()/2.,1);
 	Tracking::Vector3D<double> outGoingHitPt = Delta::GetIntersection(trackOutgoing,-1*(voxelator->GetVoxelizedVolumeDim().z()/2.),2);
+
+	VoxelNavigator voxelNavigator;
+	EInside incomingSurfacePt = voxelNavigator.IsPointOnSurfaceOfVoxelizedVolume(inComingHitPt);
+	EInside outgoingSurfacePt = voxelNavigator.IsPointOnSurfaceOfVoxelizedVolume(outGoingHitPt);
+
+	bool validTracks = (incomingSurfacePt == EInside::kSurface);
+	validTracks &= (outgoingSurfacePt == EInside::kSurface);
+
+	//std::cout <<"Surface Point : " << surfacePt << std::endl;
+	if(!validTracks)
+		return;
+
 	std::cout << "InComingHitPoint : ";
 	inComingHitPt.Print();
 	std::cout << "OutgoingHitPoint : " ;
@@ -109,7 +121,7 @@ void MLEM::VoxelFinder(Tomography::Track trackIncoming,Tomography::Track trackOu
 	double pocaStep = 0.;
 	//////////////////////////////////////////////////////////////////////////////////
 	{
-		VoxelNavigator voxelNavigator;
+//		VoxelNavigator voxelNavigator;
 		Tomography::Track tr(inComingHitPt, pocaPt);
 		Tracking::Vector3D<double> startPoint = tr.GetP1();
 		Tracking::Vector3D<double> midPoint = tr.GetP2();
@@ -132,11 +144,15 @@ void MLEM::VoxelFinder(Tomography::Track trackIncoming,Tomography::Track trackOu
 
 			double step = voxelNavigator.ComputeStep(voxelHitPt, dir,
 					voxelCenter);
-			std::cout << "Calculated Step value :  " << step << std::endl;
+			std::cout << "Calculated Step value:  Start To MID :  " << step << std::endl;
 			voxelHitPt = voxelHitPt + dir * (step+epsilon);
 			std::cout << "Moved POINT : "; voxelHitPt.Print();
 			hitPointVoxelNum = voxelator->GetVoxelNumber(voxelHitPt);
 
+			if(step <= 1e-15){
+				std::cout << "BAD EVENT.......... "; tr.Print();
+				exit(1);
+			}
 			double L = step;
 			T += L;
 			T1 += L;
@@ -148,6 +164,11 @@ void MLEM::VoxelFinder(Tomography::Track trackIncoming,Tomography::Track trackOu
 
 		double stepFinal = CommonFunc::Distance(voxelHitPt,pocaPt);
 		std::cout << "Final Step to reach PocaPt : " <<  stepFinal << std::endl;
+		if (stepFinal <= 1e-15) {
+			std::cout << "BAD EVENT detected 0 length of last step while going from Start to Mid .......... ";
+			tr.Print();
+			exit(1);
+		}
 
 		Tracking::Vector3D<double> finalPocaPt = voxelHitPt + dir * stepFinal;
 		std::cout << "Final Poca Point : "; finalPocaPt.Print();
@@ -192,7 +213,12 @@ void MLEM::VoxelFinder(Tomography::Track trackIncoming,Tomography::Track trackOu
 
 				double step = voxelNavigator.ComputeStep(voxelHitPt, dir,
 						voxelCenter);
-				std::cout << "Calculated Step value :  " << step << std::endl;
+				std::cout << "Calculated Intermediate Step value from Mid To End Region :  " << step << std::endl;
+			if (step <= 1e-15) {
+				std::cout << "BAD EVENT.......... ";
+				tr.Print();
+				exit(1);
+			}
 
 				voxelHitPt = voxelHitPt + dir * (step+epsilon);
 				std::cout << "Moved POINT : "; voxelHitPt.Print();
@@ -215,6 +241,11 @@ void MLEM::VoxelFinder(Tomography::Track trackIncoming,Tomography::Track trackOu
 			std::cout << "Final Voxel Hit Point : "; voxelHitPt.Print();
 
 			double stepFinal = CommonFunc::Distance(voxelHitPt,outGoingHitPt);
+		if (stepFinal <= 1e-15) {
+			std::cout << "BAD EVENT detected 0 length of last step while going from Mid To End .......... ";
+			tr.Print();
+			exit(1);
+		}
 			std::cout << "Final Step to reach PocaPt : " <<  stepFinal << std::endl;
 
 			std::cout << "Actual Exit Point : " ; outGoingHitPt.Print();
@@ -235,6 +266,7 @@ void MLEM::VoxelFinder(Tomography::Track trackIncoming,Tomography::Track trackOu
 		std::cout << "Distance from Mid To End : " << CommonFunc::Distance(pocaPt, outGoingHitPt) <<" :: Cumulative distance Calculated in Steps : " << T2 << std::endl;
 
 		std::cout << "Total Distance Travelled T1 + T2 : " << (T1+T2) <<" :: T : " << T << std::endl;
+
 
 
 		fVectorOfLTVector.push_back(fLTVectorForOneTrack);

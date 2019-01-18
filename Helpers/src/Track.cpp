@@ -38,6 +38,7 @@ void Track::CalculateDirCosine(){
 	fDirCosine = (fP2-fP1).Unit();
 	fDirection = (fP2-fP1).Unit();
 	fDirectionRatio = (fP2-fP1);
+	fTrackLength = fDirectionRatio.Mag();
 }
 
 void Track::operator = (const Track &newVal){
