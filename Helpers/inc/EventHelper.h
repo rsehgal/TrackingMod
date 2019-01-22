@@ -30,12 +30,16 @@ class EventHelper {
 	Tracking::Vector3D<double> fOutgoingHitPoint;
 	int genuinePocaCounter ;
 
+
+
+
 //#ifdef VOXELIZE
 	Voxel *fVoxel;
 //#endif
 
 
 public:
+	static int fUnscatteredCounter;
 	EventHelper();
 	EventHelper(Track incoming, Track outgoing){}
 	void Test2EventHelper(Track incoming, Track outgoing);
@@ -44,6 +48,8 @@ public:
 
 	//This is a very special constructor and will be used during offline analysis
 	EventHelper(std::string fileToRead, std::string fileToWrite,bool forSimulation=true);
+	//Function to get the vector of clean voxel numbers
+	std::vector<int> VoxelFinder(Tomography::Track track);
 
 	//Getters
 	Track GetIncomingVector() const {return fIncoming;}
@@ -60,6 +66,11 @@ public:
 	void CalculateScatterAngle();
 	void CalculateVoxel();
 	void CalculateVoxel_V2();
+
+	//Special function to make use of unscattered tracks.
+	void CalculateVoxel_V3(Tomography::Track trackIncoming,Tomography::Track trackOutgoing);
+
+
 	int GetVoxelNum();
 	int GetVoxelNum(Tracking::Vector3D<double> pt);
 	void CalculateCandidateVoxels();

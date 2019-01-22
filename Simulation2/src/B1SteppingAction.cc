@@ -76,6 +76,13 @@ stepNum++;
   if(stepNum==0){
 	B1EventAction::eventEnergy = track->GetKineticEnergy();
 	std::cout << "KE : " << track->GetKineticEnergy() << std::endl;
+	//B1EventAction::momentum = std::sqrt(2*105.6583745*track->GetKineticEnergy())/1000.;//track->GetMomentum();
+	B1EventAction::momentum = std::sqrt(B1EventAction::eventEnergy*B1EventAction::eventEnergy + 2*105.6583745*B1EventAction::eventEnergy);
+	G4ThreeVector momen = track->GetMomentum();
+	std::cout << "Calculated Momentum : " <<  B1EventAction::momentum << " :: G4ThreeVector Momentum : " << momen.mag() << std::endl;
+	B1EventAction::momentum = momen.mag();
+
+	B1EventAction::meanMomentum += B1EventAction::momentum;
 }
 
 

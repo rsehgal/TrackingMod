@@ -127,7 +127,8 @@ void RunHelper::FillScatteringAngleVector(){
 /*One should not do filtering here itself.
 * Hence commenting the code that does the filtering
 */
-void RunHelper::FillPocaVector(){
+//ORIGINAL AND WORKING
+/*void RunHelper::FillPocaVector(){
     for(int i = 0 ; i < fVoxelVector.size() ; i++){
 
     	std::vector<Tracking::Vector3D<double>> pocaPointsVector = fVoxelVector[i]->GetPocaPointsVector();
@@ -135,6 +136,28 @@ void RunHelper::FillPocaVector(){
     	        for(int j = 0 ; j  < pocaPointsVector.size() ; j++){
     	            Insert(pocaPointsVector[j]);
     	        	//Insert(Tracking::Vector3D<double>(pocaPointsVector[j]->x(),pocaPointsVector[j]->y(),pocaPointsVector[j]->z()));
+    	}
+    }
+}*/
+
+void RunHelper::FillPocaVector(){
+    for(int i = 0 ; i < fVoxelVector.size() ; i++){
+    	std::cout << "ABCD : CleanCount : " << fVoxelVector[i]->GetCleanVoxelCount() << std::endl;
+
+    	/* Adding the macro guards to make the condition more readable,
+    	*  Infact even if guards are not there then also there is no
+    	*  change in results coz fCleanCount for each voxel is
+    	*  initialize to 0, so the condition in if statement always
+    	*  evaluates to true.
+    	*/
+#ifdef USE_UNSCATTERED_TRACKS
+    	if(fVoxelVector[i]->GetCleanVoxelCount() < Tomography::cleanVoxelCount)
+#endif
+    	{
+    	std::vector<Tracking::Vector3D<double>> pocaPointsVector = fVoxelVector[i]->GetPocaPointsVector();
+			for (int j = 0; j < pocaPointsVector.size(); j++) {
+				Insert(pocaPointsVector[j]);
+			}
     	}
     }
 }
@@ -194,8 +217,10 @@ void RunHelper::WriteToFile(){
     CommonFunc::Functions::instance()->WriteToFile("VoxelsRunHelper-"+fFileType+".txt",Tomography::evolution::Voxelator::instance()->GetVoxelVector());
     CommonFunc::Functions::instance()->WriteToFile("filteredVoxelsRunHelper-"+fFileType+".txt",Tomography::evolution::Voxelator::instance()->GetFilteredVoxelVector());
     CommonFunc::Functions::instance()->WriteToFile("filteredPocaPtRunHelper-"+fFileType+".txt",Tomography::evolution::Voxelator::instance()->GetFilteredPocaPtVector());
+//    CommonFunc::Functions::instance()->WriteToFile("filteredPocaPtRunHelperUsingCleanVoxels-"+fFileType+".txt",Tomography::evolution::Voxelator::instance()->GetFilteredPocaPtVectorUsingCleanedVoxel());
 
 
+    std::cout <<"Unscattered Count : " << EventHelper::fUnscatteredCounter << std::endl;
 }
 
 RunHelper::~RunHelper() {

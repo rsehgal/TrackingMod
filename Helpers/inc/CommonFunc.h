@@ -22,13 +22,80 @@
 #include "TColor.h"
 #include "TStyle.h"
 #include "DetectorMapping.h"
+#include "Track.h"
+#include <fstream>
 using Tracking::Vector3D;
+
 
 namespace CommonFunc{
 
+static void ConvertData(std::string inputFile, std::string outputFile){
+	std::ifstream infile(inputFile);
+	std::ofstream outfile(outputFile);
+
+	double x1,y1,z1;
+	double x2,y2,z2;
+	double x3,y3,z3;
+	double x4,y4,z4;
+	unsigned hit = 0;
+	double momentum = 0.;
+
+	x1 = y1 = z1 = 0.;
+	x2 = y2 = z2 = 0.;
+	x3 = y3 = z3 = 0.;
+	x4 = y4 = z4 = 0.;
+
+	int evNo =0;
+	while(!infile.eof()){
+		evNo++;
+		infile >> x1 >> y1 >> z1
+			   >> x2 >> y2 >> z2
+			   >> x3 >> y3 >> z3
+			   >> x4 >> y4 >> z4
+			   >> hit >> momentum;
+		outfile << evNo << " " << x1 << " " << y1 << " " << x2 << " " << y2
+			   << " " << x3 << " " << y3 << " " << x4 << " " << y4 << " " << momentum/1000. << std::endl;
+	}
+
+	infile.close();
+	outfile.close();
+}
 
 static Precision Distance(Vector3D<Precision> p, Vector3D<Precision> q){
 	return (p-q).Mag();
+}
+
+static void GetTracksVector(std::string fileToRead, std::vector<Track> &incomingTrackVector,std::vector<Track> &outgoingTrackVector,
+							std::vector<double> &momentumVector){
+	std::ifstream infile(fileToRead);
+	//12 variable to read xyz for two tracks
+	double incomingTrackP1X = 0.,incomingTrackP1Y = 0.,incomingTrackP1Z = 0.;
+	double incomingTrackP2X = 0.,incomingTrackP2Y = 0.,incomingTrackP2Z = 0.;
+	double outgoingTrackP1X = 0.,outgoingTrackP1Y = 0.,outgoingTrackP1Z = 0.;
+	double outgoingTrackP2X = 0.,outgoingTrackP2Y = 0.,outgoingTrackP2Z = 0.;
+	int scattererHitted = 0;
+	double momentum = 0.;
+
+	while(!infile.eof()){
+			infile >> incomingTrackP1X >> incomingTrackP1Y >> incomingTrackP1Z
+				   >> incomingTrackP2X >> incomingTrackP2Y >> incomingTrackP2Z
+				   >> outgoingTrackP1X >> outgoingTrackP1Y >> outgoingTrackP1Z
+				   >> outgoingTrackP2X >> outgoingTrackP2Y >> outgoingTrackP2Z
+				   >> scattererHitted >> momentum;
+
+	     	Tomography::Track incoming(Tracking::Vector3D<double>(incomingTrackP1X,incomingTrackP1Y,incomingTrackP1Z),
+									   Tracking::Vector3D<double>(incomingTrackP2X,incomingTrackP2Y,incomingTrackP2Z));
+
+			Tomography::Track outgoing(Tracking::Vector3D<double>(outgoingTrackP1X,outgoingTrackP1Y,outgoingTrackP1Z),
+									   Tracking::Vector3D<double>(outgoingTrackP2X,outgoingTrackP2Y,outgoingTrackP2Z));
+
+			//if(scattererHitted !=0.)
+			{
+				incomingTrackVector.push_back(incoming);
+				outgoingTrackVector.push_back(outgoing);
+				momentumVector.push_back(momentum);
+			}
+	}
 }
 
 class Functions{

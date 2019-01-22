@@ -44,9 +44,15 @@ namespace Tomography{
  constexpr int start = 19000;
  constexpr int end = 24500;
 
- constexpr int minPointsInAVoxel = 15;
+ constexpr int minPointsInAVoxel = 20;
 
  static int effEvNo = 0;
+
+ constexpr double unscatteringThreshold = 0.0001;
+
+ constexpr int cleanVoxelCount = 50;
+
+ constexpr double refMomentum = 3000.; //MeV
 
  /* Singleton class to break the Simulation when desired number 
  ** events are done.

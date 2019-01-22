@@ -16,6 +16,8 @@
 #include "Track.h"
 #include <TGraph.h>
 #include "VoxelV2.h"
+#include <fstream>
+//#include "Delta.h"
 
 using Slice = std::vector<std::vector<Tracking::Vector3D<double>>>;
 using VoxelCenters = std::vector<Slice>;
@@ -120,14 +122,32 @@ public:
  	  return fVisitedVoxelNumVector;
    }
 
+ Voxel_V2* GetVoxelFromVoxelator(int voxelNum){
+	 for(int i = 0 ; i < fVoxelVector.size(); i++){
+		 if(fVoxelVector[i]->GetVoxelNum() == voxelNum){
+			 return fVoxelVector[i];
+		 }
+	 }
+	 std::cerr << "REQUIRED Voxel not found in fVoxelVector of Voxelator...... Kindly check......." << std::endl;
+	 exit(1);
+ }
+
+ void PrintCleanVoxelNumAndCleanCount(std::vector<int> cleanHittedVoxelNumVector);
 
   //Some new functions taken from Voxel. This is correct place for them
   int IfVoxelExist(int voxelNum);
   void Insert(Tracking::Vector3D<double> point, int voxelNum, bool useEnclosingVoxels = false , double scatteringDensity = 0.);
   //void Insert(Tracking::Vector3D<double>, int voxelNum);
+  void InsertCleanVoxel(int voxelNum);
+
   void Reset();
   std::vector<Voxel_V2*> GetFilteredVoxelVector();
   std::vector<Tracking::Vector3D<double>> GetFilteredPocaPtVector();
+
+  //Another Clean Voxel based filteration function
+  std::vector<Voxel_V2*> GetFilteredVoxelVectorUsingCleanVoxel();
+  //std::vector<Tracking::Vector3D<double>>
+  void GetFilteredPocaPtVectorUsingCleanedVoxel(std::vector<Tracking::Vector3D<double>> &pocaPtVector);
 
 
 
@@ -148,6 +168,7 @@ public:
   void Insert(double x, double y, double z, int w);
   void Insert(Vector3D<double> vox);
   void Insert(std::vector<Vector3D<double>> pocaPtVect);
+  void InsertCleanVoxels(std::vector<Vector3D<double>> ptVect);
   void AverageOut();
   TH3F* GetVoxelizedHist(){return histVoxelValue;}
   TH3F* GetVoxelizedCount(){return histVoxelCount;}
@@ -194,6 +215,21 @@ public:
    * Function to detect if the point lie within the VoxelizedRegion
    */
 
+/*
+void TestWrite(){
+	std::ofstream outfile("filteredTestWrite.txt");
+	int voxelVectorSize = fVoxelVector.size();
+	outfile << "VoxelVectorSize : " << voxelVectorSize << std::endl;
+	for(int i = 0 ; i < voxelVectorSize; i++){
+		outfile << "VoxelIndex : " << i <<" :: VoxelNum : " << fVoxelVector[i]->GetVoxelNum() << " :: IsVisited : " <<  std::endl;
+		std::vector<Tracking::Vector3D<double>> ptVector = fVoxelVector[i]->GetPocaPointsVector();
+		for(int j = 0 ; j < ptVector.size() ; j++){
+			outfile << ptVector[j].x() << "  " << ptVector[j].y() << "  " << ptVector[j].z() << " 0.0" <<  std::endl;
+		}
+	}
+	outfile.close();
+}
+*/
 
 };
 

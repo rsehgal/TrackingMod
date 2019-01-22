@@ -63,7 +63,7 @@
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 int B1EventAction::noTrigger = 0;
 int B1EventAction::evNo = 0;
-int B1EventAction::effEvNo = 0;
+int B1EventAction::effEvNo = -1;
 int B1EventAction::evMultiplicity = 0;
 int B1EventAction::genuineEventCounter = 0;
 std::vector<G4String> B1EventAction::volName({"Hello"});
@@ -76,6 +76,9 @@ double B1EventAction::scattererHitted = 0.;
 bool B1EventAction::topPlaneHit = false;
 bool B1EventAction::bottomPlaneHit = false;
 std::vector<std::string> B1EventAction::hittedStripNameVector({"StripName"});
+
+double B1EventAction::momentum = 0.;
+double B1EventAction::meanMomentum = 0.;
 
 B1EventAction::B1EventAction()
 : G4UserEventAction(),
@@ -187,6 +190,7 @@ numOfDetectors -= 3;
 //if(position.size() == 14)
 if(position.size() == (2*numOfDetectors+2))
 {
+
 
 	for(int i = 0 ; i < position.size() ; ){
 		//outfile << "Event No : " << effEvNo <<" : " << position[i].x() << "  " << position[i].y() << "  " << position[i].z() << std::endl;
@@ -402,25 +406,26 @@ if(position.size() == (2*numOfDetectors+2))
    // std::cout<<"Negative comes............" << std::endl;
    run->FillScatteringAngleVector(diff);//angleOutgoing-angleIncoming);
    //Tomography::EventHelper u(incoming,outgoing,"PocaFromExactHit.txt");
-   Tomography::Files::instance()->Write("TrackExact.txt",13,
+   Tomography::Files::instance()->Write("TrackExact.txt",14,
 		   	   	   	   	   	   	   	    incoming.GetP1().x(),incoming.GetP1().y(),incoming.GetP1().z(),
 		   	   	   	   	   	   	   	    incoming.GetP2().x(),incoming.GetP2().y(),incoming.GetP2().z(),
 		   	   	   	   	   	   	   	    outgoing.GetP1().x(),outgoing.GetP1().y(),outgoing.GetP1().z(),
-		   	   	   	   	   	   	   	    outgoing.GetP2().x(),outgoing.GetP2().y(),outgoing.GetP2().z(),scattererHitted);
+		   	   	   	   	   	   	   	    outgoing.GetP2().x(),outgoing.GetP2().y(),outgoing.GetP2().z(),scattererHitted,B1EventAction::momentum);
 
    //Tomography::EventHelper u2(fittedIncoming,fittedOutgoing,"PocaFromFittedHit.txt");
-   Tomography::Files::instance()->Write("TrackFitted.txt",13,
+   Tomography::Files::instance()->Write("TrackFitted.txt",14,
 		   	   	   	   	   	   	   	   fittedIncoming.GetP1().x(),fittedIncoming.GetP1().y(),fittedIncoming.GetP1().z(),
 		   	   	   	   	   	   	   	   fittedIncoming.GetP2().x(),fittedIncoming.GetP2().y(),fittedIncoming.GetP2().z(),
 		   	   	   	   	   	   	   	   fittedOutgoing.GetP1().x(),fittedOutgoing.GetP1().y(),fittedOutgoing.GetP1().z(),
-		   	   	   	   	   	   	   	   fittedOutgoing.GetP2().x(),fittedOutgoing.GetP2().y(),fittedOutgoing.GetP2().z(),scattererHitted);
+		   	   	   	   	   	   	   	   fittedOutgoing.GetP2().x(),fittedOutgoing.GetP2().y(),fittedOutgoing.GetP2().z(),scattererHitted,B1EventAction::momentum);
 
    //Tomography::EventHelper u3(fittedSampledIncomingTrack,fittedSampledOutgoingTrack,"PocaFromFittedSampledHit.txt");
-   Tomography::Files::instance()->Write("TrackSampledFitted.txt",13,
+   Tomography::Files::instance()->Write("TrackSampledFitted.txt",14,
 		   	   	   	   	   	   	   	   fittedSampledIncomingTrack.GetP1().x(),fittedSampledIncomingTrack.GetP1().y(),fittedSampledIncomingTrack.GetP1().z(),
 		   	   	   	   	   	   	   	   fittedSampledIncomingTrack.GetP2().x(),fittedSampledIncomingTrack.GetP2().y(),fittedSampledIncomingTrack.GetP2().z(),
 		   	   	   	   	   	   	   	   fittedSampledOutgoingTrack.GetP1().x(),fittedSampledOutgoingTrack.GetP1().y(),fittedSampledOutgoingTrack.GetP1().z(),
-		   	   	   	   	   	   	   	   fittedSampledOutgoingTrack.GetP2().x(),fittedSampledOutgoingTrack.GetP2().y(),fittedSampledOutgoingTrack.GetP2().z(),scattererHitted);
+		   	   	   	   	   	   	   	   fittedSampledOutgoingTrack.GetP2().x(),fittedSampledOutgoingTrack.GetP2().y(),fittedSampledOutgoingTrack.GetP2().z(),scattererHitted
+									   ,B1EventAction::momentum);
 
    /* In addition to get Poca from exact hit point, let see the results of Poca from
    ** fitted hit points
@@ -442,10 +447,15 @@ if(position.size() == (2*numOfDetectors+2))
 
    } // end of NAN
 } // end of if for positionSize check, currently checked for 18
+else{
+
+	B1EventAction::meanMomentum -= B1EventAction::momentum;
+}
 
 
 }
 else{
+	B1EventAction::meanMomentum -= B1EventAction::momentum;
   evNo++;
   noTrigger++;
   std::cout<<"Returning for EvNo : " << evNo << std::endl;

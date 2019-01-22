@@ -12,6 +12,7 @@
 #include "base/Vector3D.h"
 #include "VoxelV2.h"
 #include "Voxelator_Evolution.h"
+#include "EventHelper.h"
 //#include "Voxel.h"
 
 using Tracking::Vector3D;
