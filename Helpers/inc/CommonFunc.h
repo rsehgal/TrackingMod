@@ -73,7 +73,7 @@ static void GetTracksVector(std::string fileToRead, std::vector<Track> &incoming
 	double incomingTrackP2X = 0.,incomingTrackP2Y = 0.,incomingTrackP2Z = 0.;
 	double outgoingTrackP1X = 0.,outgoingTrackP1Y = 0.,outgoingTrackP1Z = 0.;
 	double outgoingTrackP2X = 0.,outgoingTrackP2Y = 0.,outgoingTrackP2Z = 0.;
-	double scattererHitted = 0.;
+	int scattererHitted = 0;
 	double momentum = 0.;
 
 	while(!infile.eof()){

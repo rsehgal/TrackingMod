@@ -44,7 +44,7 @@ DetectorMapping* DetectorMapping::create(std::string filename) {
 //Daq code will use this, coz the name of mapping file there
 //will be mapping.txt
 DetectorMapping::DetectorMapping(){
-	fileName = "mapping.txt";
+	fileName = "testMapping.txt";
 	ReadMapping();
 
 }

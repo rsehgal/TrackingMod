@@ -143,14 +143,21 @@ void RunHelper::FillScatteringAngleVector(){
 void RunHelper::FillPocaVector(){
     for(int i = 0 ; i < fVoxelVector.size() ; i++){
     	std::cout << "ABCD : CleanCount : " << fVoxelVector[i]->GetCleanVoxelCount() << std::endl;
-    	if(!(fVoxelVector[i]->GetCleanVoxelCount())){
-    	//if(fVoxelVector[i]->GetCleanVoxelCount() < 3){
+
+    	/* Adding the macro guards to make the condition more readable,
+    	*  Infact even if guards are not there then also there is no
+    	*  change in results coz fCleanCount for each voxel is
+    	*  initialize to 0, so the condition in if statement always
+    	*  evaluates to true.
+    	*/
+#ifdef USE_UNSCATTERED_TRACKS
+    	if(fVoxelVector[i]->GetCleanVoxelCount() < Tomography::cleanVoxelCount)
+#endif
+    	{
     	std::vector<Tracking::Vector3D<double>> pocaPointsVector = fVoxelVector[i]->GetPocaPointsVector();
-        //std::vector<Tracking::Vector3D<double>*> pocaPointsVector = fVoxelVector[i]->GetPocaPointsVector();
-    	        for(int j = 0 ; j  < pocaPointsVector.size() ; j++){
-    	            Insert(pocaPointsVector[j]);
-    	        	//Insert(Tracking::Vector3D<double>(pocaPointsVector[j]->x(),pocaPointsVector[j]->y(),pocaPointsVector[j]->z()));
-    	}
+			for (int j = 0; j < pocaPointsVector.size(); j++) {
+				Insert(pocaPointsVector[j]);
+			}
     	}
     }
 }
