@@ -27,18 +27,22 @@ MyPrimaryGeneratorAction::MyPrimaryGeneratorAction() {
   fParticleGun = new G4ParticleGun(n_particle);
   fParticleGun->SetParticleDefinition(G4Electron::ElectronDefinition());
 
+  //Tomography::DetectorMapping *detectorMap = Tomography::DetectorMapping::create("testMapping.txt");
+  //double gunZ = detectorMap->GetGunZ();
+
   // Set the kinetic energy of the protons to 50 keV
   // and tell the gun to emit them along the x-axis
   fParticleGun->SetParticleEnergy(50. * keV);
-  fParticleGun->SetParticlePosition(G4ThreeVector(0., 0., 150 * cm ));
+  //fParticleGun->SetParticlePosition(G4ThreeVector(0., 0., 300 * cm ));
+  //fParticleGun->SetParticlePosition(G4ThreeVector(0., 0., gunZ));
   fParticleGun->SetParticleMomentumDirection(G4ThreeVector(0., 0., -1.));
 }
 
 MyPrimaryGeneratorAction::MyPrimaryGeneratorAction(const char *inputfile) {
 
 #ifdef USE_CRY
-  if(Tomography::effEvNo > 100)
-    return;
+ // if(Tomography::effEvNo > 100)
+ //   return;
 	cryG4Interface = new CryGeantInterface();
 	cryG4Interface->ForCry(inputfile);
 //  ForCry(inputfile);
@@ -93,7 +97,10 @@ if(Tomography::EventBreak::instance()->BreakSimulation())
   fParticleGun->SetParticlePosition(G4ThreeVector(pt1.x(),pt1.y(),pt1.z()));
   fParticleGun->SetParticleMomentumDirection(G4ThreeVector(x,y,z));
   //fParticleGun->SetParticleMomentumDirection(G4ThreeVector(0.,0.,1.));
-  #endif
+#else
+  fParticleGun->SetParticlePosition(G4ThreeVector(0.,0.,gunZ));
+   #endif
+
   fParticleGun->GeneratePrimaryVertex(event);
    //fParticleGun->SetParticlePosition(G4ThreeVector(50 * cm, 0., -120 * cm));
    //fParticleGun->GeneratePrimaryVertex(event);

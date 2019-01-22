@@ -13,6 +13,7 @@
 #include "VoxelNavigator.h"
 #include "Delta.h"
 #include <G4SystemOfUnits.hh>
+#include "base/Global.h"
 
 
 using Tracking::Vector3D;
@@ -35,26 +36,23 @@ void EventHelper::Test2EventHelper(Track incoming, Track outgoing){
 	fOutgoing = outgoing;
 	CalculateScatterAngle();
 	std::cout<<"FABS of ScattAngle from EventHelper : " << std::fabs(fScatteringAngle) << std::endl;
+
+	if (std::fabs(fScatteringAngle) < Tomography::unscatteringThreshold){
 #ifdef USE_UNSCATTERED_TRACKS
-	if (std::fabs(fScatteringAngle) < 1e-8){
+	//Threshold below which the tracks are considered unscattered, defined in Global.h
+
 		fUnscatteredCounter++;
 		CalculateVoxel_V3(incoming,outgoing);
-	}else
 #endif
+		}else{
 
-//	if(fScatteringAngle!=0.)
-	{
 		CalculatePOCA();
 		CalculateVoxel_V2();
-	}
-
-
-	//Uncomment them if one want Candidate voxel for an event
 #ifdef FIND_CANDIDATE_VOXEL
 	CalculateCandidateVoxels();
 	WriteToFile();
 #endif
-
+		}
 
 }
 
