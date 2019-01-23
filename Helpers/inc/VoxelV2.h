@@ -53,6 +53,14 @@ public:
 	void IncrementCleanCount(){fCleanCount++;}
 	int GetCleanVoxelCount()const {return fCleanCount;}
 
+	double GetTotalScatteringInVoxel(){
+		double scattering = 0.;
+		for(int i = 0 ; i < fVectPointsInVoxel.size() ; i++){
+			scattering += fVectPointsInVoxel[i].GetColor();
+		}
+		return scattering;
+	}
+
 	void Print();
 
 	virtual ~Voxel_V2();
