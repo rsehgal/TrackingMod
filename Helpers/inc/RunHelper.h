@@ -28,10 +28,21 @@ class RunHelper {
 	std::vector<Voxel_V2*> fVoxelVector;
 	std::string fFileType;
 
+	//Data member to store TruePositive PocaPt and false positive PocaPt
+	std::vector<Vector3D<double>> fTruePositivePocaPtVector;
+	std::vector<Vector3D<double>> fFalsePositivePocaPtVector;
+	int fTruePositiveCount;
+	int fFalsePositiveCount;
+
 	//Data member to store max and min SD and RL
 	//Currently these will be used by EveVisualizer
 	double fMinSD, fMaxSD;
 	double fMinRL, fMaxRL;
+
+	//To make RunHelper SingleTon
+	RunHelper();
+	RunHelper(std::string fileType);
+	static RunHelper *s_instance;
 
 #ifdef VOXELIZE
 	//std::vector<Voxel*> fVoxelVector;
@@ -40,14 +51,18 @@ class RunHelper {
 
  // std::vector<EventHelper*> fEventHelperVector;
 public:
-	RunHelper();
-	RunHelper(std::string fileType);
+	static RunHelper *instance(std::string filename);
+	static RunHelper *instance();
+//	RunHelper();
+//	RunHelper(std::string fileType);
 
 	std::vector<double> GetScatteringAngleVector() const {return fScatteringAngleVector;}
 #ifdef VOXELIZE
 	std::vector<Voxel_V2*> GetVoxelVector() const {return fVoxelVector;}
 #endif
-	std::vector<Vector3D<double>> GetPocaPtVector() const {return fPocaPtVector;}
+	std::vector<Vector3D<double>> GetPocaPtVector() const {return
+			fPocaPtVector;
+	}
 
 	void Insert(double scatteringAngle){ fScatteringAngleVector.push_back(scatteringAngle);}
 	void Insert(Vector3D<double> pocaPt) { fPocaPtVector.push_back(pocaPt);}
@@ -66,6 +81,13 @@ public:
 	double GetMaxRL() const {return fMaxRL;}
 	double GetMinRL() const {return fMinRL;}
 	void PrintMaxMinSDAndRL() const;
+
+	//Detect True and False positive PocaPts
+	void DetectorTrueAndFalsePositive();
+	std::vector<Tracking::Vector3D<double>> GetTruePositivePocaPtVector()const {return fTruePositivePocaPtVector;}
+	std::vector<Tracking::Vector3D<double>> GetFalsePositivePocaPtVector()const {return fFalsePositivePocaPtVector;}
+	int GetTruePositivePocaPtCount()const {return fTruePositiveCount;}
+	int GetFalsePositivePocaPtCount()const {return fFalsePositiveCount;}
 
 	//Function used to do resetting
 	void Reset();

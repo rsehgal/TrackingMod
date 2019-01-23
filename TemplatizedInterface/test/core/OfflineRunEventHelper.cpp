@@ -12,6 +12,7 @@
 #include "VoxelV2.h"
 #include "CommonFunc.h"
 #include <fstream>
+#include "Stats.h"
 
 void PrintCleanVoxelsNumberAndCount(){
 	std::cout << "================ Entered PrintCleanVoxelsNumberAndCount ================ " << std::endl;
@@ -81,12 +82,29 @@ int main(int argc, char *argv[]){
 		std::string fileToRead = "Track"+type+".txt";
 		std::string fileToWrite = "EventHelperTrack"+type+".txt";
 		Tomography::EventHelper u(fileToRead, fileToWrite);
-		Tomography::RunHelper r(type);
+		//Tomography::RunHelper r(type);
+		Tomography::RunHelper* r = Tomography::RunHelper::instance(type);
 		Tomography::ScatteringDensity s(125);
 		s.Print();
 
 		//PrintCleanVoxelsNumberAndCount();
 		//Tomography::evolution::Voxelator::instance()->TestWrite();
+
+
+		std::vector<Tracking::Vector3D<double>> pocaPtVector = r->GetPocaPtVector();
+
+		std::cout << "Length of PocaVector : " << pocaPtVector.size() << std::endl;
+
+//		Tomography::Stats st;
+//		st.CreateScatteringHistogram();
+
+		r->DetectorTrueAndFalsePositive();
+		Tomography::Stats st;
+		st.CreateScatteringHistogram();
+		//Storing True positive in file
+		CommonFunc::Functions::instance()->WriteToFile("TruePositivePoca.txt",r->GetTruePositivePocaPtVector());
+		//Storing False positive in file
+		CommonFunc::Functions::instance()->WriteToFile("FalsePositivePoca.txt",r->GetFalsePositivePocaPtVector());
 
 
 		//std::vector<Tracking::Vector3D<double>> pocaPtVector;

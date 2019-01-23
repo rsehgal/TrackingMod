@@ -149,6 +149,17 @@ static Vector3D<double> UnpackColor(double f) {
 
 }
 
+static std::vector<double> GetScatteringAngleVector(std::vector<Tracking::Vector3D<double>> pocaPtVector){
+	std::vector<double> scatteringVector;
+	for(size_t i = 0 ; i < pocaPtVector.size() ; i++){
+		scatteringVector.push_back(pocaPtVector[i].GetColor());
+	}
+	return scatteringVector;
+}
+
+/*
+ * Function to check if the given point lie within the extent of scatterers
+ */
 template <bool ForSimulation>
 static bool IsFalsePositivePoca(Tracking::Vector3D<double> fPocaPt){
 	bool truePositive = false;//true;

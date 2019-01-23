@@ -12,6 +12,23 @@
 #include "Voxelator_Evolution.h"
 
 namespace Tomography {
+RunHelper *RunHelper::s_instance = 0;
+
+RunHelper* RunHelper::instance(std::string filename) {
+        if (!s_instance)
+          s_instance = new RunHelper(filename);
+
+        return s_instance;
+}
+
+RunHelper* RunHelper::instance() {
+        if (!s_instance){
+          std::cerr << "Instance of RunHelper does not exist, Kindly create it first.........." << std::endl;
+          exit(1);
+        }
+
+        return s_instance;
+}
 
 void RunHelper::Reset(){
 	fScatteringAngleVector.clear();
@@ -57,6 +74,9 @@ RunHelper::RunHelper(std::string fileType) {
 	//Resetting RunHelper
 	//Reset();
 
+	fTruePositiveCount = 0;
+	fFalsePositiveCount = 0;
+
     //WARNING : DO NOT ALTER THE BELOW MENTIONED SEQUENCE
     fFileType = fileType;
     //fVoxelVector = Voxel::GetVoxelVector();
@@ -74,7 +94,7 @@ RunHelper::RunHelper(std::string fileType) {
     WriteToFile();
 
     //Resetting RunHelper in the help, This will do the resetting process for next processing
-    Reset();
+    //Reset();
 
 }
 
@@ -162,6 +182,18 @@ void RunHelper::FillPocaVector(){
     }
 }
 
+void RunHelper::DetectorTrueAndFalsePositive(){
+	for(int i = 0 ; i < fPocaPtVector.size() ; i++){
+		bool falsePositive = CommonFunc::Functions::IsFalsePositivePoca<true>(fPocaPtVector[i]);
+		if(falsePositive)
+			fFalsePositivePocaPtVector.push_back(fPocaPtVector[i]);
+		else
+			fTruePositivePocaPtVector.push_back(fPocaPtVector[i]);
+	}
+	fTruePositiveCount = fTruePositivePocaPtVector.size();
+	fFalsePositiveCount = fFalsePositivePocaPtVector.size();
+}
+
 #ifdef STORE
 void RunHelper::Store(){
 	Tomography::evolution::Voxelator *vox = Tomography::evolution::Voxelator::instance();
@@ -221,6 +253,7 @@ void RunHelper::WriteToFile(){
 
 
     std::cout <<"Unscattered Count : " << EventHelper::fUnscatteredCounter << std::endl;
+    //std::cout <<"PocaPtVector Size : " << fPocaPtVector.size() << std::endl;
 }
 
 RunHelper::~RunHelper() {
