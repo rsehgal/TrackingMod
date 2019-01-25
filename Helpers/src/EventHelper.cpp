@@ -130,33 +130,39 @@ EventHelper::EventHelper(std::string fileToRead, std::string fileToWrite,bool fo
 
 	std::ofstream parHandle("Par.txt",std::ios::app);
 
-	while(!infile.eof()){
+	while (!infile.eof()) {
 		infile >> incomingTrackP1X >> incomingTrackP1Y >> incomingTrackP1Z
-			   >> incomingTrackP2X >> incomingTrackP2Y >> incomingTrackP2Z
-			   >> outgoingTrackP1X >> outgoingTrackP1Y >> outgoingTrackP1Z
-			   >> outgoingTrackP2X >> outgoingTrackP2Y >> outgoingTrackP2Z
-			   >> scattererHitted >> momentum;
+				>> incomingTrackP2X >> incomingTrackP2Y >> incomingTrackP2Z
+				>> outgoingTrackP1X >> outgoingTrackP1Y >> outgoingTrackP1Z
+				>> outgoingTrackP2X >> outgoingTrackP2Y >> outgoingTrackP2Z
+				>> scattererHitted >> momentum;
 
-		if(scattererHitted == 1)
+#ifndef TPR_ANALYSIS
+		if (scattererHitted == 1)
+#endif
+		{
 			hitCounter++;
 
-		Tomography::Track incoming(Tracking::Vector3D<double>(incomingTrackP1X,incomingTrackP1Y,incomingTrackP1Z),
-								   Tracking::Vector3D<double>(incomingTrackP2X,incomingTrackP2Y,incomingTrackP2Z));
+			Tomography::Track incoming(
+					Tracking::Vector3D<double>(incomingTrackP1X,incomingTrackP1Y, incomingTrackP1Z),
+					Tracking::Vector3D<double>(incomingTrackP2X,incomingTrackP2Y, incomingTrackP2Z));
 
-		Tomography::Track outgoing(Tracking::Vector3D<double>(outgoingTrackP1X,outgoingTrackP1Y,outgoingTrackP1Z),
-								   Tracking::Vector3D<double>(outgoingTrackP2X,outgoingTrackP2Y,outgoingTrackP2Z));
+			Tomography::Track outgoing(
+					Tracking::Vector3D<double>(outgoingTrackP1X,outgoingTrackP1Y, outgoingTrackP1Z),
+					Tracking::Vector3D<double>(outgoingTrackP2X,outgoingTrackP2Y, outgoingTrackP2Z));
 
-		std::cout << "INCOMING : " ; incoming.Print();
-		std::cout << "OUTGOING : " ; outgoing.Print();
+			std::cout << "INCOMING : ";			incoming.Print();
+			std::cout << "OUTGOING : ";			outgoing.Print();
 
+			TestEventHelper(incoming, outgoing, fileToWrite);
 
-		TestEventHelper(incoming,outgoing,fileToWrite);
-
-		//if(!IsFalsePositivePoca<true>()){
-		if(!CommonFunc::Functions::instance()->IsFalsePositivePoca<true>(fPocaPt)){
-			genuinePocaCounter++;
-			Tomography::Files::instance()->Write(genuinefileName,4, fPocaPt.x(), fPocaPt.y(),
-																			   fPocaPt.z(), fPocaPt.GetColor());
+			//if(!IsFalsePositivePoca<true>()){
+			if (!CommonFunc::Functions::instance()->IsFalsePositivePoca<true>(fPocaPt)) {
+				genuinePocaCounter++;
+				Tomography::Files::instance()->Write(genuinefileName, 4,
+						fPocaPt.x(), fPocaPt.y(), fPocaPt.z(),
+						fPocaPt.GetColor());
+			}
 		}
 
 	}
@@ -168,7 +174,9 @@ EventHelper::EventHelper(std::string fileToRead, std::string fileToWrite,bool fo
 	std::cout << "ActualHit Counter : " << hitCounter << " :: GenuinePoca Counter : " << genuinePocaCounter << std::endl;
 	double par = double(genuinePocaCounter)/hitCounter;
 	std::cout << "PoCAAccuracyRatio : " << par << std::endl;
-	parHandle << par << " ";
+	//double error = par/std::sqrt(genuinePocaCounter);
+	double error = par*std::sqrt((1./double(genuinePocaCounter))+(1./double(hitCounter)));
+	parHandle << par << " " << error << " ";
 	parHandle.close();
 
 }

@@ -89,6 +89,9 @@ public:
 	int GetTruePositivePocaPtCount()const {return fTruePositiveCount;}
 	int GetFalsePositivePocaPtCount()const {return fFalsePositiveCount;}
 
+	//Filtering based on ThetaCut
+	std::vector<Tracking::Vector3D<double>> ThetaCutFiltering();
+
 	//Function used to do resetting
 	void Reset();
 #ifdef STORE

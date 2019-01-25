@@ -35,11 +35,13 @@ int main(int argc, char *argv[]){
     double tpr = (double)truePositive / (truePositive+falsePositive);
     double fpr = (double)falsePositive / (truePositive+falsePositive);
 
+    double error = tpr*std::sqrt((1./double(truePositive))+(1./double(truePositive+falsePositive)));
+
     std::ofstream tprHandle("Tpr.txt",std::ios::app);
     std::ofstream fprHandle("Fpr.txt",std::ios::app);
     std::cout << "TruePositive : " << truePositive << " : FalsePositive : " << falsePositive << std::endl;
     std::cout << "TPR : " << tpr <<" : FPR : " << fpr << std::endl;
-    tprHandle << tpr << " ";
+    tprHandle << tpr << " " << error << " " ;
     fprHandle << fpr << " ";
 
     tprHandle.close();

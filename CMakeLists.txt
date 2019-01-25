@@ -82,7 +82,11 @@ option(USE_ROOT_FITTING "Use Root Fitting" OFF)
 option(ROBUST_FIT "Use ROBUST Fitting" OFF)
 option(GMM "Use Gaussian Mixture Model for filtering and Clustering" OFF)
 option(USE_UNSCATTERED_TRACKS "Use Unscattered tracks to do some filtering" OFF)
+option(TPR_ANALYSIS "Switch on TPR analysis" OFF)
 
+if(TPR_ANALYSIS)
+add_definitions(-DTPR_ANALYSIS)
+endif(TPR_ANALYSIS)
 
 if(USE_UNSCATTERED_TRACKS)
 add_definitions(-DUSE_UNSCATTERED_TRACKS)

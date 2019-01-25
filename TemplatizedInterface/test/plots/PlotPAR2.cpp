@@ -14,8 +14,16 @@
 #include <TAxis.h>
 #include <vector>
 #include <TLegend.h>
+#include <TH1F.h>
+#include <TGraphErrors.h>
+
 int main(int argc, char *argv[]){
 	TApplication *fApp = new TApplication("Test", NULL, NULL);
+
+	TH1F *hist = new TH1F("Hist","Hist",8,0,8);
+
+	TCanvas *can = new TCanvas();
+    can->Divide(2,3);
 
 	//TMultiGraph *mg = new TMultiGraph();
 	//std::ifstream parHandle("Par.txt");
@@ -24,6 +32,7 @@ int main(int argc, char *argv[]){
 	int n = 0;
 	std::string numOfMaterials="";
 	parHandle >> numOfMaterials >> n;
+	std::cout << numOfMaterials << " : " << n << std::endl;
 	int i = 0;
 
 	std::vector<double> yNew;
@@ -32,8 +41,10 @@ int main(int argc, char *argv[]){
 	for(int i = 0 ; i < n ; i++){
 		std::string material;
 		parHandle >> material;
+		std::cout << material << " ";
 		materialString.push_back(material);
 	}
+	std::cout << std::endl;
 
 	std::vector<double> materialCode;
 	for(int i = 1 ; i <= n ; i++ ){
@@ -41,9 +52,9 @@ int main(int argc, char *argv[]){
 	}
 
 	int numOfEventsSteps = 0;
-	std::string numOfEventsString="";
-	parHandle >> numOfEventsString>> numOfEventsSteps;
-	std::cout << "numOfEventsString :  " << numOfEventsString << " : " << numOfEventsSteps << std::endl;
+	std::string numOfStepsString="";
+	parHandle >> numOfStepsString>> numOfEventsSteps;
+	std::cout << "numOfStepsString :  " << numOfStepsString << " : " << numOfEventsSteps << std::endl;
 	std::vector<double> numOfEventsVector;
 
 	{
@@ -68,17 +79,30 @@ int main(int argc, char *argv[]){
 	legends.push_back("Uranium");
 
 	std::vector<double> parVector;
+	std::vector<double> errorVector;
+	std::vector<double> ex;
 
+	std::vector<TGraphErrors*> graphsVector;
+	//n = 1;
 	for(int i = 0 ; i < n ; i++){
 
 		{	parVector.clear();
-			for(int i = 0 ; i < numOfEventsSteps ; i++){
-				double parVal = 0. ;
-				parHandle >> parVal;
+			errorVector.clear();
+			ex.clear();
+			for(int j = 0 ; j < numOfEventsSteps ; j++){
+				double parVal = 0. , errorVal = 0.;
+				parHandle >> parVal >> errorVal;
+				std::cout << "PAR : " << parVal << " :: Error : " << errorVal << std::endl;
 				parVector.push_back(parVal);
+				errorVector.push_back(errorVal);
+				ex.push_back(0.);
+				//hist->SetBinContent(j+1,parVal);
 			}
 
-			TGraph *gr = new TGraph(numOfEventsVector.size(),&numOfEventsVector[0],&parVector[0]);
+			//TGraph *gr = new TGraph(numOfEventsVector.size(),&numOfEventsVector[0],&parVector[0]);
+			TGraphErrors *gr = new TGraphErrors(numOfEventsVector.size(),&numOfEventsVector[0],&parVector[0],&ex[0],&errorVector[0]);
+			graphsVector.push_back(gr);
+
 			leg->AddEntry(gr,legends[i],"lp");
 			gr->SetMarkerStyle(20+i);
 			gr->SetMarkerColor(i+1);
@@ -88,9 +112,18 @@ int main(int argc, char *argv[]){
 
 	}
 
+	can->cd(1);
 	mg->Draw("alp");
 	leg->Draw();
 
+	for(int i = 3 ; i <= 6 ; i++){
+		can->cd(i);
+		graphsVector[i-3]->Draw("alp");
+	}
+
+//	can->cd(2);
+//	hist->SetMarkerStyle(20);
+//	hist->Draw("E1");
 
 	fApp->Run();
 }

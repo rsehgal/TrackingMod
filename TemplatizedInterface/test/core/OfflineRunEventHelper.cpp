@@ -105,6 +105,7 @@ int main(int argc, char *argv[]){
 		CommonFunc::Functions::instance()->WriteToFile("TruePositivePoca.txt",r->GetTruePositivePocaPtVector());
 		//Storing False positive in file
 		CommonFunc::Functions::instance()->WriteToFile("FalsePositivePoca.txt",r->GetFalsePositivePocaPtVector());
+		CommonFunc::Functions::instance()->WriteToFile("ThetaCutFilteredPocaPt.txt",r->ThetaCutFiltering());
 
 
 		//std::vector<Tracking::Vector3D<double>> pocaPtVector;
