@@ -14,8 +14,11 @@
 #include <TAxis.h>
 #include <vector>
 #include <TLegend.h>
+#include <TGraphErrors.h>
 int main(int argc, char *argv[]){
 	TApplication *fApp = new TApplication("Test", NULL, NULL);
+	TCanvas *can = new TCanvas();
+	can->Divide(2,3);
 
 	//TMultiGraph *mg = new TMultiGraph();
 	//std::ifstream parHandle("Par.txt");
@@ -68,17 +71,29 @@ int main(int argc, char *argv[]){
 	legends.push_back("Uranium");
 
 	std::vector<double> parVector;
+	std::vector<double> errorVector;
+	std::vector<double> ex;
+
+	std::vector<TGraphErrors*> graphsVector;
 
 	for(int i = 0 ; i < n ; i++){
 
 		{	parVector.clear();
+			errorVector.clear();
+			ex.clear();
+
 			for(int i = 0 ; i < numOfEventsSteps ; i++){
-				double parVal = 0. ;
-				parHandle >> parVal;
+				double parVal = 0. , errorVal = 0.;
+				parHandle >> parVal >> errorVal;
 				parVector.push_back(parVal);
+				errorVector.push_back(errorVal);
+				ex.push_back(0.);
 			}
 
-			TGraph *gr = new TGraph(numOfEventsVector.size(),&numOfEventsVector[0],&parVector[0]);
+			//TGraph *gr = new TGraph(numOfEventsVector.size(),&numOfEventsVector[0],&parVector[0]);
+			TGraphErrors *gr = new TGraphErrors(numOfEventsVector.size(),&numOfEventsVector[0],&parVector[0],&ex[0],&errorVector[0]);
+			graphsVector.push_back(gr);
+
 			leg->AddEntry(gr,legends[i],"lp");
 			gr->SetMarkerStyle(20+i);
 			gr->SetMarkerColor(i+1);
@@ -88,9 +103,17 @@ int main(int argc, char *argv[]){
 
 	}
 
-	mg->Draw("alp");
 
+
+	can->cd(1);
+	mg->Draw("alp");
 	leg->Draw();
+
+	for (int i = 3; i <= 6; i++) {
+		can->cd(i);
+		graphsVector[i - 3]->Draw("alp");
+	}
+
 
 
 	fApp->Run();

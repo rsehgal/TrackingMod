@@ -50,6 +50,8 @@ namespace Tomography{
 
  constexpr double unscatteringThreshold = 0.0001;
 
+ constexpr double filteringThetaCut = 0.07;
+
  constexpr int cleanVoxelCount = 50;
 
  constexpr double refMomentum = 3000.; //MeV

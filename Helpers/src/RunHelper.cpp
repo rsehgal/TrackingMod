@@ -194,6 +194,18 @@ void RunHelper::DetectorTrueAndFalsePositive(){
 	fFalsePositiveCount = fFalsePositivePocaPtVector.size();
 }
 
+std::vector<Tracking::Vector3D<double>> RunHelper::ThetaCutFiltering(){
+	//std::ofstream outfile("point.txt");
+	std::vector<Tracking::Vector3D<double>> filteredVector;
+	for(int i = 0 ; i < fPocaPtVector.size() ; i++){
+		if(std::fabs(fPocaPtVector[i].GetColor()) > Tomography::filteringThetaCut){
+			filteredVector.push_back(fPocaPtVector[i]);
+		}
+	}
+
+	return filteredVector;
+}
+
 #ifdef STORE
 void RunHelper::Store(){
 	Tomography::evolution::Voxelator *vox = Tomography::evolution::Voxelator::instance();

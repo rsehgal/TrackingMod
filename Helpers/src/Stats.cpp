@@ -64,7 +64,11 @@ void Stats::CreateScatteringHistogram(){
 	truePositiveHist->Write();
 
 	for(std::size_t i = 0  ; i < falsePositiveScatteringAngleVector.size() ; i++){
-			falsePositiveHist->Fill(falsePositiveScatteringAngleVector[i]);
+			double scatteringAngle = falsePositiveScatteringAngleVector[i];
+			falsePositiveHist->Fill(scatteringAngle);
+			if(scatteringAngle > 0.07)
+				std::cout <<"I : " << " :: Value : " << scatteringAngle << std::endl;
+
 	}
 	falsePositiveHist->Write();
 
