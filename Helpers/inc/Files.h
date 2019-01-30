@@ -15,6 +15,7 @@
 #include <iostream>
 #include <cstdarg>
 #include "base/Vector3D.h"
+#include <iomanip>
 namespace Tomography{
 
 
@@ -118,6 +119,7 @@ public:
 	    	va_list args;
 	        va_start(args, fmt);
 	        double data;
+	        *(fileMap->sFileStream) << std::setprecision(20);
 	        while (fmt) {
 	        	data = va_arg(args, double);
 	            fmt--;
