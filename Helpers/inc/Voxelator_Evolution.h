@@ -70,6 +70,10 @@ private:
   			 double voxelX,double voxelY, double voxelZ);
 
 
+  //Data member to store the predicted threshold.
+  int fThresholdVal;
+
+
 public:
   static Voxelator *instance(double voxelizedVolHalfX,double voxelizedVolHalfY, double voxelizedVolHalfZ,
 			 double voxelX,double voxelY, double voxelZ);
@@ -177,6 +181,10 @@ public:
   Vector3D<double> GetVoxelizedVolumeDim(){return fVoxelizedVolumeDim;}
   Vector3D<double> GetEachVoxelDim(){return fEachVoxelDim;}
   Vector3D<double> GetVoxelatorDim(){return fVoxelatorDim;}
+
+  //Member function to predict the threshold
+  void PredictThreshold();
+  int GetThresholdVal() const {return fThresholdVal;}
 
 
 

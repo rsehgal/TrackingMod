@@ -77,7 +77,7 @@ int main(int argc, char *argv[]){
 	}
 	std::string type = std::string(argv[1]);
 	//Tomography::evolution::Voxelator::Create(50*cm,50*cm,75*cm,5*cm,5*cm,7.5*cm);
-	Tomography::evolution::Voxelator::Create(50*cm,50*cm,45*cm,5*cm,5*cm,4.5*cm);
+	Tomography::evolution::Voxelator::Create(50*cm,50*cm,45*cm,10*cm,10*cm,9*cm);
 	{
 		std::string fileToRead = "Track"+type+".txt";
 		std::string fileToWrite = "EventHelperTrack"+type+".txt";
@@ -107,6 +107,10 @@ int main(int argc, char *argv[]){
 		CommonFunc::Functions::instance()->WriteToFile("FalsePositivePoca.txt",r->GetFalsePositivePocaPtVector());
 		CommonFunc::Functions::instance()->WriteToFile("ThetaCutFilteredPocaPt.txt",r->ThetaCutFiltering());
 
+		std::cout << "================ Predicting Threshold ========================" << std::endl;
+		Tomography::evolution::Voxelator::instance()->PredictThreshold();
+		std::cout << " Predicted Value : " << Tomography::evolution::Voxelator::instance()->GetThresholdVal() << std::endl;
+		std::cout << "================ Predicting Threshold ========================" << std::endl;
 
 		//std::vector<Tracking::Vector3D<double>> pocaPtVector;
 		//Tomography::evolution::Voxelator::instance()->GetFilteredPocaPtVectorUsingCleanedVoxel(pocaPtVector);
