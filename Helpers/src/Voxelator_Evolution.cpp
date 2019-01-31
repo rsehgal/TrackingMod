@@ -9,6 +9,28 @@ namespace Tomography {
 namespace evolution{
 Voxelator *Voxelator::s_instance = 0;
 
+void Voxelator::PredictThreshold(){
+	double stddev = fVoxelsIn1DCount->GetStdDev();
+	double mean = fVoxelsIn1DCount->GetMean();
+
+	//Selecting point in the voxels which comes under 2Sigma
+	double startx = mean-2*stddev;
+	double endx = mean+2*stddev;
+
+	//default value
+	double threshold = 0.;
+	for(unsigned int i = 0 ; i < fVoxelVector.size() ; i++){
+		if(fVoxelVector[i]->GetVoxelNum() < startx ||
+				fVoxelVector[i]->GetVoxelNum() > endx){
+
+			if(fVoxelVector[i]->GetPointCount() > threshold)
+				threshold = fVoxelVector[i]->GetPointCount();
+		}
+	}
+
+	fThresholdVal = threshold;
+}
+
 int Voxelator::IfVoxelExist(int voxelNum){
 //std::cout<< "VoxelVectorSize : " << run->fVoxelVector.size() << std::endl;
 	if(fVisitedVoxelNumVector.size()){

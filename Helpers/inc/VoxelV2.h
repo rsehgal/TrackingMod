@@ -44,6 +44,7 @@ public:
 	double GetStandardDeviation(){return fSD;}
 	std::vector<Tracking::Vector3D<double>> GetPocaPointsVector(){//std::cout << "PocaPtVectorSize : " << fVectPointsInVoxel.size() << std::endl;
 																	return fVectPointsInVoxel;}
+	int GetPointCount() const {return fPointCount;}
 	Tracking::Vector3D<double> GetVoxelCenter(){return fVoxelCenter;}
 	std::vector<double> GetScatteringVector();
 	int GetVoxelNum(){return fVoxelNum;}

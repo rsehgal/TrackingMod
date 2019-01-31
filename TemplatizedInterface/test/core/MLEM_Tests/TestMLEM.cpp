@@ -41,7 +41,7 @@ int main(int argc, char *argv[]){
 			std::string fileToRead = "Track"+type+".txt";
 			std::string fileToWrite = "EventHelperTrack"+type+".txt";
 			Tomography::EventHelper u(fileToRead, fileToWrite);
-			Tomography::RunHelper r(type);
+			Tomography::RunHelper::instance(type);
 			//Tomography::ScatteringDensity s(125);
 			//s.Print();
 		//}
