@@ -10,25 +10,43 @@ namespace evolution{
 Voxelator *Voxelator::s_instance = 0;
 
 void Voxelator::PredictThreshold(){
+
+#define USE_MAX_VAL
+	//std::cout << "Entered PredictThreshold : " << __FILE__ <<" : " << __LINE__ << std::endl;
 	double stddev = fVoxelsIn1DCount->GetStdDev();
 	double mean = fVoxelsIn1DCount->GetMean();
 
 	//Selecting point in the voxels which comes under 2Sigma
-	double startx = mean-2*stddev;
-	double endx = mean+2*stddev;
+	double valsigma = 2;
+	double startx = mean-valsigma*stddev;
+	double endx = mean+valsigma*stddev;
 
 	//default value
 	double threshold = 0.;
+	int sum = 0;
+	int count = 0;
 	for(unsigned int i = 0 ; i < fVoxelVector.size() ; i++){
 		if(fVoxelVector[i]->GetVoxelNum() < startx ||
 				fVoxelVector[i]->GetVoxelNum() > endx){
 
-			if(fVoxelVector[i]->GetPointCount() > threshold)
+			int pointcount = fVoxelVector[i]->GetPointCount();
+			//std::cout << "PointCount : " << pointcount << " :: Threshold : " << threshold << std::endl;
+#ifndef USE_MAX_VAL
+				sum += pointcount;
+				count++;
+#else
+			if( pointcount > threshold)
 				threshold = fVoxelVector[i]->GetPointCount();
+#endif
 		}
 	}
 
+#ifndef USE_MAX_VAL
+	std::cout << "Sum : " << sum << " : Count : " << count << std::endl;
+	fThresholdVal = sum/count;
+#else
 	fThresholdVal = threshold;
+#endif
 }
 
 int Voxelator::IfVoxelExist(int voxelNum){
@@ -50,7 +68,14 @@ int Voxelator::IfVoxelExist(int voxelNum){
 std::vector<Voxel_V2*> Voxelator::GetFilteredVoxelVector(){
 	std::vector<Voxel_V2*> filteredVoxelVector;
 	for(int i= 0 ; i < fVoxelVector.size() ; i++){
-		if(!fVoxelVector[i]->IsOutlier()){
+
+#ifndef USE_TWO_SIGMA_THRESHOLD
+		if(!fVoxelVector[i]->IsOutlier())
+#else
+		Tomography::evolution::Voxelator::instance()->PredictThreshold();
+		if(fVoxelVector[i]->GetPointCount() >= Tomography::evolution::Voxelator::instance()->GetThresholdVal())
+#endif
+		{
 			filteredVoxelVector.push_back(fVoxelVector[i]);
 
 		}

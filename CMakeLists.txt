@@ -83,6 +83,11 @@ option(ROBUST_FIT "Use ROBUST Fitting" OFF)
 option(GMM "Use Gaussian Mixture Model for filtering and Clustering" OFF)
 option(USE_UNSCATTERED_TRACKS "Use Unscattered tracks to do some filtering" OFF)
 option(TPR_ANALYSIS "Switch on TPR analysis" OFF)
+option(TWO_SIGMA_THRESHOLD "Use Two Sigma to automatically select Threshold" OFF)
+
+if(TWO_SIGMA_THRESHOLD)
+add_definitions(-DUSE_TWO_SIGMA_THRESHOLD)
+endif(TWO_SIGMA_THRESHOLD)
 
 if(TPR_ANALYSIS)
 add_definitions(-DTPR_ANALYSIS)
