@@ -17,7 +17,7 @@ void Voxelator::PredictThreshold(){
 	double mean = fVoxelsIn1DCount->GetMean();
 
 	//Selecting point in the voxels which comes under 2Sigma
-	double valsigma = 2;
+	double valsigma = 1.0;
 	double startx = mean-valsigma*stddev;
 	double endx = mean+valsigma*stddev;
 
