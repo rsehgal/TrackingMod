@@ -1,5 +1,8 @@
-numberOfScatterer 1 
-TargetMaterial G4_Material 100 100 100 0 0 0
+numberOfScatterer 4 
+TargetMaterial_1 G4_Material 100 100 100 -150 -150 0
+TargetMaterial_2 G4_Material 100 100 100 -150 150 0
+TargetMaterial_3 G4_Material 100 100 100 150 -150 0
+TargetMaterial_4 G4_Material 100 100 100 150 150 0
 startStripNumOfEachDetector 32
 numberOfStripsInEachPlane 32 
 worldSizeHalfLength 3000

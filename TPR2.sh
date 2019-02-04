@@ -33,7 +33,8 @@ do
 
 	#Running Offline Analysis
        	./OfflineRunEventHelper Exact
-	./TestTpr PocaPtRunHelper-Exact.txt
+	./TestTpr PocaPtRunHelper-Exact.txt 0
+	./TestTpr filteredPocaPtRunHelper-Exact.txt 1
 
 	mv TrackExact.txt "TprData/TrackExact_"$filename
 	mv Exact.root "TprData/Exact_"$filename".root"
