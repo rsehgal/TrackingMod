@@ -18,6 +18,7 @@ using Tracking::Vector3D;
 int main(int argc, char *argv[]){
 	Tomography::DetectorMapping::create("testMapping.txt");
 	const char* filename = argv[1];
+	int val = std::atoi(argv[2]);
 	int truePositive = 0 ;
 	int falsePositive = 0 ;
 	std::ifstream ft(filename);
@@ -37,8 +38,16 @@ int main(int argc, char *argv[]){
 
     double error = tpr*std::sqrt((1./double(truePositive))+(1./double(truePositive+falsePositive)));
 
-    std::ofstream tprHandle("Tpr.txt",std::ios::app);
-    std::ofstream fprHandle("Fpr.txt",std::ios::app);
+    std::ofstream tprHandle;
+    std::ofstream fprHandle;
+
+	if (val == 0) {
+		tprHandle.open("Tpr.txt", std::ios::app);
+		fprHandle.open("Fpr.txt", std::ios::app);
+	} else {
+		tprHandle.open("filteredTpr.txt", std::ios::app);
+		fprHandle.open("filteredFpr.txt", std::ios::app);
+	}
     std::cout << "TruePositive : " << truePositive << " : FalsePositive : " << falsePositive << std::endl;
     std::cout << "TPR : " << tpr <<" : FPR : " << fpr << std::endl;
     tprHandle << tpr << " " << error << " " ;
