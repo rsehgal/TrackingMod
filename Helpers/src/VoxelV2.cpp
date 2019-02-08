@@ -65,6 +65,7 @@ void Voxel_V2::Print(){
 void Voxel_V2::Reset_V2(){
 	fVectPointsInVoxel.clear();
 	fCleanCount = 0;
+	delete this;
 }
 
 void Voxel_V2::Insert(Tracking::Vector3D<double> point){

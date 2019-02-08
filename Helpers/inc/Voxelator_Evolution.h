@@ -147,9 +147,14 @@ public:
   void Reset();
   std::vector<Voxel_V2*> GetFilteredVoxelVector();
   std::vector<Tracking::Vector3D<double>> GetFilteredPocaPtVector();
+  //Getting filtered PoCA from the specifed filteredVoxelVector
+  std::vector<Tracking::Vector3D<double>> GetFilteredPocaPtVector(std::vector<Voxel_V2*> filteredVoxelVector);
 
   //Another Clean Voxel based filteration function
   std::vector<Voxel_V2*> GetFilteredVoxelVectorUsingCleanVoxel();
+  //Another version that will filter the specified Voxel Vector based on Clean Voxel
+  std::vector<Voxel_V2*> GetFilteredVoxelVectorUsingCleanVoxel(std::vector<Voxel_V2*> voxelVector);
+
   //std::vector<Tracking::Vector3D<double>>
   void GetFilteredPocaPtVectorUsingCleanedVoxel(std::vector<Tracking::Vector3D<double>> &pocaPtVector);
 

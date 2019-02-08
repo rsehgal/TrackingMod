@@ -16,6 +16,10 @@
 using Tracking::Vector3D;
 
 int main(int argc, char *argv[]){
+#ifndef TPR_ANALYSIS
+	std::cerr << "TPR_ANALYSIS NOT Switched ON, kindly switch on -DTPR_ANALYSIS=ON while giving cmake command .... " << std::endl << "Exiting....." << std::endl;
+	exit(1);
+#endif
 	Tomography::DetectorMapping::create("testMapping.txt");
 	const char* filename = argv[1];
 	int val = std::atoi(argv[2]);

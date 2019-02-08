@@ -297,6 +297,7 @@ G4VPhysicalVolume *brickLanePhy = new G4PVPlacement(0,
                                   0,
                                   checkOverlaps);
 */
+
   std::vector<Tomography::Mapping::Scatterer*>  scattererVector = detectorMap->GetScattererVector();
   for(int i = 0 ; i < scattererVector.size() ; i++){
 	  Tomography::Mapping::Scatterer *scatterer = scattererVector[i];
@@ -313,6 +314,45 @@ G4VPhysicalVolume *brickLanePhy = new G4PVPlacement(0,
 	                                0,
 	                                checkOverlaps);
   }
+
+  //Different Scatterers for Reconstruction. A Box, Tube, Sphere
+/*
+  G4Box *boxScatterer = new G4Box("BoxScatterer",10*cm,10*cm,10*cm);
+  G4LogicalVolume *boxLogical = new G4LogicalVolume(boxScatterer,Pb,"BoxLogical");
+  G4VPhysicalVolume *boxPhysical = new G4PVPlacement(0,
+  	                               G4ThreeVector(15.*cm,15.*cm,0.),
+								   boxLogical,
+  	                               "BoxPhysical",
+  	                               logicWorld,
+  	                                false,
+  	                                0,
+  	                                checkOverlaps);
+
+  G4Orb *orbScatterer = new G4Orb("OrbScatterer",10*cm);
+  G4LogicalVolume *orbLogical = new G4LogicalVolume(orbScatterer,Pb,"OrbLogical");
+  G4VPhysicalVolume *orbPhysical = new G4PVPlacement(0,
+  	                               G4ThreeVector(-15.*cm,15.*cm,0.),
+								   orbLogical,
+  	                               "OrbPhysical",
+  	                               logicWorld,
+  	                                false,
+  	                                0,
+  	                                checkOverlaps);
+
+  G4Tubs *tubsScatterer = new G4Tubs("TubsScatterer", 8*cm,10*cm,10*cm,0.,2*M_PI);
+  G4LogicalVolume *tubsLogical = new G4LogicalVolume(tubsScatterer,Pb,"TubsLogical");
+  G4VPhysicalVolume *tubsPhysical = new G4PVPlacement(0,
+  	                               G4ThreeVector(20.*cm,-15.*cm,25.*cm),
+								   tubsLogical,
+  	                               "TubsPhysical",
+  	                               logicWorld,
+  	                                false,
+  	                                0,
+  	                                checkOverlaps);
+*/
+
+
+
 
 /*
 G4VPhysicalVolume *phySubTargetBlockU = new G4PVPlacement(0,

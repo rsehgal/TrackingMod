@@ -16,8 +16,13 @@ void Voxelator::PredictThreshold(){
 	double stddev = fVoxelsIn1DCount->GetStdDev();
 	double mean = fVoxelsIn1DCount->GetMean();
 
-	//Selecting point in the voxels which comes under 2Sigma
-	double valsigma = 1.0;
+	/* Selecting point in the voxels which comes under X Sigma
+	 * The interval value is defined in "confidenceInterval" variable
+	 * defined in Global.h
+	 */
+
+	double valsigma = Tomography::confidenceInterval;
+
 	double startx = mean-valsigma*stddev;
 	double endx = mean+valsigma*stddev;
 
@@ -104,7 +109,7 @@ std::vector<Voxel_V2*> Voxelator::GetFilteredVoxelVectorUsingCleanVoxel(){
 	std::vector<Voxel_V2*> filteredVoxelVector;
 	int signalVoxelCounter = 0;
 	for (int i = 0; i < fVoxelVector.size(); i++) {
-		if (fVoxelVector[i]->GetCleanVoxelCount() < 500) {
+		if (fVoxelVector[i]->GetCleanVoxelCount() < Tomography::cleanVoxelCount) {
 			signalVoxelCounter++;
 
 			filteredVoxelVector.push_back(fVoxelVector[i]);
@@ -116,6 +121,34 @@ std::vector<Voxel_V2*> Voxelator::GetFilteredVoxelVectorUsingCleanVoxel(){
 
 	return filteredVoxelVector;
 }
+
+
+std::vector<Voxel_V2*> Voxelator::GetFilteredVoxelVectorUsingCleanVoxel(std::vector<Voxel_V2*> voxelVector){
+	std::vector<Voxel_V2*> filteredVoxelVector;
+	int signalVoxelCounter = 0;
+	for (int i = 0; i < voxelVector.size(); i++) {
+		if (voxelVector[i]->GetCleanVoxelCount() < Tomography::evolution::Voxelator::instance()->GetThresholdVal()) {
+			signalVoxelCounter++;
+			filteredVoxelVector.push_back(fVoxelVector[i]);
+		}
+	}
+
+	std::cout << "SignalVoxelCounter : " << signalVoxelCounter << std::endl;
+
+	return filteredVoxelVector;
+}
+
+std::vector<Tracking::Vector3D<double>> Voxelator::GetFilteredPocaPtVector(std::vector<Voxel_V2*> filteredVoxelVector){
+
+		std::vector<Tracking::Vector3D<double>> filteredPocaVector;
+		for(int i = 0 ; i < filteredVoxelVector.size() ; i++){
+			for(int j = 0 ; j < filteredVoxelVector[i]->GetPocaPointsVector().size() ; j++){
+				filteredPocaVector.push_back(filteredVoxelVector[i]->GetPocaPointsVector()[j]);
+			}
+		}
+		return filteredPocaVector;
+}
+
 
 /*std::vector<Tracking::Vector3D<double>> Voxelator::GetFilteredPocaPtVectorUsingCleanedVoxel(){
 	std::vector<Voxel_V2*> filteredVoxelVector = GetFilteredVoxelVectorUsingCleanVoxel();
