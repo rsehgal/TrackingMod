@@ -48,6 +48,8 @@ namespace Tomography{
 
  static int effEvNo = 0;
 
+ constexpr double confidenceInterval = 2.;
+
  constexpr double unscatteringThreshold = 0.0001;
 
  constexpr double filteringThetaCut = 0.07;

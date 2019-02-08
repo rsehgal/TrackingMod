@@ -1,22 +1,20 @@
 #!/bin/sh
 material=$2
-rm -rf Tpr_$material
+rm -rf Sim_$material
 
 #creating directory
-cp -rf build Tpr_$material
-cd Tpr_$material
+cp -rf build Sim_$material
+cd Sim_$material
 
 rm -rf Tpr.txt Fpr.txt
-rm -rf TprData
-mkdir TprData
+rm -rf SimData
+mkdir SimData
 echo "numOfMaterials 1" > Tpr.txt
-echo "Pb" >> Tpr.txt
+echo $material >> Tpr.txt
 echo "numberOfSteps 6" >> Tpr.txt
 echo "5000. 10000. 20000. 30000. 50000. 100000." >> Tpr.txt
 cp Tpr.txt Fpr.txt
-#numOfEvents=10000
-#for material in Al Fe Pb U
-#do
+
 for numOfEvents in 5000 10000 20000 30000 50000 100000
 do
 	filename=$material"_"$numOfEvents".txt"
@@ -31,23 +29,8 @@ do
 	#Runing the Simulation
        	./mainNew $1 
 
-	#Running Offline Analysis
-       	#./OfflineRunEventHelper Exact
-	#./TestTpr PocaPtRunHelper-Exact.txt 0
-	#./TestTpr filteredPocaPtRunHelper-Exact.txt 1
-
-	mv TrackExact.txt "TprData/TrackExact_"$filename
-	#mv Exact.root "TprData/Exact_"$filename".root"
-
-
-		#
+	mv TrackExact.txt "SimData/TrackExact_"$filename
 done
 echo "" >> Tpr.txt
 echo "" >> Fpr.txt
 
-
-
-#done
-
-#Creating the plots
-#./PlotPAR

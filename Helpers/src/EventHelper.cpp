@@ -270,6 +270,7 @@ void EventHelper::CalculateVoxel_V2(){
 	if(voxelNum < 0 || voxelNum > Tomography::evolution::Voxelator::instance()->GetTotalNumberOfVoxels())
 		return;
 	int voxNum = Tomography::evolution::Voxelator::instance()->IfVoxelExist(voxelNum);
+	if (std::fabs(fScatteringAngle) > Tomography::unscatteringThreshold){
     	if(voxNum < 0.){
 			//fVoxel = new Voxel(fPocaPt,voxelNum);
     		//Tomography::evolution::Voxelator::instance()->Insert(fPocaPt,voxelNum);
@@ -281,6 +282,7 @@ void EventHelper::CalculateVoxel_V2(){
 			Tomography::evolution::Voxelator::instance()->GetVoxelVector()[voxNum]->Insert(fPocaPt);
 			//fVox->Insert(fPocaPt,voxelNum);
 		}
+	}
 	}
 }
 

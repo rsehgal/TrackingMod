@@ -31,14 +31,19 @@ RunHelper* RunHelper::instance() {
 }
 
 void RunHelper::Reset(){
+
 	fScatteringAngleVector.clear();
 	fPocaPtVector.clear();
 	fSDOfVoxelsVector.clear();
 	fRLOfVoxelsVector.clear();
-	for(int i = 0 ; i < fVoxelVector.size() ; i++){
+	/*for(int i = 0 ; i < fVoxelVector.size() ; i++){
+		//fVoxelVector[i]->Reset_V2();
 		delete fVoxelVector[i];
-	}
+	}*/
 	fVoxelVector.clear();
+
+	//Reseting the Voxelator so that all the memory should get free.
+	Tomography::evolution::Voxelator::instance()->Reset();
 }
 
 RunHelper::RunHelper() {
