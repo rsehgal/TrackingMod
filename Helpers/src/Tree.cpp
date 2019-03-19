@@ -12,6 +12,12 @@ Tree* Tree::instance() {
         return s_instance;
     }
 
+Tree* Tree::Create(std::string filename,std::string treename){
+	if (!s_instance)
+	   s_instance = new Tree(filename,treename,1);
+	return s_instance;
+}
+
 Tree::Tree(){
 	numOfEvents = 100;
 	rootFile = "test.root";
