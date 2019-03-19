@@ -64,6 +64,7 @@ class Tree{
 		void WriteToFile();
 		Tree* GetTree(){return this;}
 		static Tree *instance();
+		static Tree* Create(std::string filename,std::string treename);
 		void SetTreeDefaultParameters(){
 			fTreeName = "BSC_DATA_TREE";
 			rootFile = "hello.root";
