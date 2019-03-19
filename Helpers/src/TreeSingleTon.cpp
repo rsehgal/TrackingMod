@@ -36,4 +36,10 @@ TreeSingleTon::TreeSingleTon(std::string rootFileName){
 	fROOTFile = TFile::Open(rootFileName.c_str(), "RECREATE");
 }
 
+ROOTTree* TreeSingleTon::GetROOTTree(std::string treename){
+	for(unsigned int i = 0 ; i < fROOTTreeVect.size() ; i++){
+		if(fROOTTreeVect[i]->GetTreeName() == treename)
+			return fROOTTreeVect[i];
+	}
+}
 } /* namespace Tracking */
