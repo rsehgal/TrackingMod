@@ -22,6 +22,7 @@ class TreeSingleTon {
 
 	TreeSingleTon();
 	TreeSingleTon(std::string rootFileName);
+
 public:
 
 	static TreeSingleTon* instance();
@@ -46,6 +47,15 @@ public:
 
 	void WriteToFile(){
 		fROOTFile->Write();
+	}
+
+	std::vector<ROOTTree*> GetROOTTreeVector() const {return fROOTTreeVect;}
+	ROOTTree* GetROOTTree(std::string treename);
+
+	//Function to release the SingleTon object.
+	//This is required if we want to fill data in Multiple files
+	void SelfDestruct(){
+		delete s_instance;
 	}
 };
 
