@@ -77,8 +77,9 @@ int main(int argc, char *argv[]){
 	}
 	std::string type = std::string(argv[1]);
 	//Tomography::evolution::Voxelator::Create(50*cm,50*cm,75*cm,5*cm,5*cm,7.5*cm);
-	Tomography::evolution::Voxelator::Create(50*cm,50*cm,45*cm,5*cm,5*cm,4.5*cm);
-	//Tomography::evolution::Voxelator::Create(50*cm,50*cm,45*cm,1.*cm,1.*cm,1.*cm);
+	Tomography::evolution::Voxelator::Create(50*cm,50*cm,45*cm,2.5*cm,2.5*cm,2.25*cm);
+	//Tomography::evolution::Voxelator::Create(50*cm,50*cm,45*cm,2.8571428*cm,2.8571428*cm,2.5714285*cm);
+	//Tomography::evolution::Voxelator::Create(50*cm,50*cm,45*cm,10.*cm,10.*cm,9.*cm);
 	{
 		std::string fileToRead = "Track"+type+".txt";
 		std::string fileToWrite = "EventHelperTrack"+type+".txt";

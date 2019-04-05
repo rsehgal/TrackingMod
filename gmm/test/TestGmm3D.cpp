@@ -53,7 +53,7 @@ int main(){
 
 	std::cout<<"*******************************************************************" << std::endl;
 
-	Tomography::GMM3D *gmm3 = new Tomography::GMM3D(mean,covars,2);
+	Tomography::GMM3D *gmm3 = new Tomography::GMM3D(mean,covars,4);
 #if(1)
 	mean(0) = 0;
 	mean(1) = 0;
@@ -94,6 +94,56 @@ int main(){
 	gmm3->GetGaussianVector()[1]->SetMean(mean);
 	gmm3->GetGaussianVector()[1]->SetCovars(covars);
 
+	covars(0,0) = -400.;
+		covars(0,1) = 0.;
+		covars(0,2) = 0.;
+		covars(1,0) = 0.;
+		covars(1,1) = -400.;
+		covars(1,2) = 0.;
+		covars(2,0) = 0.;
+		covars(2,1) = 0.;
+		covars(2,2) = -400.;
+
+	mean(0) = 10;
+	mean(1) = 20;
+	mean(2) = 30;
+	gmm3->GetGaussianVector()[2]->SetMean(mean);
+	gmm3->GetGaussianVector()[2]->SetCovars(covars);
+
+	covars(0,0) = -200.;
+		covars(0,1) = 0.;
+		covars(0,2) = 0.;
+		covars(1,0) = 0.;
+		covars(1,1) = -200.;
+		covars(1,2) = 0.;
+		covars(2,0) = 0.;
+		covars(2,1) = 0.;
+		covars(2,2) = -200.;
+
+	mean(0) = 40;
+	mean(1) = 20;
+	mean(2) = 100;
+	gmm3->GetGaussianVector()[3]->SetMean(mean);
+	gmm3->GetGaussianVector()[3]->SetCovars(covars);
+
+
+/*	covars(0,0) = -200.;
+			covars(0,1) = 0.;
+			covars(0,2) = 0.;
+			covars(1,0) = 0.;
+			covars(1,1) = -10.;
+			covars(1,2) = 0.;
+			covars(2,0) = 0.;
+			covars(2,1) = 0.;
+			covars(2,2) = -20.;
+
+		mean(0) = 60;
+		mean(1) = 90;
+		mean(2) = 10;
+		gmm3->GetGaussianVector()[4]->SetMean(mean);
+		gmm3->GetGaussianVector()[4]->SetCovars(covars);*/
+
+
 
 /*
 
@@ -130,15 +180,16 @@ int main(){
 	std::vector<Tracking::Vector3D<double>> dataVector;
 
 	std::ifstream infile("PocaPt.txt");
-	int count = 5536;
+	//int count = 5536;
 	double valX = 0., valY = 0. , valZ = 0., color = 0.;
-	while(count){
+	//while(count){
+	while(!infile.eof()){
 		infile >> valX >> valY >> valZ >> color;
 		//Eigen::Vector3d val;
 		//val << valX, valY , valZ;
 		Tracking::Vector3D<double> val(valX,valY,valZ,color);
 		dataVector.push_back(val);
-		count--;
+		//count--;
 	}
 
 	gmm3->SetData(dataVector);

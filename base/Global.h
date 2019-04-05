@@ -10,6 +10,7 @@
 
 #include <vector>
 #include <algorithm>
+#include <map>
 
 namespace Tracking {
 
@@ -86,6 +87,22 @@ namespace Tomography{
  };
  
  enum operation {read, write, append, close};
+
+ //enum material {BG, G4_Al, G4_Fe, G4_Pb};
+
+#ifndef MATERIAL
+#define MATERIAL
+// std::map<std::string,unsigned int> material;
+#endif
+
+ /*void FillMaterial() {
+	material.insert(std::pair<std::string, unsigned int>("BG", 0));
+	material.insert(std::pair<std::string, unsigned int>("Al", 1));
+	material.insert(std::pair<std::string, unsigned int>("Fe", 2));
+	material.insert(std::pair<std::string, unsigned int>("Pb", 3));
+	material.insert(std::pair<std::string, unsigned int>("U", 4));
+}
+*/
 
 }//end of Tomography namespace
 

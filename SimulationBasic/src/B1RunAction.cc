@@ -153,7 +153,7 @@ void B1RunAction::EndOfRunAction(const G4Run* run)
     fRealIncoming.close();
 
 
-
+/*
   Tomography::RunHelper *runHelper = new Tomography::RunHelper();
   //Now trying to calculate Radiation for the whole run
   std::cout<<"@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@" << std::endl;
@@ -163,7 +163,7 @@ void B1RunAction::EndOfRunAction(const G4Run* run)
   std::cout<<"\033[1;31m                              RL : " << CommonFunc::Functions::instance()->RadiationLength(runHelper->GetScatteringAngleVector(),10) << "  cms  \033[0m\n" <<  std::endl;
   //std::cout<<"\033[1;31m                              RL : " << CommonFunc::Functions::instance()->RadiationLength(b1Run->GetScatteringAngleVector(),10) << "  cms \033[0m\n" << std::endl;
   std::cout<<"@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@" << std::endl;
-
+*/
 
 }
 

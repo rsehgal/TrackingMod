@@ -35,6 +35,10 @@ Tree::Tree(std::string rootFl){
 
 }
 
+void Tree::InsertTree(std::string treeName,std::string minorDescription){
+	fTreeVect.push_back(new TTree(fTreeName.c_str(),minorDescription.c_str()));
+}
+
 void Tree::ReadTree(std::string rootFl, std::string treeName, int rw){
 	rootFile = rootFl;
 	  fTreeName = treeName;

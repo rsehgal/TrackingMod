@@ -83,3 +83,8 @@ target_link_libraries (TestGmm2D Eigen3::Eigen ${ROOT_LIBRARIES})
 
 add_executable (TestGmm3D ${CMAKE_CURRENT_SOURCE_DIR}/test/TestGmm3D.cpp ${sourcesGMM})
 target_link_libraries (TestGmm3D Eigen3::Eigen ${ROOT_LIBRARIES})
+
+add_executable (Visualize2DOutput ${CMAKE_CURRENT_SOURCE_DIR}/test/Visualize2DOutput.cpp )
+target_link_libraries (Visualize2DOutput  ${ROOT_LIBRARIES})
+
+add_executable(ForVis ${CMAKE_CURRENT_SOURCE_DIR}/test/ForVis.cpp)

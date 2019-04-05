@@ -506,7 +506,7 @@ public:
 	virtual ~MLEM();
 	void DoExpectation();
 	void DoMaximization();
-	ScatteringData SetScatteringData(Tomography::Track trackIncoming,Tomography::Track trackOutgoing, double pr);
+	ScatteringData SetScatteringData(Tomography::Track trackIncoming,Tomography::Track trackOutgoing, double pr = 1.);
 	void VoxelFinder(Tomography::Track trackIncoming,Tomography::Track trackOutgoing, double pr = 1.);
 	void CreateWeightedMatrix();
 	void EMUpdate();

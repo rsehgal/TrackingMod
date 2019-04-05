@@ -49,27 +49,56 @@ int main(){
 
 	std::cout<<"*******************************************************************" << std::endl;
 
-	Tomography::GMM2D *gmm2 = new Tomography::GMM2D(mean,covars,2);
+	Tomography::GMM2D *gmm2 = new Tomography::GMM2D(mean,covars,4);
 //	std::cout << "Mean : " << std::endl << gmm2->GetGaussianVector()[0]->GetMean() << std::endl;
 //	std::cout << "Covars : " << std::endl << gmm2->GetGaussianVector()[0]->GetCovars() << std::endl;
 
 
-	mean(0) = 0;
+/*	mean(0) = 0;
 	mean(1) = 2;
 	covars(0,0) = 400.;
 	covars(0,1) = 0.;
 	covars(1,0) = 0.;
-	covars(1,1) = 400.;
+	covars(1,1) = 400.;*/
+
+	mean(0) = 3;
+	mean(1) = 2;
+	covars(0,0) = -250.;
+	covars(0,1) = 0.;
+	covars(1,0) = 0.;
+	covars(1,1) = 250.;
 
 	gmm2->GetGaussianVector()[0]->SetMean(mean);
 	gmm2->GetGaussianVector()[0]->SetCovars(covars);
 
 
-	mean(0) = -100.;
-	mean(1) = -200.;
+	/*mean(0) = -100.;
+	mean(1) = -200.;*/
+	mean(0) = -10.;
+		mean(1) = -2.;
 	gmm2->GetGaussianVector()[1]->SetMean(mean);
 	gmm2->GetGaussianVector()[1]->SetCovars(covars);
 
+	/*mean(0) = 100.;
+		mean(1) = -200.;*/
+	mean(0) = -100.;
+			mean(1) = -80.;
+		gmm2->GetGaussianVector()[2]->SetMean(mean);
+		gmm2->GetGaussianVector()[2]->SetCovars(covars);
+
+		/*mean(0) = 10.;
+				mean(1) = 40.;*/
+		mean(0) = 3.;
+						mean(1) = 4.;
+				gmm2->GetGaussianVector()[3]->SetMean(mean);
+				gmm2->GetGaussianVector()[3]->SetCovars(covars);
+
+
+		/*		mean(0) = -10.;
+							mean(1) = -40.;
+							gmm2->GetGaussianVector()[3]->SetMean(mean);
+							gmm2->GetGaussianVector()[3]->SetCovars(covars);
+*/
 /*
 	mean(0) = 100.;
 	mean(1) = -200.;
@@ -116,14 +145,15 @@ int main(){
 	std::vector<Eigen::Vector2d> dataVector;
 	//std::ifstream infile("gauss2D.txt");
 	std::ifstream infile("PocaPt.txt");
-	int count = 6149;
+	//int count = 6149;
 	double valX = 0., valY = 0., valZ = 0., color = 0.;
-	while(count){
+	//while(count){
+	while(!infile.eof()){
 		infile >> valX >> valY >> valZ >> color;
 		Eigen::Vector2d val;
 		val << valX, valY;
 		dataVector.push_back(val);
-		count--;
+		//count--;
 	}
 
 	gmm2->SetData(dataVector);
