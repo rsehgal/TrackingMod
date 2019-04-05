@@ -19,6 +19,7 @@
 #include <iostream>
 #include "DetectorMapping.h"
 #include <G4GDMLParser.hh>
+#include "Voxelator_Evolution.h"
 
 
 int MyDetectorConstruction::stripNum = 0;
@@ -83,7 +84,8 @@ G4VPhysicalVolume* MyDetectorConstruction::Construct(){
 
 
  G4Material *Si=nist->FindOrBuildMaterial("G4_AIR");
-//  G4LogicalVolume *planeLogical = GetBlock("planeDeltaE",2.5*cm,2.5*cm,0.0025*cm,Si,16,0.0025*cm,1);
+ G4Material *galactic=nist->FindOrBuildMaterial("G4_Galactic");
+ //  G4LogicalVolume *planeLogical = GetBlock("planeDeltaE",2.5*cm,2.5*cm,0.0025*cm,Si,16,0.0025*cm,1);
 
  Tomography::DetectorMapping *detectorMap = Tomography::DetectorMapping::create("testMapping.txt");
  int numberOfStripsInEachPlane = detectorMap->GetNumberOfStripsInEachPlane();
@@ -379,6 +381,31 @@ G4VPhysicalVolume *phySubTargetBlockU = new G4PVPlacement(0,
 */
 #endif
 
+#undef VOXELIZE
+
+#ifdef VOXELIZE
+   //Tomography::evolution::Voxelator *v =
+
+   Tomography::evolution::Voxelator::Create(50*cm,50*cm,43*cm,10*cm,10*cm,8.6*cm);
+   Tomography::evolution::Voxelator *v = Tomography::evolution::Voxelator::instance();
+   v->CalculateVoxelCenters();
+   std::vector<Tracking::Vector3D<double>> voxelCenters = v->GetVoxelCenters();
+   Tracking::Vector3D<double> voxDim = v->GetEachVoxelDim();
+   G4Box *voxel = new G4Box("Voxel",voxDim.x()/2.,voxDim.y()/2.,voxDim.z()/2.);
+   G4LogicalVolume *logicalVoxel = new G4LogicalVolume(voxel,galactic,"LogicalVoxel");
+   for(int i = 0 ; i< voxelCenters.size() ; i++){
+   G4VPhysicalVolume *voxPhy = new G4PVPlacement(0,
+                                       //G4ThreeVector(),
+                                       G4ThreeVector(voxelCenters[i].x(),voxelCenters[i].y(),voxelCenters[i].z()),
+                                       //voxel->GetLogicalVolume(),
+                                       logicalVoxel,
+                                       "VoxelPhysical"+std::to_string(i),
+                                       logicWorld,//world->GetLogicalVolume(),//logicWorld,
+                                       false,
+                                       i,
+                                       checkOverlaps);
+   }
+#endif
 
 
 

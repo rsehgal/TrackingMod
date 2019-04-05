@@ -18,7 +18,7 @@
 int main(int argc, char *argv[]){
 	TApplication *fApp = new TApplication("Test", NULL, NULL);
 	TCanvas *can = new TCanvas();
-	can->Divide(2,3);
+	//can->Divide(2,3);
 
 	//TMultiGraph *mg = new TMultiGraph();
 	//std::ifstream parHandle("Par.txt");
@@ -65,10 +65,10 @@ int main(int argc, char *argv[]){
 //	leg->AddEntry(gr1, "graph 1", "lp"); leg->AddEntry(gr2, "graph 2", "lp"); leg->AddEntry(gr3, "graph 3", "lp"); leg->Draw();
 
 	std::vector<char*> legends;
-	legends.push_back("Aluminium");
-	legends.push_back("Iron");
-	legends.push_back("Lead");
-	legends.push_back("Uranium");
+	legends.push_back("Raw Poca Points");
+	legends.push_back("Filtered Poca Points");
+	//legends.push_back("Lead");
+	//legends.push_back("Uranium");
 
 	std::vector<double> parVector;
 	std::vector<double> errorVector;
@@ -76,6 +76,7 @@ int main(int argc, char *argv[]){
 
 	std::vector<TGraphErrors*> graphsVector;
 
+	n = 2;
 	for(int i = 0 ; i < n ; i++){
 
 		{	parVector.clear();
@@ -105,14 +106,16 @@ int main(int argc, char *argv[]){
 
 
 
-	can->cd(1);
+//	can->cd(1);
 	mg->Draw("alp");
 	leg->Draw();
 
-	for (int i = 3; i <= 6; i++) {
+/*
+	for (int i = 3; i <= 4; i++) {
 		can->cd(i);
 		graphsVector[i - 3]->Draw("alp");
 	}
+*/
 
 
 

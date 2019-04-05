@@ -27,6 +27,7 @@ class Tree{
 		Channel ch;
 		std::string rootFile;
 		TTree *t;
+		std::vector<TTree*> fTreeVect;
 		TFile *f;
 		std::string fTreeName;
 		Tree();
@@ -36,6 +37,8 @@ class Tree{
 		std::map<std::string,Branch> fBranchMap;
 
 	public:
+		void InsertTree(std::string treeName,std::string minorDescription="A new Tree");
+
 		//Tree();
 		//Tree(std::string rootFl);
 		//Tree(std::string rootFl, std::string treeName="testTree",int rw=0);

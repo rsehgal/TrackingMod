@@ -51,6 +51,7 @@ public:
 
 	void ApplyFilteration(){
 		std::ofstream  outfile("filtered.txt");
+		outfile << "PointVectorSize : " << fPointVector.size() << std::endl;
 		for(int i = 0 ; i < fPointVector.size() ; i++){
 			std::cout << "Point : " << fPointVector[i].sX.transpose() << " : Probs : ";
 			double totalProb = 0.;

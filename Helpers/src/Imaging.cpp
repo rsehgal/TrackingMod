@@ -7,6 +7,7 @@
 
 #include "Imaging.h"
 #include "base/Vector3D.h"
+#include "CommonFunc.h"
 
 #define  Precision double
 #define  Vec_t Vector3D<Precision>
@@ -112,7 +113,13 @@ Vec_t ImageReconstruction::POCA( Track incoming, Track outgoing){
 	Vec_t p1(0.,0.,0.),q1(0.,0.,0.);
 	//std::cout<<"INComing Track : "; incoming.Print();
 	//std::cout<<"OUTGoing Track : "; outgoing.Print();
-	return POCA(incoming.GetP1(),incoming.GetDirCosine(),outgoing.GetP1(), outgoing.GetDirCosine(),p1,q1);
+	Tomography::Track ref(Vector3D<double>(0.,0.,0.),Vector3D<double>(0.,0.,-1.));
+	double angleIncoming = CommonFunc::Functions::instance()->GetAngleInRadian(incoming,ref);
+	double angleOutgoing = CommonFunc::Functions::instance()->GetAngleInRadian(outgoing,ref);
+	double scatteringAngle = angleOutgoing-angleIncoming;
+	Vec_t pocaPt = POCA(incoming.GetP1(),incoming.GetDirCosine(),outgoing.GetP1(), outgoing.GetDirCosine(),p1,q1);
+	pocaPt.SetColor(scatteringAngle);
+	return pocaPt;
 	//return POCA_V3(incoming,outgoing);
 }
 
