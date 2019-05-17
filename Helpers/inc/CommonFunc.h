@@ -164,7 +164,7 @@ template <bool ForSimulation>
 static bool IsFalsePositivePoca(Tracking::Vector3D<double> fPocaPt){
 	bool truePositive = false;//true;
 	if(!ForSimulation)
-		return !truePositive;
+		return truePositive;
 	else{
 		//Logic to check if the Calculated PoCA lie with the extent of any scatterer
 		std::vector<Tracking::Vector3D<double>> scattererMinExtentVector = Tomography::DetectorMapping::create("testMapping.txt")->GetScattererMinExtent();
