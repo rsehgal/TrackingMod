@@ -54,7 +54,11 @@ Vec_t ImageReconstruction::POCA(Vec_t p, Vec_t u, Vec_t q, Vec_t v, Vec_t &p1, V
 	q1 = q + v*t;
 
 	std::cout <<"S : " << s <<" : T : " << t << std::endl;
-	return (p1+q1)/2.;
+	Vec_t poca = (p1+q1)/2.;
+	double doca = Vector3D<double>::Distance(p1,q1);
+	//std::cout << "DOCA : " << doca << std::endl;
+	poca.SetDoCA(doca);
+	return poca;
 	//return s;
 	}
 
@@ -118,6 +122,8 @@ Vec_t ImageReconstruction::POCA( Track incoming, Track outgoing){
 	double angleOutgoing = CommonFunc::Functions::instance()->GetAngleInRadian(outgoing,ref);
 	double scatteringAngle = angleOutgoing-angleIncoming;
 	Vec_t pocaPt = POCA(incoming.GetP1(),incoming.GetDirCosine(),outgoing.GetP1(), outgoing.GetDirCosine(),p1,q1);
+	std::cout << "DOCA from POCA : " << pocaPt.GetDoCA() << std::endl;
+	pocaPt.SetDoCA(pocaPt.GetDoCA());
 	pocaPt.SetColor(scatteringAngle);
 	return pocaPt;
 	//return POCA_V3(incoming,outgoing);

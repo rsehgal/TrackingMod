@@ -181,6 +181,7 @@ void RunHelper::FillPocaVector(){
     	{
     	std::vector<Tracking::Vector3D<double>> pocaPointsVector = fVoxelVector[i]->GetPocaPointsVector();
 			for (int j = 0; j < pocaPointsVector.size(); j++) {
+				//std::cout << "DOCA : " << pocaPointsVector[j].GetDoCA() << std::endl;
 				Insert(pocaPointsVector[j]);
 			}
     	}
@@ -266,6 +267,7 @@ void RunHelper::WriteToFile(){
     CommonFunc::Functions::instance()->WriteToFile("VoxelsRunHelper-"+fFileType+".txt",Tomography::evolution::Voxelator::instance()->GetVoxelVector());
     CommonFunc::Functions::instance()->WriteToFile("filteredVoxelsRunHelper-"+fFileType+".txt",Tomography::evolution::Voxelator::instance()->GetFilteredVoxelVector());
     CommonFunc::Functions::instance()->WriteToFile("filteredPocaPtRunHelper-"+fFileType+".txt",Tomography::evolution::Voxelator::instance()->GetFilteredPocaPtVector());
+    CommonFunc::Functions::instance()->WriteToFile("filteredTrack-"+fFileType+".txt",Tomography::evolution::Voxelator::instance()->GetFilteredTrackIndexVector());
 //    CommonFunc::Functions::instance()->WriteToFile("filteredPocaPtRunHelperUsingCleanVoxels-"+fFileType+".txt",Tomography::evolution::Voxelator::instance()->GetFilteredPocaPtVectorUsingCleanedVoxel());
 
 

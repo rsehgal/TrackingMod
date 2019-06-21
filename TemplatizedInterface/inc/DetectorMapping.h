@@ -25,6 +25,7 @@ struct Detector{
 			sDetectorName(detName),sDetectorType(detType),sZCoordinate(zCoord)
 			,sStartingChannel(startChannel), sModule(module){}
 
+
 };
 
 struct Scatterer{
@@ -32,6 +33,10 @@ struct Scatterer{
 	std::string sMaterial;
 	Tracking::Vector3D<double> sDim;
 	Tracking::Vector3D<double> sLocation;
+
+	std::string Material(){
+		return sMaterial.substr(3);
+	}
 
 	Scatterer(std::string name, std::string material, Tracking::Vector3D<double> dim, Tracking::Vector3D<double> location) :
 		sName(name), sMaterial(material), sDim(dim), sLocation(location){}
@@ -57,6 +62,7 @@ class DetectorMapping{
 		std::vector<Mapping::Scatterer*> fScattererVector;
 		std::vector<Tracking::Vector3D<double>> scattererMin;
 		std::vector<Tracking::Vector3D<double>> scattererMax;
+		std::vector<std::string> materialVector;
 
 
 		std::string fileName;
@@ -113,7 +119,8 @@ class DetectorMapping{
 
 		//Calculate Extent of Scatterer
 		void CalculateScattererExtent();
-
+		void CalculateMaterialVector();
+		std::vector<std::string> GetMaterialVector() const {return materialVector;}
 		std::vector<Tracking::Vector3D<double>> GetScattererMinExtent() const {return scattererMin;}
 		std::vector<Tracking::Vector3D<double>> GetScattererMaxExtent() const {return scattererMax;}
 

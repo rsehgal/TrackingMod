@@ -30,6 +30,11 @@ class Track;
 }*/
 
 struct ScatteringData{
+	double sIncomingThetaX;
+	double sIncomingThetaY;
+	double sOutgoingThetaX;
+	double sOutgoingThetaY;
+
 	double sDeltaThetaX;
 	double sDeltaThetaY;
 	double sDeltaX;
@@ -42,14 +47,25 @@ struct ScatteringData{
 
 	ScatteringData(){}
 
-	ScatteringData(double deltaThetaX, double deltaThetaY,
+	ScatteringData( double incomingThetaX,double incomingThetaY,
+				    double outgoingThetaX,double outgoingThetaY,
+					double deltaThetaX, double deltaThetaY,
 				   double deltaX, double deltaY, double pr, double eX, double eY, double eXY):
+				   sIncomingThetaX(incomingThetaX),sIncomingThetaY(incomingThetaY),
+				   sOutgoingThetaX(outgoingThetaX),sOutgoingThetaY(outgoingThetaY),
 				   sDeltaThetaX(deltaThetaX),sDeltaThetaY(deltaThetaY),
 				   sDeltaX(deltaX),sDeltaY(deltaY),sPr(pr),sEx(eX), sEy(eY),
 				   sExy(eXY){}
 
-	void SetScatteringData(double deltaThetaX, double deltaThetaY,
-			   double deltaX, double deltaY, double pr, double eX, double eY, double eXY){
+	void SetScatteringData( double incomingThetaX,double incomingThetaY,
+		    				double outgoingThetaX,double outgoingThetaY,
+							double deltaThetaX, double deltaThetaY,
+							double deltaX, double deltaY, double pr, double eX, double eY, double eXY){
+
+		sIncomingThetaX = incomingThetaX;
+		sIncomingThetaY = incomingThetaY;
+		sOutgoingThetaX = outgoingThetaX;
+		sOutgoingThetaY = outgoingThetaY;
 
 		sDeltaThetaX = deltaThetaX;
 		sDeltaThetaY = deltaThetaY;

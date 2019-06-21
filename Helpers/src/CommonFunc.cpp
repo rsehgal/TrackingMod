@@ -9,7 +9,7 @@
 namespace CommonFunc{
 
 Functions *Functions::finstance = 0;
-
+std::string Functions::material="";
 }
 
 

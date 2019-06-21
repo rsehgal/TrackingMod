@@ -38,7 +38,7 @@ int main(int argc, char *argv[]){
 	//Tomography::evolution::Voxelator::Create(50*cm,50*cm,75*cm,20*cm,20*cm,30*cm);
 	Tomography::evolution::Voxelator::Create(50*cm,50*cm,45*cm,5*cm,5*cm,4.5*cm);
 		//{
-			std::string fileToRead = "Track"+type+".txt";
+			std::string fileToRead = std::string(argv[1]); //"Track"+type+".txt";
 			std::string fileToWrite = "EventHelperTrack"+type+".txt";
 			Tomography::EventHelper u(fileToRead, fileToWrite);
 			Tomography::RunHelper::instance(type);

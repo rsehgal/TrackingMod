@@ -76,8 +76,11 @@ int main(int argc, char *argv[]){
 		return 1;
 	}
 	std::string type = std::string(argv[1]);
-	//Tomography::evolution::Voxelator::Create(50*cm,50*cm,75*cm,5*cm,5*cm,7.5*cm);
-	Tomography::evolution::Voxelator::Create(50*cm,50*cm,45*cm,2.5*cm,2.5*cm,2.25*cm);
+	int numOfParts = std::atoi(argv[2]);
+	double voxelSizeXY = (double)100*cm/numOfParts;
+	double voxelSizeZ = (double)90*cm/numOfParts;
+	Tomography::evolution::Voxelator::Create(50*cm,50*cm,45*cm,voxelSizeXY,voxelSizeXY,voxelSizeZ);
+	//Tomography::evolution::Voxelator::Create(50*cm,50*cm,45*cm,2.5*cm,2.5*cm,2.25*cm);
 	//Tomography::evolution::Voxelator::Create(50*cm,50*cm,45*cm,2.8571428*cm,2.8571428*cm,2.5714285*cm);
 	//Tomography::evolution::Voxelator::Create(50*cm,50*cm,45*cm,10.*cm,10.*cm,9.*cm);
 	{
@@ -86,8 +89,8 @@ int main(int argc, char *argv[]){
 		Tomography::EventHelper u(fileToRead, fileToWrite);
 		//Tomography::RunHelper r(type);
 		Tomography::RunHelper* r = Tomography::RunHelper::instance(type);
-		Tomography::ScatteringDensity s(125);
-		s.Print();
+		//Tomography::ScatteringDensity s(125);
+		//s.Print();
 
 		//PrintCleanVoxelsNumberAndCount();
 		//Tomography::evolution::Voxelator::instance()->TestWrite();
@@ -101,6 +104,7 @@ int main(int argc, char *argv[]){
 //		st.CreateScatteringHistogram();
 
 		r->DetectorTrueAndFalsePositive();
+		std::cout << "TruePositiveCount : " << r->GetTruePositivePocaPtCount() << std::endl;
 		//Tomography::Stats st;
 		//st.CreateScatteringHistogram();
 		//Storing True positive in file
@@ -115,7 +119,7 @@ int main(int argc, char *argv[]){
 		std::cout << "================ Predicting Threshold ========================" << std::endl;
 
 
-
+		/*
 		r->Reset();
 
 		std::vector<Tracking::Vector3D<double>> superFilterPocaPtVector = Tomography::evolution::Voxelator::instance()->GetFilteredPocaPtVector(
@@ -126,6 +130,8 @@ int main(int argc, char *argv[]){
 		//Tomography::evolution::Voxelator::instance()->GetFilteredPocaPtVectorUsingCleanedVoxel(pocaPtVector);
 		//std::cout << "Length of filtered PocaVector : " << pocaPtVector.size() << std::endl;
 		CommonFunc::Functions::instance()->WriteToFile("SuperfilteredPocaPtRunHelperUsingCleanVoxels-"+type+".txt",superFilterPocaPtVector);
+		*/
+
 	}
 	return 0;
 }

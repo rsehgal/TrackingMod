@@ -158,6 +158,8 @@ public:
   //std::vector<Tracking::Vector3D<double>>
   void GetFilteredPocaPtVectorUsingCleanedVoxel(std::vector<Tracking::Vector3D<double>> &pocaPtVector);
 
+  std::vector<unsigned int> GetFilteredTrackIndexVector();
+
 
 
 

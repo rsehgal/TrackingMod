@@ -35,7 +35,7 @@ void EventHelper::Test2EventHelper(Track incoming, Track outgoing){
 	fIncoming = incoming;
 	fOutgoing = outgoing;
 	CalculateScatterAngle();
-	std::cout<<"FABS of ScattAngle from EventHelper : " << std::fabs(fScatteringAngle) << std::endl;
+	std::cout<<"FABS of ScattAngle from EventHelper : " << std::fabs(fScatteringAngle) << "  : Momentum : " << fMomentum << std::endl;
 
 	if (std::fabs(fScatteringAngle) < Tomography::unscatteringThreshold){
 #ifdef USE_UNSCATTERED_TRACKS
@@ -84,6 +84,7 @@ void EventHelper::TestEventHelper(Track incoming, Track outgoing, std::string fi
 }
 
 EventHelper::EventHelper(std::string fileToRead, std::string fileToWrite,bool forSimulation){
+	fTrackId = 0;
 	genuinePocaCounter = 0;
 	/* This should go through the event loop and call other constructors
 	 * and create the desired file
@@ -131,11 +132,14 @@ EventHelper::EventHelper(std::string fileToRead, std::string fileToWrite,bool fo
 	std::ofstream parHandle("Par.txt",std::ios::app);
 
 	while (!infile.eof()) {
+		fTrackId++;
 		infile >> incomingTrackP1X >> incomingTrackP1Y >> incomingTrackP1Z
 				>> incomingTrackP2X >> incomingTrackP2Y >> incomingTrackP2Z
 				>> outgoingTrackP1X >> outgoingTrackP1Y >> outgoingTrackP1Z
 				>> outgoingTrackP2X >> outgoingTrackP2Y >> outgoingTrackP2Z
 				>> scattererHitted >> momentum;
+
+		fMomentum = momentum;
 
 #ifndef TPR_ANALYSIS
 		if (scattererHitted == 1)
@@ -191,8 +195,14 @@ bool EventHelper::IsFalsePositivePoca(){
 */
 
 void EventHelper::CalculatePOCA(){
-	fPocaPt = fIm.POCA(fIncoming,fOutgoing);
+	Tracking::Vector3D<double> test = fIm.POCA(fIncoming,fOutgoing);
+    fPocaPt = test;
+    fPocaPt.SetDoCA(test.GetDoCA());
+	std::cout << "DOCA : " << fPocaPt.GetDoCA() << std::endl;
+
+
 	fPocaPt.SetColor(fScatteringAngle);
+	fPocaPt.SetTrackId(fTrackId);
 	std::cout<< "POCA from EventHELPER : " ; fPocaPt.Print();
 }
 

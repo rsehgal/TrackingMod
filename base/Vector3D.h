@@ -50,7 +50,20 @@ private:
 	Type vec[3];
         double fColor;
         std::vector<Type> fGaussProb;
+        unsigned int fTrackId;
+
+        //Data member to store Distance Of Closest Approach (DoCA)
+        double fDoCA;
 public:
+        TRACKING_INLINE
+    void SetDoCA(double dist){
+        	fDoCA = dist;
+        }
+        TRACKING_INLINE
+    double GetDoCA() const {return fDoCA;}
+    unsigned int GetTrackId() const {return fTrackId;}
+    void SetTrackId(unsigned int trackId) {fTrackId = trackId;}
+
     void SetProbability(int gaussNum, double probValue){
     	fGaussProb[gaussNum] = probValue;
     }
@@ -60,6 +73,7 @@ public:
 		vec[1]=0.;
 		vec[2]=0.;
                 fColor = 1;
+                fDoCA = 1.;
 	}
 
 	Vector3D(Type x, Type y, Type z){
@@ -67,6 +81,7 @@ public:
 			vec[1]=y;
 			vec[2]=z;
 			fColor=1;
+			fDoCA = 1.;
 	}
 
 	Vector3D(Type x, Type y, Type z, Type w){
@@ -74,7 +89,19 @@ public:
 			vec[1]=y;
 			vec[2]=z;
 			fColor=w;
+			fDoCA = 1.;
 	}
+
+/*
+	Vector3D(const Vector3D<Type> &pt){
+		vec[0]=pt.vec[0];
+		vec[1]=pt.vec[1];
+		vec[2]=pt.vec[2];
+		fColor = pt.fColor;
+		fDoCA = pt.fDoCA;
+
+	}
+*/
 
 	~Vector3D(){
 		fGaussProb.clear();
