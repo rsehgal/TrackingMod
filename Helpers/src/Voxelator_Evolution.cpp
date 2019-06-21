@@ -78,7 +78,8 @@ std::vector<Voxel_V2*> Voxelator::GetFilteredVoxelVector(){
 		if(!fVoxelVector[i]->IsOutlier())
 #else
 		Tomography::evolution::Voxelator::instance()->PredictThreshold();
-		if(fVoxelVector[i]->GetPointCount() >= Tomography::evolution::Voxelator::instance()->GetThresholdVal())
+		//if(fVoxelVector[i]->GetPointCount() > Tomography::evolution::Voxelator::instance()->GetThresholdVal())
+		if(fVoxelVector[i]->GetPointCount() > Tomography::minPointsInAVoxel)
 #endif
 		{
 			filteredVoxelVector.push_back(fVoxelVector[i]);
@@ -90,6 +91,14 @@ std::vector<Voxel_V2*> Voxelator::GetFilteredVoxelVector(){
 	return filteredVoxelVector;
 }
 
+std::vector<unsigned int> Voxelator::GetFilteredTrackIndexVector(){
+	std::vector<unsigned int> filteredTrackIndexVector;
+	std::vector<Tracking::Vector3D<double>> pocaPtVector = GetFilteredPocaPtVector();
+	for(unsigned int i = 0 ; i < pocaPtVector.size() ; i++){
+		filteredTrackIndexVector.push_back(pocaPtVector[i].GetTrackId());
+	}
+	return filteredTrackIndexVector;
+}
 
 std::vector<Tracking::Vector3D<double>> Voxelator::GetFilteredPocaPtVector(){
 	std::vector<Voxel_V2*> filteredVoxelVector = GetFilteredVoxelVector();

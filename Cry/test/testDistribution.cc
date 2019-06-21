@@ -53,10 +53,12 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <TApplication.h>
 #include <TF1.h>
 #include <TCanvas.h>
+#include <TStyle.h>
 int main( int argc, const char *argv[]) {
 	TApplication *fApp = new TApplication("Test", NULL, NULL);
 	TCanvas *c = new TCanvas("TestCanvas", "ScatteringAngleCanvas", 800, 600);
 	c->Divide(2,2);
+	gStyle->SetOptStat(0);
   int nEv=1000; //....default number of cosmic-ray events to produce
 
   if ( argc < 2 ) {

@@ -22,6 +22,7 @@ namespace Tomography {
 class EventHelper {
 	Track fIncoming;
 	Track fOutgoing;
+	unsigned int fTrackId;
 	Vector3D<double> fPocaPt;
 	double fScatteringAngle;
 	ImageReconstruction fIm;
@@ -29,6 +30,7 @@ class EventHelper {
 	Tracking::Vector3D<double> fIncomingHitPoint;
 	Tracking::Vector3D<double> fOutgoingHitPoint;
 	int genuinePocaCounter ;
+	double fMomentum;
 
 
 
@@ -39,6 +41,7 @@ class EventHelper {
 
 
 public:
+	unsigned int GetTrackId() const {return fTrackId;}
 	static int fUnscatteredCounter;
 	EventHelper();
 	EventHelper(Track incoming, Track outgoing){}

@@ -13,10 +13,10 @@ int main(int argc, char *argv[]){
 	std::ifstream ft;
 	ft.open(argv[1]);
 	double x,y,z;
-	int color;
+	int color, doca;
 	TH1F *hist = new TH1F("test","Scattering",100,0.,100.);
 	while(!ft.eof()){
-		ft >> x >> y >> z >> color;
+		ft >> x >> y >> z >> color >> doca;
 		hist->Fill(color);
 	}
 	hist->Draw();
@@ -44,7 +44,7 @@ const char* input_filename = (argc>1)?argv[1]:"tracks.txt";
     //std::ifstream ft;
     //ft.open(input_filename);
     double x=0.,y=0.,z=0;
-    double color=0;
+    double color=0,doca=0.;
 
     //TH1F *hist = new TH1F("test","Scattering",100,0.,100.);
 
@@ -57,14 +57,17 @@ const char* input_filename = (argc>1)?argv[1]:"tracks.txt";
 
     //while(count){
 	//count--;
-    	ft >> x >> y >> z >> color;
+    	ft >> x >> y >> z >> color >> doca;
+    	std::cout << x <<" " << y <<" " << z << std::endl;
     //	hist->Fill(color);
     	//if((z/deno) > 15. || (z/deno) < 5.) continue;
     	pt.Set(x/deno,y/deno,z/deno);
     	double colorVal = color ; //CommonFunc::Functions::instance()->CreateColorVal(color*1000.);
     	pt.SetColor(colorVal);
     	//pt.SetColor(2+color*100);
+    	if(doca > 1){
     	v->Register(slicer,pt);
+    	}
     //v.Register(pt);
 /*
 #ifdef USE_EVE

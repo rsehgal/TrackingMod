@@ -436,7 +436,7 @@ ScatteringData MLEM::SetScatteringData(Tomography::Track trackIncoming,Tomograph
 
 	std::cout <<"RamanPr : " << pr << std::endl;
 
-	s.SetScatteringData(DeltaThetaX,DeltaThetaY,DeltaX,DeltaY,pr,Ex,Ey,Exy);
+	s.SetScatteringData(ThetaX0,ThetaY0,ThetaX,ThetaY,DeltaThetaX,DeltaThetaY,DeltaX,DeltaY,pr,Ex,Ey,Exy);
 	fScatteringDataVector.push_back(s);
 	return s;
 	//fScatteringDataVector.push_back(ScatteringData(DeltaThetaX,DeltaThetaY,DeltaX,DeltaY,pr,Ex,Ey,Exy));

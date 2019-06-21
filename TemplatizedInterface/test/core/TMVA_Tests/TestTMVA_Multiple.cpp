@@ -25,21 +25,18 @@
 
 /*
  * Test Code to convert the Data from TrackExact.txt to ROOT tree format
- * that can be used directly in machine learning algorithm using 
+ * that can be used directly in machine learning algorithm using
  * TMVA / sklearn / Keras.
  *
- * But this code can handle only one material block.
+ * The advantage of this over TestTMVAData.cpp is that it can be used for
+ * simulation setup having different objects at different places.
  *
- * Process : One the simulation is over then save the TrackExact.txt to TrackExact<material>.txt
- *           cp TrackExact.txt TrackExactPb.txt
+ * Process : One the simulation is over, then run
+ * 			 ./TestTMVA_Multiple Exact
  *
- *           Now run this code as
- *           ./TestTMVAData Exact Pb
+ * Output : This will create a ROOT file with two TTrees, one for Signal
+ * 	        and other for Background
  *
- * Drawback : This code cannot handle the simulation scenario where we have multiple block of different
- *            material at same time. 
- *
- *            This functionality will be made available in TestTMVA_Multiple.cpp
  */
 
 int main(int argc, char *argv[]){
@@ -55,14 +52,14 @@ int main(int argc, char *argv[]){
 	material.insert(std::pair<std::string, unsigned int>("U", 4));
 
 
-	std::string mat = argv[2];
+	//std::string mat = argv[2];
 
 	if(argc == 1){
 			std::cerr << "=======================================\n"
 					  << "Please provided the required argument \n\n"
 					  << "Following are possible values : Exact OR Fitted \n\n"
-					  << "./TestTMVAData <Exact/Fitted> <material>\n"
-					  << "./TestTMVAData Exact Pb\n"
+					  << "./TestTMVA_Multiple <Exact/Fitted>\n"
+					  << "./TestTMVA_Multiple Exact\n"
 					  << "=======================================\n";
 			return 1;
 		}
@@ -86,7 +83,8 @@ int main(int argc, char *argv[]){
 	double outgoingThetaY;
 
 	//Creating Tree for TMVA
-	Tracking::TreeSingleTon::Create("TMVA_"+mat+".root");
+	//Tracking::TreeSingleTon::Create("TMVA_"+mat+".root");
+	Tracking::TreeSingleTon::Create("TMVA.root");
 	Tracking::TreeSingleTon* singleTonObject = Tracking::TreeSingleTon::instance();
 	{
 	//Creating Signal Tree
@@ -172,8 +170,10 @@ int main(int argc, char *argv[]){
 	std::vector<Tomography::Track> incomingTrackVector;
 	std::vector<Tomography::Track> outgoingTrackVector;
 	std::vector<double> momentumVector;
-	std::string type = std::string(argv[1]);
-	std::string fileToRead = "Track"+type+mat+".txt";
+//	std::string type = std::string(argv[1]);
+	//std::string fileToRead = "Track"+type+mat+".txt";
+//	std::string fileToRead = "Track"+type+".txt";
+	std::string fileToRead = std::string(argv[1]);
 	CommonFunc::GetTracksVector(fileToRead,incomingTrackVector,outgoingTrackVector, momentumVector);
 	std::cout << "Ayush : Total Number of Tracks : " << incomingTrackVector.size() << std::endl;
 
@@ -232,6 +232,7 @@ int main(int argc, char *argv[]){
 			signal->FillBranch("pocaPtX",pocaPt.x());
 			signal->FillBranch("pocaPtY",pocaPt.y());
 			signal->FillBranch("pocaPtZ",pocaPt.z());
+			std::string mat = CommonFunc::Functions::material;
 			signal->FillBranch("material",material[mat]);
 			signal->FillBranch("absDeltaTheta",std::fabs(pocaPt.GetColor()));
 			signal->FillBranch("incomingThetaX", s.sIncomingThetaX);

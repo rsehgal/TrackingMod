@@ -33,11 +33,14 @@
 
 
 #include "Randomize.hh"
-
+#include "time.h"
 
 int main(int argc, char *argv[]){
 
-  
+   CLHEP::HepRandom::setTheEngine(new CLHEP::RanecuEngine());
+   G4long seed = time(NULL);
+   CLHEP::HepRandom::setTheSeed(seed);
+       	
   system("rm -rf Hodoscope.gml");
   G4RunManager *runManager = new G4RunManager;
   //G4VUserPhysicsList* phyList = new MyPhysics;

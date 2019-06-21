@@ -66,6 +66,14 @@ void DetectorMapping::CalculateScattererExtent(){
                 										  fScattererVector[i]->sLocation.y()+fScattererVector[i]->sDim.y(),
 														  fScattererVector[i]->sLocation.z()+fScattererVector[i]->sDim.z()));
 	}
+
+	CalculateMaterialVector();
+}
+
+void DetectorMapping::CalculateMaterialVector(){
+	for(int i = 0 ; i < fScattererVector.size() ; i++){
+		materialVector.push_back(fScattererVector[i]->Material());
+	}
 }
 
 void DetectorMapping::ReadMapping(){

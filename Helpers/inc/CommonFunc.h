@@ -100,8 +100,10 @@ static void GetTracksVector(std::string fileToRead, std::vector<Track> &incoming
 
 class Functions{
 	static Functions *finstance;
+
 	Functions(){}
 public:
+	static std::string material;
 
 static std::string GetFileName(std::string fullFilename){
 	int length = fullFilename.length();
@@ -174,12 +176,18 @@ static bool IsFalsePositivePoca(Tracking::Vector3D<double> fPocaPt){
 			truePositive |=    (fPocaPt.x() >= scattererMinExtentVector[i].x() && fPocaPt.x() <= scattererMaxExtentVector[i].x())
 						    && (fPocaPt.y() >= scattererMinExtentVector[i].y() && fPocaPt.y() <= scattererMaxExtentVector[i].y())
 							&& (fPocaPt.z() >= scattererMinExtentVector[i].z() && fPocaPt.z() <= scattererMaxExtentVector[i].z());
-			if(truePositive)
+			if(truePositive){
+				material = GetMaterialAt(i);
 				break;
+			}
 		}
 		return !truePositive;
 	}
 
+}
+
+static std::string GetMaterialAt(unsigned int index){
+	return Tomography::DetectorMapping::instance()->GetMaterialVector()[index];
 }
 
 
@@ -308,7 +316,7 @@ void WriteToFile(std::string fileName, std::vector<Vector3D<double>> ptVect, dou
    for(int i =0  ; i < ptVect.size() ; i++){
 	   if(std::fabs(ptVect[i].GetColor())*1000 > cut){
 		  // std::cout << ptVect[i].x() << " " << ptVect[i].y() << " " << ptVect[i].z() <<  " " << ptVect[i].GetColor() <<std::endl;
-		  fileHandle << ptVect[i].x() << " " << ptVect[i].y() << " " << ptVect[i].z() <<  " " << ptVect[i].GetColor() <<std::endl;
+		  fileHandle << ptVect[i].x() << " " << ptVect[i].y() << " " << ptVect[i].z() <<  " " << ptVect[i].GetColor() << " " << ptVect[i].GetDoCA() <<std::endl;
 	   }
 	  else
 		  count++;
@@ -389,6 +397,96 @@ void WriteToFile(std::string fileName,std::vector<Tomography::Voxel*> voxelsVect
 }
 */
 
+void WriteToFile(std::string fileName,std::vector<unsigned int> filteredTrackIndexVector){
+
+	double incomingTrackP1X = 0.,incomingTrackP1Y = 0.,incomingTrackP1Z = 0.;
+	double incomingTrackP2X = 0.,incomingTrackP2Y = 0.,incomingTrackP2Z = 0.;
+	double outgoingTrackP1X = 0.,outgoingTrackP1Y = 0.,outgoingTrackP1Z = 0.;
+	double outgoingTrackP2X = 0.,outgoingTrackP2Y = 0.,outgoingTrackP2Z = 0.;
+	double scattererHitted = 0.;
+	double momentum = 0.;
+
+
+	std::ifstream infile("TrackExact.txt");
+	std::ofstream outfile(fileName);
+	unsigned int trackId=0;
+	unsigned int indexOfReadIndex = 0;
+	unsigned int readIndex=filteredTrackIndexVector[indexOfReadIndex];
+	std::cout << "Length of Index Vector : " << filteredTrackIndexVector.size() << std::endl;
+
+	std::vector<double> track;
+	std::vector<std::vector<double>> trackVector;
+	while(!infile.eof()){
+/*
+		while(trackId !=readIndex){
+			infile >> incomingTrackP1X >> incomingTrackP1Y >> incomingTrackP1Z
+			       >> incomingTrackP2X >> incomingTrackP2Y >> incomingTrackP2Z
+				   >> outgoingTrackP1X >> outgoingTrackP1Y >> outgoingTrackP1Z
+				   >> outgoingTrackP2X >> outgoingTrackP2Y >> outgoingTrackP2Z
+				   >> scattererHitted >> momentum;
+			trackId++;
+		}
+*/
+
+		infile >> incomingTrackP1X >> incomingTrackP1Y >> incomingTrackP1Z
+			   >> incomingTrackP2X >> incomingTrackP2Y >> incomingTrackP2Z
+			   >> outgoingTrackP1X >> outgoingTrackP1Y >> outgoingTrackP1Z
+			   >> outgoingTrackP2X >> outgoingTrackP2Y >> outgoingTrackP2Z
+			   >> scattererHitted >> momentum;
+
+		track.clear();
+
+		track.push_back(incomingTrackP1X);
+		track.push_back(incomingTrackP1Y);
+		track.push_back(incomingTrackP1Z);
+		track.push_back(incomingTrackP2X);
+		track.push_back(incomingTrackP2Y);
+		track.push_back(incomingTrackP2Z);
+		track.push_back(outgoingTrackP1X);
+		track.push_back(outgoingTrackP1Y);
+		track.push_back(outgoingTrackP1Z);
+		track.push_back(outgoingTrackP2X);
+		track.push_back(outgoingTrackP2Y);
+		track.push_back(outgoingTrackP2Z);
+		track.push_back(scattererHitted);
+		track.push_back(momentum);
+
+		trackVector.push_back(track);
+
+
+
+/*
+		trackId++;
+
+		if((trackId-1) == readIndex){
+
+		  outfile << incomingTrackP1X << " " << incomingTrackP1Y << " " << incomingTrackP1Z << " "
+			      << incomingTrackP2X <<  " " << incomingTrackP2Y << " " << incomingTrackP2Z << " "
+			      << outgoingTrackP1X << " " <<outgoingTrackP1Y << " " << outgoingTrackP1Z << " "
+			      << outgoingTrackP2X << " " << outgoingTrackP2Y << " " << outgoingTrackP2Z << " "
+			      << scattererHitted << " " << momentum << std::endl;
+
+		  indexOfReadIndex++;
+		  readIndex=filteredTrackIndexVector[indexOfReadIndex];
+		}
+
+*/
+
+	}
+
+	for(unsigned int i = 0 ; i < filteredTrackIndexVector.size(); i++){
+		unsigned int index = filteredTrackIndexVector[i];
+		for(unsigned int j = 0 ; j < trackVector[index].size() ; j++){
+			if(j==(trackVector[index].size()-1))
+				outfile << trackVector[index][j] << std::endl;
+			else
+				outfile << trackVector[index][j] << " ";
+		}
+	}
+
+	infile.close();
+	outfile.close();
+}
 
 void WriteToFile(std::string fileName,std::vector<Tomography::Voxel_V2*> voxelsVector ){
    std::cout<<"Writing file " << fileName << "....  ";

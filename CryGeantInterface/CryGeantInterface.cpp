@@ -33,6 +33,7 @@ void CryGeantInterface::GeneratePrimariesForCry(G4Event *anEvent){
 	                RunMustBeAborted, *str);
 	  }
 	  std::string particleName;
+	 // while(1){
 	  vect->clear();
 	  gen->genEvent(vect);
 
@@ -57,6 +58,7 @@ void CryGeantInterface::GeneratePrimariesForCry(G4Event *anEvent){
 
 	    particleGun->SetParticleDefinition(particleTable->FindParticle((*vect)[j]->PDGid()));
 	    particleGun->SetParticleEnergy((*vect)[j]->ke()*MeV);
+
 	    double gunZ = Tomography::DetectorMapping::instance()->GetGunZ();
 	    particleGun->SetParticlePosition(G4ThreeVector((*vect)[j]->x()*m, (*vect)[j]->y()*m, gunZ)); //150*cm));
 	    particleGun->SetParticleMomentumDirection(G4ThreeVector((*vect)[j]->u(), (*vect)[j]->v(), (*vect)[j]->w()));
@@ -68,7 +70,8 @@ void CryGeantInterface::GeneratePrimariesForCry(G4Event *anEvent){
                                                                   (*vect)[j]->w()).Unit(),
                                                           Tracking::Vector3D<double>(0.,0.,-1.));
         double energy = (*vect)[j]->ke()*MeV;
-        if(particleName == "muon")
+        std::cout <<"=========== ParticleName : " << particleName << " =============" << std::endl;
+        if(particleName == "muon"){
         	Tomography::Files::instance()->Write("StatsFromGenerator.txt",3,1., solidAngleIncoming,energy);
 
         //_____________________________________________________________________________________
@@ -91,8 +94,11 @@ void CryGeantInterface::GeneratePrimariesForCry(G4Event *anEvent){
 
 
 	    particleGun->GeneratePrimaryVertex(anEvent);
+	    //break;
+        }
 	    delete (*vect)[j];
 	  }
+	  //}
 
 }
 
