@@ -13,14 +13,17 @@
 namespace Tomography {
 
 struct PixelCombination{
-	unsigned int sPixelCombinationId;
+	std::string sPixelCombinationSha;
 	std::vector<Track*> sTrackVector;
+	PixelCombination(std::string pixCombSha){
+		sPixelCombinationSha = pixCombSha;
+	}
 
 };
 
 class TrackPredictor {
 	std::vector<PixelCombination> fPixelCombinationVector;
-	unsigned int fPixelCombinationId;
+	std::string fPixelCombinationSha;
 	Track fTrack;
 public:
 	TrackPredictor();

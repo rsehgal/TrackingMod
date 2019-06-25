@@ -6,6 +6,7 @@
  */
 
 #include "TrackPredictor.h"
+#include "sha256.h"
 
 namespace Tomography {
 
@@ -25,6 +26,15 @@ TrackPredictor::TrackPredictor(std::vector<int>xStripNumVector, std::vector<int>
 bool TrackPredictor::PixelCombinationExist(){
 	//TODO:   Check if the fPixelCombinationId exist in the pixelCombinationVector;
 	//        if yes then return true else return false
+	//std::string pixCombinSha = sha256(pixelCombString);
+	for(auto &pixelComb : fPixelCombinationVector){
+		if(pixelComb.sPixelCombinationSha == fPixelCombinationSha){
+			pixelComb.sTrackVector.push_back(new Track());
+			break;
+		}else{
+			fPixelCombinationVector.push_back(PixelCombination(fPixelCombinationSha));
+		}
+	}
 
 }
 
