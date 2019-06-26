@@ -7,7 +7,7 @@
 
 #include "DetectorMapping.h"
 #include <iostream>
-
+/*
 int main(){
 	//Tomography::DetectorMapping *detectorMap = new Tomography::DetectorMapping("testMapping.txt");
 //	std::cout << "Stack Length : " << Tomography::DetectorMapping::instance()->GetNumOfDetectors() << std::endl;
@@ -21,6 +21,24 @@ int main(){
 
 	return 0;
 }
+*/
 
+int main(){
+       
+	Tomography::DetectorMapping *detectorMap = Tomography::DetectorMapping::create("testMapping.txt");
+  	int numOfRpcs = detectorMap->GetNumOfDetectors("GLASS");
+	std::vector<std::string> detNamesVector = detectorMap->GetDetectorNamesVector("GLASS");
+	 std::cout <<"=======================================================" << std::endl;
+    	std::cout << "Num Of Rpc :  "<< numOfRpcs << std::endl;
+	for(auto &detName : detNamesVector){
+		std::cout <<"DetectorName : " << detName << std::endl;
+
+
+
+	}
+
+
+return 0;
+}
 
 
