@@ -9,26 +9,71 @@
 #define HELPERS_INC_TRACKPREDICTOR_H_
 
 #include "Track.h"
+#include "base/Vector3D.h"
+#include "sha256.h"
 
 namespace Tomography {
 
+using HitPointVector = std::vector<Tracking::Vector3D<double>>;
+
+struct CombData{
+	Track sTrack;
+	HitPointVector sHitPointVector;
+	CombData(){}
+	CombData(Track tr, HitPointVector hitPtVector){
+		sTrack = tr;
+		sHitPointVector = hitPtVector;
+	}
+
+	void Set(Track tr, HitPointVector hitPtVector){
+		sTrack = tr;
+		sHitPointVector = hitPtVector;
+	}
+};
+
 struct PixelCombination{
-	unsigned int sPixelCombinationId;
-	std::vector<Track*> sTrackVector;
+	std::string sPixelCombinationSha;
+	//std::vector<Track> sTrackVector;
+	//std::vector<HitPointVector> sVectorOfHitPointVector;
+	std::vector<CombData> sCombDataVector;
+	PixelCombination(std::string pixCombSha,CombData cd){
+		sPixelCombinationSha = pixCombSha;
+		sCombDataVector.push_back(cd);
+	}
+
+	std::string GetCombinationName()const {return sPixelCombinationSha;}
+
+	unsigned int GetNumOfTracks()const {return sCombDataVector.size();}
 
 };
 
 class TrackPredictor {
 	std::vector<PixelCombination> fPixelCombinationVector;
-	unsigned int fPixelCombinationId;
+	std::string fPixelCombinationSha;
+	CombData fCombData;
+	bool fCombinationExist;
+	unsigned int fCombinationId;
 	Track fTrack;
+
+    SHA256 sha256;
 public:
 	TrackPredictor();
-	TrackPredictor(std::vector<int>xStripNumVector, std::vector<int>yStripNumVector);
+	//TrackPredictor(std::vector<int>xStripNumVector, std::vector<int>yStripNumVector);
 	virtual ~TrackPredictor();
 
-	bool PixelCombinationExist();
+	void CheckCombinationExistance();
+	void CreateInsertionData(HitPointVector hitPtVector);
 	void InsertCombination();
+	void Process();
+	void Process(HitPointVector hitPtVector);
+	void Process(std::string combString,HitPointVector hitPtVector);
+
+	HitPointVector GetSample(HitPointVector pixelCenterVector);
+	unsigned int GetTotalNumOfCombinations()const{return fPixelCombinationVector.size();}
+	std::string GetCombinationName(unsigned int combinationIndex)const{return fPixelCombinationVector[combinationIndex].GetCombinationName();}
+	std::vector<PixelCombination> GetPixelCombinationVector()const {return fPixelCombinationVector;}
+	unsigned int GetNumOfTracks(unsigned int combinationIndex) const {return  fPixelCombinationVector[combinationIndex].GetNumOfTracks();}
+	unsigned int GetTotalNumOfRegisteredTracks();
 };
 
 } /* namespace Tomography */
