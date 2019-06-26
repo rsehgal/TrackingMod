@@ -7,6 +7,10 @@
 
 #include "TrackPredictor.h"
 #include "sha256.h"
+#include <cassert>
+
+
+#undef NDEBUG
 
 namespace Tomography {
 
@@ -26,8 +30,30 @@ TrackPredictor::~TrackPredictor() {
 void TrackPredictor::Process(){
     //LOOP OVER ALL THE EVENTS
 	{
-		fPixelCombinationSha="ABCD"; // Logic to Calculate Combination String
+		fPixelCombinationSha=sha256("ABCD"); // Logic to Calculate Combination String
 		HitPointVector hitPtVector;  // Logic to Calculate HitPtVector
+		CheckCombinationExistance();
+		CreateInsertionData(hitPtVector);
+		InsertCombination();
+	}
+}
+
+//Function only for test
+void TrackPredictor::Process(HitPointVector hitPtVector){
+    //LOOP OVER ALL THE EVENTS
+	{
+		fPixelCombinationSha=sha256("ABCD"); // Logic to Calculate Combination String
+		CheckCombinationExistance();
+		CreateInsertionData(hitPtVector);
+		InsertCombination();
+	}
+}
+
+//Function only for test
+void TrackPredictor::Process(std::string combString,HitPointVector hitPtVector){
+    //LOOP OVER ALL THE EVENTS
+	{
+		fPixelCombinationSha=sha256(combString); // Logic to Calculate Combination String
 		CheckCombinationExistance();
 		CreateInsertionData(hitPtVector);
 		InsertCombination();
@@ -85,6 +111,25 @@ void TrackPredictor::InsertCombination(){
 		//Create a new PixelCombination and insert it in the pixelCombinationVector
 		fPixelCombinationVector.push_back(PixelCombination(fPixelCombinationSha,fCombData));
 	}
+}
+
+unsigned int TrackPredictor::GetTotalNumOfRegisteredTracks(){
+	unsigned int totalTracks = 0;
+	for(unsigned int i = 0 ; i < fPixelCombinationVector.size() ; i++){
+		totalTracks += fPixelCombinationVector[i].GetNumOfTracks();
+	}
+	return totalTracks;
+}
+
+HitPointVector TrackPredictor::GetSample(HitPointVector pixelCenterVector){
+	fPixelCombinationSha="ABCD"; // Logic to Calculate Combination String
+	CheckCombinationExistance();
+	assert(fCombinationExist && "Not Getting Sample for specified PixelCenter Vector.......");
+	if(fCombinationExist){
+		unsigned int numOfTracks = fPixelCombinationVector[fCombinationId].sCombDataVector.size();
+		std::cout <<"NumOfTracks for this Combination : " << numOfTracks << std::endl;
+	}
+
 }
 
 } /* namespace Tomography */
