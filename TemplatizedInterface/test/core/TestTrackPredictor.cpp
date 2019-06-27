@@ -39,7 +39,12 @@ int main(){
 				  << "  : Num of Tracks in Combination : " << t.GetNumOfTracks(i) <<  std::endl;
 	}
 
+	t.GetSample("BCDE");
+	t.GetSample("ABCD");
+	t.GetSample("ABCDE");
+	t.GetSample("BCDEF");
 	return 0;
 }
+
 
 

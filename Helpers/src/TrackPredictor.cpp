@@ -38,7 +38,7 @@ void TrackPredictor::Process(){
 	}
 }
 
-//Function only for test
+
 void TrackPredictor::Process(HitPointVector hitPtVector){
     //LOOP OVER ALL THE EVENTS
 	{
@@ -49,7 +49,7 @@ void TrackPredictor::Process(HitPointVector hitPtVector){
 	}
 }
 
-//Function only for test
+//Function to be used
 void TrackPredictor::Process(std::string combString,HitPointVector hitPtVector){
     //LOOP OVER ALL THE EVENTS
 	{
@@ -121,15 +121,19 @@ unsigned int TrackPredictor::GetTotalNumOfRegisteredTracks(){
 	return totalTracks;
 }
 
-HitPointVector TrackPredictor::GetSample(HitPointVector pixelCenterVector){
-	fPixelCombinationSha="ABCD"; // Logic to Calculate Combination String
+
+HitPointVector TrackPredictor::GetSample(std::string combString){
+	fPixelCombinationSha=sha256(combString);
+	std::cout << fPixelCombinationSha << std::endl;
 	CheckCombinationExistance();
-	assert(fCombinationExist && "Not Getting Sample for specified PixelCenter Vector.......");
+	assert(fCombinationExist && "Not Getting Sample for specified Combination string.......");
 	if(fCombinationExist){
 		unsigned int numOfTracks = fPixelCombinationVector[fCombinationId].sCombDataVector.size();
 		std::cout <<"NumOfTracks for this Combination : " << numOfTracks << std::endl;
 	}
 
+	HitPointVector hitPtVector;
+	return hitPtVector;
 }
 
 } /* namespace Tomography */

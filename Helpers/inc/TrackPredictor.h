@@ -68,7 +68,7 @@ public:
 	void Process(HitPointVector hitPtVector);
 	void Process(std::string combString,HitPointVector hitPtVector);
 
-	HitPointVector GetSample(HitPointVector pixelCenterVector);
+	HitPointVector GetSample(std::string combString);
 	unsigned int GetTotalNumOfCombinations()const{return fPixelCombinationVector.size();}
 	std::string GetCombinationName(unsigned int combinationIndex)const{return fPixelCombinationVector[combinationIndex].GetCombinationName();}
 	std::vector<PixelCombination> GetPixelCombinationVector()const {return fPixelCombinationVector;}
