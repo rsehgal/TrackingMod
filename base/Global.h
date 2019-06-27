@@ -69,8 +69,8 @@ namespace Tomography{
             return fInstance;
         }
     }
-    static int fNumOfEvents ;
-    static int fEffEvNo ;
+    static unsigned long long int fNumOfEvents ;
+    static unsigned long long int fEffEvNo ;
 
     static bool BreakSimulation(){
         return fEffEvNo > fNumOfEvents ;

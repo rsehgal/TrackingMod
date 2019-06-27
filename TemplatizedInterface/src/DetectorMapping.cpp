@@ -314,5 +314,15 @@ std::vector<std::string> DetectorMapping::GetDetectorNamesVector(std::string typ
 	return detNamesVector;
 }
 
+std::vector<double> DetectorMapping::GetZCoordinateVector(std::string type){
+	std::vector<double> zCoorVector;
+	for(int i = 0 ; i < fDetectorVector.size() ; i++){
+			if(fDetectorVector[i]->sDetectorType == type){
+				zCoorVector.push_back(fDetectorVector[i]->sZCoordinate);
+			}
+	}
+
+	return zCoorVector;
+}
 }
 

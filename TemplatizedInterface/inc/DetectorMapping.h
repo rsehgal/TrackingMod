@@ -139,6 +139,7 @@ class DetectorMapping{
 
 		int GetNumOfDetectors(std::string type);
 		std::vector<std::string> GetDetectorNamesVector(std::string type);
+		std::vector<double> GetZCoordinateVector(std::string type);
 
 
 

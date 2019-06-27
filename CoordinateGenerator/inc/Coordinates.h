@@ -105,7 +105,7 @@ public:
 	  std::string xStripNumString = std::to_string(GetStripNum(pt.x()));
 	  std::string yStripNumString = std::to_string(GetStripNum(pt.y()));
 	  std::string zString = std::to_string(pt.z());
-	  return xStripNumString+"_"+yStripNumString+"_"+zString;
+	  return xStripNumString+"_"+yStripNumString;//+"_"+zString;
   }
 };
 
