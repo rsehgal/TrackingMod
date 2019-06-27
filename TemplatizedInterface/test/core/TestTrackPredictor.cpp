@@ -39,7 +39,15 @@ int main(){
 				  << "  : Num of Tracks in Combination : " << t.GetNumOfTracks(i) <<  std::endl;
 	}
 
+	t.GetSample("BCDE");
+	t.GetSample("ABCD");
+	t.GetSample("ABCDE");
+	std::cout <<"@@@@@@@@@@@@@@@@@ Trying to Print the returned random track @@@@@@@@@@@@@@@" << std::endl;
+	Tomography::HitPointVector hitPtVector = t.GetSample("ABCD");
+	Tomography::PrintHitPointVector(hitPtVector);
+	//t.GetSample("BCDEF");
 	return 0;
 }
+
 
 
