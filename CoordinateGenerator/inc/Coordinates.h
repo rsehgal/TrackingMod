@@ -94,11 +94,18 @@ public:
   }
 
   int GetStripNum( double val){
-    double stripLength = 1000.;
+    double stripLength = Tomography::DetectorMapping::instance()->GetDetectorVector()[3]->sDetectorLength;// 1000.;
     double stripWidth =
     			Tomography::DetectorMapping::instance()->GetDetectorVector()[3]->sDetectorLength
     					/ Tomography::DetectorMapping::instance()->GetNumberOfStripsInEachPlane();
     return (val+ stripLength/2)/stripWidth;
+  }
+
+  std::string GetStripNumXYZString(Tracking::Vector3D<double> pt){
+	  std::string xStripNumString = std::to_string(GetStripNum(pt.x()));
+	  std::string yStripNumString = std::to_string(GetStripNum(pt.y()));
+	  std::string zString = std::to_string(pt.z());
+	  return xStripNumString+"_"+yStripNumString+"_"+zString;
   }
 };
 
