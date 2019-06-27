@@ -8,6 +8,8 @@
 #include "TrackPredictor.h"
 #include "sha256.h"
 #include <cassert>
+#include <stdlib.h>
+#include <time.h>
 
 
 #undef NDEBUG
@@ -132,8 +134,20 @@ HitPointVector TrackPredictor::GetSample(std::string combString){
 		std::cout <<"NumOfTracks for this Combination : " << numOfTracks << std::endl;
 	}
 
-	HitPointVector hitPtVector;
+	unsigned int randomTrackNum = GetRandomTrackNum();
+	std::cout <<"Random Track Num : " << randomTrackNum << std::endl;
+	HitPointVector hitPtVector = fPixelCombinationVector[fCombinationId].sCombDataVector[randomTrackNum].sHitPointVector;
 	return hitPtVector;
+}
+
+//This SHOULD be called from within GetSample()
+unsigned int TrackPredictor::GetRandomTrackNum(){
+	// Use current time as seed for random generator
+	srand(time(0));
+	unsigned int numOfTracks = fPixelCombinationVector[fCombinationId].sCombDataVector.size();
+	unsigned int trackNum = rand() % numOfTracks;// + 1;
+	return trackNum;
+
 }
 
 } /* namespace Tomography */

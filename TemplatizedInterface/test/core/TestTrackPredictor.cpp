@@ -42,7 +42,10 @@ int main(){
 	t.GetSample("BCDE");
 	t.GetSample("ABCD");
 	t.GetSample("ABCDE");
-	t.GetSample("BCDEF");
+	std::cout <<"@@@@@@@@@@@@@@@@@ Trying to Print the returned random track @@@@@@@@@@@@@@@" << std::endl;
+	Tomography::HitPointVector hitPtVector = t.GetSample("ABCD");
+	Tomography::PrintHitPointVector(hitPtVector);
+	//t.GetSample("BCDEF");
 	return 0;
 }
 
