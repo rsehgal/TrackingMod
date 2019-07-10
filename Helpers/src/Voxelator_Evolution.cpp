@@ -78,8 +78,8 @@ std::vector<Voxel_V2*> Voxelator::GetFilteredVoxelVector(){
 		if(!fVoxelVector[i]->IsOutlier())
 #else
 		Tomography::evolution::Voxelator::instance()->PredictThreshold();
-		//if(fVoxelVector[i]->GetPointCount() > Tomography::evolution::Voxelator::instance()->GetThresholdVal())
-		if(fVoxelVector[i]->GetPointCount() > Tomography::minPointsInAVoxel)
+		if(fVoxelVector[i]->GetPointCount() > Tomography::evolution::Voxelator::instance()->GetThresholdVal())
+		//if(fVoxelVector[i]->GetPointCount() > Tomography::minPointsInAVoxel)
 #endif
 		{
 			filteredVoxelVector.push_back(fVoxelVector[i]);
@@ -287,6 +287,12 @@ Voxelator::Voxelator(double voxelizedVolHalfX,double voxelizedVolHalfY, double v
 	fVoxelatorDim.Print();
 	int totalNumOfVoxels = fVoxelatorDim.x()*fVoxelatorDim.y()*fVoxelatorDim.z();
 
+	//Setting the size of fEachVoxelCountForAcceptance
+	fEachVoxelCountForAcceptance.resize(totalNumOfVoxels);
+	std::fill(fEachVoxelCountForAcceptance.begin(), fEachVoxelCountForAcceptance.end(), 0);
+
+
+
 
 }
 
@@ -351,7 +357,51 @@ std::vector<int> Voxelator::FindCandidateVoxels(Track incoming, Track outgoing,
 		  std::cout<<"Voxel Hit Point for Slice : " << i << " : VoxelNumber : " << GetVoxelNumber(voxelHitPt) << std::endl;
 					//<< " : PocaPt_VoxelNumber : " << GetVoxelNumber(fPocaPt) << " : Voxel Point ";
 		  voxelHitPt.Print();
-		  vectOfVoxels.push_back(GetVoxelNumber(voxelHitPt));
+		  int voxNum=GetVoxelNumber(voxelHitPt);
+		  vectOfVoxels.push_back(voxNum);
+		  //fEachVoxelCountForAcceptance[voxNum]++;
+
+		  if(i!=0){
+			  double voxelDist = CommonFunc::Distance(voxelHitPt,prevPoint);
+			  std::cout<< " VoxelDist : " << voxelDist << std::endl;
+		  }
+
+		  prevPoint = voxelHitPt;
+	  }
+
+	  return vectOfVoxels; // This is basically a vector of index of Hitted Voxel that influenced the muon track.
+}
+
+//Version for detector acceptance
+std::vector<int> Voxelator::FindCandidateVoxels(Track incoming){
+	std::vector<int> vectOfVoxels;
+	Tracking::Vector3D<double> inComingHitPt = Delta::GetIntersection(incoming,GetVoxelizedVolumeDim().z()/2.,1);
+	Tracking::Vector3D<double> outGoingHitPt = Delta::GetIntersection(incoming,-1*(GetVoxelizedVolumeDim().z()/2.),1);
+	  std::cout << "InComingHitPoint in VOI : ";
+	  inComingHitPt.Print();
+	  std::cout << "OutgoingHitPoint in VOI  : " ;
+	  outGoingHitPt.Print();
+
+	  double epsilon = 0.001;
+	  Tomography::Track tr(inComingHitPt,outGoingHitPt);
+	  Tracking::Vector3D<double> prevPoint(0.,0.,0.);
+	  for(int i = 0 ; i <= GetVoxelatorDim().z() ; i++){
+
+		  Tracking::Vector3D<double> voxelHitPt = Delta::GetIntersection(tr,
+				  	  	  	  (GetVoxelizedVolumeDim().z()/2.)-(i*GetEachVoxelDim().z()),
+							  3);
+		  voxelHitPt.SetZ(voxelHitPt.z()+epsilon);
+
+		  std::cout<<"Voxel Hit Point for Slice : " << i << " : VoxelNumber : " << GetVoxelNumber(voxelHitPt) << std::endl;
+					//<< " : PocaPt_VoxelNumber : " << GetVoxelNumber(fPocaPt) << " : Voxel Point ";
+		  voxelHitPt.Print();
+		  //vectOfVoxels.push_back(GetVoxelNumber(voxelHitPt));
+		  int voxNum=GetVoxelNumber(voxelHitPt);
+		  bool valid = voxNum >=0 && voxNum < GetTotalNumberOfVoxels();
+		  if(valid){
+		  vectOfVoxels.push_back(voxNum);
+		  fEachVoxelCountForAcceptance[voxNum]++;
+		  }
 
 		  if(i!=0){
 			  double voxelDist = CommonFunc::Distance(voxelHitPt,prevPoint);
@@ -388,25 +438,31 @@ int Voxelator::GetVoxelNumber(Tracking::Vector3D<double> vox){
 	return GetVoxelNumber(vox.x(),vox.y(),vox.z());
 }
 
-Tracking::Vector3D<double> Voxelator::GetVoxelCenter(int voxelNum){
+Tracking::Vector3D<double> Voxelator::GetVoxelCenter(int voxelNum, bool &valid){
 
     //std::cout<< "Voxel Num from Voxelator : " << voxelNum << std::endl;
-    if(voxelNum < GetTotalNumberOfVoxels() && voxelNum >= 0.)
+	valid = voxelNum < GetTotalNumberOfVoxels() && voxelNum >= 0;
+    if(valid)
 	   return fVoxelCenters[voxelNum];
     else 
-       return Tracking::Vector3D<double>(0.,0.,0.);
+    	return Tracking::Vector3D<double>(-1000000.,-1000000.,-1000000.);
+       //return Tracking::Vector3D<double>(0.,0.,0.);
 }
 
-Tracking::Vector3D<double> Voxelator::GetVoxelCenter(double x, double y, double z){
+Tracking::Vector3D<double> Voxelator::GetVoxelCenter(double x, double y, double z, bool& valid){
 
 	int voxelNumber = GetVoxelNumber(x,y,z);
 	std::cout<< "######### Voxel Number : " << voxelNumber << std::endl;
-	if(voxelNumber > 0 && voxelNumber < GetTotalNumberOfVoxels())
+	valid = voxelNumber > 0 && voxelNumber < GetTotalNumberOfVoxels();
+	if(valid)
 		return fVoxelCenters[voxelNumber];
+	else
+		return Tracking::Vector3D<double>(-1000000.,-1000000.,-1000000.);
 }
 
-Tracking::Vector3D<double> Voxelator::GetVoxelCenter(Tracking::Vector3D<double> vox){
-	return GetVoxelCenter(vox.x(),vox.y(),vox.z());
+Tracking::Vector3D<double> Voxelator::GetVoxelCenter(Tracking::Vector3D<double> vox, bool &valid){
+
+	return GetVoxelCenter(vox.x(),vox.y(),vox.z(),valid);
 }
 
 void Voxelator::CalculateVoxelCenters(){

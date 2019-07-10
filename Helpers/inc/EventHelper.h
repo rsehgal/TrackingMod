@@ -77,6 +77,7 @@ public:
 	int GetVoxelNum();
 	int GetVoxelNum(Tracking::Vector3D<double> pt);
 	void CalculateCandidateVoxels();
+	void CalculateCandidateVoxelsForAcceptance();
 	void WriteToFile();
 
 	//To detect if the calculated PoCA is false positive or genuine

@@ -29,6 +29,9 @@ class Voxel_V2 {
 	// Required for implementing TUSHAR ROY's idea.
 	double fScatteringDensity;
 
+	 //point counter multiplied by mean of square of scattering angle
+	 double fWeightedCount;
+
 	//To store if the voxel is clean
 	int fCleanCount;
 public:
@@ -40,8 +43,12 @@ public:
 	void Insert(Tracking::Vector3D<double> point);
 	void CalcSD();
 	void CalcRadiationLength();
+	void CalcWeightedCount();
+
 	double GetRadiationLength(){return fRL;}
 	double GetStandardDeviation(){return fSD;}
+	double GetWeightedCount()const {return fWeightedCount;}
+
 	std::vector<Tracking::Vector3D<double>> GetPocaPointsVector(){//std::cout << "PocaPtVectorSize : " << fVectPointsInVoxel.size() << std::endl;
 																	return fVectPointsInVoxel;}
 	int GetPointCount() const {return fPointCount;}

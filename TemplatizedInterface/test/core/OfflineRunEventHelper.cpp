@@ -78,8 +78,8 @@ int main(int argc, char *argv[]){
 	std::string type = std::string(argv[1]);
 	int numOfParts = std::atoi(argv[2]);
 	double voxelSizeXY = (double)100*cm/numOfParts;
-	double voxelSizeZ = (double)90*cm/numOfParts;
-	Tomography::evolution::Voxelator::Create(50*cm,50*cm,45*cm,voxelSizeXY,voxelSizeXY,voxelSizeZ);
+	double voxelSizeZ = (double)100*cm/numOfParts;
+	Tomography::evolution::Voxelator *voxelator = Tomography::evolution::Voxelator::Create(50*cm,50*cm,50*cm,voxelSizeXY,voxelSizeXY,voxelSizeZ);
 	//Tomography::evolution::Voxelator::Create(50*cm,50*cm,45*cm,2.5*cm,2.5*cm,2.25*cm);
 	//Tomography::evolution::Voxelator::Create(50*cm,50*cm,45*cm,2.8571428*cm,2.8571428*cm,2.5714285*cm);
 	//Tomography::evolution::Voxelator::Create(50*cm,50*cm,45*cm,10.*cm,10.*cm,9.*cm);
@@ -116,8 +116,7 @@ int main(int argc, char *argv[]){
 		std::cout << "================ Predicting Threshold ========================" << std::endl;
 		Tomography::evolution::Voxelator::instance()->PredictThreshold();
 		std::cout << " Predicted Value : " << Tomography::evolution::Voxelator::instance()->GetThresholdVal() << std::endl;
-		std::cout << "================ Predicting Threshold ========================" << std::endl;
-
+		std::cout << "================ =============================================" << std::endl;
 
 		/*
 		r->Reset();

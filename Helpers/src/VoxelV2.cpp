@@ -22,6 +22,7 @@ Voxel_V2::Voxel_V2() {
 Voxel_V2::Voxel_V2(Tracking::Vector3D<double> pocaPt, int voxelNum) {
 	fVectPointsInVoxel.push_back(pocaPt);
 	//fVectPointsInVoxel.push_back(new Tracking::Vector3D<double>(pocaPt.x(),pocaPt.y(),pocaPt.z()));
+	bool valid=true;
 	fVoxelNum = voxelNum;
 	fDim = Tomography::evolution::Voxelator::instance()->GetEachVoxelDim();
 	fScatteringDensity = 0.;
@@ -30,11 +31,12 @@ Voxel_V2::Voxel_V2(Tracking::Vector3D<double> pocaPt, int voxelNum) {
 	fMinPointsInVoxel = Tomography::minPointsInAVoxel;
 	fPointCount = fVectPointsInVoxel.size();
 	fOutlier = fPointCount < fMinPointsInVoxel;
-	fVoxelCenter = Tomography::evolution::Voxelator::instance()->GetVoxelCenter(fVoxelNum);
+	fVoxelCenter = Tomography::evolution::Voxelator::instance()->GetVoxelCenter(fVoxelNum,valid);
 	fCleanCount = 0;
 }
 
 Voxel_V2::Voxel_V2(int voxelNum){
+	bool valid=true;
 	fVectPointsInVoxel.push_back(Tracking::Vector3D<double>(0.,0.,0.));
 	fVoxelNum = voxelNum;
 	fDim = Tomography::evolution::Voxelator::instance()->GetEachVoxelDim();
@@ -44,7 +46,7 @@ Voxel_V2::Voxel_V2(int voxelNum){
 	fMinPointsInVoxel = Tomography::minPointsInAVoxel;
 	fPointCount = 0;
 	fOutlier = false;// Setting specifically to false // (fPointCount < fMinPointsInVoxel);
-	fVoxelCenter = Tomography::evolution::Voxelator::instance()->GetVoxelCenter(fVoxelNum);
+	fVoxelCenter = Tomography::evolution::Voxelator::instance()->GetVoxelCenter(fVoxelNum,valid);
 	fCleanCount = 1;
 
 }
@@ -99,6 +101,16 @@ std::vector<double> Voxel_V2::GetScatteringVector(){
 	return scatteringVect;
 }
 
+void Voxel_V2::CalcWeightedCount(){
+        CalcSD();
+        unsigned int pocaPtCount = fVectPointsInVoxel.size();
+        double sqScattering = 0.;
+        /*for (auto &pocaPt : fVectPointsInVoxel) {
+                double color = pocaPt.GetColor();
+                sqScattering += (color*color);
+        }*/
+        fWeightedCount = (double)pocaPtCount*fSD;
+}
 
 Voxel_V2::~Voxel_V2() {
 	// TODO Auto-generated destructor stub
