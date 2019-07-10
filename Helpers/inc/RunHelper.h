@@ -13,6 +13,7 @@
 #include "VoxelV2.h"
 #include "Voxelator_Evolution.h"
 #include "EventHelper.h"
+#include "TH1F.h"
 //#include "Voxel.h"
 
 using Tracking::Vector3D;
@@ -21,11 +22,13 @@ namespace Tomography {
 
 class RunHelper {
 
+	TH1F *fWeightedCountHist;
+
  	std::vector<double> fScatteringAngleVector;
 	std::vector<Vector3D<double>> fPocaPtVector;
 	std::vector<double> fSDOfVoxelsVector;
 	std::vector<double> fRLOfVoxelsVector;
-	std::vector<Voxel_V2*> fVoxelVector;
+	//std::vector<Voxel_V2*> fVoxelVector;
 	std::string fFileType;
 
 	//Data member to store TruePositive PocaPt and false positive PocaPt
@@ -51,6 +54,7 @@ class RunHelper {
 
  // std::vector<EventHelper*> fEventHelperVector;
 public:
+	std::vector<Voxel_V2*> fVoxelVector;
 	static RunHelper *instance(std::string filename);
 	static RunHelper *instance();
 //	RunHelper();
@@ -91,6 +95,8 @@ public:
 
 	//Filtering based on ThetaCut
 	std::vector<Tracking::Vector3D<double>> ThetaCutFiltering();
+
+	int GetCountInAVoxel(unsigned int voxelNum) const {return fVoxelVector[voxelNum]->GetPointCount();}
 
 	//Function used to do resetting
 	void Reset();

@@ -185,6 +185,14 @@ void RunHelper::FillPocaVector(){
 				Insert(pocaPointsVector[j]);
 			}
     	}
+
+    	/*int totalNumOfVoxels = Tomography::evolution::Voxelator::instance()->GetTotalNumberOfVoxels();
+    	        fWeightedCountHist = new TH1F("WeighedCountHist","WeighedCountHist",totalNumOfVoxels, 0, totalNumOfVoxels);
+    	        int voxelNum = fVoxelVector[i]->GetVoxelNum();
+    	        int weightedCount = fVoxelVector[i]->GetWeightedCount();
+    	        std::cout <<"WeightedCount Value : " << weightedCount << std::endl;
+    	        fWeightedCountHist->SetBinContent(voxelNum,weightedCount);*/
+    	       // fWeightedCountHist->Write();
     }
 }
 
@@ -244,6 +252,20 @@ void RunHelper::Store(){
 	vox->GetRLInVoxelsHist()->Write();
 
 
+	int totalNumOfVoxels = Tomography::evolution::Voxelator::instance()->GetTotalNumberOfVoxels();
+	fWeightedCountHist = new TH1F("WeighedCountHist","WeighedCountHist",totalNumOfVoxels, 0, totalNumOfVoxels);
+
+	for(int i = 0 ; i < fVoxelVector.size() ; i++){
+		int voxelNum = fVoxelVector[i]->GetVoxelNum();
+		int count = fVoxelVector[i]->GetPointCount();
+		fVoxelVector[i]->CalcWeightedCount();
+		int weightedCount = fVoxelVector[i]->GetWeightedCount();
+		std::cout <<"Count : " << count << "  :: WeightedCount Value : " << weightedCount << std::endl;
+		fWeightedCountHist->SetBinContent(voxelNum,weightedCount);
+	}
+
+	fWeightedCountHist->Write();
+
 	#ifdef STORE_SLICE
 	std::set<Tomography::ObjectChecker> histSet = vox->GetObjectChecker().GetSet();
 	for (std::set<Tomography::ObjectChecker>::iterator it=histSet.begin(); it!=histSet.end(); ++it){
@@ -267,7 +289,7 @@ void RunHelper::WriteToFile(){
     CommonFunc::Functions::instance()->WriteToFile("VoxelsRunHelper-"+fFileType+".txt",Tomography::evolution::Voxelator::instance()->GetVoxelVector());
     CommonFunc::Functions::instance()->WriteToFile("filteredVoxelsRunHelper-"+fFileType+".txt",Tomography::evolution::Voxelator::instance()->GetFilteredVoxelVector());
     CommonFunc::Functions::instance()->WriteToFile("filteredPocaPtRunHelper-"+fFileType+".txt",Tomography::evolution::Voxelator::instance()->GetFilteredPocaPtVector());
-    CommonFunc::Functions::instance()->WriteToFile("filteredTrack-"+fFileType+".txt",Tomography::evolution::Voxelator::instance()->GetFilteredTrackIndexVector());
+   // CommonFunc::Functions::instance()->WriteToFile("filteredTrack-"+fFileType+".txt",Tomography::evolution::Voxelator::instance()->GetFilteredTrackIndexVector());
 //    CommonFunc::Functions::instance()->WriteToFile("filteredPocaPtRunHelperUsingCleanVoxels-"+fFileType+".txt",Tomography::evolution::Voxelator::instance()->GetFilteredPocaPtVectorUsingCleanedVoxel());
 
 

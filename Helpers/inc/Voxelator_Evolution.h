@@ -54,6 +54,20 @@ private:
 
   std::vector<Tracking::Vector3D<double>> fVoxelCenters;
 
+  /*
+   * This data member is required for acceptance calculation,
+   * where we want to know the counts in individual voxel,
+   *
+   *  ** It has NOTHING to do with Voxel_V2 **
+   *
+   *  The length of this should be equal to the total number
+   *  of Voxels, and vector index represent Voxel index.
+   *
+   *  Now the value at individual index represent the muon counts
+   *  that traversed this voxel of particular index
+   */
+  std::vector<unsigned int> fEachVoxelCountForAcceptance;
+
 
   // Hit point to VoxelizedVolume
   Vector3D<double> fHitPtInput;
@@ -107,13 +121,14 @@ public:
 
 
   std::vector<Tracking::Vector3D<double>> GetVoxelCenters(){return fVoxelCenters; }
-  Tracking::Vector3D<double> GetVoxelCenter(double x, double y, double z);
-  Tracking::Vector3D<double> GetVoxelCenter(Tracking::Vector3D<double> vox);
-  Tracking::Vector3D<double> GetVoxelCenter(int voxelNum);
+  Tracking::Vector3D<double> GetVoxelCenter(double x, double y, double z, bool &valid);
+  Tracking::Vector3D<double> GetVoxelCenter(Tracking::Vector3D<double> vox, bool &valid);
+  Tracking::Vector3D<double> GetVoxelCenter(int voxelNum, bool &valid);
   int GetVoxelNumber(int x, int y, int z);
   int GetVoxelNumber(double x,double y, double z);
   int GetVoxelNumber(Tracking::Vector3D<double> vox);
   int GetTotalNumberOfVoxels(){return fVoxelatorDim.x()*fVoxelatorDim.y()*fVoxelatorDim.z();}
+  std::vector<unsigned int> GetEachVoxelCountForAcceptance() const {return fEachVoxelCountForAcceptance;}
 
 
   //Function to return the std::vector of filled Voxels
@@ -214,6 +229,21 @@ public:
   std::vector<int> FindCandidateVoxels(Track incoming, Track outgoing,
 			Tracking::Vector3D<double> &inComingHitPt,
 			Tracking::Vector3D<double> &outGoingHitPt);
+
+  // This version is for Acceptance calculation, and hence will make use of only the
+  // incoming track to find the candidate voxel and return a vector of their index
+  std::vector<int> FindCandidateVoxels(Track incoming);
+
+  //Function to test the total count in all the voxel,
+  //can be used for simple test like when all muon comes vertically down
+  //without any scatterer.
+  unsigned int GetTotalVoxelCountForAcceptance(){
+	  unsigned int sum_of_elems = 0;
+	  for (auto& n : fEachVoxelCountForAcceptance)
+	      sum_of_elems += n;
+	  return sum_of_elems;
+  }
+
 #endif
 /*
 	VectorOfVoxelsForAnEvent vectOfVoxels;

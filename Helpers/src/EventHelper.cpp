@@ -37,7 +37,13 @@ void EventHelper::Test2EventHelper(Track incoming, Track outgoing){
 	CalculateScatterAngle();
 	std::cout<<"FABS of ScattAngle from EventHelper : " << std::fabs(fScatteringAngle) << "  : Momentum : " << fMomentum << std::endl;
 
+
+
 	if (std::fabs(fScatteringAngle) < Tomography::unscatteringThreshold){
+#ifdef FIND_CANDIDATE_VOXEL
+		CalculateCandidateVoxelsForAcceptance();
+#endif
+
 #ifdef USE_UNSCATTERED_TRACKS
 	//Threshold below which the tracks are considered unscattered, defined in Global.h
 
@@ -347,10 +353,11 @@ std::vector<int> EventHelper::VoxelFinder(Tomography::Track track){
 	std::cout << "HitPointVoxelNum : " << hitPointVoxelNum <<" : endPointVoxelNum : " << endPointVoxelNum << " : " << __FILE__ <<" : " << __LINE__ << std::endl;
 
 	//The condition should be applied only to valid tracks
+	bool valid=true;
 	while(hitPointVoxelNum != endPointVoxelNum){
 		int voxelNum = voxelator->GetVoxelNumber(startPoint);
 		cleanHittedVoxelNumVector.push_back(voxelNum);
-		Tracking::Vector3D<double> voxelCenter = voxelator->GetVoxelCenter(voxelNum);
+		Tracking::Vector3D<double> voxelCenter = voxelator->GetVoxelCenter(voxelNum,valid);
 		double step = voxelNavigator.ComputeStep(startPoint, dir, voxelCenter);
 		startPoint = startPoint + dir * (step+epsilon);
 		hitPointVoxelNum = voxelator->GetVoxelNumber(startPoint);
@@ -365,9 +372,13 @@ void EventHelper::CalculateCandidateVoxels(){
 	fCandidateVoxelNumVector = Tomography::evolution::Voxelator::instance()->FindCandidateVoxels(fIncoming,fOutgoing,fIncomingHitPoint,fOutgoingHitPoint);
 }
 
+void EventHelper::CalculateCandidateVoxelsForAcceptance(){
+	std::vector<int> candidateVoxelNumVectorForAcc = Tomography::evolution::Voxelator::instance()->FindCandidateVoxels(fIncoming);
+}
+
 void EventHelper::WriteToFile(){
 	std::vector<Tracking::Vector3D<double>> voxelCenterVector;
-	Tracking::Vector3D<int> dim = Tomography::evolution::Voxelator::instance()->GetEachVoxelDim();
+	Tracking::Vector3D<double> dim = Tomography::evolution::Voxelator::instance()->GetEachVoxelDim();
 	//Pushing Voxel Dimension
 	voxelCenterVector.push_back(Tracking::Vector3D<double>((double)dim.x(),(double)dim.y(),(double)dim.z()));
 	voxelCenterVector.push_back(fIncomingHitPoint);
@@ -388,13 +399,16 @@ void EventHelper::WriteToFile(){
 
 	for(int i = 0 ; i < fCandidateVoxelNumVector.size() ; i++){
 		std::cout<< (i+1) <<" Candidate Voxel Num : " << fCandidateVoxelNumVector[i] << std::endl;
-		Tracking::Vector3D<double> center = Tomography::evolution::Voxelator::instance()->GetVoxelCenter(fCandidateVoxelNumVector[i]);
+		bool valid=true;
+		Tracking::Vector3D<double> center = Tomography::evolution::Voxelator::instance()->GetVoxelCenter(fCandidateVoxelNumVector[i],valid);
 		center.SetColor(4.);
-		voxelCenterVector.push_back(center);
+		if(valid)
+			voxelCenterVector.push_back(center);
 	}
 
 	//Now pushing PocaPt
-	Tracking::Vector3D<double> pocaCenter = Tomography::evolution::Voxelator::instance()->GetVoxelCenter(fPocaPt);
+	bool valid=true;
+	Tracking::Vector3D<double> pocaCenter = Tomography::evolution::Voxelator::instance()->GetVoxelCenter(fPocaPt,valid);
 	//intentionally setting blue color for pocalVoxel
 	pocaCenter.SetColor(2.);
 	voxelCenterVector.push_back(pocaCenter);

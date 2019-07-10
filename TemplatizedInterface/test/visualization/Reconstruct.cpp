@@ -65,9 +65,9 @@ const char* input_filename = (argc>1)?argv[1]:"tracks.txt";
     	double colorVal = color ; //CommonFunc::Functions::instance()->CreateColorVal(color*1000.);
     	pt.SetColor(colorVal);
     	//pt.SetColor(2+color*100);
-    	if(doca > 1){
+    	//if(doca > 5){
     	v->Register(slicer,pt);
-    	}
+    	//}
     //v.Register(pt);
 /*
 #ifdef USE_EVE
