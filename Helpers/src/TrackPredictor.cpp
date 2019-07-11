@@ -10,7 +10,9 @@
 #include <cassert>
 #include <stdlib.h>
 #include <time.h>
+#include <chrono>
 
+using namespace std::chrono;
 
 #undef NDEBUG
 
@@ -52,13 +54,18 @@ void TrackPredictor::Process(HitPointVector hitPtVector){
 }
 
 //Function to be used
-void TrackPredictor::Process(std::string combString,HitPointVector hitPtVector){
+unsigned int TrackPredictor::Process(std::string combString,HitPointVector hitPtVector){
     //LOOP OVER ALL THE EVENTS
 	{
 		fPixelCombinationSha=sha256(combString); // Logic to Calculate Combination String
+		auto start = high_resolution_clock::now();
 		CheckCombinationExistance();
+		auto stop = high_resolution_clock::now();
+		auto duration = duration_cast<milliseconds>(stop - start);
 		CreateInsertionData(hitPtVector);
 		InsertCombination();
+		//std::cout <<"Time : " << duration.count() << " seconds" << std::endl;
+		return duration.count();
 	}
 }
 

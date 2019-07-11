@@ -71,7 +71,7 @@ public:
 	void InsertCombination();
 	void Process();
 	void Process(HitPointVector hitPtVector);
-	void Process(std::string combString,HitPointVector hitPtVector);
+	unsigned int Process(std::string combString,HitPointVector hitPtVector);
 
 	HitPointVector GetSample(std::string combString);
 	unsigned int GetTotalNumOfCombinations()const{return fPixelCombinationVector.size();}

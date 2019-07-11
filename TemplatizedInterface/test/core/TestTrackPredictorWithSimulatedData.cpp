@@ -30,24 +30,37 @@ int main(){
 	int evId =0;
 	std::vector< std::vector< Vector3D<double> > > superVect;
 
+	unsigned int timeForNEvents = 0;
+	unsigned int totalTime = 0;
+	unsigned int N = 10000;
 	while(!infile.eof()){
 		std::string evString="";
 		std::vector< Vector3D<double> > vectOfVector3D;
-		for(int i=0; i<numOfRpcs;i++){
 
+		for(int i=0; i<numOfRpcs;i++){
+			std::string str = "" ;
 			infile >> x1 >> y1 >> z1 >> x2 >> y2 >> z2;
 			Vec_t hitPt(x1,y1,z1);
 			vectOfVector3D.push_back(hitPt);
-			std::string str = detNamesVector[i]+"_"+c.GetStripNumXYZString(hitPt);
+			if(i==0){
+				str = detNamesVector[i]+"_"+c.GetStripNumXYZString(hitPt);
+			}else{
+				str = "_"+detNamesVector[i]+"_"+c.GetStripNumXYZString(hitPt);
+			}
 			evString += str;
 
 		}
-		t.Process(evString,vectOfVector3D);
+		timeForNEvents += t.Process(evString,vectOfVector3D);
 		superVect.push_back(vectOfVector3D);
 		//std::cout << "Event string of event id : " << evId <<" : " << evString << std::endl;
-		if(!(evId%10000)){
+		if(!(evId%N)){
 			std::cout <<"=======================================" << std::endl;
 			std::cout << "No of Events Processed : " << evId << std::endl;
+			std::cout << "Event string of event id : " << evId <<" : " << evString << std::endl;
+			std::cout << "Time taken to Process : " << N << " events : " << timeForNEvents << std::endl;
+			totalTime += timeForNEvents;
+			timeForNEvents = 0;
+			std::cout << "Setting time to Zero : " <<  timeForNEvents << std::endl;
 		}
 
 		evId++;
@@ -61,6 +74,8 @@ int main(){
 	std::cout <<"Total Num of Registered Tracks : " << totalTracks << std::endl;
 	unsigned int diff = totalTracks - totalComb;
 	std::cout << "Diff : " << diff << std::endl;
+	std::cout <<"***************************************************************"<<std::endl;
+	std::cout <<"Total Time Taken for Search function : " << totalTime << std::endl;
 
 	/*for(unsigned int i = 0 ; i < t.GetTotalNumOfCombinations() ; i++){
 		std::cout << "Combination ID : " << i <<" : Combination Name : " << t.GetCombinationName(i)
