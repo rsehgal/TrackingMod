@@ -225,6 +225,7 @@ void EventHelper::CalculateScatterAngle(){
  * If point lie outside the voxelized region then it should be rejected
  * there itself. This will make the processing faster
  */
+/*
 void EventHelper::CalculateVoxel(){
 	if(Tomography::evolution::Voxelator::instance()->IsGenuine(fPocaPt)){
 	int voxelNum = GetVoxelNum();
@@ -236,7 +237,8 @@ void EventHelper::CalculateVoxel(){
 			fVoxel->Insert(fPocaPt,voxelNum);
 		}
 	}
-
+}
+*/
 /*
 //#define USE_ENCLOSING_VOXELS
 #ifdef USE_ENCLOSING_VOXELS
@@ -277,7 +279,7 @@ void EventHelper::CalculateVoxel(){
 
 #endif
 */
-}
+
 
 void EventHelper::CalculateVoxel_V2(){
 	bool isGenuine = Tomography::evolution::Voxelator::instance()->IsGenuine(fPocaPt);

@@ -55,6 +55,7 @@ public:
 	Tracking::Vector3D<double> GetVoxelCenter(){return fVoxelCenter;}
 	std::vector<double> GetScatteringVector();
 	int GetVoxelNum(){return fVoxelNum;}
+        Tracking::Vector3D<double> GetVoxelDimensions() const {return fDim;}
 	void SetMinPointsInAVoxel(int minPts) {fMinPointsInVoxel = minPts;}
 	int GetMinPointsInAVoxel() const { return fMinPointsInVoxel;}
 	bool IsOutlier(){return fOutlier;}

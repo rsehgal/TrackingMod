@@ -11,7 +11,7 @@
 #include "Track.h"
 #include "base/Vector3D.h"
 #include "Imaging.h"
-#include "Voxel.h"
+#include "VoxelV2.h"
 #include "DetectorMapping.h"
 using Tracking::ImageReconstruction;
 
@@ -36,7 +36,7 @@ class EventHelper {
 
 
 //#ifdef VOXELIZE
-	Voxel *fVoxel;
+	Voxel_V2 *fVoxel;
 //#endif
 
 
@@ -61,13 +61,13 @@ public:
 	double GetScatteringAngle() const {return fScatteringAngle;}
 	std::vector<int> GetCandidateVoxels()const{return fCandidateVoxelNumVector;}
 //#ifdef VOXELIZE
-	Voxel* GetVoxel(){return fVoxel;}
+	Voxel_V2* GetVoxel(){return fVoxel;}
 //#endif
 
 	//Calculators
 	void CalculatePOCA();
 	void CalculateScatterAngle();
-	void CalculateVoxel();
+	//void CalculateVoxel();
 	void CalculateVoxel_V2();
 
 	//Special function to make use of unscattered tracks.
