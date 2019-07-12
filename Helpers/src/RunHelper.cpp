@@ -6,7 +6,7 @@
  */
 
 #include "RunHelper.h"
-#include "Voxel.h"
+#include "VoxelV2.h"
 #include "CommonFunc.h"
 #include <TFile.h>
 #include "Voxelator_Evolution.h"

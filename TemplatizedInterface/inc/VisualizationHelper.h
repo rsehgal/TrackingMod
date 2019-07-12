@@ -32,7 +32,7 @@ typedef Tracking::Visualizer TomographyVisualizer;
 #include "Properties.h"
 #include "Track.h"
 #include "TGeoManager.h"
-#include "Voxel.h"
+#include "VoxelV2.h"
 typedef Tomography::Properties Detector;
 namespace Tomography{
 
@@ -129,7 +129,7 @@ static VisualizationHelper *instance();
 #endif
 
 // This is for visualization during simulation or data analysis
-  void Register(Voxel * voxel){
+  void Register(Voxel_V2 * voxel){
     Tracking::Vector3D<double> voxDim = voxel->GetVoxelDimensions();
     //Tracking::Vector3D<double> voxCenter = voxel->GetVoxelCenter();
     double color = voxel->GetStandardDeviation();
