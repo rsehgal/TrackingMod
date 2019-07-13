@@ -193,6 +193,7 @@ Tomography::Files::instance()->Open("TrackSampledFitted.txt",Tomography::operati
 
 void B1RunAction::EndOfRunAction(const G4Run* run)
 {
+
   G4int nofEvents = run->GetNumberOfEvent();
   if (nofEvents == 0) return;
   
@@ -308,8 +309,12 @@ void B1RunAction::EndOfRunAction(const G4Run* run)
 
 */
 
-
-
+  std::cout <<"=========================================" << std::endl;
+  //std::cout << "Num of CRY events : " << Tomography::EventBreak::instance()->fNumOfTrigger << std::endl;
+  std::cout << "Num of Triggering Events : " << Tomography::EventBreak::instance()->fNumOfTrigger << std::endl;
+  std::cout << "Num of Reconstruction Events : " << Tomography::EventBreak::instance()->fEffEvNo << std::endl;
+  
+  std::cout <<"=========================================" << std::endl;
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
