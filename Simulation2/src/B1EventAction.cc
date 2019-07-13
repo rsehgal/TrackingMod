@@ -98,8 +98,16 @@ void B1EventAction::BeginOfEventAction(const G4Event*)
   //Settig topPlaneHit and bottomPlaneHit to false
   // if(effEvNo > 100)
   //   return;
-  if(Tomography::EventBreak::instance()->BreakSimulation())
+  if(Tomography::EventBreak::instance()->BreakSimulation()){
+     //G4RunManager::GetRunManager()->TerminateEventLoop();
+     //unsigned long long int numOfEvents = G4RunManager::GetRunManager()->GetNumberOfEventsToBeProcessed();
+     //std::cout << "SHACHI : numOfEvents before : " << numOfEvents << std::endl;
+     //G4RunManager::GetRunManager()->SetNumberOfEventsToBeProcessed(Tomography::EventBreak::instance()->fNumOfTrigger);
+     //numOfEvents = G4RunManager::GetRunManager()->GetNumberOfEventsToBeProcessed();
+     //std::cout << "SHACHI : numOfEvents after : " << numOfEvents << std::endl;
+     G4RunManager::GetRunManager()->AbortRun();
     return;
+  }
 
   topPlaneHit = false;
   bottomPlaneHit = false;
@@ -183,6 +191,8 @@ Tomography::Coordinates c;
 if(topPlaneHit && bottomPlaneHit) { // logic for two fold coincidence
   std::vector<Vector3D<double>> pixelCentreCoordVector;
   std::vector<Vector3D<double>> hitPointVector;
+
+  Tomography::EventBreak::instance()->fNumOfTrigger++;
 
 //HARDCODING BE CAREFULLLLLLLLLL............
 int numOfDetectors = Tomography::DetectorMapping::instance()->GetNumOfDetectors();

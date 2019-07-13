@@ -11,7 +11,7 @@
 #include <vector>
 #include <algorithm>
 #include <map>
-
+#include <iostream>
 namespace Tracking {
 
 typedef std::vector<unsigned int> HitsPerChannel_v; //Multihit information for channel
@@ -47,7 +47,9 @@ namespace Tomography{
 
  constexpr int minPointsInAVoxel = 10;
 
- static int effEvNo = 0;
+ static unsigned long long int effEvNo = 0;
+
+ static unsigned long long int numOfTrigger = 0;
 
  constexpr double confidenceInterval = 2.;
 
@@ -74,11 +76,18 @@ namespace Tomography{
             return fInstance;
         }
     }
-    static int fNumOfEvents ;
-    static int fEffEvNo ;
+    static unsigned long long int fNumOfEvents ;
+    static unsigned long long int fEffEvNo ;
+    static unsigned long long int fNumOfTrigger;
+
 
     static bool BreakSimulation(){
+#ifdef USE_TRIGGER
+	std::cout << "Ayush : Num of Triggers  : " << fNumOfTrigger << std::endl;
+	return fNumOfTrigger > fNumOfEvents;
+#else
         return fEffEvNo > fNumOfEvents ;
+#endif
     }
 
     static void SetMaxNumOfEvents(int numOfEvents){
