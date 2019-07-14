@@ -57,7 +57,8 @@ Voxel::Voxel(Tracking::Vector3D<double> pocaPt, int voxelNum, bool useEnclosingV
 	fVoxelNum = voxelNum;
 	Insert(pocaPt, voxelNum, useEnclosingVoxels);
 	fVisitedVoxelNumVector.push_back(fVoxelNum);
-	fVoxelCenter = Tomography::evolution::Voxelator::instance()->GetVoxelCenter(fVoxelNum);
+	bool valid = true;
+	fVoxelCenter = Tomography::evolution::Voxelator::instance()->GetVoxelCenter(fVoxelNum,valid);
 	fVoxelVector.push_back(this);
 	//std::cout<<" @@@@@  VoxelVectorSize :  " << fVoxelVector.size() << "   @@@@@@@" << std::endl;
 
