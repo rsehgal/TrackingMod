@@ -137,7 +137,8 @@ void MLEM::VoxelFinder(Tomography::Track trackIncoming,Tomography::Track trackOu
 			//voxelHitPt.SetZ(voxelHitPt.z() - epsilon);
 			//
 			int voxelNum = voxelator->GetVoxelNumber(voxelHitPt);
-			Tracking::Vector3D<double> voxelCenter = voxelator->GetVoxelCenter(voxelNum);
+			bool valid= true;
+			Tracking::Vector3D<double> voxelCenter = voxelator->GetVoxelCenter(voxelNum,valid);
 			std::cout << "Voxel Num : " << voxelNum << std::endl;
 			std::cout << "VoxelCenter : ";
 			voxelCenter.Print();
@@ -206,7 +207,8 @@ void MLEM::VoxelFinder(Tomography::Track trackIncoming,Tomography::Track trackOu
 				//voxelHitPt.SetZ(voxelHitPt.z() - epsilon);
 				//
 				int voxelNum = voxelator->GetVoxelNumber(voxelHitPt);
-				Tracking::Vector3D<double> voxelCenter = voxelator->GetVoxelCenter(voxelNum);
+				bool valid = true;
+				Tracking::Vector3D<double> voxelCenter = voxelator->GetVoxelCenter(voxelNum,valid);
 				std::cout << "Voxel Num : " << voxelNum << std::endl;
 				std::cout << "VoxelCenter : ";
 				voxelCenter.Print();
