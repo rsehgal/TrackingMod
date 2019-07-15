@@ -21,14 +21,6 @@
 
 int main(int argc, char *argv[]){
 	 TApplication *fApp = new TApplication("Test", NULL, NULL);
-	 double contours[3];
-	    contours[0] = 500;
-	    contours[1] = 700;
-	    contours[2] = 900;
-	    //
-
-	    //Int_t colors[10] = {kRed, kYellow, kGreen, kBlue, kMagenta,kOrange, kCyan,kPink,kAzure,kGray};
-	    gStyle->SetPalette(kRainBow);
 
 	 TCanvas c;
 	 c.Divide(2,2);
@@ -42,9 +34,15 @@ int main(int argc, char *argv[]){
 	}
 	std::string type = std::string(argv[1]);
 	int numOfParts = std::atoi(argv[2]);
-	double voxelSizeXY =  (double)100*cm/numOfParts; // 5*cm;//
-	double voxelSizeZ =  (double)100*cm/numOfParts; //5*cm;//
-	Tomography::evolution::Voxelator *voxelator = Tomography::evolution::Voxelator::Create(50*cm,50*cm,105.*cm,voxelSizeXY,voxelSizeXY,voxelSizeZ);
+
+	double voxelizedVolumeHalfX = 50.*cm;
+	double voxelizedVolumeHalfY = 50.*cm;
+	double voxelizedVolumeHalfZ = 74.*cm;
+
+	double voxelSizeXY =  2*voxelizedVolumeHalfX/numOfParts; // 5*cm;//
+	double voxelSizeZ =  2*voxelizedVolumeHalfZ/numOfParts; //5*cm;//
+	Tomography::evolution::Voxelator *voxelator = Tomography::evolution::Voxelator::Create(voxelizedVolumeHalfX,voxelizedVolumeHalfY,
+																						   voxelizedVolumeHalfZ,voxelSizeXY,voxelSizeXY,voxelSizeZ);
 	{
 		std::string fileToRead = "Track"+type+".txt";
 		std::string fileToWrite = "EventHelperTrack"+type+".txt";
@@ -67,8 +65,11 @@ int main(int argc, char *argv[]){
 
 		std::cout << "++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++" << std::endl;
 		TH2F *acceptanceHist1 = new TH2F("AcceptanceHistogram1","AcceptanceHistogram",nbinsx,startx,endx,nbinsy,starty,endy);
+		acceptanceHist1->SetStats(0);
 		TH2F *acceptanceHist2 = new TH2F("AcceptanceHistogram2","AcceptanceHistogram",nbinsx,startx,endx,nbinsy,starty,endy);
+		acceptanceHist2->SetStats(0);
 		TH2F *acceptanceHist3 = new TH2F("AcceptanceHistogram3","AcceptanceHistogram",nbinsx,startx,endx,nbinsy,starty,endy);
+		acceptanceHist3->SetStats(0);
 		double min = 0.;
 		double max = 1.;
 		acceptanceHist1->GetZaxis()->SetRangeUser(min, max);
@@ -119,21 +120,34 @@ int main(int argc, char *argv[]){
 			}
 		}
 
-		c.cd(1);
+		//c.cd(1);
+		{
+		TCanvas *c=new TCanvas();
 //		c_1->SetLogX();
 //		c_1->SetLogY();
 //		c_1->SetLogZ();
 		//acceptanceHist->SetContour(3,contours);
 		acceptanceHist1->Draw("colz");
 		acceptanceHist1->Draw("cont2 same");
+		c->SaveAs("Slice740.eps");
+		}
 
-		c.cd(2);
+
+		//c.cd(2);
+		{
+		TCanvas *c=new TCanvas();
 		acceptanceHist2->Draw("colz");
 		acceptanceHist2->Draw("cont2 same");
+		c->SaveAs("Slice-10.eps");
+		}
 
-		c.cd(3);
+		//c.cd(3);
+		{
+		TCanvas *c=new TCanvas();
 		acceptanceHist3->Draw("colz");
 		acceptanceHist3->Draw("cont2 same");
+		c->SaveAs("Slice-740.eps");
+		}
 
 
 		c.cd(4);
