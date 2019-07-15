@@ -54,12 +54,6 @@ int main(int argc, char *argv[]){
 		std::cout << "TotalCount in Voxels for Acceptance : " << Tomography::evolution::Voxelator::instance()->GetTotalVoxelCountForAcceptance() << std::endl;
 		std::cout << "===========================================================" << std::endl;
 
-//		Tomography::RunHelper* r = Tomography::RunHelper::instance(type);
-//		std::vector<Tracking::Vector3D<double>> pocaPtVector = r->GetPocaPtVector();
-//		std::cout << "Length of PocaVector : " << pocaPtVector.size() << std::endl;
-//		r->DetectorTrueAndFalsePositive();
-//		std::cout << "TruePositiveCount : " << r->GetTruePositivePocaPtCount() << std::endl;
-
 		Tomography::evolution::Voxelator *voxelator = Tomography::evolution::Voxelator::instance();
 		int nbinsx = voxelator->GetVoxelatorDim().x();
 		int nbinsy = voxelator->GetVoxelatorDim().y();
@@ -84,14 +78,6 @@ int main(int argc, char *argv[]){
 		auto minmax = std::minmax_element(eachVoxelCountForAcceptance.begin(), eachVoxelCountForAcceptance.end());
 		int max_element = *minmax.second;
 
-		/*for(auto& n : eachVoxelCountForAcceptance){
-			bool valid=true;
-			Tracking::Vector3D<double> voxelCenter = voxelator->GetVoxelCenter(n,valid);
-			std::cout <<"VoxelCenter : " ; voxelCenter.Print();
-			if(valid)
-				acceptanceHist->Fill(voxelCenter.x(),voxelCenter.y());
-		}*/
-
 		//Acceptance Histogram for top layer
 		//for (unsigned int i = 0 ; i < eachVoxelCountForAcceptance.size() ; i++) {
 		int numOfPixels = nbinsx*nbinsy;
@@ -109,29 +95,29 @@ int main(int argc, char *argv[]){
 
 		//Acceptance Histogram for middle layer
 		for (unsigned int i = (nbinsz/2)*numOfPixels ; i < (nbinsz/2 + 1)*numOfPixels ; i++) {
-					bool valid = true;
-					std::cout <<"eachVoxelCountForAcceptance[i] : " << eachVoxelCountForAcceptance[i] << std::endl;
-					if(eachVoxelCountForAcceptance[i] > 0){
-						Tracking::Vector3D<double> voxelCenter = voxelator->GetVoxelCenter(i, valid);
-						std::cout << "VoxelCenter : ";
-						voxelCenter.Print();
-						if (valid)
-							acceptanceHist2->Fill(voxelCenter.x(), voxelCenter.y(),(double)eachVoxelCountForAcceptance[i]/max_element);
-					}
+			bool valid = true;
+			std::cout <<"eachVoxelCountForAcceptance[i] : " << eachVoxelCountForAcceptance[i] << std::endl;
+			if(eachVoxelCountForAcceptance[i] > 0){
+				Tracking::Vector3D<double> voxelCenter = voxelator->GetVoxelCenter(i, valid);
+				std::cout << "VoxelCenter : ";
+				voxelCenter.Print();
+				if (valid)
+					acceptanceHist2->Fill(voxelCenter.x(), voxelCenter.y(),(double)eachVoxelCountForAcceptance[i]/max_element);
+			}
 		}
 
-		//Acceptance Histogram for middle layer
-				for (unsigned int i = 0 ; i < numOfPixels ; i++) {
-							bool valid = true;
-							std::cout <<"eachVoxelCountForAcceptance[i] : " << eachVoxelCountForAcceptance[i] << std::endl;
-							if(eachVoxelCountForAcceptance[i] > 0){
-								Tracking::Vector3D<double> voxelCenter = voxelator->GetVoxelCenter(i, valid);
-								std::cout << "VoxelCenter : ";
-								voxelCenter.Print();
-								if (valid)
-									acceptanceHist3->Fill(voxelCenter.x(), voxelCenter.y(),(double)eachVoxelCountForAcceptance[i]/max_element);
-							}
-				}
+		//Acceptance Histogram for Bottom layer
+		for (unsigned int i = 0 ; i < numOfPixels ; i++) {
+			bool valid = true;
+			std::cout <<"eachVoxelCountForAcceptance[i] : " << eachVoxelCountForAcceptance[i] << std::endl;
+			if(eachVoxelCountForAcceptance[i] > 0){
+				Tracking::Vector3D<double> voxelCenter = voxelator->GetVoxelCenter(i, valid);
+				std::cout << "VoxelCenter : ";
+						voxelCenter.Print();
+				if (valid)
+					acceptanceHist3->Fill(voxelCenter.x(), voxelCenter.y(),(double)eachVoxelCountForAcceptance[i]/max_element);
+			}
+		}
 
 		c.cd(1);
 //		c_1->SetLogX();
