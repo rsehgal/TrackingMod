@@ -21,7 +21,8 @@
 
 int main(int argc, char *argv[]){
 	 TApplication *fApp = new TApplication("Test", NULL, NULL);
-
+	 gStyle->SetPalette(kRainBow);
+	 gStyle->SetCanvasDefH(500); gStyle->SetCanvasDefW(500);
 	 TCanvas c;
 	 c.Divide(2,2);
 	if(argc == 1){
@@ -37,7 +38,7 @@ int main(int argc, char *argv[]){
 
 	double voxelizedVolumeHalfX = 50.*cm;
 	double voxelizedVolumeHalfY = 50.*cm;
-	double voxelizedVolumeHalfZ = 74.*cm;
+	double voxelizedVolumeHalfZ = 44.*cm;
 
 	double voxelSizeXY =  2*voxelizedVolumeHalfX/numOfParts; // 5*cm;//
 	double voxelSizeZ =  2*voxelizedVolumeHalfZ/numOfParts; //5*cm;//
@@ -64,11 +65,11 @@ int main(int argc, char *argv[]){
 		int endy = voxelizedVolumeDim.y()/2;
 
 		std::cout << "++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++" << std::endl;
-		TH2F *acceptanceHist1 = new TH2F("AcceptanceHistogram1","AcceptanceHistogram",nbinsx,startx,endx,nbinsy,starty,endy);
+		TH2F *acceptanceHist1 = new TH2F("AcceptanceHistogram1","",nbinsx,startx,endx,nbinsy,starty,endy);
 		acceptanceHist1->SetStats(0);
-		TH2F *acceptanceHist2 = new TH2F("AcceptanceHistogram2","AcceptanceHistogram",nbinsx,startx,endx,nbinsy,starty,endy);
+		TH2F *acceptanceHist2 = new TH2F("AcceptanceHistogram2","",nbinsx,startx,endx,nbinsy,starty,endy);
 		acceptanceHist2->SetStats(0);
-		TH2F *acceptanceHist3 = new TH2F("AcceptanceHistogram3","AcceptanceHistogram",nbinsx,startx,endx,nbinsy,starty,endy);
+		TH2F *acceptanceHist3 = new TH2F("AcceptanceHistogram3","",nbinsx,startx,endx,nbinsy,starty,endy);
 		acceptanceHist3->SetStats(0);
 		double min = 0.;
 		double max = 1.;
