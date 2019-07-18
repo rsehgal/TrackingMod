@@ -19,6 +19,7 @@ class Pixel {
 	Vec_t fRandomPoint;
 	double fPixelWidth;
 	double fHalfPixelWidth;
+
 public:
 	Pixel();
 	Pixel(Vec_t pixelCenter);
@@ -26,6 +27,7 @@ public:
 	Vec_t GetPixelCenter() const {return fPixelCenter;}
 	void GenerateRandom();
 	Vec_t GetRandomPoint() const {return fRandomPoint;}
+	unsigned int CalcPixelNumber() ;
 };
 
 } /* namespace Tomography */
