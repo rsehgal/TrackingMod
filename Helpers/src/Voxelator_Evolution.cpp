@@ -158,6 +158,24 @@ std::vector<Tracking::Vector3D<double>> Voxelator::GetFilteredPocaPtVector(std::
 		return filteredPocaVector;
 }
 
+std::vector<Voxel_V2*> Voxelator::GetFilteredVoxelVectorBasedOnWeightedCount(){
+	std::vector<Voxel_V2*> filteredVoxelVector;
+	int weightedCounter = 0;
+	for (int i = 0; i < fVoxelVector.size(); i++) {
+		//fVoxelVector[i]->CalcWeightedCount();
+		//std::cout <<"AyWeightedCount from Voxelator : " << fVoxelVector[i]->GetWeightedCount() << std::endl;
+		int weightedCount = fVoxelVector[i]->GetWeightedCount();
+		//if (fVoxelVector[i]->GetWeightedCount() > 0) {
+		if(weightedCount > 0){
+			weightedCounter++;
+			filteredVoxelVector.push_back(fVoxelVector[i]);
+
+		}
+	}
+	std::cout << " @@@@@@@@@@ Weighted Counter @@@@@@@@@@@@" << std::endl << "VoxelVector Size : " << fVoxelVector.size() << ":   RAMANN        " << weightedCounter <<std::endl << "@@@@@@@@@@@@@@@@@@@@@@@@@@@@" << std::endl;
+	return filteredVoxelVector;
+
+}
 
 /*std::vector<Tracking::Vector3D<double>> Voxelator::GetFilteredPocaPtVectorUsingCleanedVoxel(){
 	std::vector<Voxel_V2*> filteredVoxelVector = GetFilteredVoxelVectorUsingCleanVoxel();

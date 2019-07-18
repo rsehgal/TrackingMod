@@ -175,6 +175,9 @@ public:
 
   std::vector<unsigned int> GetFilteredTrackIndexVector();
 
+  //Function to select the voxel based on the fWeightedCount of the Voxel
+  std::vector<Voxel_V2*> GetFilteredVoxelVectorBasedOnWeightedCount();
+
 
 
 
