@@ -23,7 +23,7 @@ int main(){
 	v1.push_back(Vec_t(363.92977063134026139, -78.804298120518140536, -740));
 	v1.push_back(Vec_t(382.96624272932518807, -143.94733838096792056, -1040));
 	t.Process("ABCD",v1);
-	//t.Process("ABCD",v1);
+	t.Process("ABCDE",v1);
 
 	t.Print();
 
