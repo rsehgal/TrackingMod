@@ -9,6 +9,7 @@
 #define HELPERS_INC_TRACKPREDICTORV2_H_
 #include "HelperStructs.h"
 #include "sha256.h"
+#include "PixelCombinationChecker.h"
 
 namespace Tomography {
 
@@ -16,11 +17,15 @@ class TrackPredictorV2 {
 	std::string fPixelCombinationSha;
     CombData fCombData;
     SHA256 sha256;
+    PixelCombinationChecker fPixelCombChecker;
+    TreeNode *fRoot;
+
 public:
 	TrackPredictorV2();
 	virtual ~TrackPredictorV2();
 	void CreateInsertionData(HitPointVector hitPtVector);
 	void Process(std::string combString,HitPointVector hitPtVector);
+	void Print(){fPixelCombChecker.InOrder(fRoot);}
 };
 
 } /* namespace Tomography */

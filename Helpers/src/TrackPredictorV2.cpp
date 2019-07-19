@@ -16,6 +16,7 @@ namespace Tomography {
 
 TrackPredictorV2::TrackPredictorV2() {
 	// TODO Auto-generated constructor stub
+	fRoot = NULL;
 
 }
 
@@ -30,12 +31,15 @@ void TrackPredictorV2::Process(std::string combString,HitPointVector hitPtVector
 	CreateInsertionData(hitPtVector);
 
 
+
 }
 
 void TrackPredictorV2::CreateInsertionData(HitPointVector hitPtVector){
 	//TODO : Create Track to be inserted
 	Track tr(hitPtVector[0],hitPtVector[hitPtVector.size()-1]);
 	fCombData=CombData(tr,hitPtVector);
+	PixelCombination pixelComb(fPixelCombinationSha,fCombData);
+	fPixelCombChecker.Insert(fRoot,pixelComb);
 }
 
 
