@@ -21,7 +21,8 @@ class PixelCombinationChecker {
 public:
 	PixelCombinationChecker();
 
-	TreeNode* Insert(TreeNode *node, PixelCombination data);
+	//TreeNode* Insert(TreeNode *node, PixelCombination data);
+	TreeNode* Insert(TreeNode *node, PixelCombination *data);
 	TreeNode* Locate(TreeNode *node, PixelCombination data);
 	void InOrder(TreeNode *node);
 

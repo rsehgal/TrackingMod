@@ -10,13 +10,17 @@
 namespace Tomography {
 
 
+/*
 TreeNode* PixelCombinationChecker::Insert(TreeNode *node, PixelCombination data)
 {
+	std::cout << " Node : " << node << std::endl;
 	if (node == NULL)
 	{
+		std::cout << "Creating New Node ......" << std::endl;
 		TreeNode *temp = new TreeNode(data);
 
 		temp->sleft = temp->sright = NULL;
+		std::cout <<"Returning the created node.........." << std::endl;
 		return temp;
 	}
 
@@ -29,14 +33,51 @@ TreeNode* PixelCombinationChecker::Insert(TreeNode *node, PixelCombination data)
 
 	if (data.sPixelCombinationSha > node->sPixComb.sPixelCombinationSha)
 	  {
+		std::cout << "Going to Right Subtree......." << std::endl;
 		node->sright = Insert(node->sright, data);
 	  }
 
 	    else if (data.sPixelCombinationSha < node->sPixComb.sPixelCombinationSha)
 	   {
+	    	std::cout << "Going to Left Subtree......." << std::endl;
 	      	node->sleft = Insert(node->sleft, data);
 	   }
 }
+*/
+
+TreeNode* PixelCombinationChecker::Insert(TreeNode *node, PixelCombination *data)
+{
+	//std::cout << " Node : " << node << std::endl;
+	if (node == NULL)
+	{
+		//std::cout << "Creating New Node ......" << std::endl;
+		TreeNode *temp = new TreeNode(data);
+
+		temp->sleft = temp->sright = NULL;
+		//std::cout <<"Returning the created node.........." << std::endl;
+		return temp;
+	}
+
+	if (data->sPixelCombinationSha == (node->sPixComb->sPixelCombinationSha))
+	{
+		node->counter++;
+		node->sCombDataVector.push_back(node->sPixComb->sCombData);
+		return node;
+	}
+
+	if (data->sPixelCombinationSha > node->sPixComb->sPixelCombinationSha)
+	  {
+		//std::cout << "Going to Right Subtree......." << std::endl;
+		node->sright = Insert(node->sright, data);
+	  }
+
+	    else if (data->sPixelCombinationSha < node->sPixComb->sPixelCombinationSha)
+	   {
+	    	//std::cout << "Going to Left Subtree......." << std::endl;
+	      	node->sleft = Insert(node->sleft, data);
+	   }
+}
+
 
 /*
 
@@ -75,7 +116,7 @@ void PixelCombinationChecker::InOrder(TreeNode *node)
     }
     InOrder(node->sleft);
 
-    std::cout<<node->sPixComb.sPixelCombinationSha<<" " <<std::endl;
+    std::cout<<node->sPixComb->sPixelCombinationSha<<" " <<std::endl;
 
     InOrder(node->sright);
 }

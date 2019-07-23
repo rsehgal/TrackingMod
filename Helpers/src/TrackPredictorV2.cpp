@@ -39,14 +39,17 @@ void TrackPredictorV2::Process(std::string combString,HitPointVector hitPtVector
 void TrackPredictorV2::CreateInsertionData(HitPointVector hitPtVector){
 	//TODO : Create Track to be inserted
 	Track tr(hitPtVector[0],hitPtVector[hitPtVector.size()-1]);
-	fCombData=CombData(tr,hitPtVector);
-	PixelCombination *pixelComb = new PixelCombination(fPixelCombinationSha,fCombData);
+	//fCombData = new CombData(tr,hitPtVector);
+	//PixelCombination *pixelComb = new PixelCombination(fPixelCombinationSha,fCombData);
+	PixelCombination *pixelComb = new PixelCombination(fPixelCombinationSha,new CombData(tr,hitPtVector));
+	//std::cout << "RooSet : " << fRootSet << std::endl;
 	if(fRootSet)
-		fPixelCombChecker.Insert(fRoot,*pixelComb);
+		TreeNode *temp = fPixelCombChecker.Insert(fRoot,pixelComb);
 	else{
-		fRoot = fPixelCombChecker.Insert(fRoot,*pixelComb);
+		fRoot = fPixelCombChecker.Insert(fRoot,pixelComb);
 		fRootSet = true;
 	}
+	//delete pixelComb;
 }
 
 

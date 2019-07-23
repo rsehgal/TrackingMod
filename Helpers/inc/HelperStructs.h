@@ -32,9 +32,9 @@ struct CombData{
 
 struct PixelCombination{
 	std::string sPixelCombinationSha;
-	CombData sCombData;
+	CombData *sCombData;
 	PixelCombination(){}
-	PixelCombination(std::string pixCombSha,CombData combData){
+	PixelCombination(std::string pixCombSha,CombData *combData){
 		sPixelCombinationSha = pixCombSha;
 		sCombData = combData;
 	}
@@ -47,15 +47,20 @@ struct TreeNode{
 	int counter;
 	TreeNode *sleft;
 	TreeNode *sright;
-	PixelCombination sPixComb;
+	PixelCombination *sPixComb;
 	TreeNode(){
 		counter = 0;
 	}
 
-	TreeNode(PixelCombination pixComb){
+	/*TreeNode(PixelCombination pixComb){
 		sPixComb = pixComb;
-	}
-	std::vector<CombData> sCombDataVector;
+	}*/
+
+	TreeNode(PixelCombination *pixComb){
+			sPixComb = pixComb;
+		}
+
+	std::vector<CombData*> sCombDataVector;
 };
 }
 

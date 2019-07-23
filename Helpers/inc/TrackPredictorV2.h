@@ -16,7 +16,7 @@ namespace Tomography {
 class TrackPredictorV2 {
 	static bool fRootSet;
 	std::string fPixelCombinationSha;
-    CombData fCombData;
+    //CombData *fCombData;
     SHA256 sha256;
     PixelCombinationChecker fPixelCombChecker;
     TreeNode *fRoot;
