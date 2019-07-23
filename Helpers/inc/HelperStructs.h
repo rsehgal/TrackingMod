@@ -44,7 +44,8 @@ struct PixelCombination{
 };
 
 struct TreeNode{
-	int counter;
+	static unsigned int sNodeCounter;
+	unsigned int counter;
 	TreeNode *sleft;
 	TreeNode *sright;
 	PixelCombination *sPixComb;
@@ -57,11 +58,15 @@ struct TreeNode{
 	}*/
 
 	TreeNode(PixelCombination *pixComb){
+			counter=0;
 			sPixComb = pixComb;
+			sNodeCounter++;
 		}
 
 	std::vector<CombData*> sCombDataVector;
 };
+
+
 }
 
 

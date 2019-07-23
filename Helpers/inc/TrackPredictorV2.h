@@ -27,6 +27,8 @@ public:
 	void CreateInsertionData(HitPointVector hitPtVector);
 	void Process(std::string combString,HitPointVector hitPtVector);
 	void Print(){fPixelCombChecker.InOrder(fRoot);}
+	unsigned int GetTotalNumOfCombinations();
+	unsigned int GetTotalNumOfRegisteredTracks();
 };
 
 } /* namespace Tomography */

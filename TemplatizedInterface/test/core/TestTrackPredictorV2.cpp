@@ -30,6 +30,13 @@ int main(){
 	t.Process("ABC",v1);
 	t.Process("ABC",v1);
 
+	std::cout <<"Total Num of Combination : " << t.GetTotalNumOfCombinations() << std::endl;
+	    std::cout <<"Total Num of Registered Tracks : " << t.GetTotalNumOfRegisteredTracks() << std::endl;
+	/*	for(unsigned int i = 0 ; i < t.GetTotalNumOfCombinations() ; i++){
+			std::cout << "Combination ID : " << i <<" : Combination Name : " << t.GetCombinationName(i)
+					  << "  : Num of Tracks in Combination : " << t.GetNumOfTracks(i) <<  std::endl;*/
+	//}
+
 	t.Print();
 
 }

@@ -9,6 +9,7 @@
 
 namespace Tomography {
 
+unsigned int PixelCombinationChecker::fTotalNumOfRegTracks = 0;
 
 /*
 TreeNode* PixelCombinationChecker::Insert(TreeNode *node, PixelCombination data)
@@ -52,6 +53,7 @@ TreeNode* PixelCombinationChecker::Insert(TreeNode *node, PixelCombination *data
 	{
 		//std::cout << "Creating New Node ......" << std::endl;
 		TreeNode *temp = new TreeNode(data);
+		temp->counter++;
 
 		temp->sleft = temp->sright = NULL;
 		//std::cout <<"Returning the created node.........." << std::endl;
@@ -107,6 +109,18 @@ TreeNode* PixelCombinationChecker::Locate(TreeNode *node, PixelCombination data)
 
 
 */
+
+void PixelCombinationChecker::CalcTotalNumOfRegisteredTracks(TreeNode *node){
+	if(node==NULL)
+	{
+	   return;
+	}
+	CalcTotalNumOfRegisteredTracks(node->sleft);
+	fTotalNumOfRegTracks += node->counter;
+	CalcTotalNumOfRegisteredTracks(node->sright);
+
+	//return fTotalNumOfRegTracks;
+}
 
 void PixelCombinationChecker::InOrder(TreeNode *node)
 {

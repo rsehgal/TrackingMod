@@ -36,6 +36,15 @@ void TrackPredictorV2::Process(std::string combString,HitPointVector hitPtVector
 
 }
 
+unsigned int TrackPredictorV2::GetTotalNumOfCombinations(){
+	return TreeNode::sNodeCounter;
+}
+
+unsigned int TrackPredictorV2::GetTotalNumOfRegisteredTracks(){
+	fPixelCombChecker.CalcTotalNumOfRegisteredTracks(fRoot);
+	return PixelCombinationChecker::fTotalNumOfRegTracks;
+}
+
 void TrackPredictorV2::CreateInsertionData(HitPointVector hitPtVector){
 	//TODO : Create Track to be inserted
 	Track tr(hitPtVector[0],hitPtVector[hitPtVector.size()-1]);

@@ -18,13 +18,17 @@ namespace Tomography {
 
 class PixelCombinationChecker {
 	//TreeNode *fRoot;
+
 public:
+	static unsigned int fTotalNumOfRegTracks;
+
 	PixelCombinationChecker();
 
 	//TreeNode* Insert(TreeNode *node, PixelCombination data);
 	TreeNode* Insert(TreeNode *node, PixelCombination *data);
 	TreeNode* Locate(TreeNode *node, PixelCombination data);
 	void InOrder(TreeNode *node);
+	void CalcTotalNumOfRegisteredTracks(TreeNode *node);
 
 	virtual ~PixelCombinationChecker();
 
