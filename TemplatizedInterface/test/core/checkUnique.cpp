@@ -20,7 +20,9 @@
 using namespace std ;
 
 int globalCounter=0;
-///////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+std::vector<int> result;
+
 
 struct TestStruct{
 	string data;
@@ -46,7 +48,7 @@ struct treeNode
 
     //std::vector of string for this node
     std::vector<std::string> strVector;
-  
+    
 
 };
 
@@ -140,21 +142,27 @@ void Preorder(treeNode *node)
 
 void PrintDuplicateCount(treeNode *node)
 {
-   
+    
     
     if(node==NULL)
     {
         return;
     }
 
-    /*else{
-	std::cout <<"String  : " << node->data <<" : Count : " << node->counter << std::endl;
-    }
-    */
+    
     PrintDuplicateCount(node->left);
-    //cout<<node->t.data<<" " <<endl;
-    globalCounter += node->counter;
-    std::cout <<"String  : " << node->data <<" : Count : " << node->counter << std::endl;
+   
+
+     globalCounter += node->counter;
+     
+     std::cout <<"String  : " << node->data <<" : Count : " << node->counter << std::endl;
+    
+    result.push_back(node->counter);
+    
+    
+    
+
+
     if(node->strVector.size() > 1){
     std::cout <<"============ Raman ============================"<<std::endl;
     for(auto &str : node->strVector){
@@ -164,6 +172,8 @@ void PrintDuplicateCount(treeNode *node)
     }
     
     PrintDuplicateCount(node->right);
+    
+    
 }
 
 
@@ -176,7 +186,7 @@ void PrintDuplicateCount(treeNode *node)
 
 int main()
 {
-  
+   std::ofstream rfile("newfile.txt");
    std::string line; 
    std::string key;
    int count=0;
@@ -184,8 +194,8 @@ int main()
    string ch; 
    treeNode *root = NULL,*temp;
 
-   std::ifstream sfile("shacode.txt");
-  
+   std::ifstream sfile("shacodeNew.txt");
+   
    std::vector<std::string> arr;
 
    			if(sfile)
@@ -208,16 +218,16 @@ int main()
 				sfile.close();
 
 			
-				sfile.open("shacode.txt");
 				
+
 
 				std::cout <<"Array size  : " << arr.size() << std::endl;
 
 
-				root= Insert(root,arr[0]);	
+				root= Insert(root,arr[0]);
 				
 
-				for (int i = 1; i < arr.size(); i++) 
+				for (int i = 1; i < arr.size(); i++)
 				{
          			  
             
@@ -234,11 +244,22 @@ int main()
       //cout<<" The Number of duplicates : "<<counter<<endl; 
     cout<<"\n Elements in BST are:" <<endl;
     //Preorder(root);
+
     PrintDuplicateCount(root);
     cout<<" The Number of duplicates : "<< globalCounter<<endl; 
-    
-            				
-           
+/*for(int i = 0; i < result.size(); i++)
+    {
+        std::cout << result[i] <<std::endl;
+    }    
+
+for(int i = 0; i < result.size(); i++)
+    {
+        rfile << result[i] <<endl;
+        
+    }   */
+
+
+    rfile.close();       
     return 0;
 }
 
