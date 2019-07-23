@@ -10,7 +10,7 @@
 #include <time.h>
 #include <chrono>
 
-
+using namespace std::chrono;
 
 namespace Tomography {
 
@@ -27,10 +27,14 @@ TrackPredictorV2::~TrackPredictorV2() {
 }
 
 //Function to be used
-void TrackPredictorV2::Process(std::string combString,HitPointVector hitPtVector){
+unsigned int TrackPredictorV2::Process(std::string combString,HitPointVector hitPtVector){
 
 	fPixelCombinationSha = sha256(combString);
+	auto start = high_resolution_clock::now();
 	CreateInsertionData(hitPtVector);
+	auto stop = high_resolution_clock::now();
+    auto duration = duration_cast<milliseconds>(stop - start);
+    return duration.count();
 
 
 

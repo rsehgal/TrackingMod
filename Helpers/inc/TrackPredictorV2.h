@@ -25,7 +25,7 @@ public:
 	TrackPredictorV2();
 	virtual ~TrackPredictorV2();
 	void CreateInsertionData(HitPointVector hitPtVector);
-	void Process(std::string combString,HitPointVector hitPtVector);
+	unsigned int Process(std::string combString,HitPointVector hitPtVector);
 	void Print(){fPixelCombChecker.InOrder(fRoot);}
 	unsigned int GetTotalNumOfCombinations();
 	unsigned int GetTotalNumOfRegisteredTracks();
