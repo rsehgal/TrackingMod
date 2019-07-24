@@ -241,22 +241,26 @@ int main()
 	                                          }
 				}
 
-      //cout<<" The Number of duplicates : "<<counter<<endl; 
-    cout<<"\n Elements in BST are:" <<endl;
+     //cout<<" The Number of duplicates : "<<counter<<endl;
+    //cout<<"\n Elements in BST are:" <<endl;
     //Preorder(root);
 
     PrintDuplicateCount(root);
     cout<<" The Number of duplicates : "<< globalCounter<<endl; 
-/*for(int i = 0; i < result.size(); i++)
+
+    /*for(int i = 0; i < result.size(); i++)
     {
         std::cout << result[i] <<std::endl;
     }    
+*/
+
+
 
 for(int i = 0; i < result.size(); i++)
     {
         rfile << result[i] <<endl;
         
-    }   */
+    }
 
 
     rfile.close();       
