@@ -46,9 +46,9 @@ int main()
 
        using std::string;
        using std::to_string;
-        std::ifstream infile("ActualHitAndPixelCenter1.txt");
+        std::ifstream infile("ActualHitAndPixelCenter.txt");
         double x1=0.,y1=0.,z1=0.,x2=0.,y2=0.,z2=0.;
-        Tomography::DetectorMapping *detectorMap = Tomography::DetectorMapping::create("testMapping1.txt");
+        Tomography::DetectorMapping *detectorMap = Tomography::DetectorMapping::create("testMapping.txt");
   	int numOfRpcs = detectorMap->GetNumOfDetectors("GLASS");
 	std::vector<std::string> detNamesVector = detectorMap->GetDetectorNamesVector("GLASS");
 	std::cout <<"=======================================================" << std::endl;
