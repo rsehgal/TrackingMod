@@ -45,7 +45,7 @@ int main(){
 			if(i==0){
 				str = detNamesVector[i]+"_"+c.GetStripNumXYZString(hitPt);
 			}else{
-				if(i==2)
+				if(i< (numOfRpcs/2))
 				  str = "_"+detNamesVector[i]+"_"+c.GetStripNumXYZString(hitPt);
 			}
 			evString += str;
@@ -103,7 +103,7 @@ int main(){
 				if(i==0){
 					str = detNamesVector[i]+"_"+c.GetStripNumXYZString(hitPt);
 				}else{
-					if(i==2)
+					if(i< (numOfRpcs/2))
 					  str = "_"+detNamesVector[i]+"_"+c.GetStripNumXYZString(hitPt);
 				}
 				evString += str;
