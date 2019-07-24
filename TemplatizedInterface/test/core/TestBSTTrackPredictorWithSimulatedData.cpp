@@ -68,6 +68,8 @@ int main(){
 
 	}
 
+	infile.close();
+
 	std::cout <<"***************************************************************"<<std::endl;
 	unsigned int totalComb = t.GetTotalNumOfCombinations();
 	std::cout <<"Total Num of Combination : " << totalComb << std::endl;
@@ -83,8 +85,35 @@ int main(){
 	                                     << "  : Num of Tracks in Combination : " << t.GetNumOfTracks(i) <<  std::endl;
 	}*/
 
+	std::cout << std::endl << "===================== Testing Locate function ====================" << std::endl;
 	std::cout << "Trying to locate a new node for Sampling...." << std::endl;
 	std::cout << "Node Address : " << t.Locate("ABCD") << std::endl;
+	std::cout <<"Address of ROOT : " << t.GetRoot() << std::endl;
+
+#if(1)
+	std::ifstream testInfile("ActualHitAndPixelCenterTest.txt");
+	while(!testInfile.eof()){
+			std::string evString="";
+			std::vector< Vector3D<double> > vectOfVector3D;
+
+			for(int i=0; i<numOfRpcs;i++){
+				std::string str = "" ;
+				testInfile >> x1 >> y1 >> z1 >> x2 >> y2 >> z2;
+				Vec_t hitPt(x1,y1,z1);
+				if(i==0){
+					str = detNamesVector[i]+"_"+c.GetStripNumXYZString(hitPt);
+				}else{
+					if(i==2)
+					  str = "_"+detNamesVector[i]+"_"+c.GetStripNumXYZString(hitPt);
+				}
+				evString += str;
+			}
+			std::cout << "TEst EvString : " << evString << std::endl;
+			std::cout << "Search Location Address : " << t.Locate(evString) << std::endl;
+
+		}
+	testInfile.close();
+#endif
 
 	return 0;
 }

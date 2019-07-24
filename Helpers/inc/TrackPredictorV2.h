@@ -30,6 +30,7 @@ public:
 	unsigned int GetTotalNumOfCombinations();
 	unsigned int GetTotalNumOfRegisteredTracks();
 	TreeNode* Locate(std::string combString);
+	TreeNode* GetRoot()const{return fRoot;}
 };
 
 } /* namespace Tomography */

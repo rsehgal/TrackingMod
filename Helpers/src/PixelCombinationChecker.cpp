@@ -61,9 +61,10 @@ TreeNode* PixelCombinationChecker::Insert(TreeNode *node, PixelCombination *data
 			return temp;
 		}
 	}
-	/*else{
-		return NULL;
-	}*/
+	else{
+		if(node==NULL)
+			return NULL;
+	}
 
 	TreeNode *returnPointer = NULL;
 
@@ -83,13 +84,19 @@ TreeNode* PixelCombinationChecker::Insert(TreeNode *node, PixelCombination *data
 	if (data->sPixelCombinationSha > node->sPixComb->sPixelCombinationSha)
 	  {
 		//std::cout << "Going to Right Subtree......." << std::endl;
-		node->sright = Insert(node->sright, data);
+		if(insert)
+			node->sright = Insert(node->sright, data, insert);
+		else
+			return Insert(node->sright, data, insert);
 	  }
 
 	    else if (data->sPixelCombinationSha < node->sPixComb->sPixelCombinationSha)
 	   {
 	    	//std::cout << "Going to Left Subtree......." << std::endl;
-	      	node->sleft = Insert(node->sleft, data);
+	    	if(insert)
+	    		node->sleft = Insert(node->sleft, data, insert);
+	    	else
+	    		return Insert(node->sleft, data, insert);
 	   }
 
 	return node;
@@ -97,7 +104,8 @@ TreeNode* PixelCombinationChecker::Insert(TreeNode *node, PixelCombination *data
 }
 
 TreeNode* PixelCombinationChecker::Locate(TreeNode *node, std::string combStringSha){
-	return Insert(node,new PixelCombination(combStringSha,new CombData()),false);
+	//return Insert(node,new PixelCombination(combStringSha,new CombData()),false);
+	return Insert(node,new PixelCombination(combStringSha,NULL),false);
 }
 
 /*
