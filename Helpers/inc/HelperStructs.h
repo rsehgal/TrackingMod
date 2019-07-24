@@ -60,7 +60,7 @@ struct TreeNode{
 	TreeNode(PixelCombination *pixComb){
 			counter=0;
 			sPixComb = pixComb;
-			sNodeCounter++;
+			//sNodeCounter++;
 		}
 
 	std::vector<CombData*> sCombDataVector;

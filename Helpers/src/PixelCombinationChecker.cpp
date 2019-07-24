@@ -46,25 +46,38 @@ TreeNode* PixelCombinationChecker::Insert(TreeNode *node, PixelCombination data)
 }
 */
 
-TreeNode* PixelCombinationChecker::Insert(TreeNode *node, PixelCombination *data)
+TreeNode* PixelCombinationChecker::Insert(TreeNode *node, PixelCombination *data, bool insert)
 {
 	//std::cout << " Node : " << node << std::endl;
-	if (node == NULL)
-	{
-		//std::cout << "Creating New Node ......" << std::endl;
-		TreeNode *temp = new TreeNode(data);
-		temp->counter++;
+	if (insert) {
+		if (node == NULL) {
+			//std::cout << "Creating New Node ......" << std::endl;
+			TreeNode *temp = new TreeNode(data);
+			temp->counter++;
+			TreeNode::sNodeCounter++;
 
-		temp->sleft = temp->sright = NULL;
-		//std::cout <<"Returning the created node.........." << std::endl;
-		return temp;
+			temp->sleft = temp->sright = NULL;
+			//std::cout <<"Returning the created node.........." << std::endl;
+			return temp;
+		}
 	}
+	/*else{
+		return NULL;
+	}*/
+
+	TreeNode *returnPointer = NULL;
 
 	if (data->sPixelCombinationSha == (node->sPixComb->sPixelCombinationSha))
 	{
+		returnPointer = node;
+		std::cout << "Duplicate found......" << std::endl;
 		node->counter++;
-		node->sCombDataVector.push_back(node->sPixComb->sCombData);
+
+		if(insert)
+			node->sCombDataVector.push_back(node->sPixComb->sCombData);
+
 		return node;
+		//return returnPointer;
 	}
 
 	if (data->sPixelCombinationSha > node->sPixComb->sPixelCombinationSha)
@@ -78,8 +91,14 @@ TreeNode* PixelCombinationChecker::Insert(TreeNode *node, PixelCombination *data
 	    	//std::cout << "Going to Left Subtree......." << std::endl;
 	      	node->sleft = Insert(node->sleft, data);
 	   }
+
+	return node;
+	//return returnPointer;
 }
 
+TreeNode* PixelCombinationChecker::Locate(TreeNode *node, std::string combStringSha){
+	return Insert(node,new PixelCombination(combStringSha,new CombData()),false);
+}
 
 /*
 
@@ -105,10 +124,8 @@ TreeNode* PixelCombinationChecker::Locate(TreeNode *node, PixelCombination data)
         return node;
     }
 }
-
-
-
 */
+
 
 void PixelCombinationChecker::CalcTotalNumOfRegisteredTracks(TreeNode *node){
 	if(node==NULL)

@@ -45,11 +45,12 @@ int main(){
 			if(i==0){
 				str = detNamesVector[i]+"_"+c.GetStripNumXYZString(hitPt);
 			}else{
-				str = "_"+detNamesVector[i]+"_"+c.GetStripNumXYZString(hitPt);
+				if(i==2)
+				  str = "_"+detNamesVector[i]+"_"+c.GetStripNumXYZString(hitPt);
 			}
 			evString += str;
-
 		}
+		std::cout << "EvString : " << evString << std::endl;
 		timeForNEvents += t.Process(evString,vectOfVector3D);
 		superVect.push_back(vectOfVector3D);
 		//std::cout << "Event string of event id : " << evId <<" : " << evString << std::endl;
@@ -81,6 +82,9 @@ int main(){
 		std::cout << "Combination ID : " << i <<" : Combination Name : " << t.GetCombinationName(i)
 	                                     << "  : Num of Tracks in Combination : " << t.GetNumOfTracks(i) <<  std::endl;
 	}*/
+
+	std::cout << "Trying to locate a new node for Sampling...." << std::endl;
+	std::cout << "Node Address : " << t.Locate("ABCD") << std::endl;
 
 	return 0;
 }

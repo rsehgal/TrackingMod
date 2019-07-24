@@ -29,6 +29,7 @@ public:
 	void Print(){fPixelCombChecker.InOrder(fRoot);}
 	unsigned int GetTotalNumOfCombinations();
 	unsigned int GetTotalNumOfRegisteredTracks();
+	TreeNode* Locate(std::string combString);
 };
 
 } /* namespace Tomography */

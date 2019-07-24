@@ -25,10 +25,11 @@ public:
 	PixelCombinationChecker();
 
 	//TreeNode* Insert(TreeNode *node, PixelCombination data);
-	TreeNode* Insert(TreeNode *node, PixelCombination *data);
-	TreeNode* Locate(TreeNode *node, PixelCombination data);
+	TreeNode* Insert(TreeNode *node, PixelCombination *data, bool insert=true);
+	//TreeNode* Locate(TreeNode *node, PixelCombination data);
+	TreeNode* Locate(TreeNode *node, std::string combStringSha);
 	void InOrder(TreeNode *node);
-	void CalcTotalNumOfRegisteredTracks(TreeNode *node);
+	static void CalcTotalNumOfRegisteredTracks(TreeNode *node);
 
 	virtual ~PixelCombinationChecker();
 

@@ -26,8 +26,13 @@ TrackPredictorV2::~TrackPredictorV2() {
 	// TODO Auto-generated destructor stub
 }
 
+TreeNode* TrackPredictorV2::Locate(std::string combString){
+	fPixelCombinationSha = sha256(combString);
+	return fPixelCombChecker.Locate(fRoot,fPixelCombinationSha);
+}
 //Function to be used
 unsigned int TrackPredictorV2::Process(std::string combString,HitPointVector hitPtVector){
+
 
 	fPixelCombinationSha = sha256(combString);
 	auto start = high_resolution_clock::now();
@@ -45,16 +50,15 @@ unsigned int TrackPredictorV2::GetTotalNumOfCombinations(){
 }
 
 unsigned int TrackPredictorV2::GetTotalNumOfRegisteredTracks(){
-	fPixelCombChecker.CalcTotalNumOfRegisteredTracks(fRoot);
+	//fPixelCombChecker.CalcTotalNumOfRegisteredTracks(fRoot);
+	PixelCombinationChecker::CalcTotalNumOfRegisteredTracks(fRoot);
 	return PixelCombinationChecker::fTotalNumOfRegTracks;
 }
 
 void TrackPredictorV2::CreateInsertionData(HitPointVector hitPtVector){
 	//TODO : Create Track to be inserted
 	Track tr(hitPtVector[0],hitPtVector[hitPtVector.size()-1]);
-	//fCombData = new CombData(tr,hitPtVector);
-	//PixelCombination *pixelComb = new PixelCombination(fPixelCombinationSha,fCombData);
-	PixelCombination *pixelComb = new PixelCombination(fPixelCombinationSha,new CombData(tr,hitPtVector));
+	PixelCombination *pixelComb = new PixelCombination(fPixelCombinationSha,(new CombData(tr,hitPtVector)));
 	//std::cout << "RooSet : " << fRootSet << std::endl;
 	if(fRootSet)
 		TreeNode *temp = fPixelCombChecker.Insert(fRoot,pixelComb);
@@ -62,7 +66,7 @@ void TrackPredictorV2::CreateInsertionData(HitPointVector hitPtVector){
 		fRoot = fPixelCombChecker.Insert(fRoot,pixelComb);
 		fRootSet = true;
 	}
-	//delete pixelComb;
+
 }
 
 
