@@ -38,6 +38,11 @@ private:
   TH1F *fVoxelsIn1D;
   TH1F *fVoxelsIn1DCount;
 
+  TH1F *fWeightedCountHist;
+
+  //Histogram of Normlaized Weighted counts
+  //TH1F* fNormalizedWeightedHist;
+
   //Some more histogram to that represent SD and RL for each voxel
   TH1F *fSDInVoxels;
   TH1F *fRLInVoxels;
@@ -86,6 +91,8 @@ private:
 
   //Data member to store the predicted threshold.
   int fThresholdVal;
+
+  double fWeightedThresholdVal;
 
 
 public:
@@ -177,6 +184,17 @@ public:
 
   //Function to select the voxel based on the fWeightedCount of the Voxel
   std::vector<Voxel_V2*> GetFilteredVoxelVectorBasedOnWeightedCount();
+  std::vector<Voxel_V2*> GetFilteredVoxelVectorBasedOnWeightedCount(TH1F *hist);
+
+  //Function to calculate the NormalizedCount in a Voxel
+  void NormalizeEachVoxelCount();
+  //Function to select the voxel based on the fNormalizedCount of the Voxel
+  std::vector<Voxel_V2*> GetFilteredVoxelVectorBasedOnNormalizedCount();
+
+  //Function to calculate NormalizedScattering in each voxel
+  void NormalizeEachVoxelScatteringValue();
+  //Function to select the voxel based on the fNormalizedCount of the Voxel
+  std::vector<Voxel_V2*> GetFilteredVoxelVectorBasedOnNormalizedScatteringValue();
 
 
 
@@ -210,6 +228,10 @@ public:
   //Member function to predict the threshold
   void PredictThreshold();
   int GetThresholdVal() const {return fThresholdVal;}
+
+  //Member function to predict the threshold for Weighted Count
+  void PredictWeightedThreshold(TH1F *hist);
+  double GetWeightedThresholdVal() const {return fWeightedThresholdVal;}
 
 
 

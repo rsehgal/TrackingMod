@@ -254,21 +254,36 @@ void RunHelper::Store(){
 
 	int totalNumOfVoxels = Tomography::evolution::Voxelator::instance()->GetTotalNumberOfVoxels();
 	fWeightedCountHist = new TH1F("WeighedCountHist","WeighedCountHist",totalNumOfVoxels, 0, totalNumOfVoxels);
+	fNormalizedWeightedHist = new TH1F("NormalizedWeighedCountHist","NormalizedWeighedCountHist",totalNumOfVoxels, 0, totalNumOfVoxels);
+	fNormalizedScatteringValueHist = new TH1F("NormalizedScatteringValueHist","NormalizedScatteringValueHist",totalNumOfVoxels, 0, totalNumOfVoxels);
+
+	//Normalizing the count in each voxel
+	Tomography::evolution::Voxelator::instance()->NormalizeEachVoxelCount();
+	Tomography::evolution::Voxelator::instance()->NormalizeEachVoxelScatteringValue();
 
 	int weightedCounter=0;
 	for(int i = 0 ; i < fVoxelVector.size() ; i++){
+
 		int voxelNum = fVoxelVector[i]->GetVoxelNum();
+
 		int count = fVoxelVector[i]->GetPointCount();
+
 		fVoxelVector[i]->CalcWeightedCount();
-		int weightedCount = fVoxelVector[i]->GetWeightedCount();
+		double weightedCount = fVoxelVector[i]->GetWeightedCount();
+
 		if(weightedCount > 0){
 			weightedCounter++;
-		std::cout <<"Count : " << count << "  :: WeightedCount Value : " << weightedCount << std::endl;
-		fWeightedCountHist->SetBinContent(voxelNum,weightedCount);
+		    std::cout <<"Count : " << count << "  :: WeightedCount Value : " << weightedCount << std::endl;
+		    fWeightedCountHist->SetBinContent(voxelNum,weightedCount);
+		    fNormalizedWeightedHist->SetBinContent(voxelNum,fVoxelVector[i]->GetNormalizedCount());
+		    fNormalizedScatteringValueHist->SetBinContent(voxelNum,fVoxelVector[i]->GetNormalizedScatteringValue());
+
 		}
 	}
 
 	fWeightedCountHist->Write();
+	fNormalizedWeightedHist->Write();
+	fNormalizedScatteringValueHist->Write();
 
 	std::cout <<"========== Weighted Counter ===========" << std::endl << "VoxelVector Size : " << fVoxelVector.size() << " :  SEHGALL : " <<  weightedCounter << std::endl << "================================" << std::endl;
 
@@ -296,7 +311,18 @@ void RunHelper::WriteToFile(){
     CommonFunc::Functions::instance()->WriteToFile("filteredVoxelsRunHelper-"+fFileType+".txt",Tomography::evolution::Voxelator::instance()->GetFilteredVoxelVector());
     CommonFunc::Functions::instance()->WriteToFile("filteredPocaPtRunHelper-"+fFileType+".txt",Tomography::evolution::Voxelator::instance()->GetFilteredPocaPtVector());
     CommonFunc::Functions::instance()->WriteToFile("filteredPocaPtRunHelper-"+fFileType+"-Weighted.txt",Tomography::evolution::Voxelator::instance()->GetFilteredPocaPtVector(
-    		Tomography::evolution::Voxelator::instance()->GetFilteredVoxelVectorBasedOnWeightedCount()));
+        		Tomography::evolution::Voxelator::instance()->GetFilteredVoxelVectorBasedOnWeightedCount()));
+    CommonFunc::Functions::instance()->WriteToFile("filteredPocaPtRunHelper-"+fFileType+"-Weighted-Chauvenets.txt",Tomography::evolution::Voxelator::instance()->GetFilteredPocaPtVector(
+    		Tomography::evolution::Voxelator::instance()->GetFilteredVoxelVectorBasedOnWeightedCount(fWeightedCountHist)));
+
+    //Trying normalized voxel count idea
+    CommonFunc::Functions::instance()->WriteToFile("filteredPocaPtRunHelper-"+fFileType+"-Normalized-Count.txt",Tomography::evolution::Voxelator::instance()->GetFilteredPocaPtVector(
+            		Tomography::evolution::Voxelator::instance()->GetFilteredVoxelVectorBasedOnNormalizedCount()));
+
+    //Trying normalized scatteringAngle idea
+    CommonFunc::Functions::instance()->WriteToFile("filteredPocaPtRunHelper-"+fFileType+"-Normalized-ScatteringValue.txt",Tomography::evolution::Voxelator::instance()->GetFilteredPocaPtVector(
+                		Tomography::evolution::Voxelator::instance()->GetFilteredVoxelVectorBasedOnNormalizedScatteringValue()));
+
    // CommonFunc::Functions::instance()->WriteToFile("filteredTrack-"+fFileType+".txt",Tomography::evolution::Voxelator::instance()->GetFilteredTrackIndexVector());
 //    CommonFunc::Functions::instance()->WriteToFile("filteredPocaPtRunHelperUsingCleanVoxels-"+fFileType+".txt",Tomography::evolution::Voxelator::instance()->GetFilteredPocaPtVectorUsingCleanedVoxel());
 

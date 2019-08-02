@@ -13,6 +13,7 @@
 #include <fstream>
 #include "DetectorMapping.h"
 #include "Coordinates.h"
+#include <TGaxis.h>
 namespace Tomography{
 
 //int Properties::fClusterSize = 10;
@@ -296,6 +297,7 @@ void Properties::GetHitPlot3D(){
 }
 
 void Properties::GetHitPlot3D_V2(int twoOrThreeD){
+#define INTERACTIVE
 	gStyle->SetPalette(1);
   TCanvas *cHitPlot3D = new TCanvas(GetName().c_str(), GetName().c_str(), 450, 450);
   int numOfBinsX =   (GetPlane(0)->GetNumOfScintillators());// * 2);
@@ -366,6 +368,7 @@ void Properties::GetHitPlot3D_V2(int twoOrThreeD){
 // 	  std::string plotsLocation = Tomography::DetectorMapping::instance()->GetPlotsLocation();
 // 	  std::string runnumber = tree->GetRunNumber();
    cHitPlot3D->SaveAs((plotsLocation+runnumber+"-"+GetName()+"-HitPlot.gif").c_str());
+
 #ifndef INTERACTIVE
   delete h3dHitPlot;
   delete cHitPlot3D;
@@ -637,14 +640,19 @@ void Properties::WriteHitInfoToFile(){
 
 void Properties::GetStripProfile()
 {
+/*	TGaxis *axis4 = new TGaxis(-7,-0.8,-7,0.8,100,2500,50510,"");
+	   axis4->SetName("axis4");
+	   axis4->Draw();*/
   //TApplication *fApp = new TApplication("Histogram", NULL, NULL);
   int numOfEvents = Tracking::Tree::instance()->GetNumOfEvents();
   TCanvas *c = new TCanvas((GetName()+"StripProfile"+std::to_string(numOfEvents)).c_str(),  (GetName() + " Strip Profile"+std::to_string(numOfEvents)).c_str(), 800, 600);
   int nxbins = 64;
-  int xlow = 32;
-  int xhigh = 96;
+  int xlow = 0;//32;
+  int xhigh = 65;//96;
   std::string histName = "Strip Profile of Full Detector "+GetName()+"  : "+ std::to_string(numOfEvents);
-  TH1F *histogram = new TH1F(GetName().c_str(), histName.c_str(), nxbins, xlow, xhigh);
+  //TH1F *histogram = new TH1F(GetName().c_str(), histName.c_str(), nxbins, xlow, xhigh);
+  TH1F *histogram = new TH1F(GetName().c_str(), "", nxbins, xlow, xhigh);
+  histogram->SetStats(0);
 
 //  int numOfEvents = Tracking::Tree::instance()->GetNumOfEvents();
 
@@ -670,7 +678,7 @@ void Properties::GetStripProfile()
     	{
     		for(int l = 0 ; l < GetPlane(k)->GetFiredStripsIDVector().size() ; l++)
     		{
-              histogram->Fill(GetPlane(k)->GetFiredStripsIDVector()[l]);
+              histogram->Fill(GetPlane(k)->GetFiredStripsIDVector()[l]-31);
     		}
     	}
       }

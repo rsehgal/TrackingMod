@@ -87,6 +87,10 @@ void Voxel_V2::CalcSD(){
 	fSD = CommonFunc::Functions::instance()->StandardDeviation(GetScatteringVector(),true);
 }
 
+double Voxel_V2::GetMeanScattering(){
+	return GetTotalScatteringInVoxel()/GetPointCount();
+}
+
 std::vector<double> Voxel_V2::GetScatteringVector(){
 	std::vector<double> scatteringVect;
 	std::cout << "fPointCount : " << fPointCount <<" : " << __FILE__ << " : " << __LINE__ << std::endl;
