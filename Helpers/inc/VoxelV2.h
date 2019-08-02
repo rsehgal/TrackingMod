@@ -29,8 +29,14 @@ class Voxel_V2 {
 	// Required for implementing TUSHAR ROY's idea.
 	double fScatteringDensity;
 
-	 //point counter multiplied by mean of square of scattering angle
+	 //point counter multiplied by SD
 	 double fWeightedCount;
+
+	 //Normalized Point Count ie. point count in a voxel divided by maximum counts
+	 double fNormalizedCount;
+
+	 //Normalized Scattering Value ie. meanScatteringVlue in a voxel divided by maximumScatteringValue
+	 double fNormalizedScatteringValue;
 
 	//To store if the voxel is clean
 	int fCleanCount;
@@ -49,6 +55,15 @@ public:
 	double GetStandardDeviation(){return fSD;}
 	double GetWeightedCount()const {return fWeightedCount;}
 
+	double SetNormalizedCount(double normlizedCount) {fNormalizedCount = normlizedCount;}
+	double GetNormalizedCount() const {return fNormalizedCount;}
+
+	//For the ideas of normalized scattering angle
+	double GetMeanScattering();
+	void SetNormalizedScatteringValue(double normalizedVal) {fNormalizedScatteringValue = normalizedVal;}
+    double GetNormalizedScatteringValue() const {return fNormalizedScatteringValue;}
+
+
 	std::vector<Tracking::Vector3D<double>> GetPocaPointsVector(){//std::cout << "PocaPtVectorSize : " << fVectPointsInVoxel.size() << std::endl;
 																	return fVectPointsInVoxel;}
 	int GetPointCount() const {return fPointCount;}
@@ -65,7 +80,7 @@ public:
 	double GetTotalScatteringInVoxel(){
 		double scattering = 0.;
 		for(int i = 0 ; i < fVectPointsInVoxel.size() ; i++){
-			scattering += fVectPointsInVoxel[i].GetColor();
+			scattering += fVectPointsInVoxel[i].GetColor()*fVectPointsInVoxel[i].GetColor();
 		}
 		return scattering;
 	}

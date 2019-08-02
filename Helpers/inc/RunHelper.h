@@ -23,6 +23,8 @@ namespace Tomography {
 class RunHelper {
 
 	TH1F *fWeightedCountHist;
+	TH1F *fNormalizedWeightedHist;
+	TH1F *fNormalizedScatteringValueHist;
 
  	std::vector<double> fScatteringAngleVector;
 	std::vector<Vector3D<double>> fPocaPtVector;

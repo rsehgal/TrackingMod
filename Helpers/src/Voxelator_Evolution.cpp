@@ -54,6 +54,52 @@ void Voxelator::PredictThreshold(){
 #endif
 }
 
+void Voxelator::PredictWeightedThreshold(TH1F *hist){
+
+#define USE_MAX_VAL
+	//std::cout << "Entered PredictThreshold : " << __FILE__ <<" : " << __LINE__ << std::endl;
+	double stddev = 4.5; //hist->GetStdDev();
+	double mean = 5.5;//hist->GetMean();
+
+	/* Selecting point in the voxels which comes under X Sigma
+	 * The interval value is defined in "confidenceInterval" variable
+	 * defined in Global.h
+	 */
+
+	double valsigma = Tomography::confidenceInterval;
+
+	double startx = mean-valsigma*stddev;
+	double endx = mean+valsigma*stddev;
+
+	//default value
+	double threshold = 0.;
+	int sum = 0;
+	int count = 0;
+	for(unsigned int i = 0 ; i < fVoxelVector.size() ; i++){
+		if(fVoxelVector[i]->GetVoxelNum() < startx ||
+				fVoxelVector[i]->GetVoxelNum() > endx){
+
+			int pointcount = fVoxelVector[i]->GetPointCount();
+			//std::cout << "PointCount : " << pointcount << " :: Threshold : " << threshold << std::endl;
+#ifndef USE_MAX_VAL
+				sum += pointcount;
+				count++;
+#else
+			if( pointcount > threshold)
+				threshold = fVoxelVector[i]->GetPointCount();
+#endif
+		}
+	}
+
+#ifndef USE_MAX_VAL
+	std::cout << "Sum : " << sum << " : Count : " << count << std::endl;
+	fWeightedThresholdVal = sum/count;
+#else
+	fWeightedThresholdVal = threshold;
+#endif
+}
+
+
 int Voxelator::IfVoxelExist(int voxelNum){
 //std::cout<< "VoxelVectorSize : " << run->fVoxelVector.size() << std::endl;
 	if(fVisitedVoxelNumVector.size()){
@@ -147,6 +193,39 @@ std::vector<Voxel_V2*> Voxelator::GetFilteredVoxelVectorUsingCleanVoxel(std::vec
 	return filteredVoxelVector;
 }
 
+void Voxelator::NormalizeEachVoxelCount(){
+	int maxCount = 0 ;
+	//Finding the maximum count in the Voxel Vector
+	for(unsigned int i = 0 ; i < fVoxelVector.size() ; i++){
+		if(fVoxelVector[i]->GetPointCount() > maxCount){
+			maxCount = fVoxelVector[i]->GetPointCount();
+		}
+	}
+
+	for(unsigned int i = 0 ; i < fVoxelVector.size() ; i++){
+		fVoxelVector[i]->SetNormalizedCount((double)fVoxelVector[i]->GetPointCount()/maxCount);
+	}
+
+
+}
+
+void Voxelator::NormalizeEachVoxelScatteringValue(){
+	double maxScatteringValue = 0. ;
+	//Finding the maximum count in the Voxel Vector
+	for(unsigned int i = 0 ; i < fVoxelVector.size() ; i++){
+		if(fVoxelVector[i]->GetMeanScattering() > maxScatteringValue){
+			maxScatteringValue = fVoxelVector[i]->GetMeanScattering();
+		}
+	}
+
+	for(unsigned int i = 0 ; i < fVoxelVector.size() ; i++){
+		fVoxelVector[i]->SetNormalizedScatteringValue(fVoxelVector[i]->GetMeanScattering()/maxScatteringValue);
+	}
+
+
+}
+
+
 std::vector<Tracking::Vector3D<double>> Voxelator::GetFilteredPocaPtVector(std::vector<Voxel_V2*> filteredVoxelVector){
 
 		std::vector<Tracking::Vector3D<double>> filteredPocaVector;
@@ -157,6 +236,53 @@ std::vector<Tracking::Vector3D<double>> Voxelator::GetFilteredPocaPtVector(std::
 		}
 		return filteredPocaVector;
 }
+
+
+std::vector<Voxel_V2*> Voxelator::GetFilteredVoxelVectorBasedOnNormalizedCount(){
+	std::cout << "&&&&&&&&&&&&&&&&&&&&&&&&& GetFilteredVoxelVectorBasedOnNormalizedCount &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&" << std::endl;
+	std::vector<Voxel_V2*> filteredVoxelVector;
+	int normalizedCounter = 0;
+	//Calling this in Store function of RunHelper.cpp
+	//NormalizeEachVoxelCount();
+	int pointCount = 0;
+	for (int i = 0; i < fVoxelVector.size(); i++) {
+		double normalizedCount = fVoxelVector[i]->GetNormalizedCount();
+		//Be carefule of this threshold limit
+		if(normalizedCount > 0.5){
+			normalizedCounter++;
+			filteredVoxelVector.push_back(fVoxelVector[i]);
+			pointCount += fVoxelVector[i]->GetPointCount();
+		}
+	}
+
+	std::cout << "Total Number of Filtered POints : " << pointCount << std::endl;
+	std::cout << "&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&" << std::endl;
+	return filteredVoxelVector;
+}
+
+std::vector<Voxel_V2*> Voxelator::GetFilteredVoxelVectorBasedOnNormalizedScatteringValue(){
+	std::cout << "&&&&&&&&&&&&&&&&&&&&&&&&& GetFilteredVoxelVectorBasedOnNormalizedScatteringValue &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&" << std::endl;
+	std::vector<Voxel_V2*> filteredVoxelVector;
+	int normalizedCounter = 0;
+	//Calling this in Store function of RunHelper.cpp
+	//NormalizeEachVoxelCount();
+	int pointCount = 0;
+	for (int i = 0; i < fVoxelVector.size(); i++) {
+		double normalizedCount = fVoxelVector[i]->GetNormalizedScatteringValue();
+		//Be carefule of this threshold limit
+		if(normalizedCount > 0.001){
+			normalizedCounter++;
+			filteredVoxelVector.push_back(fVoxelVector[i]);
+			pointCount += fVoxelVector[i]->GetPointCount();
+		}
+	}
+	std::cout << "Total Number of Filtered POints : " << pointCount << std::endl;
+	std::cout << "&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&" << std::endl;
+
+
+	return filteredVoxelVector;
+}
+
 
 std::vector<Voxel_V2*> Voxelator::GetFilteredVoxelVectorBasedOnWeightedCount(){
 	std::vector<Voxel_V2*> filteredVoxelVector;
@@ -176,6 +302,21 @@ std::vector<Voxel_V2*> Voxelator::GetFilteredVoxelVectorBasedOnWeightedCount(){
 	return filteredVoxelVector;
 
 }
+
+
+std::vector<Voxel_V2*> Voxelator::GetFilteredVoxelVectorBasedOnWeightedCount(TH1F *hist){
+	std::vector<Voxel_V2*> filteredVoxelVector;
+	Tomography::evolution::Voxelator::instance()->PredictWeightedThreshold(hist);
+
+	for(int i= 0 ; i < fVoxelVector.size() ; i++){
+
+		if(fVoxelVector[i]->GetPointCount() > Tomography::evolution::Voxelator::instance()->GetWeightedThresholdVal()){
+			filteredVoxelVector.push_back(fVoxelVector[i]);
+		}
+	}
+	return filteredVoxelVector;
+}
+
 
 /*std::vector<Tracking::Vector3D<double>> Voxelator::GetFilteredPocaPtVectorUsingCleanedVoxel(){
 	std::vector<Voxel_V2*> filteredVoxelVector = GetFilteredVoxelVectorUsingCleanVoxel();
@@ -536,6 +677,8 @@ void Voxelator::CreateHistogram(){
 
 	fSDInVoxels = new TH1F("SDInVoxels","SDInVoxels",100,0,.30);
 	fRLInVoxels = new TH1F("RLInVoxels","RLInVoxels",100,0,20.);
+
+	fWeightedCountHist = new TH1F("WeighedCountHist","WeighedCountHist",GetTotalNumberOfVoxels(), 0, GetTotalNumberOfVoxels());
 
 }
 
