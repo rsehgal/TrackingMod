@@ -1,20 +1,20 @@
 numberOfScatterer 4
-TargetU G4_Fe 50 50 50 -150 150 0
-TargetPb G4_Pb 50 50 50 150 -150 0
-TargetFe G4_Fe 50 50 50 150 150 0
-TargetAl G4_Al 50 50 50 -150 -150 0
+TargetPb_1 G4_Pb 100 100 100 -150 -150 0
+TargetPb_2 G4_Pb 100 100 100 -150 150 0
+TargetPb_3 G4_Pb 100 100 100 150 -150 0
+TargetPb_4 G4_Pb 100 100 100 150 150 0
 startStripNumOfEachDetector 32
 numberOfStripsInEachPlane 32 
 worldSizeHalfLength 3000
-gunZ_In_mm 2500 
-numOfEvents 50000
+gunZ_In_mm 3000 
+numOfEvents 100000
 plotsLocation /var/www/html/Tomo/plot/
 DetectorName SlotNumber StartingChannelNum ZCoordinate DetectorType
-TOP 2 -1 2000 TRG
-BOT 2 7 -2000 TRG
-RPC-MT6 8 31 1050 GLASS
-RPC-MT5 7 31 750 GLASS
+TOP 2 -1 2800 TRG
+BOT 2 7 -2800 TRG
+RPC-MT6 8 31 2450 GLASS
+RPC-MT5 7 31 1450 GLASS
 RPC-MT4 6 31 450 GLASS
 RPC-MT3 5 31 -450 GLASS
-RPC-MT2 4 31 -750 GLASS
-RPC-MT1 3 31 -1050 GLASS
+RPC-MT2 4 31 -1450 GLASS
+RPC-MT1 3 31 -2450 GLASS
