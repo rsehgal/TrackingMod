@@ -58,8 +58,8 @@ void Voxelator::PredictWeightedThreshold(TH1F *hist){
 
 #define USE_MAX_VAL
 	//std::cout << "Entered PredictThreshold : " << __FILE__ <<" : " << __LINE__ << std::endl;
-	double stddev = 4.5; //hist->GetStdDev();
-	double mean = 5.5;//hist->GetMean();
+	double stddev = hist->GetStdDev();
+	double mean = hist->GetMean();
 
 	/* Selecting point in the voxels which comes under X Sigma
 	 * The interval value is defined in "confidenceInterval" variable
@@ -248,7 +248,7 @@ std::vector<Voxel_V2*> Voxelator::GetFilteredVoxelVectorBasedOnNormalizedCount()
 	for (int i = 0; i < fVoxelVector.size(); i++) {
 		double normalizedCount = fVoxelVector[i]->GetNormalizedCount();
 		//Be carefule of this threshold limit
-		if(normalizedCount > 0.5){
+		if(normalizedCount > 0.6){
 			normalizedCounter++;
 			filteredVoxelVector.push_back(fVoxelVector[i]);
 			pointCount += fVoxelVector[i]->GetPointCount();
@@ -270,7 +270,7 @@ std::vector<Voxel_V2*> Voxelator::GetFilteredVoxelVectorBasedOnNormalizedScatter
 	for (int i = 0; i < fVoxelVector.size(); i++) {
 		double normalizedCount = fVoxelVector[i]->GetNormalizedScatteringValue();
 		//Be carefule of this threshold limit
-		if(normalizedCount > 0.001){
+		if(normalizedCount > 0.00){
 			normalizedCounter++;
 			filteredVoxelVector.push_back(fVoxelVector[i]);
 			pointCount += fVoxelVector[i]->GetPointCount();
