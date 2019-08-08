@@ -253,9 +253,11 @@ void RunHelper::Store(){
 
 
 	int totalNumOfVoxels = Tomography::evolution::Voxelator::instance()->GetTotalNumberOfVoxels();
-	fWeightedCountHist = new TH1F("WeighedCountHist","WeighedCountHist",totalNumOfVoxels, 0, totalNumOfVoxels);
+	fWeightedCountHist = new TH1F("WeighedCountHist","WeighedCountHist",100, 0, totalNumOfVoxels);
 	fNormalizedWeightedHist = new TH1F("NormalizedWeighedCountHist","NormalizedWeighedCountHist",totalNumOfVoxels, 0, totalNumOfVoxels);
 	fNormalizedScatteringValueHist = new TH1F("NormalizedScatteringValueHist","NormalizedScatteringValueHist",totalNumOfVoxels, 0, totalNumOfVoxels);
+	fWHist = new TH1F("SuperficialWeightedCountHist","SuperficialWeightedCountHist",50,0,1);
+	fBareScatteringAngleHist = new TH1F("BareScatteringAngleHist","BareScatteringAngleHist",1000,-M_PI/2.,M_PI/2.);
 
 	//Normalizing the count in each voxel
 	Tomography::evolution::Voxelator::instance()->NormalizeEachVoxelCount();
@@ -265,6 +267,12 @@ void RunHelper::Store(){
 	for(int i = 0 ; i < fVoxelVector.size() ; i++){
 
 		int voxelNum = fVoxelVector[i]->GetVoxelNum();
+
+		std::vector<Tracking::Vector3D<double>> pocaPtVector = fVoxelVector[i]->GetPocaPointsVector();
+		for(unsigned int j = 0 ; j < pocaPtVector.size(); j++){
+
+				fBareScatteringAngleHist->Fill(pocaPtVector[j].GetColor());
+		}
 
 		int count = fVoxelVector[i]->GetPointCount();
 
@@ -276,14 +284,19 @@ void RunHelper::Store(){
 		    std::cout <<"Count : " << count << "  :: WeightedCount Value : " << weightedCount << std::endl;
 		    fWeightedCountHist->SetBinContent(voxelNum,weightedCount);
 		    fNormalizedWeightedHist->SetBinContent(voxelNum,fVoxelVector[i]->GetNormalizedCount());
-		    fNormalizedScatteringValueHist->SetBinContent(voxelNum,fVoxelVector[i]->GetNormalizedScatteringValue());
+		    fWHist->Fill(fVoxelVector[i]->GetNormalizedCount());
+//		    fNormalizedScatteringValueHist->SetBinContent(voxelNum,fVoxelVector[i]->GetNormalizedScatteringValue());
+
 
 		}
+		fNormalizedScatteringValueHist->SetBinContent(voxelNum,fVoxelVector[i]->GetNormalizedScatteringValue());
 	}
 
 	fWeightedCountHist->Write();
 	fNormalizedWeightedHist->Write();
 	fNormalizedScatteringValueHist->Write();
+	fWHist->Write();
+	fBareScatteringAngleHist->Write();
 
 	std::cout <<"========== Weighted Counter ===========" << std::endl << "VoxelVector Size : " << fVoxelVector.size() << " :  SEHGALL : " <<  weightedCounter << std::endl << "================================" << std::endl;
 

@@ -24,7 +24,14 @@ class RunHelper {
 
 	TH1F *fWeightedCountHist;
 	TH1F *fNormalizedWeightedHist;
+	//The histogram is actually of normalization of mean of scattering value
 	TH1F *fNormalizedScatteringValueHist;
+
+	//Bare Scattering angle histogram just to visualize scattering info
+	TH1F *fBareScatteringAngleHist;
+
+	//Some additional helper histogram
+	TH1F *fWHist;
 
  	std::vector<double> fScatteringAngleVector;
 	std::vector<Vector3D<double>> fPocaPtVector;

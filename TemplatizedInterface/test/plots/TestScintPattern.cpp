@@ -22,7 +22,7 @@ int main(int argc, char *argv[]) {
   temp_str += ".root";
   int clusterSize = 6;
   TApplication *fApp = new TApplication("Test", NULL, NULL);
-  //gStyle->SetPalette(1);
+  gStyle->SetPalette(kRainBow);
   Tracking::Tree::instance()->ReadTree(temp_str.c_str(), "BSC_DATA_TREE", 0);
 
 #if(1) //using concept of Detector
@@ -31,7 +31,10 @@ int main(int argc, char *argv[]) {
   trgPlanes->SetClusterSize(clusterSize);
   SetupManager::instance()->Register(trgPlanes);
   TCanvas *cPattern = new TCanvas("cPattern", "cPattern", 200, 10, 700, 500);
+  //trgPlanes->GetStripsHitPlot3D()->Draw("colz");
+  trgPlanes->GetStripsHitPlot3D()->SetStats(0);
   trgPlanes->GetStripsHitPlot3D()->Draw("LEGO2");
+
   TCanvas *cAngDist = new TCanvas("cAngDist", "cAngDist", 200, 10, 700, 500);
   trgPlanes->GetAngularDistributionFromScintillators()->Draw();
 #endif
