@@ -26,9 +26,10 @@ int main(int argc, char *argv[]){
 	int truePositive = 0 ;
 	int falsePositive = 0 ;
 	std::ifstream ft(filename);
+	double doca=0.;
 	double x=0.,y=0.,z=0, color=0;
     while(!ft.eof()){
-    	ft >> x >> y >> z >> color;
+    	ft >> x >> y >> z >> color >> doca;
     	std::cout << "X : " << x <<" : Y : " << y << " : Z : " << z << std::endl;
     	bool falsePos = CommonFunc::Functions::IsFalsePositivePoca<true>(Vector3D<double>(x,y,z));
     	if(falsePos)

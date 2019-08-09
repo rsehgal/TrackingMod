@@ -325,8 +325,8 @@ void RunHelper::WriteToFile(){
     CommonFunc::Functions::instance()->WriteToFile("filteredPocaPtRunHelper-"+fFileType+".txt",Tomography::evolution::Voxelator::instance()->GetFilteredPocaPtVector());
     CommonFunc::Functions::instance()->WriteToFile("filteredPocaPtRunHelper-"+fFileType+"-Weighted.txt",Tomography::evolution::Voxelator::instance()->GetFilteredPocaPtVector(
         		Tomography::evolution::Voxelator::instance()->GetFilteredVoxelVectorBasedOnWeightedCount()));
-    CommonFunc::Functions::instance()->WriteToFile("filteredPocaPtRunHelper-"+fFileType+"-Weighted-Chauvenets.txt",Tomography::evolution::Voxelator::instance()->GetFilteredPocaPtVector(
-    		Tomography::evolution::Voxelator::instance()->GetFilteredVoxelVectorBasedOnWeightedCount(fWeightedCountHist)));
+    //CommonFunc::Functions::instance()->WriteToFile("filteredPocaPtRunHelper-"+fFileType+"-Weighted-Chauvenets.txt",Tomography::evolution::Voxelator::instance()->GetFilteredPocaPtVector(
+    	//	Tomography::evolution::Voxelator::instance()->GetFilteredVoxelVectorBasedOnWeightedCount(fWeightedCountHist)));
 
     //Trying normalized voxel count idea
     CommonFunc::Functions::instance()->WriteToFile("filteredPocaPtRunHelper-"+fFileType+"-Normalized-Count.txt",Tomography::evolution::Voxelator::instance()->GetFilteredPocaPtVector(
