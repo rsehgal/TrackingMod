@@ -259,6 +259,13 @@ void RunHelper::Store(){
 	fWHist = new TH1F("SuperficialWeightedCountHist","SuperficialWeightedCountHist",50,0,1);
 	fBareScatteringAngleHist = new TH1F("BareScatteringAngleHist","BareScatteringAngleHist",1000,-M_PI/2.,M_PI/2.);
 
+
+	fHistOfCount= new TH1F("Hist of Count","Hist of Count",1000,0,1000);
+	fHist3DCount= new TH3F("Hist3DCount","Hist3DCount",20,-500,500,20,-500,500,20,-450,450);
+	fHist2DXY = new TH2F("Hist2DXY","Hist2DXY",20,-500.,500.0,20,-500.,500.0);
+	fHist2DYZ = new TH2F("Hist2DYZ","Hist2DYZ",20,-500.,500.0,20,-450.,450.0);
+	fHist2DXZ = new TH2F("Hist2DXZ","Hist2DXZ",20,-500.,500.0,20,-450.,450.0);
+
 	//Normalizing the count in each voxel
 	Tomography::evolution::Voxelator::instance()->NormalizeEachVoxelCount();
 	Tomography::evolution::Voxelator::instance()->NormalizeEachVoxelScatteringValue();
@@ -268,13 +275,24 @@ void RunHelper::Store(){
 
 		int voxelNum = fVoxelVector[i]->GetVoxelNum();
 
+
 		std::vector<Tracking::Vector3D<double>> pocaPtVector = fVoxelVector[i]->GetPocaPointsVector();
 		for(unsigned int j = 0 ; j < pocaPtVector.size(); j++){
 
 				fBareScatteringAngleHist->Fill(pocaPtVector[j].GetColor());
+				fHist2DXY->Fill(pocaPtVector[j].x(),pocaPtVector[j].y());
+				fHist2DYZ->Fill(pocaPtVector[j].y(),pocaPtVector[j].z());
+				fHist2DXZ->Fill(pocaPtVector[j].x(),pocaPtVector[j].z());
 		}
 
 		int count = fVoxelVector[i]->GetPointCount();
+		fHistOfCount->Fill(count);
+
+		Tracking::Vector3D<double> voxCenter = fVoxelVector[i]->GetVoxelCenter();
+		double centerX=voxCenter.x();
+		double centerY=voxCenter.y();
+		double centerZ=voxCenter.z();
+		fHist3DCount->SetBinContent(fHist3DCount->FindBin(centerX, centerY, centerZ), count);
 
 		fVoxelVector[i]->CalcWeightedCount();
 		double weightedCount = fVoxelVector[i]->GetWeightedCount();
@@ -297,6 +315,12 @@ void RunHelper::Store(){
 	fNormalizedScatteringValueHist->Write();
 	fWHist->Write();
 	fBareScatteringAngleHist->Write();
+	fHistOfCount->Write();
+	fHist3DCount->Write();
+	fHist2DXY->Write();
+	fHist2DYZ->Write();
+	fHist2DXZ->Write();
+
 
 	std::cout <<"========== Weighted Counter ===========" << std::endl << "VoxelVector Size : " << fVoxelVector.size() << " :  SEHGALL : " <<  weightedCounter << std::endl << "================================" << std::endl;
 
@@ -306,6 +330,10 @@ void RunHelper::Store(){
 		(*it).GetHist()->Write();
 	}
 	#endif
+
+
+
+
 
 }
 

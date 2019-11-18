@@ -680,6 +680,8 @@ void Voxelator::CreateHistogram(){
 
 	fWeightedCountHist = new TH1F("WeighedCountHist","WeighedCountHist",GetTotalNumberOfVoxels(), 0, GetTotalNumberOfVoxels());
 
+
+
 }
 
 double Voxelator::GetAverageScatteringAngleInAVoxel(Vector3D<double> vox){

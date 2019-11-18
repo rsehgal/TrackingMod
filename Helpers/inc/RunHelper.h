@@ -14,6 +14,7 @@
 #include "Voxelator_Evolution.h"
 #include "EventHelper.h"
 #include "TH1F.h"
+#include "TH3F.h"
 //#include "Voxel.h"
 
 using Tracking::Vector3D;
@@ -32,6 +33,14 @@ class RunHelper {
 
 	//Some additional helper histogram
 	TH1F *fWHist;
+
+	//Introduced during second round of review
+	  TH1F *fHistOfCount;
+	  TH3F *fHist3DCount;
+	  TH2F *fHist2DXY;
+	  TH2F *fHist2DYZ;
+	  TH2F *fHist2DXZ;
+
 
  	std::vector<double> fScatteringAngleVector;
 	std::vector<Vector3D<double>> fPocaPtVector;
