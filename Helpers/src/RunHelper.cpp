@@ -11,6 +11,7 @@
 #include <TFile.h>
 #include "Voxelator_Evolution.h"
 #include <TSpectrum2.h>
+#include <TSpectrum3.h>
 
 namespace Tomography {
 RunHelper *RunHelper::s_instance = 0;
@@ -317,7 +318,28 @@ void RunHelper::Store(){
 	fWHist->Write();
 	fBareScatteringAngleHist->Write();
 	fHistOfCount->Write();
+
+	{
+			std::cout <<"===== Printing peaks info for XYZ i.e. directly in 3D ==========" << std::endl;
+			TSpectrum3 *s = new TSpectrum3();
+		Int_t nfound = s->Search(fHist3DCount,2,"",0.1);
+		std::cout << "Num Of peaks : " << nfound << std::endl;
+		double *posX = new double[nfound];
+		double *posY = new double[nfound];
+		double *posZ = new double[nfound];
+		posX = s->GetPositionX();
+		posY = s->GetPositionY();
+		posZ = s->GetPositionZ();
+		for(int peakIndex = 0 ; peakIndex < nfound ; peakIndex++){
+			std::cout << "Location of Peak : " << (peakIndex+1) << " : X " << posX[peakIndex] << " : Y : " << posY[peakIndex]
+																												   << " : Z : " << posZ[peakIndex] << std::endl;
+		}
+		delete s;
+		}
+
+
 	fHist3DCount->Write();
+
 	fHist2DXY->ShowPeaks();
 
 	//Int_t nfound = s->Search(fHist2DXY,1.8);//,2,"",0.10);
