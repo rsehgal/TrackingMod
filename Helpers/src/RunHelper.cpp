@@ -10,6 +10,7 @@
 #include "CommonFunc.h"
 #include <TFile.h>
 #include "Voxelator_Evolution.h"
+#include <TSpectrum2.h>
 
 namespace Tomography {
 RunHelper *RunHelper::s_instance = 0;
@@ -317,8 +318,56 @@ void RunHelper::Store(){
 	fBareScatteringAngleHist->Write();
 	fHistOfCount->Write();
 	fHist3DCount->Write();
+	fHist2DXY->ShowPeaks();
+
+	//Int_t nfound = s->Search(fHist2DXY,1.8);//,2,"",0.10);
+	{
+		std::cout <<"===== Printing peaks info for XY ==========" << std::endl;
+		TSpectrum2 *s = new TSpectrum2();
+	Int_t nfound = s->Search(fHist2DXY,1.6,"",0.1);
+	std::cout << "Num Of peaks : " << nfound << std::endl;
+	double *posX = new double[nfound];
+	double *posY = new double[nfound];
+	posX = s->GetPositionX();
+	posY = s->GetPositionY();
+	for(int peakIndex = 0 ; peakIndex < nfound ; peakIndex++){
+		std::cout << "Location of Peak : " << (peakIndex+1) << " : X " << posX[peakIndex] << " : Y : " << posY[peakIndex] << std::endl;
+	}
+	delete s;
+	}
+
 	fHist2DXY->Write();
+
+	{
+		std::cout <<"===== Printing peaks info for YZ ==========" << std::endl;
+			TSpectrum2 *s = new TSpectrum2();
+		Int_t nfound = s->Search(fHist2DYZ,1.6,"",0.1);
+		std::cout << "Num Of peaks : " << nfound << std::endl;
+		double *posX = new double[nfound];
+		double *posY = new double[nfound];
+		posX = s->GetPositionX();
+		posY = s->GetPositionY();
+		for(int peakIndex = 0 ; peakIndex < nfound ; peakIndex++){
+			std::cout << "Location of Peak : " << (peakIndex+1) << " : X " << posX[peakIndex] << " : Y : " << posY[peakIndex] << std::endl;
+		}
+		delete s;
+		}
 	fHist2DYZ->Write();
+
+	{
+		std::cout <<"===== Printing peaks info for XZ ==========" << std::endl;
+			TSpectrum2 *s = new TSpectrum2();
+		Int_t nfound = s->Search(fHist2DXZ,1.6,"",0.1);
+		std::cout << "Num Of peaks : " << nfound << std::endl;
+		double *posX = new double[nfound];
+		double *posY = new double[nfound];
+		posX = s->GetPositionX();
+		posY = s->GetPositionY();
+		for(int peakIndex = 0 ; peakIndex < nfound ; peakIndex++){
+			std::cout << "Location of Peak : " << (peakIndex+1) << " : X " << posX[peakIndex] << " : Y : " << posY[peakIndex] << std::endl;
+		}
+		delete s;
+		}
 	fHist2DXZ->Write();
 
 

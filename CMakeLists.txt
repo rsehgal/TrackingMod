@@ -232,7 +232,7 @@ add_definitions(-DUSE_ROOT)
 find_package(ROOT REQUIRED)
 include_directories(AFTER SYSTEM ${ROOT_INCLUDE_DIR})
 set(EXTERNAL_LIBS ${EXTERNAL_LIBS}
-${ROOT_LIBRARIES}
+${ROOT_LIBRARIES} Spectrum
 )
 
 if(EVE)
