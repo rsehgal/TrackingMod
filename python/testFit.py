@@ -6,7 +6,7 @@ def func(x,a,b,c):
     return a*np.exp(-b*x)+c
     
 def funcGauss(x,amp,mean,sigma):
-    val=amp*np.exp(-(x-mean)**2 /  2*sigma**2) / 
+    val=amp*np.exp(-(x-mean)**2 /  2*sigma**2) / np.sqrt(2*np.pi*sigma**2)
     
 def GenData():
     xdata = np.linspace(0, 4, 50)
