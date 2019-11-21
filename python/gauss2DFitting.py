@@ -10,7 +10,10 @@ import numpy as np
 from scipy.optimize import curve_fit
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
+from FitHelpers import *
+import FitHelpers
 
+'''
 def gaussian(x,y, xc, yc,sigma_x,sigma_y,amp):
     #print(xyMesh.dtype)
     #val= amp*np.exp( -(x-xc)**2 / (2*sigma**2)) / np.sqrt(2*np.pi*sigma**2)
@@ -18,7 +21,7 @@ def gaussian(x,y, xc, yc,sigma_x,sigma_y,amp):
     #(x,y)=xyMesh
     gauss = amp*np.exp(-((x-xc)**2/(2*sigma_x**2)+(y-yc)**2/(2*sigma_y**2)))/(2*np.pi*sigma_x*sigma_y)
     return gauss #np.ravel(gauss)
-
+'''
 '''
 #working nicely in curve_fit
 #Callable for curve_fit
@@ -32,6 +35,7 @@ def _gaussian(M,*args):
     #plt.plot(x,arr)
     #plt.show()
     return arr
+'''
 '''
 def gaussianData(xx,yy,*args):
     x,y=xx,yy
@@ -47,7 +51,9 @@ def gaussianData(xx,yy,*args):
     #plt.plot(x,arr)
     #plt.show()
     return arr
+'''
 
+'''
 #Callable for curve_fit
 #def _gaussian(xx,yy,*args):
 def _gaussian(xy,*args):
@@ -65,6 +71,8 @@ def _gaussian(xy,*args):
     #plt.plot(x,arr)
     #plt.show()
     return arr
+'''
+
 
 '''
 def _2gaussian(x_array,cen1,sigma1,amp1,cen2,sigma2,amp2):
@@ -136,7 +144,7 @@ gsigmay2=1
 gamp2=1
 
 #popt_2gauss, pcov_2gauss= curve_fit(_2gaussian,X,Znoise,p0=[gcen1,gsigma1,gamp1,gcen2,gsigma2,gamp2])
-popt_2gauss, pcov_2gauss= curve_fit(_gaussian,xdata,Znoise.ravel(),p0=[gcenx1,gceny1,gsigmax1,gsigmay1,gamp1,gcenx2,gceny2,gsigmax2,gsigmay2,gamp2])
+popt_2gauss, pcov_2gauss= curve_fit(FitHelpers._gaussian,xdata,Znoise.ravel(),p0=[gcenx1,gceny1,gsigmax1,gsigmay1,gamp1,gcenx2,gceny2,gsigmax2,gsigmay2,gamp2])
 perr_2gauss = np.sqrt(np.diag(pcov_2gauss))
 pars_1 = popt_2gauss[0:5]
 pars_2 = popt_2gauss[5:10]
