@@ -10,11 +10,14 @@ import numpy as np
 from scipy.optimize import curve_fit
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
-
+from Fit1DHelpers import *
+import Fit1DHelpers
+'''
 def gaussian(x, xc, sigma,amp):
     val= amp*np.exp( -(x-xc)**2 / (2*sigma**2)) / np.sqrt(2*np.pi*sigma**2)
     #print(val)
     return val
+'''
 
 '''
 #working nicely in curve_fit
@@ -31,6 +34,7 @@ def _gaussian(M,*args):
     return arr
 '''
 
+'''
 #Callable for curve_fit
 def _gaussian(M,*args):
     x=M
@@ -43,6 +47,7 @@ def _gaussian(M,*args):
     #plt.plot(x,arr)
     #plt.show()
     return arr
+'''
 
 '''
 def _2gaussian(x_array,cen1,sigma1,amp1,cen2,sigma2,amp2):
@@ -67,7 +72,7 @@ for p in gprms:
     Z += gaussian(X,*p)
 '''
 
-Z =  _gaussian(X,*gprms)
+Z =  Fit1DHelpers._gaussian(X,*gprms)
 '''
 plt.plot(X,Z)
 plt.show()
@@ -96,7 +101,7 @@ gsigma2=1
 gamp2=1
 
 #popt_2gauss, pcov_2gauss= curve_fit(_2gaussian,X,Znoise,p0=[gcen1,gsigma1,gamp1,gcen2,gsigma2,gamp2])
-popt_2gauss, pcov_2gauss= curve_fit(_gaussian,X,Znoise,p0=[gcen1,gsigma1,gamp1,gcen2,gsigma2,gamp2])
+popt_2gauss, pcov_2gauss= curve_fit(Fit1DHelpers._gaussian,X,Znoise,p0=[gcen1,gsigma1,gamp1,gcen2,gsigma2,gamp2])
 perr_2gauss = np.sqrt(np.diag(pcov_2gauss))
 pars_1 = popt_2gauss[0:3]
 pars_2 = popt_2gauss[3:6]
@@ -107,7 +112,7 @@ print(pars_1)
 print(pars_2)
 
 fit = np.zeros(Z.shape)
-fit += _gaussian(X, *popt_2gauss)
+fit += Fit1DHelpers._gaussian(X, *popt_2gauss)
 
 residual_gauss = Z - fit
 
