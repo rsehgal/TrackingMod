@@ -34,8 +34,13 @@ print("Actual Type of Y : "+str(type(y)))
 print(y.shape)
 #fig, ax = plt.subplots()
 #ax.set_aspect("equal")
-numOfBins=21
+numOfBins=201
+
 voxelBins=np.linspace(-500,500,numOfBins)
+
+#plt.hist(x,numOfBins)
+#plt.hist(y,numOfBins)
+#plt.show()
 hist, xbins, ybins, im = plt.hist2d(x,y, bins=[voxelBins,voxelBins])
 #plt.show()
 xbins=xbins[0:len(xbins)-1]
@@ -92,7 +97,19 @@ gsigmax1=50
 gsigmay1=50
 gamp1=20
 
-gparamList=[gcenx1,gceny1,gsigmax1,gsigmay1,gamp1, gcenx2,gceny2,gsigmax1,gsigmay1,gamp1, gcenx3,gceny3,gsigmax1,gsigmay1,gamp1, gcenx4,gceny4,gsigmax1,gsigmay1,gamp1 ]
+gsigmax2=35
+gsigmay2=59
+gamp2=15
+
+gsigmax3=10
+gsigmay3=25
+gamp3=5
+
+gsigmax4=60
+gsigmay4=30
+gamp4=8
+
+gparamList=[gcenx1,gceny1,gsigmax1,gsigmay1,gamp1, gcenx2,gceny2,gsigmax2,gsigmay2,gamp2, gcenx3,gceny3,gsigmax3,gsigmay3,gamp3, gcenx4,gceny4,gsigmax4,gsigmay4,gamp4 ]
 
 
 #gsigmax2=1

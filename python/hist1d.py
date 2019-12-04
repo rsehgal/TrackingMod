@@ -47,7 +47,7 @@ numOfBins=201
 voxelBins=np.linspace(-500,500,numOfBins)
 
 plt1=plt.subplot(2,1,1)
-histx,bins,patches = plt.hist(x,numOfBins,color='blue')
+histx,bins,patches = plt.hist(y,numOfBins,color='blue')
 #plt2=plt.subplot(2,1,2)
 #histy,binsy,patchesy = plt.hist(y,numOfBins,color='green')
 #plt.show()

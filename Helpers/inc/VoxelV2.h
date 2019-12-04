@@ -60,6 +60,9 @@ public:
 
 	//For the ideas of normalized scattering angle
 	double GetMeanScattering();
+	double GetMeanSquareScattering(){
+		return GetMeanScattering();
+	}
 	void SetNormalizedScatteringValue(double normalizedVal) {fNormalizedScatteringValue = normalizedVal;}
     double GetNormalizedScatteringValue() const {return fNormalizedScatteringValue;}
 
