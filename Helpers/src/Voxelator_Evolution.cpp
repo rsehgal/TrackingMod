@@ -9,6 +9,27 @@ namespace Tomography {
 namespace evolution{
 Voxelator *Voxelator::s_instance = 0;
 
+#if(0)
+void Voxelator::PredictThreshold(){
+	unsigned int numOfLayersToBeUsed = 2;
+	unsigned int numOfVoxelsInALayer = fVoxelatorDim.x()*fVoxelatorDim.y();
+	unsigned int numOfVoxelsUsedForThresholdSelection = numOfLayersToBeUsed*numOfVoxelsInALayer;
+	for(unsigned int i = 0 ; i < fVoxelVector.size() ; i++){
+		if(fVoxelVector[i]->GetVoxelNum() < numOfVoxelsUsedForThresholdSelection)
+			fNoisyLayerPointCountHist->Fill(fVoxelVector[i]->GetPointCount());
+	}
+
+	double stddev = fNoisyLayerPointCountHist->GetStdDev();
+	double mean = fNoisyLayerPointCountHist->GetMean();
+	double valsigma = Tomography::confidenceInterval;
+
+	double startx = mean - valsigma * stddev;
+	double endx = mean + valsigma * stddev;
+	fThresholdVal = endx;
+}
+#endif
+
+#if(1)
 void Voxelator::PredictThreshold(){
 
 #define USE_MAX_VAL
@@ -53,6 +74,8 @@ void Voxelator::PredictThreshold(){
 	fThresholdVal = threshold;
 #endif
 }
+
+#endif
 
 void Voxelator::PredictWeightedThreshold(TH1F *hist){
 
@@ -679,6 +702,7 @@ void Voxelator::CreateHistogram(){
 	fRLInVoxels = new TH1F("RLInVoxels","RLInVoxels",100,0,20.);
 
 	fWeightedCountHist = new TH1F("WeighedCountHist","WeighedCountHist",GetTotalNumberOfVoxels(), 0, GetTotalNumberOfVoxels());
+	fNoisyLayerPointCountHist = new TH1F("fNoisyLayerPointCountHist","fNoisyLayerPointCountHist",50,0.,50.);
 
 
 

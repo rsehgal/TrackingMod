@@ -40,6 +40,9 @@ private:
 
   TH1F *fWeightedCountHist;
 
+  //Added another histogram to use the idea for selecting threshold based on lower layers
+  TH1F *fNoisyLayerPointCountHist;
+
 
   //Histogram of Normlaized Weighted counts
   //TH1F* fNormalizedWeightedHist;
