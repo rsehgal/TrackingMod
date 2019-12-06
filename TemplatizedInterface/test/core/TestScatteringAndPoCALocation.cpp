@@ -45,12 +45,16 @@ int main(int argc, char *argv[]){
 
 	int totalNumOfVoxels = voxelator->GetTotalNumberOfVoxels();
 	TH1F *voxelHist = new TH1F("VoxelHistogram","VoxelHistogram",totalNumOfVoxels,0,totalNumOfVoxels);
+	TH1F *voxelHistNoisy = new TH1F("VoxelHistogram","VoxelHistogram",totalNumOfVoxels,0,totalNumOfVoxels);
 
 
-	TH1F *voxelPointCountHist = new TH1F("voxelPointCountHist","voxelPointCountHist",totalNumOfVoxels,0,totalNumOfVoxels);
+	TH1F *voxelPointCountHist = new TH1F("voxelPointCountHist","voxelPointCountHist",50,0,50);
+
 
 
 	std::ifstream infile(filename);
+
+	int numOfLayers=4;
 
 	while (!infile.eof()) {
 			//fTrackId++;
@@ -74,6 +78,9 @@ int main(int argc, char *argv[]){
 					int voxelNum = voxelator->GetVoxelNumber(poCA);
 					std::cout << "Voxel Num : " << voxelNum << std::endl;
 					voxelHist->Fill(voxelNum);
+					if((voxelNum < numOfLayers*numOfParts*numOfParts) || ( voxelNum > ((numOfParts-numOfLayers)*numOfParts*numOfParts) && voxelNum < totalNumOfVoxels))
+					//if( ( voxelNum > ((numOfParts-numOfLayers)*numOfParts*numOfParts) && voxelNum < totalNumOfVoxels))
+						voxelHistNoisy->Fill(voxelNum);
 			}
 			std::cout << "Scattering : " << scat << std::endl;
 
@@ -83,7 +90,7 @@ int main(int argc, char *argv[]){
 
 
 	//Reading the voxelHist histogram and creating another histogram for voxelPointCount
-	int numOfBins = voxelHist->GetSize();
+	int numOfBins = voxelHistNoisy->GetSize();
 
 	c->cd(1);
 	histScat->Draw();
@@ -91,16 +98,22 @@ int main(int argc, char *argv[]){
 	c->cd(2);
 	voxelHist->Draw();
 
+	c->cd(3);
+	voxelHistNoisy->Draw();
+
 	std::cout <<"NumOfBins from Histogram : " << numOfBins << std::endl;
 
 	for(unsigned int i = 1 ; i < numOfBins-1 ; i++){
 
-			double binContent = voxelHist->GetBinContent(i);
+			double binContent = voxelHistNoisy->GetBinContent(i);
 			//std::cout << "BinContent : " << binContent << std::endl;
-			//voxelPointCountHist->Fill(binCount);
+			if(binContent >= 1)
+			voxelPointCountHist->Fill(binContent);
 
 		}
-	c->cd(2);
+
+	c->cd(4);
+
 	voxelPointCountHist->Draw();
 
 
