@@ -255,6 +255,8 @@ void RunHelper::Store(){
 	vox->GetRLInVoxelsHist()->Draw("COLZ");
 	vox->GetRLInVoxelsHist()->Write();
 
+	vox->GetPocaPtCountHistOfNoisyVoxels()->Write();
+
 
 	int totalNumOfVoxels = Tomography::evolution::Voxelator::instance()->GetTotalNumberOfVoxels();
 	fWeightedCountHist = new TH1F("WeighedCountHist","WeighedCountHist",100, 0, totalNumOfVoxels);
@@ -470,6 +472,8 @@ void RunHelper::WriteToFile(){
 
 
     std::cout <<"Unscattered Count : " << EventHelper::fUnscatteredCounter << std::endl;
+    std::cout <<"Genuine Debugging Counter : " << EventHelper::fCounterrr << std::endl;
+
     //std::cout <<"PocaPtVector Size : " << fPocaPtVector.size() << std::endl;
 }
 

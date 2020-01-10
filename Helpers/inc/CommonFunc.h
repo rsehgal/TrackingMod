@@ -256,7 +256,7 @@ double Mean(std::vector<double> scatteringVect){
 #if(1)
 double StandardDeviation(std::vector<double> scatteringVect,bool forVoxel = false, int numOfBins = 1000){
    double mean = Mean(scatteringVect);
-   std::cout<<"Mean : " << mean << std::endl;
+   //std::cout<<"Mean : " << mean << std::endl;
    for(int i = 0 ; i < scatteringVect.size() ; i++){
    scatteringVect[i] -= mean;
    }

@@ -21,6 +21,7 @@ using Tracking::Vector3D;
 
 namespace Tomography {
 int EventHelper::fUnscatteredCounter = 0;
+unsigned int EventHelper::fCounterrr = 0;
 
 EventHelper::EventHelper() {
 	// TODO Auto-generated constructor stub
@@ -52,6 +53,8 @@ void EventHelper::Test2EventHelper(Track incoming, Track outgoing){
 #endif
 		}else{
 
+		std::cout << "@@@@@@@@@ Previous Counter Value : " << fCounterrr << std::endl;
+		std::cout << " ************ Processing PoCA .............." << std::endl;
 		CalculatePOCA();
 		CalculateVoxel_V2();
 #ifdef FIND_CANDIDATE_VOXEL
@@ -137,7 +140,10 @@ EventHelper::EventHelper(std::string fileToRead, std::string fileToWrite,bool fo
 
 	std::ofstream parHandle("Par.txt",std::ios::app);
 
+	unsigned int evNo = 0;
 	while (!infile.eof()) {
+		std::cout << "@@@@@ Processing Event Num : " << evNo << std::endl;
+		evNo++;
 		fTrackId++;
 		infile >> incomingTrackP1X >> incomingTrackP1Y >> incomingTrackP1Z
 				>> incomingTrackP2X >> incomingTrackP2Y >> incomingTrackP2Z
@@ -217,7 +223,8 @@ void EventHelper::CalculateScatterAngle(){
 	Tomography::Track ref(Vector3D<double>(0.,0.,0.),Vector3D<double>(0.,0.,-1.));
 	double angleIncoming = CommonFunc::Functions::instance()->GetAngleInRadian(fIncoming,ref);
 	double angleOutgoing = CommonFunc::Functions::instance()->GetAngleInRadian(fOutgoing,ref);
-	fScatteringAngle = angleOutgoing-angleIncoming;
+	//fScatteringAngle = angleOutgoing-angleIncoming;
+	fScatteringAngle = CommonFunc::Functions::instance()->GetAngleInRadian(fIncoming,fOutgoing);
 	//std::cout << "ScatteringAngle from EventHELPER : " << fScatteringAngle << std::endl;
 }
 
@@ -284,6 +291,8 @@ void EventHelper::CalculateVoxel(){
 void EventHelper::CalculateVoxel_V2(){
 	bool isGenuine = Tomography::evolution::Voxelator::instance()->IsGenuine(fPocaPt);
 	if(isGenuine){
+		std::cout << "@@@@@@@@@ Incrementing Counter............." << std::endl;
+		fCounterrr++;
 	int voxelNum = GetVoxelNum();
 	if(voxelNum < 0 || voxelNum > Tomography::evolution::Voxelator::instance()->GetTotalNumberOfVoxels())
 		return;

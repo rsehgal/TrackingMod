@@ -12,6 +12,8 @@
 #include <fstream>
 #include "CommonFunc.h"
 
+#define cm 10
+
 //using Tomography::VisualizationHelper;
 using Tracking::Vector3D;
 
@@ -21,22 +23,34 @@ int main(int argc, char *argv[]){
 	exit(1);
 #endif
 	Tomography::DetectorMapping::create("testMapping.txt");
+
 	const char* filename = argv[1];
 	int val = std::atoi(argv[2]);
+	int numOfParts = std::atoi(argv[3]);
 	int truePositive = 0 ;
 	int falsePositive = 0 ;
 	std::ifstream ft(filename);
 	double doca=0.;
 	double x=0.,y=0.,z=0, color=0;
+	std::ofstream tpPoca("TpPoca.txt");
+
+
+	double voxelSizeXY = (double)100/numOfParts;
+	double voxelSizeZ = (double)88/numOfParts;
+	double voxelVolume = voxelSizeXY*voxelSizeXY*voxelSizeZ;
+
     while(!ft.eof()){
     	ft >> x >> y >> z >> color >> doca;
     	std::cout << "X : " << x <<" : Y : " << y << " : Z : " << z << std::endl;
     	bool falsePos = CommonFunc::Functions::IsFalsePositivePoca<true>(Vector3D<double>(x,y,z));
     	if(falsePos)
     		falsePositive++;
-    	else
+    	else{
     		truePositive++;
+    		tpPoca << x << " " << y << " " << z << " " << color << " " << doca << std::endl;
+    	}
     }
+    tpPoca.close();
 
     double tpr = (double)truePositive / (truePositive+falsePositive);
     double fpr = (double)falsePositive / (truePositive+falsePositive);
@@ -45,6 +59,8 @@ int main(int argc, char *argv[]){
 
     std::ofstream tprHandle;
     std::ofstream fprHandle;
+    std::ofstream dataHandle("data.csv",std::ios::app);
+
 
 	if (val == 0) {
 		tprHandle.open("Tpr.txt", std::ios::app);
@@ -57,6 +73,8 @@ int main(int argc, char *argv[]){
     std::cout << "TPR : " << tpr <<" : FPR : " << fpr << std::endl;
     tprHandle << tpr << " " << error << " " ;
     fprHandle << fpr << " ";
+    dataHandle << voxelVolume << "," << tpr << "," << fpr << "," << truePositive << "," << falsePositive << std::endl;
+    dataHandle.close();
 
     tprHandle.close();
     fprHandle.close();

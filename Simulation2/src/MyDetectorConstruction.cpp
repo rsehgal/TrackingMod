@@ -317,6 +317,7 @@ G4VPhysicalVolume *brickLanePhy = new G4PVPlacement(0,
 	                                checkOverlaps);
   }
 
+
   //Different Scatterers for Reconstruction. A Box, Tube, Sphere
 /*
   G4Box *boxScatterer = new G4Box("BoxScatterer",10*cm,10*cm,10*cm);
@@ -336,7 +337,7 @@ G4VPhysicalVolume *brickLanePhy = new G4PVPlacement(0,
   	                               G4ThreeVector(0.,0.,0.),
 								   orbLogical,
   	                               "OrbPhysical",
-  	                               boxLogical,
+								   logicWorld,
   	                                false,
   	                                0,
   	                                checkOverlaps);

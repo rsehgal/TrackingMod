@@ -83,7 +83,7 @@ void Voxel_V2::CalcRadiationLength(){
 
 void Voxel_V2::CalcSD(){
 	std::vector<double> scatteringAngleVector = GetScatteringVector();
-	std::cout << "ScatteringAngleVectorSize for Voxel : " << scatteringAngleVector.size() << " : " << __FILE__ << " : " << __LINE__ << std::endl;
+	//std::cout << "ScatteringAngleVectorSize for Voxel : " << scatteringAngleVector.size() << " : " << __FILE__ << " : " << __LINE__ << std::endl;
 	fSD = CommonFunc::Functions::instance()->StandardDeviation(GetScatteringVector(),true);
 }
 
@@ -93,15 +93,15 @@ double Voxel_V2::GetMeanScattering(){
 
 std::vector<double> Voxel_V2::GetScatteringVector(){
 	std::vector<double> scatteringVect;
-	std::cout << "fPointCount : " << fPointCount <<" : " << __FILE__ << " : " << __LINE__ << std::endl;
+	//std::cout << "fPointCount : " << fPointCount <<" : " << __FILE__ << " : " << __LINE__ << std::endl;
 	std::cout << "----------------------------------------" << std::endl;
 	for(int i = 0  ; i < fPointCount ; i++){
-		std::cout << "ScatteringValue : " << fVectPointsInVoxel[i].GetColor() << std::endl;
+		//std::cout << "ScatteringValue : " << fVectPointsInVoxel[i].GetColor() << std::endl;
 		//std::cout << "ScatteringValue : " << fVectPointsInVoxel[i]->GetColor() << std::endl;
 		scatteringVect.push_back(fVectPointsInVoxel[i].GetColor());///1000.);
 		//scatteringVect.push_back(fVectPointsInVoxel[i]->GetColor());///1000.);
 	}
-	std::cout << "----------------------------------------" << std::endl;
+	//std::cout << "----------------------------------------" << std::endl;
 	return scatteringVect;
 }
 
