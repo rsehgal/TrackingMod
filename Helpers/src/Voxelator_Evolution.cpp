@@ -10,6 +10,7 @@ namespace evolution{
 Voxelator *Voxelator::s_instance = 0;
 
 #if(0)
+//Taking bottom layers as layer of noisy voxels
 void Voxelator::PredictThreshold(){
 	unsigned int numOfLayersToBeUsed = 2;
 	unsigned int numOfVoxelsInALayer = fVoxelatorDim.x()*fVoxelatorDim.y();
@@ -30,6 +31,37 @@ void Voxelator::PredictThreshold(){
 #endif
 
 #if(1)
+//Taking complete envelop of outer voxels as layers of noisy voxels
+void Voxelator::PredictThreshold(){
+	/*unsigned int numOfLayersToBeUsed = 2;
+	unsigned int numOfVoxelsInALayer = fVoxelatorDim.x()*fVoxelatorDim.y();
+	unsigned int numOfVoxelsUsedForThresholdSelection = numOfLayersToBeUsed*numOfVoxelsInALayer;
+	for(unsigned int i = 0 ; i < fVoxelVector.size() ; i++){
+			if(fVoxelVector[i]->GetVoxelNum() < numOfVoxelsUsedForThresholdSelection)
+				fNoisyLayerPointCountHist->Fill(fVoxelVector[i]->GetPointCount());
+		}*/
+
+	for(unsigned int i = 0 ; i < fBackgroundVoxelNumberVector.size() ; i++){
+		int voxelNum = fBackgroundVoxelNumberVector[i];
+		int voxelID = IfVoxelExist(voxelNum);
+		if(voxelID >=0 && voxelID < GetTotalNumberOfVoxels()){
+			fNoisyLayerPointCountHist->Fill(fVoxelVector[voxelID]->GetPointCount());
+		}
+	}
+
+
+	double stddev = fNoisyLayerPointCountHist->GetStdDev();
+	double mean = fNoisyLayerPointCountHist->GetMean();
+	double valsigma = Tomography::confidenceInterval;
+
+	double startx = mean - valsigma * stddev;
+	double endx = mean + valsigma * stddev;
+	fThresholdVal = endx;
+}
+#endif
+
+
+#if(0)
 void Voxelator::PredictThreshold(){
 
 #define USE_MAX_VAL
@@ -137,6 +169,16 @@ int Voxelator::IfVoxelExist(int voxelNum){
 	}else{
 		return -1;
 	}
+}
+
+bool Voxelator::IfVoxelExistInNoisyEnvelop(int voxelNum){
+	for (unsigned int i = 0 ; i < fBackgroundVoxelNumberVector.size() ; i++){
+		unsigned int voxNum = fBackgroundVoxelNumberVector[i];
+		if(voxNum == voxelNum){
+			return true;
+		}
+	}
+	return false;
 }
 
 std::vector<Voxel_V2*> Voxelator::GetFilteredVoxelVector(){
@@ -468,6 +510,40 @@ Voxelator::Voxelator(double voxelizedVolHalfX,double voxelizedVolHalfY, double v
 	fVoxelizedVolumeDim.Print();
 	fVoxelatorDim.Print();
 	int totalNumOfVoxels = fVoxelatorDim.x()*fVoxelatorDim.y()*fVoxelatorDim.z();
+	int numOfLayers = fVoxelatorDim.z();
+	int numOfParts = fVoxelatorDim.z();
+	int numOfVoxelsInOneLayer=fVoxelatorDim.x()*fVoxelatorDim.y();
+	//LowerLayer
+	for(unsigned int voxelNum = 0 ; voxelNum < numOfVoxelsInOneLayer; voxelNum++){
+		fBackgroundVoxelNumberVector.push_back(voxelNum);
+	}
+	//UpperLayer
+	for(unsigned int voxelNum = (numOfParts-1)*numOfVoxelsInOneLayer ; voxelNum < totalNumOfVoxels; voxelNum++){
+			fBackgroundVoxelNumberVector.push_back(voxelNum);
+	}
+	//LeftLayer and RightLayer
+	for(unsigned int lNo = 0 ; lNo < numOfLayers; lNo++){
+		for(unsigned int i = 0 ; i < numOfParts; i++){
+			unsigned int voxelNum = lNo*numOfVoxelsInOneLayer+(i*numOfParts);
+			fBackgroundVoxelNumberVector.push_back(voxelNum);
+
+			//RightLayer
+			voxelNum += (numOfParts-1);
+			fBackgroundVoxelNumberVector.push_back(voxelNum);
+		}
+	}
+	//FrontLayer and RearLayer
+	for(unsigned int lNo = 0 ; lNo < numOfLayers; lNo++){
+		for(unsigned int i = 0 ; i < numOfParts; i++){
+			unsigned int voxelNum =lNo*numOfVoxelsInOneLayer+i;
+			fBackgroundVoxelNumberVector.push_back(voxelNum);
+
+			//RearLayer
+			voxelNum += (numOfParts*(numOfParts-1));
+			fBackgroundVoxelNumberVector.push_back(voxelNum);
+		}
+	}
+
 
 	//Setting the size of fEachVoxelCountForAcceptance
 	fEachVoxelCountForAcceptance.resize(totalNumOfVoxels);

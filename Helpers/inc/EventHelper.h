@@ -35,12 +35,17 @@ class EventHelper {
 
 
 
+
+
+
 //#ifdef VOXELIZE
 	Voxel_V2 *fVoxel;
 //#endif
 
 
 public:
+	//Debuggin Counter;
+		static unsigned int fCounterrr;
 	unsigned int GetTrackId() const {return fTrackId;}
 	static int fUnscatteredCounter;
 	EventHelper();
