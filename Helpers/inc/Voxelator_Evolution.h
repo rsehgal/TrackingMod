@@ -40,6 +40,12 @@ private:
 
   TH1F *fWeightedCountHist;
 
+  //Added another histogram to use the idea for selecting threshold based on lower layers
+  TH1F *fNoisyLayerPointCountHist;
+
+  //Storing Voxel numbers of all the voxel that forms the outer envelop
+  std::vector<int> fBackgroundVoxelNumberVector;
+
 
   //Histogram of Normlaized Weighted counts
   //TH1F* fNormalizedWeightedHist;
@@ -120,6 +126,10 @@ public:
   TH1F* GetVoxelIn1DCount(){return fVoxelsIn1DCount;}
   TH1F* GetSDInVoxelsHist(){return fSDInVoxels;}
   TH1F* GetRLInVoxelsHist(){return fRLInVoxels;}
+
+  //Returning histogram of PocaPointCount in outer envelop of voxels
+  TH1F* GetPocaPtCountHistOfNoisyVoxels(){return fNoisyLayerPointCountHist;}
+
   void FillSDAndRLHist();
   void SetMaxMinSDAndRL();
   double GetMaxSD() const {return fMaxSD;}
@@ -163,6 +173,10 @@ public:
 
   //Some new functions taken from Voxel. This is correct place for them
   int IfVoxelExist(int voxelNum);
+
+  //if voxel number exists in outer envelop
+  bool IfVoxelExistInNoisyEnvelop(int voxelNum);
+
   void Insert(Tracking::Vector3D<double> point, int voxelNum, bool useEnclosingVoxels = false , double scatteringDensity = 0.);
   //void Insert(Tracking::Vector3D<double>, int voxelNum);
   void InsertCleanVoxel(int voxelNum);
@@ -207,6 +221,11 @@ public:
   //void CreateSDGraph();
 
   void PrintVoxelCenters();
+  void CalcSDOfEachVoxel(){
+	  for(unsigned int i = 0 ; i < fVoxelVector.size() ; i++){
+	          fVoxelVector[i]->CalcSD();
+	  }
+  }
 
 
   double GetAverageScatteringAngleInAVoxel(Vector3D<double> vox);

@@ -51,7 +51,7 @@ namespace Tomography{
 
  static unsigned long long int numOfTrigger = 0;
 
- constexpr double confidenceInterval = 2.;
+ constexpr double confidenceInterval = 3.;
 
  constexpr double unscatteringThreshold = 0.0005;
 

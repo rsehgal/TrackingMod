@@ -222,7 +222,11 @@ double GetAngleInRadian(Vector3D<double>In1, Vector3D<double>In2, Vector3D<doubl
 double GetAngleInRadian(Vector3D<double>InComing, Vector3D<double>Outgoing){
 	TVector3 incoming(InComing.x(),InComing.y(),InComing.z());
 	TVector3 outgoing(Outgoing.x(),Outgoing.y(),Outgoing.z());
-	return incoming.Angle(outgoing);
+	TVector3 ref(0.,0.,-1.);
+	double angleIncoming = incoming.Angle(ref);
+	double angleOutgoing = outgoing.Angle(ref);
+	//return incoming.Angle(outgoing);
+	return (angleOutgoing-angleIncoming);
 }
 
 double GetAngleInRadian(Tomography::Track InComing, Tomography::Track Outgoing){
@@ -252,7 +256,7 @@ double Mean(std::vector<double> scatteringVect){
 #if(1)
 double StandardDeviation(std::vector<double> scatteringVect,bool forVoxel = false, int numOfBins = 1000){
    double mean = Mean(scatteringVect);
-   std::cout<<"Mean : " << mean << std::endl;
+   //std::cout<<"Mean : " << mean << std::endl;
    for(int i = 0 ; i < scatteringVect.size() ; i++){
    scatteringVect[i] -= mean;
    }
@@ -308,7 +312,7 @@ void WriteToFile(std::string fileName, std::vector<double> scatteringVect){
    std::cout<< "Writing DONE, file CLOSE !! " << std::endl;
 }
 
-void WriteToFile(std::string fileName, std::vector<Vector3D<double>> ptVect, double cut=0.3){
+void WriteToFile(std::string fileName, std::vector<Vector3D<double>> ptVect, double cut=0.00000003){
    std::cout<<"Writing file " << fileName << "....  ";
    int count = 0 ;
    std::ofstream fileHandle(fileName);

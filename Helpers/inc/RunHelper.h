@@ -15,6 +15,7 @@
 #include "EventHelper.h"
 #include "TH1F.h"
 #include "TH3F.h"
+#include <TMath.h>
 //#include "Voxel.h"
 
 using Tracking::Vector3D;
@@ -40,6 +41,10 @@ class RunHelper {
 	  TH2F *fHist2DXY;
 	  TH2F *fHist2DYZ;
 	  TH2F *fHist2DXZ;
+	  TH1F *fHistVoxelSD;
+	  TH1F *fHistVoxelsScattering;
+
+
 
 
  	std::vector<double> fScatteringAngleVector;
@@ -130,6 +135,20 @@ public:
 //	std::vector<EventHelper*> GetEventHelperVector(){return fEventHelperVector;}
 //	void Insert(EventHelper *obj){fEventHelperVector.push_back(obj);}
 	virtual ~RunHelper();
+	static int npeaks;
+
+	static Double_t fpeaks2(Double_t *x, Double_t *par) {
+	   Double_t result = 0.1;
+	   for (Int_t p=0;p<npeaks;p++) {
+	      Double_t norm   = par[5*p+0];
+	      Double_t mean1  = par[5*p+1];
+	      Double_t sigma1 = par[5*p+2];
+	      Double_t mean2  = par[5*p+3];
+	      Double_t sigma2 = par[5*p+4];
+	      result += norm*TMath::Gaus(x[0],mean1,sigma1)*TMath::Gaus(x[1],mean2,sigma2);
+	   }
+	   return result;
+	}
 };
 
 } /* namespace Tomography */

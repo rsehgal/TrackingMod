@@ -12,9 +12,11 @@
 #include "Voxelator_Evolution.h"
 #include <TSpectrum2.h>
 #include <TSpectrum3.h>
+#include <TF2.h>
 
 namespace Tomography {
 RunHelper *RunHelper::s_instance = 0;
+int RunHelper::npeaks = 0;
 
 RunHelper* RunHelper::instance(std::string filename) {
         if (!s_instance)
@@ -253,6 +255,8 @@ void RunHelper::Store(){
 	vox->GetRLInVoxelsHist()->Draw("COLZ");
 	vox->GetRLInVoxelsHist()->Write();
 
+	vox->GetPocaPtCountHistOfNoisyVoxels()->Write();
+
 
 	int totalNumOfVoxels = Tomography::evolution::Voxelator::instance()->GetTotalNumberOfVoxels();
 	fWeightedCountHist = new TH1F("WeighedCountHist","WeighedCountHist",100, 0, totalNumOfVoxels);
@@ -262,16 +266,19 @@ void RunHelper::Store(){
 	fBareScatteringAngleHist = new TH1F("BareScatteringAngleHist","BareScatteringAngleHist",1000,-M_PI/2.,M_PI/2.);
 
 
-	fHistOfCount= new TH1F("Hist of Count","Hist of Count",1000,0,1000);
+	fHistOfCount= new TH1F("Hist of Count","Hist of Count",50,0,50);
 	fHist3DCount= new TH3F("Hist3DCount","Hist3DCount",20,-500,500,20,-500,500,20,-450,450);
 	fHist2DXY = new TH2F("Hist2DXY","Hist2DXY",20,-500.,500.0,20,-500.,500.0);
 	fHist2DYZ = new TH2F("Hist2DYZ","Hist2DYZ",20,-500.,500.0,20,-450.,450.0);
 	fHist2DXZ = new TH2F("Hist2DXZ","Hist2DXZ",20,-500.,500.0,20,-450.,450.0);
+	fHistVoxelSD = new TH1F("SDInEachVoxel","SD In Each Voxel",totalNumOfVoxels, 0, totalNumOfVoxels);
+	fHistVoxelsScattering = new TH1F("HistOfMeanScattering","HistOfMeanScatteringInVoxel",50, 0, 0.1);
 
 	//Normalizing the count in each voxel
 	Tomography::evolution::Voxelator::instance()->NormalizeEachVoxelCount();
 	Tomography::evolution::Voxelator::instance()->NormalizeEachVoxelScatteringValue();
 
+	std::ofstream pocaPtCount("pocaPointCount.txt");
 	int weightedCounter=0;
 	for(int i = 0 ; i < fVoxelVector.size() ; i++){
 
@@ -279,6 +286,10 @@ void RunHelper::Store(){
 
 
 		std::vector<Tracking::Vector3D<double>> pocaPtVector = fVoxelVector[i]->GetPocaPointsVector();
+
+		fHistVoxelSD->SetBinContent(voxelNum,fVoxelVector[i]->GetStandardDeviation());
+		fHistVoxelsScattering->Fill(fVoxelVector[i]->GetMeanSquareScattering());
+
 		for(unsigned int j = 0 ; j < pocaPtVector.size(); j++){
 
 				fBareScatteringAngleHist->Fill(pocaPtVector[j].GetColor());
@@ -289,6 +300,8 @@ void RunHelper::Store(){
 
 		int count = fVoxelVector[i]->GetPointCount();
 		fHistOfCount->Fill(count);
+
+		pocaPtCount << count << std::endl;
 
 		Tracking::Vector3D<double> voxCenter = fVoxelVector[i]->GetVoxelCenter();
 		double centerX=voxCenter.x();
@@ -312,12 +325,17 @@ void RunHelper::Store(){
 		fNormalizedScatteringValueHist->SetBinContent(voxelNum,fVoxelVector[i]->GetNormalizedScatteringValue());
 	}
 
+	pocaPtCount.close();
+
 	fWeightedCountHist->Write();
 	fNormalizedWeightedHist->Write();
 	fNormalizedScatteringValueHist->Write();
 	fWHist->Write();
 	fBareScatteringAngleHist->Write();
 	fHistOfCount->Write();
+
+	fHistVoxelSD->Write();
+	fHistVoxelsScattering->Write();
 
 	{
 			std::cout <<"===== Printing peaks info for XYZ i.e. directly in 3D ==========" << std::endl;
@@ -347,6 +365,7 @@ void RunHelper::Store(){
 		std::cout <<"===== Printing peaks info for XY ==========" << std::endl;
 		TSpectrum2 *s = new TSpectrum2();
 	Int_t nfound = s->Search(fHist2DXY,1.6,"",0.1);
+	npeaks=nfound;
 	std::cout << "Num Of peaks : " << nfound << std::endl;
 	double *posX = new double[nfound];
 	double *posY = new double[nfound];
@@ -355,6 +374,19 @@ void RunHelper::Store(){
 	for(int peakIndex = 0 ; peakIndex < nfound ; peakIndex++){
 		std::cout << "Location of Peak : " << (peakIndex+1) << " : X " << posX[peakIndex] << " : Y : " << posY[peakIndex] << std::endl;
 	}
+
+
+	//Trying to do a 2D Gaussian Fit
+	double xmin=-500.;
+	double xmax=500;
+	double ymin=-500.;
+	double ymax=500;
+
+	TF2 *f2 = new TF2("f2",fpeaks2,xmin,xmax,ymin,ymax,5*nfound);
+	f2->SetNpx(100);
+	f2->SetNpy(100);
+
+
 	delete s;
 	}
 
@@ -440,6 +472,8 @@ void RunHelper::WriteToFile(){
 
 
     std::cout <<"Unscattered Count : " << EventHelper::fUnscatteredCounter << std::endl;
+    std::cout <<"Genuine Debugging Counter : " << EventHelper::fCounterrr << std::endl;
+
     //std::cout <<"PocaPtVector Size : " << fPocaPtVector.size() << std::endl;
 }
 
