@@ -14,9 +14,12 @@
 #include <fstream>
 #include "Stats.h"
 #include "TApplication.h"
+#include "TCanvas.h"
+#include "TStyle.h"
 
 int main(int argc, char *argv[]){
 	TApplication *fApp = new TApplication("Test", NULL, NULL);
+	gStyle->SetOptStat(0);
 	if(argc == 1){
 		std::cerr << "=======================================\n"
 				  << "Please provided the required argument \n\n"
@@ -44,6 +47,9 @@ int main(int argc, char *argv[]){
 	double momentum = 0.;
 
 	unsigned int genuineCounter=0;
+
+	int totalNumOfVoxels = voxelator->GetTotalNumberOfVoxels();
+	TH1F *voxelHist = new TH1F("VoxelHistogram","VoxelHistogram",totalNumOfVoxels,0,totalNumOfVoxels);
 
 	std::ofstream outfile("PoCAGenuineSD.txt");
 
@@ -78,6 +84,7 @@ int main(int argc, char *argv[]){
 					genuineCounter++;
 					outfile << poca.x() <<" "<< poca.y() <<" "<< poca.z() <<" "<< poca.GetColor() <<" "<< poca.GetDoCA() << std::endl;
 					int voxelNum = voxelator->GetVoxelNumber(poca);
+					voxelHist->Fill(voxelNum);
 					int voxNum = Tomography::evolution::Voxelator::instance()->IfVoxelExist(voxelNum);
 					if (voxNum < 0.) {
 
@@ -90,8 +97,9 @@ int main(int argc, char *argv[]){
 	}
 
 	voxelator->CalcSDOfEachVoxel();
-	int totalNumOfVoxels = voxelator->GetTotalNumberOfVoxels();
 	TH1F *sdOfEachVoxel = new TH1F("SDofEachVoxel","SDofEachVoxel",totalNumOfVoxels,0,totalNumOfVoxels);
+	TH1F *filteredHist = new TH1F("filteredHist","filteredHist",totalNumOfVoxels,0,totalNumOfVoxels);
+
 	for(unsigned int i = 0 ; i < voxelator->GetVoxelVector().size() ; i++){
 		sdOfEachVoxel->SetBinContent(voxelator->GetVoxelVector()[i]->GetVoxelNum(),voxelator->GetVoxelVector()[i]->GetStandardDeviation());
 	}
@@ -103,6 +111,7 @@ int main(int argc, char *argv[]){
 			for(unsigned int j = 0 ; j < voxel->GetPocaPointsVector().size() ; j++){
 				pocaPtVector.push_back(voxel->GetPocaPointsVector()[j]);
 			}
+			filteredHist->SetBinContent(voxel->GetVoxelNum(),voxel->GetPointCount());
 		}
 	}
 
@@ -113,6 +122,14 @@ int main(int argc, char *argv[]){
 	outfile.close();
 
 	sdOfEachVoxel->Draw();
+
+	new TCanvas();
+	filteredHist->Draw();
+
+	new TCanvas();
+	voxelHist->Draw();
+
+
 	fApp->Run();
 }
 
