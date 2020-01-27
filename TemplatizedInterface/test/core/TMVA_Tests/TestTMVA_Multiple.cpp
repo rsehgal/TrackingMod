@@ -173,7 +173,7 @@ int main(int argc, char *argv[]){
 //	std::string type = std::string(argv[1]);
 	//std::string fileToRead = "Track"+type+mat+".txt";
 //	std::string fileToRead = "Track"+type+".txt";
-	std::string fileToRead = std::string(argv[1]);
+	std::string fileToRead = std::string(argv[1])+".txt";
 	CommonFunc::GetTracksVector(fileToRead,incomingTrackVector,outgoingTrackVector, momentumVector);
 	std::cout << "Ayush : Total Number of Tracks : " << incomingTrackVector.size() << std::endl;
 
