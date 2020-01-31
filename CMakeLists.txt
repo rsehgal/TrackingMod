@@ -34,6 +34,14 @@ endif()
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${PROJECT_SOURCE_DIR}/cmake/modules)
 
 include(MacroUtilities)
+include(cmake/GitUtils.cmake)
+message(STATUS "Cloning Machine Learning Code....")
+git_clone(
+             PROJECT_NAME                    MachineLearning
+             GIT_URL                         http://github.com/rsehgal/MachineLearning.git
+             GIT_BRANCH						 master
+             
+       )
 ################################################################################
 
 # see if we have CCACHE ( to avoid recompilation on branch switches )
