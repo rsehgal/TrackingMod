@@ -33,15 +33,6 @@ endif()
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${PROJECT_SOURCE_DIR}/cmake/modules)
 
-include(MacroUtilities)
-include(cmake/GitUtils.cmake)
-message(STATUS "Cloning Machine Learning Code....")
-git_clone(
-             PROJECT_NAME                    MachineLearning
-             GIT_URL                         http://github.com/rsehgal/MachineLearning.git
-             GIT_BRANCH						 master
-             
-       )
 ################################################################################
 
 # see if we have CCACHE ( to avoid recompilation on branch switches )
@@ -93,6 +84,19 @@ option(USE_UNSCATTERED_TRACKS "Use Unscattered tracks to do some filtering" OFF)
 option(TPR_ANALYSIS "Switch on TPR analysis" OFF)
 option(TWO_SIGMA_THRESHOLD "Use Two Sigma to automatically select Threshold" OFF)
 option(USE_TRIGGER "Use Event from two fold coincidence trigger" OFF)
+option(INCLUDE_MACHINE_LEARNING "Clone the Machine Learning code" OFF)
+
+if(INCLUDE_MACHINE_LEARNING)
+include(MacroUtilities)
+include(cmake/GitUtils.cmake)
+message(STATUS "Cloning Machine Learning Code....")
+git_clone(
+             PROJECT_NAME                    MachineLearning
+             GIT_URL                         http://github.com/rsehgal/MachineLearning.git
+             GIT_BRANCH						 master
+             
+       )
+endif(INCLUDE_MACHINE_LEARNING)
 
 if(USE_TRIGGER)
 add_definitions(-DUSE_TRIGGER)
