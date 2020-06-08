@@ -28,6 +28,22 @@ EventHelper::EventHelper() {
 
 }
 
+//New constructor to directly handle filtered file
+EventHelper::EventHelper(std::string fileToRead) {
+	// TODO Auto-generated constructor stub
+	std::ifstream infile(fileToRead);
+	while(!infile.eof()){
+			double x=0.,y=0.,z=0.,matClass=0.;
+			unsigned int voxelNum=0.;
+			infile >> x >> y >> z >> matClass >> voxelNum;
+			//std::cout << x << " " <<  y << " " << z << " " <<  matClass << " " << voxelNum << std::endl;
+			fPocaPt.Set(x,y,z,matClass);
+			//fPocaPt.Print();
+			CalculateVoxel_V2(true);
+	}
+
+}
+
 EventHelper::~EventHelper() {
 	// TODO Auto-generated destructor stub
 }
@@ -288,16 +304,17 @@ void EventHelper::CalculateVoxel(){
 */
 
 
-void EventHelper::CalculateVoxel_V2(){
+void EventHelper::CalculateVoxel_V2(bool scatterConditionCheck){
 	bool isGenuine = Tomography::evolution::Voxelator::instance()->IsGenuine(fPocaPt);
 	if(isGenuine){
-		std::cout << "@@@@@@@@@ Incrementing Counter............." << std::endl;
+		//std::cout << "@@@@@@@@@ Incrementing Counter............." << std::endl;
 		fCounterrr++;
 	int voxelNum = GetVoxelNum();
+	//std::cout << "Calculated Voxel Num : " << voxelNum << std::endl;
 	if(voxelNum < 0 || voxelNum > Tomography::evolution::Voxelator::instance()->GetTotalNumberOfVoxels())
 		return;
 	int voxNum = Tomography::evolution::Voxelator::instance()->IfVoxelExist(voxelNum);
-	if (std::fabs(fScatteringAngle) > Tomography::unscatteringThreshold){
+	if (scatterConditionCheck || std::fabs(fScatteringAngle) > Tomography::unscatteringThreshold){
     	if(voxNum < 0.){
 			//fVoxel = new Voxel(fPocaPt,voxelNum);
     		//Tomography::evolution::Voxelator::instance()->Insert(fPocaPt,voxelNum);

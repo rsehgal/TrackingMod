@@ -11,6 +11,7 @@
 #include "base/Vector3D.h"
 #include "base/Global.h"
 #include <vector>
+#include <TH1F.h>
 
 namespace Tomography {
 
@@ -40,6 +41,10 @@ class Voxel_V2 {
 
 	//To store if the voxel is clean
 	int fCleanCount;
+
+	//Histogram of Predicted Class
+	TH1F *fClassHist;
+
 public:
 	Voxel_V2();
 	Voxel_V2(Tracking::Vector3D<double> pocaPt, int voxelNum);
@@ -89,6 +94,18 @@ public:
 	}
 
 	void Print();
+
+	/*
+	 * Belwo two function are required only when using ML related Classification,
+	 * otherwise not required at all.
+	 *
+	 * FillClassHist() : Function to fill the class histogram for individual voxel
+	 * GetClassHist() : Function to return the class histogram for individual voxel
+	*/
+	void FillClassHist();
+	TH1F* GetClassHist()const {return fClassHist;}
+
+
 
 	virtual ~Voxel_V2();
 

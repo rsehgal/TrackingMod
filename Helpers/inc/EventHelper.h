@@ -56,6 +56,10 @@ public:
 
 	//This is a very special constructor and will be used during offline analysis
 	EventHelper(std::string fileToRead, std::string fileToWrite,bool forSimulation=true);
+
+	//New constructor to directly handle filtered file
+	EventHelper(std::string fileToRead);
+
 	//Function to get the vector of clean voxel numbers
 	std::vector<int> VoxelFinder(Tomography::Track track);
 
@@ -73,7 +77,7 @@ public:
 	void CalculatePOCA();
 	void CalculateScatterAngle();
 	//void CalculateVoxel();
-	void CalculateVoxel_V2();
+	void CalculateVoxel_V2(bool scatterConditionCheck=false);
 
 	//Special function to make use of unscattered tracks.
 	void CalculateVoxel_V3(Tomography::Track trackIncoming,Tomography::Track trackOutgoing);

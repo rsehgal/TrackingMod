@@ -33,6 +33,9 @@ Voxel_V2::Voxel_V2(Tracking::Vector3D<double> pocaPt, int voxelNum) {
 	fOutlier = fPointCount < fMinPointsInVoxel;
 	fVoxelCenter = Tomography::evolution::Voxelator::instance()->GetVoxelCenter(fVoxelNum,valid);
 	fCleanCount = 0;
+
+	//Creating object for histogram of classes (for the time being taking only 10 classes)
+	fClassHist = new TH1F("ClassHist","ClassHist",11,0,11);
 }
 
 Voxel_V2::Voxel_V2(int voxelNum){
@@ -51,6 +54,16 @@ Voxel_V2::Voxel_V2(int voxelNum){
 
 }
 
+/*
+ * Required only when using ML related Classification,
+ * otherwise not required at all
+*/
+void Voxel_V2::FillClassHist(){
+	for(unsigned int i = 0 ; i < fVectPointsInVoxel.size(); i++){
+		//std::cout << "Color : " << fVectPointsInVoxel[i].GetColor() << std::endl;
+		fClassHist->Fill(fVectPointsInVoxel[i].GetColor());
+	}
+}
 
 void Voxel_V2::Print(){
 	std::cout << "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@" << std::endl;
