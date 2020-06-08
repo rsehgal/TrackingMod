@@ -251,6 +251,7 @@ public:
 
   //Member function to predict the threshold for Weighted Count
   void PredictWeightedThreshold(TH1F *hist);
+  void PredictWeightedThreshold();
   double GetWeightedThresholdVal() const {return fWeightedThresholdVal;}
 
 

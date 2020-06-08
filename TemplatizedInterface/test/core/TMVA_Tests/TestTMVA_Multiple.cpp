@@ -58,8 +58,8 @@ int main(int argc, char *argv[]){
 			std::cerr << "=======================================\n"
 					  << "Please provided the required argument \n\n"
 					  << "Following are possible values : Exact OR Fitted \n\n"
-					  << "./TestTMVA_Multiple <Exact/Fitted>\n"
-					  << "./TestTMVA_Multiple Exact\n"
+					  << "./TestTMVA_Multiple <TrackExact/TrackSampledFitted>\n"
+					  << "./TestTMVA_Multiple TrackExact\n"
 					  << "=======================================\n";
 			return 1;
 		}

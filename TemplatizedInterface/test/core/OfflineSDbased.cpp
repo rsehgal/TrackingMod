@@ -104,10 +104,14 @@ int main(int argc, char *argv[]){
 		sdOfEachVoxel->SetBinContent(voxelator->GetVoxelVector()[i]->GetVoxelNum(),voxelator->GetVoxelVector()[i]->GetStandardDeviation());
 	}
 
+	voxelator->PredictWeightedThreshold();
+	double threshold = voxelator->GetWeightedThresholdVal();
+	std::cout <<"Chosen threhold : "<< threshold << std::endl;
 	std::vector<Tracking::Vector3D<double>> pocaPtVector;
 	for(unsigned int i = 0 ; i < voxelator->GetVoxelVector().size() ; i++){
 		Tomography::Voxel_V2 *voxel= voxelator->GetVoxelVector()[i];
-		if((int)(voxel->GetStandardDeviation()*voxel->GetPointCount()) > 0){
+		//if((int)(voxel->GetStandardDeviation()*voxel->GetPointCount()) > 0){
+		if((voxel->GetStandardDeviation()*voxel->GetPointCount()) > threshold){
 			for(unsigned int j = 0 ; j < voxel->GetPocaPointsVector().size() ; j++){
 				pocaPtVector.push_back(voxel->GetPocaPointsVector()[j]);
 			}

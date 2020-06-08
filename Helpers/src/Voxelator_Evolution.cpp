@@ -58,6 +58,34 @@ void Voxelator::PredictThreshold(){
 	double endx = mean + valsigma * stddev;
 	fThresholdVal = endx;
 }
+
+void Voxelator::PredictWeightedThreshold(){
+	/*unsigned int numOfLayersToBeUsed = 2;
+	unsigned int numOfVoxelsInALayer = fVoxelatorDim.x()*fVoxelatorDim.y();
+	unsigned int numOfVoxelsUsedForThresholdSelection = numOfLayersToBeUsed*numOfVoxelsInALayer;
+	for(unsigned int i = 0 ; i < fVoxelVector.size() ; i++){
+			if(fVoxelVector[i]->GetVoxelNum() < numOfVoxelsUsedForThresholdSelection)
+				fNoisyLayerPointCountHist->Fill(fVoxelVector[i]->GetPointCount());
+		}*/
+
+	for(unsigned int i = 0 ; i < fBackgroundVoxelNumberVector.size() ; i++){
+		int voxelNum = fBackgroundVoxelNumberVector[i];
+		int voxelID = IfVoxelExist(voxelNum);
+		if(voxelID >=0 && voxelID < GetTotalNumberOfVoxels()){
+			fNoisyLayerPointCountHist->Fill(fVoxelVector[voxelID]->GetPointCount()*fVoxelVector[voxelID]->GetStandardDeviation());
+		}
+	}
+
+
+	double stddev = fNoisyLayerPointCountHist->GetStdDev();
+	double mean = fNoisyLayerPointCountHist->GetMean();
+	double valsigma = Tomography::confidenceInterval;
+	std::cout << "Raman SD : " << stddev <<" : Mean : " << mean << std::endl;
+
+	double startx = mean - valsigma * stddev;
+	double endx = mean + valsigma * stddev;
+	fWeightedThresholdVal = endx;
+}
 #endif
 
 
@@ -108,6 +136,7 @@ void Voxelator::PredictThreshold(){
 }
 
 #endif
+
 
 void Voxelator::PredictWeightedThreshold(TH1F *hist){
 
