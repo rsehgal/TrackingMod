@@ -22,7 +22,7 @@
 #include "Imaging.h"
 #include "base/Global.h"
 #include <map>
-
+#include <fstream>
 /*
  * Test Code to convert the Data from TrackExact.txt to ROOT tree format
  * that can be used directly in machine learning algorithm using
@@ -186,7 +186,7 @@ int main(int argc, char *argv[]){
 	int sigCounter=0;
 	int backCounter=0;
 
-
+	std::ofstream fileToWrite("train.csv");
 	for (int i = 0; i < incomingTrackVector.size(); i++) {
 		std::cout << "Shachi : Processing Event no : " << i << std::endl;
 		Tomography::Track incoming = incomingTrackVector[i];
@@ -198,6 +198,18 @@ int main(int argc, char *argv[]){
 
 		//s.Print();
 		std::cout << s.sPr << " , " << s.sDeltaThetaX << " , " << s.sDeltaThetaY << " , " << s.sDeltaX << " , " << s.sDeltaY << std::endl;
+		/*
+                std::string mat = CommonFunc::Functions::material;
+                fileToWrite << pocaPt.GetColor() << " , " << s.sDeltaThetaX << " , " << s.sDeltaThetaY << " , " << s.sDeltaX << " , " << s.sDeltaY <<  " , " << s.sPr <<  " , " << material[mat] << std::endl;
+                */
+                if(falsePos){
+                        fileToWrite << pocaPt.GetColor() << " , " << s.sDeltaThetaX << " , " << s.sDeltaThetaY << " , " << s.sDeltaX << " , " << s.sDeltaY <<  " , " << s.sPr <<  " , " << material["BG"] << std::endl;
+                }else{
+                        std::string mat = CommonFunc::Functions::material;
+                        fileToWrite << pocaPt.GetColor() << " , " << s.sDeltaThetaX << " , " << s.sDeltaThetaY << " , " << s.sDeltaX << " , " << s.sDeltaY <<  " , " << s.sPr <<  " , " << material[mat] << std::endl;
+                }
+                
+
 
 		if(falsePos){
 			backCounter++;
