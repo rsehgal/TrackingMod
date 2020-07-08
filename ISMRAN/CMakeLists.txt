@@ -45,6 +45,7 @@ file(COPY ${MAC_FILES} DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 include(${Geant4_USE_FILE})
 include_directories(${PROJECT_SOURCE_DIR}/inc)
 include_directories(../..)
+include_directories(../base)
 file(GLOB sources ${PROJECT_SOURCE_DIR}/src/*.cpp ${PROJECT_SOURCE_DIR}/src/*.cc)
 file(GLOB headers ${PROJECT_SOURCE_DIR}/inc/*.h ${PROJECT_SOURCE_DIR}/inc/*.hh ../../base/Vector3D.h) 
 

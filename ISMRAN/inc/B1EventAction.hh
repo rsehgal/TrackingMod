@@ -15,6 +15,7 @@ class B1EventAction : public G4UserEventAction
 static int evNo;
 public:
 static std::vector<G4ThreeVector> position;
+static std::vector<G4ThreeVector> smearedPosition;
 
 
   public:

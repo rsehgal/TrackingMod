@@ -29,11 +29,27 @@ typedef std::vector<Module> ModuleVector;
 
 #define PI 3.14159265359
 
+double begin=-500;
+double end=500;
+
 class Global{
 public:
 	Global(){}
 static double GenRandomDet(double min, double max) {
   return (rand() / (static_cast<double>(RAND_MAX) + 1.0)) * (max - min) + min;
+}
+
+static double GetSmeared(double around, double deviation) {
+	//Resetting begin and end for the current event
+	begin=-500;
+	end=500;
+	if((around-deviation) > begin)
+		begin=(around-deviation);
+	if((around+deviation) < end)
+		end=(around+deviation);
+	std::cout << "Around : " << around << " : Begin : " << begin <<" : End : " << end << std::endl;
+	return GenRandomDet(begin,end);
+
 }
 
 };

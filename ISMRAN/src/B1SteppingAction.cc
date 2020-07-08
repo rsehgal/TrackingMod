@@ -11,7 +11,8 @@
 //#include <experimental/random>
 #include <ctime>
 #include <cstdlib>
-//#include "base/Global.h"
+#include "../base/Global.h"
+#include "G4SystemOfUnits.hh"
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
@@ -54,6 +55,10 @@ stepNum++;
 	G4ThreeVector hitLocation = point1->GetPosition();
 	std::cout << "HitLocation : " << hitLocation << std::endl;
 	B1EventAction::position.push_back(hitLocation);
+	//Generating the smeared hit location. Make sure the smeared location does not lie outside the length of PsBar
+	G4ThreeVector smearedHitLocation = G4ThreeVector(hitLocation.x(),Tracking::Global::GetSmeared(hitLocation.y(),5.*cm),hitLocation.z());
+	B1EventAction::smearedPosition.push_back(smearedHitLocation);
+	std::cout << "SmearedHitLocation : " << smearedHitLocation << std::endl;
   }
 
 

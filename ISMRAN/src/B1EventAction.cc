@@ -11,6 +11,7 @@
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 int B1EventAction::evNo = 0;
 std::vector<G4ThreeVector> B1EventAction::position({G4ThreeVector(0.,0.,0.)});
+std::vector<G4ThreeVector> B1EventAction::smearedPosition({G4ThreeVector(0.,0.,0.)});
 
 B1EventAction::B1EventAction()
 : G4UserEventAction(){} 
