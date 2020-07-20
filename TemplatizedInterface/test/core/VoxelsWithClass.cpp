@@ -64,6 +64,7 @@ int main(int argc, char *argv[]){
 	std::cout<<"Size of Voxel Vector : " << voxelVector.size() << std::endl;
 	for(unsigned int i = 0 ; i < voxelVector.size() ; i++){
 		Vector3D<double> voxCenter = voxelVector[i]->GetVoxelCenter();
+		voxelVector[i]->FillClassHist();
 		TH1F *h=voxelVector[i]->GetClassHist();
 		int binmax = h->GetMaximumBin();
 		//double x = h->GetXaxis()->GetBinCenter(binmax);
@@ -74,8 +75,8 @@ int main(int argc, char *argv[]){
 					 << " " << binmax << " " << binmax << std::endl;
 
 	}
-	voxelVector[0]->FillClassHist();
-	voxelVector[0]->GetClassHist()->Draw();
+	//voxelVector[0]->FillClassHist();
+	//voxelVector[0]->GetClassHist()->Draw();
 
 	outVoxelFile.close();
 	fApp->Run();
