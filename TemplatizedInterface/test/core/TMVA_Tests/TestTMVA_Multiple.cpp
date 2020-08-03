@@ -203,10 +203,13 @@ int main(int argc, char *argv[]){
                 fileToWrite << pocaPt.GetColor() << " , " << s.sDeltaThetaX << " , " << s.sDeltaThetaY << " , " << s.sDeltaX << " , " << s.sDeltaY <<  " , " << s.sPr <<  " , " << material[mat] << std::endl;
                 */
                 if(falsePos){
-                        fileToWrite << pocaPt.GetColor() << " , " << s.sDeltaThetaX << " , " << s.sDeltaThetaY << " , " << s.sDeltaX << " , " << s.sDeltaY <<  " , " << s.sPr <<  " , " << material["BG"] << std::endl;
+                        fileToWrite << pocaPt.GetColor() << " , " << s.sDeltaThetaX << " , " << s.sDeltaThetaY << " , " << s.sDeltaX << " , "
+                        		<< s.sDeltaY << " , "<< s.sIncomingThetaX << " , "<< s.sIncomingThetaY << " , " << s.sOutgoingThetaX << " , " << s.sOutgoingThetaY << " , " << s.sPr <<  " , " << material["BG"] << std::endl;
                 }else{
                         std::string mat = CommonFunc::Functions::material;
-                        fileToWrite << pocaPt.GetColor() << " , " << s.sDeltaThetaX << " , " << s.sDeltaThetaY << " , " << s.sDeltaX << " , " << s.sDeltaY <<  " , " << s.sPr <<  " , " << material[mat] << std::endl;
+                        //fileToWrite << pocaPt.GetColor() << " , " << s.sDeltaThetaX << " , " << s.sDeltaThetaY << " , " << s.sDeltaX << " , " << s.sDeltaY <<  " , " << s.sPr <<  " , " << material[mat] << std::endl;
+                        fileToWrite << pocaPt.GetColor() << " , " << s.sDeltaThetaX << " , " << s.sDeltaThetaY << " , " << s.sDeltaX << " , "
+                                                		<< s.sDeltaY << " , "<< s.sIncomingThetaX << " , "<< s.sIncomingThetaY << " , " << s.sOutgoingThetaX << " , " << s.sOutgoingThetaY << " , " << s.sPr <<  " , " << material[mat] << std::endl;
                 }
                 
 
