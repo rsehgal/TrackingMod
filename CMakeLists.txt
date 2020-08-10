@@ -353,6 +353,7 @@ ${CMAKE_SOURCE_DIR}/TemplatizedInterface/test
 ${CMAKE_SOURCE_DIR}/TemplatizedInterface/test/core
 ${CMAKE_SOURCE_DIR}/TemplatizedInterface/test/core/MLEM_Tests
 ${CMAKE_SOURCE_DIR}/TemplatizedInterface/test/core/TMVA_Tests
+${CMAKE_SOURCE_DIR}/TemplatizedInterface/test/core/ISMRAN_Tests
 ${CMAKE_SOURCE_DIR}/TemplatizedInterface/test/plots
 if(GEANT4)
 ${CMAKE_SOURCE_DIR}/Simulations/MST/test
