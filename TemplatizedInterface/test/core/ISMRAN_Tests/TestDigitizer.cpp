@@ -36,6 +36,7 @@ const int offset=0;
 const double kDelTBar = 32.0; //! ns
 TStopwatch timer;
 unsigned int numOfLayers=3;
+unsigned int numOfBarsInEachLayer=9;
 
 std::map<std::string,TH1D*> barsEnergyMap;
 std::vector<TH1D*> vecOfEnergyHist;
@@ -396,14 +397,14 @@ void FillCoincidenceHist(std::vector< std::vector<ScintillatorBar*> > muonTrackV
 	for(unsigned int i = 0 ; i < muonTrackVecLength ; i++){
 		std::vector<ScintillatorBar*> singleMuonTrack=muonTrackVec[i];
 		//unsigned int binToFill = 9*(singleMuonTrack[numOfLayers-1]->barIndex)+(singleMuonTrack[0]->barIndex);
-		unsigned int binToFill = 9*(singleMuonTrack[0]->barIndex)+(singleMuonTrack[numOfLayers-1]->barIndex-9);
+		//unsigned int binToFill = numOfBarsInEachLayer*(singleMuonTrack[0]->barIndex)+(singleMuonTrack[numOfLayers-1]->barIndex-9);
 		//std::cout << "Bin To Fill : " << binToFill << std::endl;
-		coincidenceHist->Fill(binToFill);
-		coincidenceHist2D->Fill(singleMuonTrack[0]->barIndex,singleMuonTrack[numOfLayers-1]->barIndex-18);
+//		/coincidenceHist->Fill(binToFill);
+		coincidenceHist2D->Fill(singleMuonTrack[0]->barIndex,singleMuonTrack[numOfLayers-1]->barIndex-(numOfBarsInEachLayer*(numOfLayers-1)));
 
 	}
-	new TCanvas();
-	coincidenceHist->Draw();
+	//new TCanvas();
+	//coincidenceHist->Draw();
 	new TCanvas();
 	coincidenceHist2D->Draw("LEGO2");
 	return;
