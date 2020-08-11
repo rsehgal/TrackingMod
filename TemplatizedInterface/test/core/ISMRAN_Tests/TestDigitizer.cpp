@@ -397,7 +397,7 @@ void FillCoincidenceHist(std::vector< std::vector<ScintillatorBar*> > muonTrackV
 		std::vector<ScintillatorBar*> singleMuonTrack=muonTrackVec[i];
 		//unsigned int binToFill = 9*(singleMuonTrack[numOfLayers-1]->barIndex)+(singleMuonTrack[0]->barIndex);
 		unsigned int binToFill = 9*(singleMuonTrack[0]->barIndex)+(singleMuonTrack[numOfLayers-1]->barIndex-9);
-		std::cout << "Bin To Fill : " << binToFill << std::endl;
+		//std::cout << "Bin To Fill : " << binToFill << std::endl;
 		coincidenceHist->Fill(binToFill);
 		coincidenceHist2D->Fill(singleMuonTrack[0]->barIndex,singleMuonTrack[numOfLayers-1]->barIndex-18);
 
@@ -405,7 +405,7 @@ void FillCoincidenceHist(std::vector< std::vector<ScintillatorBar*> > muonTrackV
 	new TCanvas();
 	coincidenceHist->Draw();
 	new TCanvas();
-	coincidenceHist2D->Draw();
+	coincidenceHist2D->Draw("LEGO2");
 	return;
 
 }
