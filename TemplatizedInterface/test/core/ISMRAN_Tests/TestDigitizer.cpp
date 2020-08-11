@@ -35,6 +35,7 @@
 const int offset=0;
 const double kDelTBar = 32.0; //! ns
 TStopwatch timer;
+unsigned int numOfLayers=3;
 
 std::map<std::string,TH1D*> barsEnergyMap;
 std::vector<TH1D*> vecOfEnergyHist;
@@ -89,6 +90,13 @@ bool CompareTimestampScintillator(ScintillatorBar *i1, ScintillatorBar *i2)
 {
 	//return (i1->tstampNear < i2->tstampNear);
 	return (i1->tsmallTimeStamp < i2->tsmallTimeStamp);
+
+}
+
+bool CompareBarIndexInScintillator(ScintillatorBar *i1, ScintillatorBar *i2)
+{
+	//return (i1->tstampNear < i2->tstampNear);
+	return (i1->barIndex < i2->barIndex);
 }
 
 void PrintScintillatorVector(std::vector<ScintillatorBar*> scintBarVector){
@@ -324,6 +332,8 @@ std::vector< std::vector<ScintillatorBar*> >  DetectMuonTracks(std::vector<Scint
 	std::vector< std::vector<ScintillatorBar*> >  muonTrackVec;
 	std::vector<ScintillatorBar*> singleMuonTrack;
 	singleMuonTrack.push_back(muonHitVector[0]);
+	unsigned int hitInAllLayersCounter=0;
+	//unsigned int numOfLayers=3;
 	for(unsigned int i = 1 ; i < hitLength ; i++){
 
 //		ULong64_t timeI = (muonHitVector[i]->tstampNear < muonHitVector[i]->tstampFar) ? muonHitVector[i]->tstampNear : muonHitVector[i]->tstampFar;
@@ -336,11 +346,15 @@ std::vector< std::vector<ScintillatorBar*> >  DetectMuonTracks(std::vector<Scint
 		}else{
 			//Outside 20ns window
 			muonTrackVec.push_back(singleMuonTrack);
+			//Just counting the number of muon where all the layer detected the muon
+			if(singleMuonTrack.size()==numOfLayers)
+				hitInAllLayersCounter++;
 			singleMuonTrack.clear();
 			singleMuonTrack.push_back(muonHitVector[i]);
 		}
 	}
 
+	std::cout << "Number of Muon Tracks where all the layers detected the muon : " << hitInAllLayersCounter << std::endl;
 	return muonTrackVec;
 }
 
@@ -354,6 +368,46 @@ void PrintMuonTrackVector(std::vector< std::vector<ScintillatorBar*> > muonTrack
 			muonTrackVec[i][j]->Print();
 		}
 	}
+}
+
+//std::vector< std::vector<ScintillatorBar*> > FillCoincidenceHist(std::vector< std::vector<ScintillatorBar*> > muonTrackVec){
+std::vector< std::vector<ScintillatorBar*> > SortMuonTracksByBarIndex(std::vector< std::vector<ScintillatorBar*> > muonTrackVec){
+	std::vector< std::vector<ScintillatorBar*> > vecOfMuonTracks;
+	std::cout << "Size of Muon Track vector  : " << muonTrackVec.size() << std::endl;
+	unsigned int muonTrackVecLength = muonTrackVec.size();
+	for(unsigned int i = 0 ; i < muonTrackVecLength ; i++){
+		std::vector<ScintillatorBar*> singleMuonTrack=muonTrackVec[i];
+		//std::cout << "Single Muon Track Size : " << singleMuonTrack.size() << std::endl;
+		if(singleMuonTrack.size()==numOfLayers){
+			std::sort(singleMuonTrack.begin(),singleMuonTrack.end(),CompareBarIndexInScintillator);
+			vecOfMuonTracks.push_back(singleMuonTrack);
+		}
+	}
+
+	std::cout << "Size of Muon Track vector where all the layers detected the muons : " << vecOfMuonTracks.size() << std::endl;
+	return vecOfMuonTracks;
+
+}
+
+void FillCoincidenceHist(std::vector< std::vector<ScintillatorBar*> > muonTrackVec){
+	TH1F *coincidenceHist = new TH1F("CoincidenceHist","CoincidenceHist",20,0,100);
+	TH2F *coincidenceHist2D = new TH2F("CoincidenceHist2D","CoincidenceHist2D",9,0,9,9,0,9);
+	unsigned int muonTrackVecLength = muonTrackVec.size();
+	for(unsigned int i = 0 ; i < muonTrackVecLength ; i++){
+		std::vector<ScintillatorBar*> singleMuonTrack=muonTrackVec[i];
+		//unsigned int binToFill = 9*(singleMuonTrack[numOfLayers-1]->barIndex)+(singleMuonTrack[0]->barIndex);
+		unsigned int binToFill = 9*(singleMuonTrack[0]->barIndex)+(singleMuonTrack[numOfLayers-1]->barIndex-9);
+		std::cout << "Bin To Fill : " << binToFill << std::endl;
+		coincidenceHist->Fill(binToFill);
+		coincidenceHist2D->Fill(singleMuonTrack[0]->barIndex,singleMuonTrack[numOfLayers-1]->barIndex-18);
+
+	}
+	new TCanvas();
+	coincidenceHist->Draw();
+	new TCanvas();
+	coincidenceHist2D->Draw();
+	return;
+
 }
 
 //void DigitizerDiff();
@@ -554,7 +608,11 @@ void CheckPairs(TreeEntryVector treeEntVec){
 	std::cout <<"@@@@@@@@@@@@@@@@@@@@@@@@@@@ Trying to Get Vector of Muon tracks @@@@@@@@@@@@@@@@@@@@@@@@@@" << std::endl;
 	std::cout <<"==========================================================================================" << std::endl;
 	std::vector<std::vector<ScintillatorBar*>> muonTrackVec = DetectMuonTracks(scintBarVec);
-	PrintMuonTrackVector(muonTrackVec);
+	std::cout <<"=== Trying to get muon tracks where all the layer detecte the muon sorted by barIndex ====" << std::endl;
+	std::vector<std::vector<ScintillatorBar*>> muonTrackVecAllLayersSorted = SortMuonTracksByBarIndex(muonTrackVec);
+	PrintMuonTrackVector(muonTrackVecAllLayersSorted);
+	FillCoincidenceHist(muonTrackVecAllLayersSorted);
+	//PrintMuonTrackVector(muonTrackVec);
 
 	//std::sort(pairedEntVec.begin(),pairedEntVec.end(),CompareTimestamp);
 	//PrintEntryVector(pairedEntVec);
