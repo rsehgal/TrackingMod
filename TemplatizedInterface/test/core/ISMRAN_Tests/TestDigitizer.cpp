@@ -46,6 +46,9 @@ double fwhm = 2.355 * 5.66353 ;
 #define cm 10
 #define mm 10
 
+TH1F *zeroBar = new TH1F("YpositionEstimate","YpositionEstimate",100,-10,200);
+
+
 struct Point3D{
 	double x;
 	double y;
@@ -117,7 +120,7 @@ struct ScintillatorBar{
 	 */
 	void EstimateHitPositionAlongY(){
 
-		hitPosition.y = 30*(deltaTstamp/1000.0)/fwhm;
+		hitPosition.y = 30*(deltaTstamp/1000.0);///fwhm;
 		if(hitPosition.y < 0){
 			hitPosition.y = -1.*hitPosition.y;
 		}
@@ -481,6 +484,19 @@ void FillCoincidenceHist(std::vector< std::vector<ScintillatorBar*> > muonTrackV
 
 }
 
+void FillTestPositionHist(std::vector< std::vector<ScintillatorBar*> > muonTrackVec){
+	unsigned int muonTrackVecLength = muonTrackVec.size();
+		for(unsigned int i = 0 ; i < muonTrackVecLength ; i++){
+			std::vector<ScintillatorBar*> singleMuonTrack=muonTrackVec[i];
+			for(unsigned int j = 0 ; j < singleMuonTrack.size() ; j++){
+				if(singleMuonTrack[j]->barIndex==5)
+					zeroBar->Fill((singleMuonTrack[j]->hitPosition).y);
+			}
+		}
+		new TCanvas();
+		zeroBar->Draw();
+
+}
 
 //void DigitizerDiff();
 /*void DigitizerAll();
@@ -684,6 +700,7 @@ void CheckPairs(TreeEntryVector treeEntVec){
 	std::vector<std::vector<ScintillatorBar*>> muonTrackVecAllLayersSorted = SortMuonTracksByBarIndex(muonTrackVec);
 	PrintMuonTrackVector(muonTrackVecAllLayersSorted);
 	FillCoincidenceHist(muonTrackVecAllLayersSorted);
+	FillTestPositionHist(muonTrackVecAllLayersSorted);
 	//PrintMuonTrackVector(muonTrackVec);
 
 	//std::sort(pairedEntVec.begin(),pairedEntVec.end(),CompareTimestamp);
