@@ -50,6 +50,7 @@ struct ScintillatorBar{
 
 	ULong64_t tstampNear;  //! time stamp in pico sec.
 	ULong64_t tstampFar;  //! time stamp in pico sec.
+	ULong64_t tsmallTimeStamp;  //! time stamp in pico sec.
 	Long64_t deltaTstamp;  //! time stamp in pico sec.
 	UInt_t    time;    //! real computer time in sec
 
@@ -67,6 +68,7 @@ struct ScintillatorBar{
 		qlongMean=sqrt(qlongNear*qlongFar);
 		tstampNear=l_tstampNear;
 		tstampFar=l_tstampFar;
+		tsmallTimeStamp = (tstampNear < tstampFar) ? tstampNear : tstampFar;
 		deltaTstamp=tstampNear-tstampFar;
 		time=l_time;
 	}
@@ -74,8 +76,9 @@ struct ScintillatorBar{
 	ScintillatorBar(){}
 
 	void Print(){
+
 		std::cout << scintName << " , " << qlongNear << " , " << qlongFar << " , " << qlongMean << " , "
-				  << tstampNear  << " , " << tstampFar  << " , " << deltaTstamp << " , " << time << std::endl;
+				  << tstampNear  << " , " << tstampFar << " , " << tsmallTimeStamp << " , " << deltaTstamp << " , " << time << std::endl;
 
 	}
 
@@ -84,13 +87,16 @@ struct ScintillatorBar{
 
 bool CompareTimestampScintillator(ScintillatorBar *i1, ScintillatorBar *i2)
 {
-	return (i1->tstampNear < i2->tstampNear);
+	//return (i1->tstampNear < i2->tstampNear);
+	return (i1->tsmallTimeStamp < i2->tsmallTimeStamp);
 }
 
 void PrintScintillatorVector(std::vector<ScintillatorBar*> scintBarVector){
 	//unsigned int n = scintBarVector.size();
 	unsigned int n=50;
 	std::cout << "======= Printing " << n <<" Scintillators entries===========" << std::endl;
+	std::cout << "BarName" << " , " << "qlongNear" << " , " << "qlongFar" << " , " << "qlongMean" << " , "
+					  << "tstampNear"  << " , " << "tstampFar" << " , " << "tsmallTimeStamp" << " , " << "deltaTstamp" << " , " << "ClockTime" << std::endl;
 	for(unsigned int i=0 ; i < n ; i++){
 		scintBarVector[i]->Print();
 	}
@@ -297,6 +303,59 @@ std::vector<ScintillatorBar*> DetectMuonHits(TreeEntryVector treeEntVec){
 	return scintBarVec;
 }
 
+/*
+ * Function to detect muon hits belonging to the muon track
+ *
+ * -----
+ * ALGO:
+ * -----
+ * Check consecutive deltaTFar or deltaTNear, or better may be delta(TFar < TNear ? TFar : TNear)
+ * If deltaT is less than 20 ns window (window size needs to be calculated based on physics), then
+ * then all the muon hits within 5ns windown belongs to same muon track(and ideally from the
+ * current sample data the length of this vector should be 3) otherwise they belongs to different
+ * muon tracks.
+ *
+ * @input  : vector of muon hits i.e. std::vector<ScintillatorBar*> sorted by smallest of TNear and TFar ie. tsmallTimeStamp
+ * @output : return vector of muon tracks i.e. std::vector< std::vector<ScintillatorBar*> >
+ */
+std::vector< std::vector<ScintillatorBar*> >  DetectMuonTracks(std::vector<ScintillatorBar*> muonHitVector){
+
+	unsigned int hitLength = muonHitVector.size();
+	std::vector< std::vector<ScintillatorBar*> >  muonTrackVec;
+	std::vector<ScintillatorBar*> singleMuonTrack;
+	singleMuonTrack.push_back(muonHitVector[0]);
+	for(unsigned int i = 1 ; i < hitLength ; i++){
+
+//		ULong64_t timeI = (muonHitVector[i]->tstampNear < muonHitVector[i]->tstampFar) ? muonHitVector[i]->tstampNear : muonHitVector[i]->tstampFar;
+//		ULong64_t timeIPlusOne = (muonHitVector[i+1]->tstampNear < muonHitVector[i+1]->tstampFar) ? muonHitVector[i+1]->tstampNear : muonHitVector[i+1]->tstampFar;
+
+
+		if((muonHitVector[i]->tsmallTimeStamp - muonHitVector[i-1]->tsmallTimeStamp) < 20000){
+			//Within 20ns window
+			singleMuonTrack.push_back(muonHitVector[i]);
+		}else{
+			//Outside 20ns window
+			muonTrackVec.push_back(singleMuonTrack);
+			singleMuonTrack.clear();
+			singleMuonTrack.push_back(muonHitVector[i]);
+		}
+	}
+
+	return muonTrackVec;
+}
+
+void PrintMuonTrackVector(std::vector< std::vector<ScintillatorBar*> > muonTrackVec){
+	//unsigned int muonTrackVecLength = muonTrackVec.size();
+	unsigned int muonTrackVecLength = 20;
+	for(unsigned int i = 0 ; i < muonTrackVecLength ; i++){
+		std::cout << "====== Print Muon Track : " << i << " ======" << std::endl;
+		unsigned int muonHitLength = muonTrackVec[i].size();
+		for(unsigned int j = 0 ; j < muonHitLength ; j++){
+			muonTrackVec[i][j]->Print();
+		}
+	}
+}
+
 //void DigitizerDiff();
 /*void DigitizerAll();
 void Digitizer()
@@ -489,6 +548,13 @@ void CheckPairs(TreeEntryVector treeEntVec){
 	std::sort(scintBarVec.begin(),scintBarVec.end(),CompareTimestampScintillator);
 	std::cout <<"===================== Sorting Done........ ==================" << std::endl;
 	PrintScintillatorVector(scintBarVec);
+
+	std::cout << std::endl;
+	std::cout <<"==========================================================================================" << std::endl;
+	std::cout <<"@@@@@@@@@@@@@@@@@@@@@@@@@@@ Trying to Get Vector of Muon tracks @@@@@@@@@@@@@@@@@@@@@@@@@@" << std::endl;
+	std::cout <<"==========================================================================================" << std::endl;
+	std::vector<std::vector<ScintillatorBar*>> muonTrackVec = DetectMuonTracks(scintBarVec);
+	PrintMuonTrackVector(muonTrackVec);
 
 	//std::sort(pairedEntVec.begin(),pairedEntVec.end(),CompareTimestamp);
 	//PrintEntryVector(pairedEntVec);
