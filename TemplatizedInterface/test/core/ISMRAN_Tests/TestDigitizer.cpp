@@ -311,9 +311,9 @@ std::vector<ScintillatorBar*> DetectMuonHits(TreeEntryVector treeEntVec){
  * -----
  * Check consecutive deltaTFar or deltaTNear, or better may be delta(TFar < TNear ? TFar : TNear)
  * If deltaT is less than 20 ns window (window size needs to be calculated based on physics), then
- * then all the muon hits within 5ns windown belongs to same muon track(and ideally from the
- * current sample data the length of this vector should be 3) otherwise they belongs to different
- * muon tracks.
+ * then all the muon hits within 20ns windown belongs to same muon track(and ideally from the
+ * current sample data the length of this vector should be 3, because the data is collected using
+ * 3 layers of scintillators), otherwise they belongs to different * muon tracks.
  *
  * @input  : vector of muon hits i.e. std::vector<ScintillatorBar*> sorted by smallest of TNear and TFar ie. tsmallTimeStamp
  * @output : return vector of muon tracks i.e. std::vector< std::vector<ScintillatorBar*> >
