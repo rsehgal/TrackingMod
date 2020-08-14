@@ -1,6 +1,8 @@
 #include "includes.hh"
 #include "utilities.h"
+#include "PsBar.h"
 
+/*
 const int offset=0;
 const double kDelTBar = 32.0; //! ns
 TStopwatch timer;
@@ -11,12 +13,14 @@ std::map<std::string,TH1D*> barsEnergyMap;
 std::vector<TH1D*> vecOfEnergyHist;
 
 double fwhm = 2.355 * 5.66353 ;
+*/
 
 #define cm 10
 #define mm 10
 
 TH1F *zeroBar = new TH1F("YpositionEstimate","YpositionEstimate",100,-10,200);
 
+#if(0)
 
 struct Point3D{
 	double x;
@@ -32,6 +36,7 @@ struct Point3D{
 	Point3D(){}
 
 };
+
 
 struct ScintillatorBar{
 	std::string  scintName;    //! board #  and channel number ( its packed in as follows ) //! board*16 + chno.
@@ -158,6 +163,7 @@ struct ScintillatorBar{
 
 
 };
+#endif
 
 bool CompareTimestampScintillator(ScintillatorBar *i1, ScintillatorBar *i2)
 {

@@ -6,6 +6,7 @@
 #include "QBBC.hh"
 #include "FTFP_BERT.hh"
 #include "B1ActionInitialization.hh"
+
 #ifdef G4VIS_USE
 #include "G4VisExecutive.hh"
 #endif
@@ -17,6 +18,8 @@
 #include "G4UImanager.hh"
 #include "FTFP_BERT.hh"
 
+#include "includes.hh"
+#include "PsBar.h"
 
 //#include "PhysicsList.h"
 //#include "HodoScope.h"
