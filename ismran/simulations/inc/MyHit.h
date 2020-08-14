@@ -20,6 +20,7 @@ class MyHit : public G4VHit {
 private:
 	Vec_t fPosition;
 	G4String fName;
+	unsigned int fCopyNo;
 	double fEDep;
 
 public:

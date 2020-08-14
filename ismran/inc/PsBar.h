@@ -7,18 +7,19 @@
 
 #ifndef ISMRAN_INC_PSBAR_H_
 #define ISMRAN_INC_PSBAR_H_
+#include "includes.hh"
 
+//namespace ismran{
+extern const int offset ; //=0;
+extern const double kDelTBar ;//= 32.0; //! ns
+extern TStopwatch timer;
+extern unsigned int numOfLayers;//=3;
+extern unsigned int numOfBarsInEachLayer;//=9;
 
-const int offset=0;
-const double kDelTBar = 32.0; //! ns
-TStopwatch timer;
-unsigned int numOfLayers=3;
-unsigned int numOfBarsInEachLayer=9;
+extern std::map<std::string,TH1D*> barsEnergyMap;
+extern std::vector<TH1D*> vecOfEnergyHist;
 
-std::map<std::string,TH1D*> barsEnergyMap;
-std::vector<TH1D*> vecOfEnergyHist;
-
-double fwhm = 2.355 * 5.66353 ;
+extern double fwhm;// = 2.355 * 5.66353 ;
 
 struct Point3D{
 	double x;
@@ -81,7 +82,7 @@ struct ScintillatorBar{
 	/*
 	 * This constructor will be useful for simulation
 	 */
-	ScintillatorBar(unsigned short bIndex){
+	ScintillatorBar(unsigned int bIndex){
 		barHitted = false;
 		barIndex = bIndex;
 		layerIndex = barIndex/numOfBarsInEachLayer;
@@ -161,7 +162,7 @@ struct ScintillatorBar{
 
 
 };
-
+//}
 
 namespace Tomography {
 

@@ -17,6 +17,12 @@
 
 int MySD::stepNum = 0;
 int MySD::numOfParticlesReached = 0;
+unsigned int MySD::evNo=0;
+
+/*
+ * One may refer to following presentation, particularly slide 16 to get info about touchables
+ * http://geant4.in2p3.fr/2005/Workshop/ShortCourse/session3/M.Asai1.pdf
+ */
 
 /*MySD::MySD() {
 	// TODO Auto-generated constructor stub
@@ -25,6 +31,21 @@ int MySD::numOfParticlesReached = 0;
 
 MySD::~MySD() {
 	// TODO Auto-generated destructor stub
+}
+
+void MySD::InitializeVectorOfPsBars(){
+
+	std::cout << "Initializing Vector of Scintillator Bars for the current event........." << std::endl;
+	for(unsigned int i = 0 ; i < psBarVec.size() ; i++){
+		delete psBarVec[i];
+	}
+	psBarVec.clear();
+	for (unsigned int layerNum = 0 ; layerNum < numOfLayers ; layerNum++){
+		for(unsigned int index = 0 ;  index < numOfBarsInEachLayer ; index++){
+			unsigned int barIndex = numOfBarsInEachLayer*layerNum+index;
+			psBarVec.push_back(new ScintillatorBar(barIndex));
+		}
+	}
 }
 
 MySD::MySD(const G4String& name, const G4String& hitsCollectionName)
@@ -37,6 +58,9 @@ MySD::MySD(const G4String& name, const G4String& hitsCollectionName)
 void MySD::Initialize(G4HCofThisEvent* hce)
 {
   // Create hits collection
+	std::cout <<" @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@" << std::endl;
+	std::cout <<"Processing Ev No : " << evNo << std::endl;
+	InitializeVectorOfPsBars();
 	std::cout<<"RAMAN Entered Initialize Of SD" << std::endl;
   numOfParticlesReached++;
   fHitsCollection
@@ -47,6 +71,8 @@ void MySD::Initialize(G4HCofThisEvent* hce)
   G4int hcID
     = G4SDManager::GetSDMpointer()->GetCollectionID(collectionName[0]);
   hce->AddHitsCollection( hcID, fHitsCollection );
+
+  evNo++;
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

@@ -19,7 +19,7 @@
 #include "FTFP_BERT.hh"
 
 #include "includes.hh"
-#include "PsBar.h"
+///#include "PsBar.h"
 
 //#include "PhysicsList.h"
 //#include "HodoScope.h"
