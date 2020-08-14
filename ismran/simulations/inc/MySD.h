@@ -11,6 +11,10 @@
 #include "G4VSensitiveDetector.hh"
 #include "MyHit.h"
 #include "vector"
+#include "includes.hh"
+#include "PsBar.h"
+
+
 
 class G4Step;
 class G4HCofThisEvent;
@@ -29,9 +33,17 @@ public:
 	virtual void   EndOfEvent(G4HCofThisEvent* hitCollection);
 	static int numOfParticlesReached;
 
+	/*
+	 * Extra methods to store info in ScintillatorBar
+	 */
+	void InitializeVectorOfPsBars();
+
+	std::vector<ScintillatorBar*> psBarVec;
+
 private:
 	    MyHitsCollection* fHitsCollection;
 	    static int stepNum;
+	    static unsigned int evNo;
 
 };
 
