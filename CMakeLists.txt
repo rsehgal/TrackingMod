@@ -314,6 +314,8 @@ macro(include_dirs INCLUDES)
   endforeach()
 endmacro()
 
+include_directories(${CMAKE_SOURCE_DIR}/ismran/inc)
+
 #COLLECTING ALL HEADER FILES
 macro(collect_headers INCLUDES)
   foreach(INCLUDE ${INCLUDES})
