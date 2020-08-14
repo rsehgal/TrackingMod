@@ -1,35 +1,4 @@
-#include <iostream>
-#include <fstream>
-#include <string>
-#include <vector>
-#include <set>
-#include <map>
-#include <algorithm>
-
-#include <TFile.h>
-#include <TTree.h>
-#include <TMath.h>
-#include <TFile.h>
-#include <TColor.h>
-#include <TCanvas.h>
-#include <TF1.h>
-#include <TH1.h>
-#include <TH2.h>
-#include <TH3.h>
-#include <TProfile.h>
-#include <TLegend.h>
-#include <TSpectrum.h>
-#include <TGraphErrors.h>
-#include <TStyle.h>
-#include <TVirtualPad.h>
-#include <TLatex.h>
-#include <TRandom3.h>
-#include <TVirtualFitter.h>
-#include <Math/MinimizerOptions.h>
-#include <TTimeStamp.h>
-#include <TStopwatch.h>
-#include <TApplication.h>
-
+#include "includes.hh"
 #include "utilities.h"
 
 const int offset=0;
@@ -84,6 +53,8 @@ struct ScintillatorBar{
 
 	Point3D hitPosition;
 
+	bool barHitted;
+
 
 	ScintillatorBar(unsigned short l_channelNear, unsigned short l_channelFar,
 					ULong64_t l_tstampNear, ULong64_t l_tstampFar,
@@ -101,6 +72,34 @@ struct ScintillatorBar{
 		deltaTstamp=tstampNear-tstampFar;
 		time=l_time;
 		EstimateHitPosition();
+
+	}
+
+	/*
+	 * This constructor will be useful for simulation
+	 */
+	ScintillatorBar(unsigned short bIndex){
+		barHitted = false;
+		barIndex = bIndex;
+		layerIndex = barIndex/numOfBarsInEachLayer;
+		unsigned short l_channelNear = 2*barIndex;
+		unsigned short l_channelFar = l_channelNear+1;
+		scintName="PsBar"+std::to_string(barIndex)+"-"+std::to_string(l_channelNear)+"-"+std::to_string(l_channelFar);
+
+		/* qlongMean, the most import parameter, should be filled as total energy
+		 * deposited in a bar, which is basically the sum of energy deposited in
+		 * individual steps
+		 *
+		 * remaining data members may be set to zero.
+		 */
+		qlongMean = 0;
+		tstampNear=0;
+		tstampFar=0;
+		tsmallTimeStamp = 0;
+		deltaTstamp=0;
+		time=0;
+		//EstimateHitPosition();
+
 
 	}
 
