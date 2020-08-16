@@ -21,7 +21,7 @@ CryGeantInterface::~CryGeantInterface() {
 }
 
 
-void CryGeantInterface::GeneratePrimariesForCry(G4Event *anEvent){
+void CryGeantInterface::GeneratePrimariesForCry(G4Event *anEvent, bool tm){
       
     if(Tomography::EventBreak::instance()->BreakSimulation())
         return;
@@ -71,8 +71,10 @@ void CryGeantInterface::GeneratePrimariesForCry(G4Event *anEvent){
                                                           Tracking::Vector3D<double>(0.,0.,-1.));
         double energy = (*vect)[j]->ke()*MeV;
         std::cout <<"=========== ParticleName : " << particleName << " =============" << std::endl;
-        if(particleName == "muon"){
-        	Tomography::Files::instance()->Write("StatsFromGenerator.txt",3,1., solidAngleIncoming,energy);
+        //if(particleName == "muon")
+        {
+        	if(tm)
+        		Tomography::Files::instance()->Write("StatsFromGenerator.txt",3,1., solidAngleIncoming,energy);
 
         //_____________________________________________________________________________________
 		  	  //Logic use to store real incoming muon angles in a vector of angle in Run

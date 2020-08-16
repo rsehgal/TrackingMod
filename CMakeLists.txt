@@ -553,6 +553,7 @@ build_executables("${tests}")
 if(GEANT4)
 add_subdirectory(Simulations/MST)
 add_subdirectory(Simulation2)
+add_subdirectory(ismran/simulations)
 add_subdirectory(SimulationBasic)
 endif(GEANT4)
 #Copying the test geom.root file to build directory for visualization testing

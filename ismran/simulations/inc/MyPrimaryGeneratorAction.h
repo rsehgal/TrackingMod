@@ -5,7 +5,7 @@
 #include "G4VUserPrimaryGeneratorAction.hh"
 #include "G4ParticleGun.hh"
 #include "globals.hh"
-
+#include "../../base/Global.h"
 
 class G4VUserPrimaryGeneratorAction;
 class G4Event;
@@ -34,6 +34,10 @@ private:
 #include "G4ParticleGun.hh"
 #include "globals.hh"
 
+#ifdef USE_CRY
+#include "CryGeantInterface.h"
+#endif
+
 class G4ParticleGun;
 class G4Event;
 class G4Box;
@@ -48,7 +52,7 @@ class MyPrimaryGeneratorAction : public G4VUserPrimaryGeneratorAction
   public:
     MyPrimaryGeneratorAction();    
      ~MyPrimaryGeneratorAction();
-
+    MyPrimaryGeneratorAction(const char *inputfile);
     // method from the base class
     void GeneratePrimaries(G4Event*);         
   
@@ -58,6 +62,10 @@ class MyPrimaryGeneratorAction : public G4VUserPrimaryGeneratorAction
   private:
     G4ParticleGun*  fParticleGun; // pointer a to G4 gun class
     //G4Box* fEnvelopeBox;
+    #ifdef USE_CRY
+    CryGeantInterface *cryG4Interface;
+#endif
+
 };
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

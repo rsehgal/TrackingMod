@@ -20,6 +20,8 @@ endif()
 #
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${PROJECT_SOURCE_DIR}/cmake/modules)
 
+option(CRY "Enable CRY library for cosmic event generation" OFF)
+
 option(WITH_GEANT4_UIVIS "Build example with Geant4 UI and Vis drivers" ON)
 if(WITH_GEANT4_UIVIS)
   find_package(Geant4 REQUIRED ui_all vis_all)
@@ -28,6 +30,9 @@ else()
 endif()
 
 #----------------------------------------------------------------------------
+if(CRY)
+add_definitions(-DUSE_CRY)
+endif(CRY)
 
 find_package(ROOT REQUIRED)
 include_directories(${ROOT_INCLUDE_DIR})
@@ -46,6 +51,10 @@ include_directories(../../base)
 file(GLOB sources ${PROJECT_SOURCE_DIR}/src/*.cpp ${PROJECT_SOURCE_DIR}/src/*.cc ../inc/*.cpp)
 file(GLOB headers ${PROJECT_SOURCE_DIR}/inc/*.h ${PROJECT_SOURCE_DIR}/inc/*.hh ../../base/Vector3D.h) 
 
-add_executable(main main.cpp ${sources} ${headers})
-target_link_libraries(main ${Geant4_LIBRARIES} ${ROOT_LIBRARIES})
+add_executable(mainIsmran main.cpp ${sources} ${headers})
+if(CRY)
+	target_link_libraries(mainIsmran cryg4interface ${Geant4_LIBRARIES} ${ROOT_LIBRARIES} ${TOMOLIB})
+else()
+	target_link_libraries(mainIsmran ${Geant4_LIBRARIES} ${ROOT_LIBRARIES} ${TOMOLIB})
+endif(CRY)
 #target_link_libraries(main ${Geant4_LIBRARIES} Tomo)
