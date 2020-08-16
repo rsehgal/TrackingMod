@@ -80,17 +80,17 @@ G4VPhysicalVolume* MyDetectorConstruction::Construct(){
                             0,
                             checkOverlaps);
 
-  /*G4VPhysicalVolume *phyLeadBlock2 = new G4PVPlacement(0,
+  G4VPhysicalVolume *phyLeadBlock2 = new G4PVPlacement(0,
                             //G4ThreeVector(),
                             G4ThreeVector(0,0,-15*cm),
                             logicalLeadBlock,
                             "block2",
                             logicWorld,
                             false,
-                            0,
+                            1,
                             checkOverlaps);
 
-*/
+
 
 	return physWorld;
 

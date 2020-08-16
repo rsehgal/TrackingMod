@@ -39,11 +39,31 @@ public:
 	void InitializeVectorOfPsBars();
 
 	std::vector<ScintillatorBar*> psBarVec;
+	void PrintVectorOfPsBars();
+
+	static std::vector< std::vector<ScintillatorBar*> > eventsVec;
+	// static std::vector<ScintillatorBar*> eventsVec2;
+
+	static void Print(){
+		/*std::cout << "888888 Printing eventsVec2 888888888" << std::endl;
+		for(unsigned int i = 0 ; i < eventsVec2.size() ; i++){
+			eventsVec2[i]->Print();
+		}*/		
+		std::cout << "9999999999 Printing eventsVec 999999999" << std::endl;
+		for(unsigned int i = 0 ; i < eventsVec.size() ; i++){
+			std::cout << "@@@@@@@ Printing event num : " << i <<" @@@@@@@" << std::endl;
+			for(unsigned int j = 0 ; j < eventsVec[i].size() ; j++){
+				eventsVec[i][j]->Print();	
+			}
+			
+		}
+	}
 
 private:
 	    MyHitsCollection* fHitsCollection;
 	    static int stepNum;
 	    static unsigned int evNo;
+	    
 
 };
 

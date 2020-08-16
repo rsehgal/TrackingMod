@@ -64,6 +64,7 @@ struct ScintillatorBar{
 					ULong64_t l_tstampNear, ULong64_t l_tstampFar,
 					UInt_t l_qlongNear,	UInt_t l_qlongFar, UInt_t l_time){
 
+		barHitted = false;
 		barIndex = l_channelNear/2;
 		layerIndex = barIndex/numOfBarsInEachLayer;
 		scintName="PsBar"+std::to_string(barIndex)+"-"+std::to_string(l_channelNear)+"-"+std::to_string(l_channelFar);
@@ -97,6 +98,8 @@ struct ScintillatorBar{
 		 * remaining data members may be set to zero.
 		 */
 		qlongMean = 0;
+		qlongNear = 0;
+		qlongFar = 0;
 		tstampNear=0;
 		tstampFar=0;
 		tsmallTimeStamp = 0;
@@ -109,11 +112,30 @@ struct ScintillatorBar{
 
 	ScintillatorBar(){}
 
-	void Print(){
+	ScintillatorBar(const ScintillatorBar &sbar){
+		std::cout << "======= COPY CONSTRUCTOR CaLLED ==========" << std::endl;
+		barHitted = sbar.barHitted;
+		barIndex = sbar.barIndex;
+		layerIndex = sbar.layerIndex;
+		scintName = sbar.scintName;
+		qlongMean = sbar.qlongMean;
+		qlongNear = sbar.qlongNear;
+		qlongFar = sbar.qlongFar;
+		tstampNear = sbar.tstampNear;
+		tstampFar = sbar.tstampFar;
+		tsmallTimeStamp = sbar.tsmallTimeStamp;
+		deltaTstamp = sbar.deltaTstamp;
+		time= sbar.time;
+	}
 
-		std::cout << scintName << " , " << qlongNear << " , " << qlongFar << " , " << qlongMean << " , "
+	void Print(){
+		//barHitted=true;
+		if(barHitted)
+		{
+		std::cout << barHitted << " , " << scintName << " , " << barIndex << " , " << qlongNear << " , " << qlongFar << " , " << qlongMean << " , "
 				  << tstampNear  << " , " << tstampFar << " , " << tsmallTimeStamp << " , " << deltaTstamp << " , "
 				  << time << " , " << " ( " << hitPosition.x << " , " << hitPosition.y << " , " << hitPosition.z << " ) " << std::endl;
+		}
 
 	}
 
@@ -162,6 +184,16 @@ struct ScintillatorBar{
 
 
 };
+
+//extern std::vector<ScintillatorBar*> eventsVec2;
+
+//extern void PrintPsBarVector();
+/*void PrintPsBarVector(){
+	std::cout <<"6666666666 Printing from PrintPsBarVector 66666666" << std::endl;
+	for(unsigned int i = 0 ; i < eventsVec2.size(); i++){
+		eventsVec2[i]->Print();
+	}
+}*/
 //}
 
 namespace Tomography {

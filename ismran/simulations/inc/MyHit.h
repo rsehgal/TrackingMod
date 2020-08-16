@@ -33,7 +33,16 @@ public:
     inline void operator delete(void *aHit);
     void Draw() const{}
     void Print() const{
-    	std::cout << "Volume Name : " << fName <<" : Energy Deposited : " << fEDep << std::endl;
+    	std::cout << "Volume Name : " << fName << " : Copy No : " << fCopyNo 
+    			  << " : Energy Deposited : " << fEDep << std::endl;
+    }
+
+    void SetCopyNum(unsigned int cpNo){
+    	fCopyNo = cpNo;
+    }
+
+    unsigned int GetCopyNum()const{
+    	return fCopyNo;
     }
 
     void SetEnergyDeposited(double edep){

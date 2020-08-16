@@ -10,6 +10,8 @@
 using namespace std;
 class G4Run;
 class G4LogicalVolume;
+class TH1F;
+class TApplication;
 
 
 /// Run action class
@@ -30,6 +32,10 @@ class B1RunAction : public G4UserRunAction
     virtual G4Run* GenerateRun();
     virtual void BeginOfRunAction(const G4Run*);
     virtual void   EndOfRunAction(const G4Run*);
+
+   private:
+   	TApplication *fApp;
+   	TH1F *energyHist;
     
 };
 
