@@ -14,10 +14,15 @@
 #include "G4SteppingManager.hh"
 #include "G4UnitsTable.hh"
 #include "G4VProcess.hh"
+#include "PsBar.h"
 
 int MySD::stepNum = 0;
 int MySD::numOfParticlesReached = 0;
 unsigned int MySD::evNo=0;
+std::vector< std::vector<ScintillatorBar*> > MySD::eventsVec;
+
+
+// std::vector<ScintillatorBar*> MySD::eventsVec2;
 
 /*
  * One may refer to following presentation, particularly slide 16 to get info about touchables
@@ -33,13 +38,22 @@ MySD::~MySD() {
 	// TODO Auto-generated destructor stub
 }
 
+void MySD::PrintVectorOfPsBars(){
+  std::cout << "===== Printing Vector of PsBars =======" << std::endl;
+  for (unsigned int i = 0 ; i < psBarVec.size() ; i++){
+    psBarVec[i]->Print();
+  }
+}
+
 void MySD::InitializeVectorOfPsBars(){
 
 	std::cout << "Initializing Vector of Scintillator Bars for the current event........." << std::endl;
-	for(unsigned int i = 0 ; i < psBarVec.size() ; i++){
-		delete psBarVec[i];
-	}
-	psBarVec.clear();
+    if(psBarVec.size()){
+  	for(unsigned int i = 0 ; i < psBarVec.size() ; i++){
+  		delete psBarVec[i];
+  	}
+  	psBarVec.clear();
+  }
 	for (unsigned int layerNum = 0 ; layerNum < numOfLayers ; layerNum++){
 		for(unsigned int index = 0 ;  index < numOfBarsInEachLayer ; index++){
 			unsigned int barIndex = numOfBarsInEachLayer*layerNum+index;
@@ -101,6 +115,7 @@ G4bool MySD::ProcessHits(G4Step* aStep,
   newHit->SetPosition(aStep->GetPostStepPoint()->GetPosition());
   G4TouchableHandle touchable = aStep->GetPreStepPoint()->GetTouchableHandle();
   newHit->SetName(touchable->GetVolume(0)->GetName());
+  newHit->SetCopyNum(touchable->GetVolume(0)->GetCopyNo());
   G4String particleName=track->GetDefinition()->GetParticleName() ;
   std::cout << particleName << "  " << std::endl;
   std::cout << "Energy deposited in current step in : "
@@ -125,7 +140,40 @@ void MySD::EndOfEvent(G4HCofThisEvent*)
      G4cout << G4endl
             << "-------->Hits Collection: in this event there are " << nofHits
             << " hits  " << G4endl;
-     for ( G4int i=0; i<nofHits; i++ ) (*fHitsCollection)[i]->Print();
+     for ( G4int i=0; i<nofHits; i++ ) {
+      (*fHitsCollection)[i]->Print();
+      psBarVec[(*fHitsCollection)[i]->GetCopyNum()]->barHitted=true;
+      psBarVec[(*fHitsCollection)[i]->GetCopyNum()]->qlongMean += (*fHitsCollection)[i]->GetEnergyDeposited();
+      
+    }
+
+    std::vector<ScintillatorBar*> onlyHittedBarVec;
+    for(unsigned int i = 0 ; i < psBarVec.size() ; i++){
+      if(psBarVec[i]->barHitted){
+        //onlyHittedBarVec.push_back(psBarVec[i]);
+        ScintillatorBar *scintBar = new ScintillatorBar(*psBarVec[i]);
+        //eventsVec2.push_back(psBarVec[i]);
+        //eventsVec2.push_back(scintBar);
+        onlyHittedBarVec.push_back(scintBar);
+        //delete scintBar;
+      }
+    }
+
+    std::cout<< "********** Printing onlyHittedBarVec ***********" << std::endl;
+    for(unsigned int i = 0 ; i < onlyHittedBarVec.size() ; i++){
+      onlyHittedBarVec[i]->Print();
+    }
+    //std::cout << "888888 Printing eventsVec2 888888888" << std::endl;
+    std::cout << "***********************************************" << std::endl;
+    eventsVec.push_back(onlyHittedBarVec);
+    /*if(onlyHittedBarVec.size()){
+      for(unsigned int i = 0 ; i < onlyHittedBarVec.size() ; i++){
+        delete onlyHittedBarVec[i];
+      }
+    }*/
+    onlyHittedBarVec.clear();
+
+    //PrintVectorOfPsBars();
   }
   //delete fHitsCollection;
 }
