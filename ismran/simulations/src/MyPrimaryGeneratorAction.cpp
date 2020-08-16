@@ -23,13 +23,31 @@ MyPrimaryGeneratorAction::MyPrimaryGeneratorAction() {
   fParticleGun->SetParticlePosition(G4ThreeVector(0., 0., -120 * cm ));
   fParticleGun->SetParticleMomentumDirection(G4ThreeVector(0., 0., 1.));
 }
+
 MyPrimaryGeneratorAction::~MyPrimaryGeneratorAction() { delete fParticleGun; }
 
+MyPrimaryGeneratorAction::MyPrimaryGeneratorAction(const char *inputfile) {
+
+#ifdef USE_CRY
+        cryG4Interface = new CryGeantInterface();
+        cryG4Interface->ForCry(inputfile);
+#endif
+}
+
 void MyPrimaryGeneratorAction::GeneratePrimaries(G4Event *event) {
+
+   #ifdef USE_CRY
+  // if(Tomography::EventBreak::instance()->BreakSimulation())
+  //       return;
+        std::cout << "Generating Event using CRY @@@@@@@@@@@@@@@@@@@@ " << std::endl;
+        cryG4Interface->GeneratePrimariesForCry(event,false);
+   #else  
+
    //fParticleGun->SetParticlePosition(G4ThreeVector(-50 * cm, 0., -120 * cm));
    //fParticleGun->GeneratePrimaryVertex(event);
   fParticleGun->SetParticlePosition(G4ThreeVector(0., 0., -120 * cm));
   fParticleGun->GeneratePrimaryVertex(event);
    //fParticleGun->SetParticlePosition(G4ThreeVector(50 * cm, 0., -120 * cm));
    //fParticleGun->GeneratePrimaryVertex(event);
+   #endif
 }

@@ -63,7 +63,7 @@ G4VPhysicalVolume* MyDetectorConstruction::Construct(){
  
 
   //Lets try to build material from NIST database
-  G4Box *leadBlock = new G4Box("LeadBlock",5.*cm,5.*cm,5.*cm);
+  /*G4Box *leadBlock = new G4Box("LeadBlock",50.*cm,50.*cm,5.*cm);
   G4Material *Pb=nist->FindOrBuildMaterial("G4_POLYVINYL_CHLORIDE");
   G4LogicalVolume *logicalLeadBlock = new G4LogicalVolume(leadBlock,Pb,"LogicalLeadBlock");
   MySD* mySD = new MySD("MySensitiveDetector", "MyBlockHitsCollection");
@@ -79,8 +79,77 @@ G4VPhysicalVolume* MyDetectorConstruction::Construct(){
                             false,
                             0,
                             checkOverlaps);
+*/
+  //G4_Galactic is chosen as PsBar material
+  G4Material* bar_mat = nist->FindOrBuildMaterial("G4_POLYVINYL_CHLORIDE");
 
-  G4VPhysicalVolume *phyLeadBlock2 = new G4PVPlacement(0,
+  double halfXOneBar = 5.*cm;
+  double halfYOneBar = 50.*cm;
+  double halfZOneBar = 5.*cm;
+  //Lets try to build one bar of 10cm X 10cm X 10cm
+  G4Box *psBar = new G4Box("PsBar",halfXOneBar,halfYOneBar,halfZOneBar);
+  G4LogicalVolume *logicalPsBar = new G4LogicalVolume(psBar,bar_mat,"LogicalPsBar");
+  MySD* mySD = new MySD("MySensitiveDetector", "MyBlockHitsCollection");
+  G4SDManager *sdman = G4SDManager::GetSDMpointer();
+  sdman->AddNewDetector(mySD);
+  logicalPsBar->SetSensitiveDetector(mySD);
+  /*
+   // Example to Place one PsBar at origin
+   G4VPhysicalVolume *phyPsBar = new G4PVPlacement(0,
+                            G4ThreeVector(),
+                            logicalPsBar,
+                            "PhysicalPsBar",
+                            logicWorld,
+                            false,
+                            0,
+                            checkOverlaps);
+  */
+  //Lets try to build the full matrix of PsBars
+  int barInX=9;
+  int barInZ=3;
+  double yval=0;
+  double xstart=-1*(barInX/2)*(2*halfXOneBar);
+  double zstart=-1*(barInZ/2)*(2*halfZOneBar);
+  std::cout <<"XStart : " << xstart <<" : ZStart : " << zstart << std::endl;
+  int counter=0;
+  for(unsigned int zindex = 0 ; zindex < barInZ ; zindex++ ){
+    double zval = zstart + (2*zindex+1)*halfZOneBar;
+    for(unsigned int xindex = 0 ; xindex < barInX ; xindex++ ){
+      double xval = xstart + (2*xindex+1)*halfXOneBar;
+      std::cout <<xval<<","<<yval<<","<<zval<<std::endl;
+      new G4PVPlacement(0,
+                                  G4ThreeVector(xval,yval,zval),
+                                  logicalPsBar,
+                                  "PhysicalPsBar-"+std::to_string(xindex)+"-"+std::to_string(zindex),
+                                  logicWorld,
+                                  false,
+                                  counter,
+                                  checkOverlaps);
+      counter++;
+    }
+  }
+
+/*G4Box *testBox = new G4Box("testBox",50*cm,50*cm,0.5*cm);
+  G4LogicalVolume *logicalTestBox = new G4LogicalVolume(testBox,bar_mat,"LogicalTestBox");
+  new G4PVPlacement(0,
+                                    G4ThreeVector(0,0,70*cm),
+                                    logicalTestBox,
+                                    "TestBoxTop",
+                                    logicWorld,
+                                    false,
+                                    0,
+                                    checkOverlaps);
+
+  new G4PVPlacement(0,
+                                      G4ThreeVector(0,0,-70*cm),
+                                      logicalTestBox,
+                                      "TestBoxBottom",
+                                      logicWorld,
+                                      false,
+                                      0,
+                                      checkOverlaps);
+
+*/  /*G4VPhysicalVolume *phyLeadBlock2 = new G4PVPlacement(0,
                             //G4ThreeVector(),
                             G4ThreeVector(0,0,-15*cm),
                             logicalLeadBlock,
@@ -88,7 +157,7 @@ G4VPhysicalVolume* MyDetectorConstruction::Construct(){
                             logicWorld,
                             false,
                             1,
-                            checkOverlaps);
+                            checkOverlaps);*/
 
 
 

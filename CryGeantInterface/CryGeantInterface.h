@@ -31,7 +31,7 @@ public:
 	virtual ~CryGeantInterface();
 	CryGeantInterface(const char *inputfile);
 	void ForCry(const char *inputfile);
-	void GeneratePrimariesForCry(G4Event *anEvent);
+	void GeneratePrimariesForCry(G4Event *anEvent,bool tm=true);
 	void InputCRY();
 	void UpdateCRY(std::string* MessInput);
 	void CRYFromFile(G4String newValue);
