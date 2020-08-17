@@ -18,6 +18,10 @@ extern unsigned int numOfBarsInEachLayer;//=9;
 
 extern std::map<std::string,TH1D*> barsEnergyMap;
 extern std::vector<TH1D*> vecOfEnergyHist;
+extern std::vector<TH1D*> vecOfTimeDiffHist;
+
+extern std::vector<unsigned int> vecOfdeltaTMin;
+extern std::vector<unsigned int> vecOfdeltaTMax;
 
 extern double fwhm;// = 2.355 * 5.66353 ;
 
@@ -43,7 +47,8 @@ struct ScintillatorBar{
 	//Charge info may not be required, but keeping it for the time being.
 	UInt_t    qlongNear;   //! integrated charge in long gate 88 nsec
 	UInt_t    qlongFar;   //! integrated charge in long gate 88 nsec
-	UInt_t    qlongMean;   //! integrated charge in long gate 88 nsec
+	//UInt_t    qlongMean;   //! integrated charge in long gate 88 nsec
+	Double_t    qlongMean;   //! integrated charge in long gate 88 nsec
 
 
 	ULong64_t tstampNear;  //! time stamp in pico sec.
@@ -142,6 +147,8 @@ struct ScintillatorBar{
 	/*
 	 * Calculates the estimated hit position in cm along Y,
 	 * deltaTstamp should be in ns
+	 *
+	 * IDEA : Map the deltaT to the corresponding position along Y
 	 */
 	void EstimateHitPositionAlongY(){
 

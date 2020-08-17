@@ -192,7 +192,8 @@ void PrintScintillatorVector(std::vector<ScintillatorBar*> scintBarVector){
 
 
 void InitializeBarsEnergyMap(){
-	unsigned short int numOfChannels=60;
+	//unsigned short int numOfChannels=60;
+	unsigned short int numOfChannels=numOfLayers*numOfBarsInEachLayer*2;
 	for(unsigned short int i = 0 ; i < numOfChannels ; i++){
 		std::string barId=std::to_string(i)+std::to_string(i+1);
 		
@@ -205,16 +206,24 @@ void InitializeBarsEnergyMap(){
 }
 
 void InitializeVectOfEnergyHist(){
-	unsigned short int numOfChannels=60;
+	unsigned short int numOfChannels=numOfLayers*numOfBarsInEachLayer*2;//60;
 	int qstart=0;
 	int qend=25000;
 	int nbins=1000;
+
+	int nbinstd=200;
+	int tstart=-25000;
+	int tend=25000;
 
 	for(unsigned short int i = 0 ; i < numOfChannels ; ){
 		unsigned int barIndex=i/2;
 		std::string barId="Bar-"+std::to_string(barIndex);
 		const char *histName=barId.c_str();
+		const char *histTimeDiff=(barId+"-DeltaT").c_str();
 		vecOfEnergyHist.push_back(new TH1D(histName,histName,nbins,qstart,qend));
+		vecOfTimeDiffHist.push_back(new TH1D(histTimeDiff,histTimeDiff,nbinstd,tstart,tend));
+		vecOfdeltaTMin.push_back(0);
+		vecOfdeltaTMax.push_back(0);
 		i=i+2;
 	}
 }
@@ -280,6 +289,66 @@ void PlotHistOfTSDiff(TreeEntryVector treeEntVec){
 	hist->Draw();
 	return;
 }
+
+/*
+ * Input argument should be pairedEntryVector
+ */
+
+/*
+ * FOUND A BUG IN THE LOGIC, NOT CORRECT PHYSICS-WISE
+ */
+void PlotHistOfTSDiff_AllBars(TreeEntryVector treeEntVec){
+	gStyle->SetOptStat();//1001);
+	unsigned int nbins=10000;
+	int tstart=-2000;
+	int tend=2000;
+	new TCanvas();
+	//TH1D *hist=new TH1D("TimeDiffHist","TimeDiffHist",nbins,tstart,tend);
+	for(unsigned int i = 0 ; i < treeEntVec.size() ; i++){
+	//for(unsigned int i = 0 ; i < 100 ; i++){
+		Long64_t tdiff=(treeEntVec[i].tstamp-treeEntVec[i+1].tstamp);
+		//std::cout <<"I : " << treeEntVec[i].tstamp << " : I+1 : " << treeEntVec[i+1].tstamp << " : Diff : " << tdiff << std::endl;
+		//tdiff/=1000.;
+		//hist->Fill(tdiff);
+
+		//Fill histogram of barIndex
+		unsigned int barIndex = (treeEntVec[i].brch < treeEntVec[i+1].brch) ? treeEntVec[i].brch/2 : treeEntVec[i+1].brch/2;
+		vecOfTimeDiffHist[barIndex]->Fill(tdiff);
+	}
+	//hist->Draw();
+	return;
+}
+
+
+/*
+ * Input argument should be pairedEntryVector
+ */
+void PlotHistOfTSDiff_AllBars_V2(std::vector<ScintillatorBar*> scintBarVec){
+	gStyle->SetOptStat();//1001);
+	unsigned int nbins=10000;
+	int tstart=-2000;
+	int tend=2000;
+	new TCanvas();
+	//TH1D *hist=new TH1D("TimeDiffHist","TimeDiffHist",nbins,tstart,tend);
+	for(unsigned int i = 0 ; i < scintBarVec.size() ; i++){
+	//for(unsigned int i = 0 ; i < 100 ; i++){
+
+		//Long64_t tdiff=(treeEntVec[i].tstamp-treeEntVec[i+1].tstamp);
+
+		//std::cout <<"I : " << treeEntVec[i].tstamp << " : I+1 : " << treeEntVec[i+1].tstamp << " : Diff : " << tdiff << std::endl;
+		//tdiff/=1000.;
+		//hist->Fill(tdiff);
+
+		//Fill histogram of barIndex
+		//unsigned int barIndex = (treeEntVec[i].brch < treeEntVec[i+1].brch) ? treeEntVec[i].brch/2 : treeEntVec[i+1].brch/2;
+		//vecOfTimeDiffHist[barIndex]->Fill(tdiff);
+
+		vecOfTimeDiffHist[scintBarVec[i]->barIndex]->Fill(scintBarVec[i]->deltaTstamp);
+	}
+	//hist->Draw();
+	return;
+}
+
 
 void PlotHistOfTS(TreeEntryVector treeEntVec){
 	gStyle->SetOptStat();//1001);
@@ -377,8 +446,9 @@ std::vector<ScintillatorBar*> DetectMuonHits(TreeEntryVector treeEntVec){
 				barIndex=treeEntVec[i+1].brch/2;
 			}
 
-			float gmean=sqrt(treeEntVec[i].qlong*treeEntVec[i+1].qlong);
-			vecOfEnergyHist[barIndex]->Fill(gmean);
+			//float gmean=sqrt(treeEntVec[i].qlong*treeEntVec[i+1].qlong);
+			//vecOfEnergyHist[barIndex]->Fill(gmean);
+			vecOfEnergyHist[barIndex]->Fill(qmean);
 		}
 
 
@@ -521,7 +591,7 @@ void DigitizerAll()
   const int nset=3;
 
   TFile *fin=0;
-  std::string infile="testismran.root";
+  std::string infile="data.root";
   //std::string infile="Waveforms_Ch0Ch1_SF891_all32ns.root";
   std::string outfile="test.root";
   TFile *fout = new TFile(outfile.c_str(),"RECREATE");
@@ -685,11 +755,14 @@ void CheckPairs(TreeEntryVector treeEntVec){
 	//PrintEntryVector(smallTSEntVec);
 
 	PlotHistOfTSDiff(pairedEntVec);
+	//PlotHistOfTSDiff_AllBars(pairedEntVec);
+
 	//Working
 	//PlotHistOfQ(pairedEntVec);
 
 	std::vector<ScintillatorBar*> scintBarVec = DetectMuonHits(pairedEntVec);
 	PrintScintillatorVector(scintBarVec);
+	PlotHistOfTSDiff_AllBars_V2(scintBarVec);
 
 	std::cout <<"========== Trying to Sort ScintillatorBar Vector ==============" << std::endl;
 	std::sort(scintBarVec.begin(),scintBarVec.end(),CompareTimestampScintillator);
@@ -705,7 +778,7 @@ void CheckPairs(TreeEntryVector treeEntVec){
 	std::vector<std::vector<ScintillatorBar*>> muonTrackVecAllLayersSorted = SortMuonTracksByBarIndex(muonTrackVec);
 	PrintMuonTrackVector(muonTrackVecAllLayersSorted);
 	FillCoincidenceHist(muonTrackVecAllLayersSorted);
-	FillTestPositionHist(muonTrackVecAllLayersSorted);
+	//FillTestPositionHist(muonTrackVecAllLayersSorted);
 	//PrintMuonTrackVector(muonTrackVec);
 
 	//std::sort(pairedEntVec.begin(),pairedEntVec.end(),CompareTimestamp);
@@ -730,6 +803,8 @@ int main(){
   for(unsigned int i = 0 ; i < vecOfEnergyHist.size(); i ++){
   	new TCanvas();
   	vecOfEnergyHist[i]->Draw();
+  	new TCanvas();
+  	vecOfTimeDiffHist[i]->Draw();
   }
   
   fApp->Run();
