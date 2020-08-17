@@ -328,6 +328,7 @@ set(SOURCES ${SOURCES}
 ${CMAKE_SOURCE_DIR}/CoordinateGenerator/src
 ${CMAKE_SOURCE_DIR}/TemplatizedInterface/src
 ${CMAKE_SOURCE_DIR}/src
+${CMAKE_SOURCE_DIR}/ismran/inc
 )
 
 macro(collect_sources SOURCES)

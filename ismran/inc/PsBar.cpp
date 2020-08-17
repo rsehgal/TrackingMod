@@ -13,6 +13,11 @@ TStopwatch timer;
 unsigned int numOfLayers=3;
 unsigned int numOfBarsInEachLayer=9;
 double fwhm = 2.355 * 5.66353 ;
+std::map<std::string,TH1D*> barsEnergyMap;
+std::vector<TH1D*> vecOfEnergyHist;
+std::vector<TH1D*> vecOfTimeDiffHist;
+std::vector<unsigned int> vecOfdeltaTMin;
+std::vector<unsigned int> vecOfdeltaTMax;
 //std::vector<ScintillatorBar*> eventsVec2={};
 
 /*void PrintPsBarVector(){
