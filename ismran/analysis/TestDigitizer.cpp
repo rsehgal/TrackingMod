@@ -432,7 +432,7 @@ std::vector<ScintillatorBar*> DetectMuonHits(TreeEntryVector treeEntVec){
 		else{
 			newScint = new ScintillatorBar(treeEntVec[i+1].brch,treeEntVec[i].brch,
 					  	  	  	  	  	   treeEntVec[i+1].tstamp,treeEntVec[i].tstamp,
-										   treeEntVec[i+1].qlong,treeEntVec[i].qlong,treeEntVec[i].time);
+										   treeEntVec[i+1].qlong,treeEntVec[i].qlong,treeEntVec[i+1].time);
 		}
 
 		if(newScint->validPair){

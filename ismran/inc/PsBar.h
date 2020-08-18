@@ -88,7 +88,15 @@ struct ScintillatorBar{
 		tsmallTimeStamp = (tstampNear < tstampFar) ? tstampNear : tstampFar;
 		deltaTstamp=tstampNear-tstampFar;
 		bool validEnergy = (qlongMean > qstart && qlongMean < qend);
-		validPair = (abs(deltaTstamp) < timeDiffNearFar) && ((l_channelNear-l_channelFar) == -1) && validEnergy ;
+
+		/*
+		 * Added following checks to declare the pair as VALID
+		 * 1) Absolute value of time differ must be smaller than 2500 : abs(deltaTstamp) < timeDiffNearFar)
+		 * 2) Near channel number must be smaller than far channel number and the diff should be -1 : ((l_channelNear-l_channelFar) == -1)
+		 * 3) Since we are considering only MUONS to energy deposited kept between 4000 to 18000 : NOT THE CALIBRATED ONE
+		 * 4) Near channel number should be small then far channel number, ideally it should be even as per the current nomenclature
+		 */
+		validPair = (abs(deltaTstamp) < timeDiffNearFar) && ((l_channelNear-l_channelFar) == -1) && validEnergy && !(l_channelNear%2);
 		time=l_time;
 		EstimateHitPosition();
 
