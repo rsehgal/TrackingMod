@@ -26,6 +26,8 @@ extern std::vector<unsigned int> vecOfdeltaTMax;
 //energy range to select the particle
 extern int qstart;// = 4000;
 extern int qend;// = 18000;
+//time difference between Far and Near PMT of a PsBar
+extern int timeDiffNearFar; // =25000 (ps)
 
 extern double fwhm;// = 2.355 * 5.66353 ;
 
@@ -86,7 +88,7 @@ struct ScintillatorBar{
 		tsmallTimeStamp = (tstampNear < tstampFar) ? tstampNear : tstampFar;
 		deltaTstamp=tstampNear-tstampFar;
 		bool validEnergy = (qlongMean > qstart && qlongMean < qend);
-		validPair = (abs(deltaTstamp) < 25000) && ((l_channelNear-l_channelFar) == -1) && validEnergy ;
+		validPair = (abs(deltaTstamp) < timeDiffNearFar) && ((l_channelNear-l_channelFar) == -1) && validEnergy ;
 		time=l_time;
 		EstimateHitPosition();
 
