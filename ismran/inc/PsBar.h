@@ -23,6 +23,10 @@ extern std::vector<TH1D*> vecOfTimeDiffHist;
 extern std::vector<unsigned int> vecOfdeltaTMin;
 extern std::vector<unsigned int> vecOfdeltaTMax;
 
+//energy range to select the particle
+extern int qstart;// = 4000;
+extern int qend;// = 18000;
+
 extern double fwhm;// = 2.355 * 5.66353 ;
 
 struct Point3D{
@@ -63,6 +67,7 @@ struct ScintillatorBar{
 	Point3D hitPosition;
 
 	bool barHitted;
+	bool validPair;
 
 
 	ScintillatorBar(unsigned short l_channelNear, unsigned short l_channelFar,
@@ -80,6 +85,8 @@ struct ScintillatorBar{
 		tstampFar=l_tstampFar;
 		tsmallTimeStamp = (tstampNear < tstampFar) ? tstampNear : tstampFar;
 		deltaTstamp=tstampNear-tstampFar;
+		bool validEnergy = (qlongMean > qstart && qlongMean < qend);
+		validPair = (abs(deltaTstamp) < 25000) && ((l_channelNear-l_channelFar) == -1) && validEnergy ;
 		time=l_time;
 		EstimateHitPosition();
 

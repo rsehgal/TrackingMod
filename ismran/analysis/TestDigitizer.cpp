@@ -416,46 +416,32 @@ void PlotHistOfQ(TreeEntryVector treeEntVec){
  */
 std::vector<ScintillatorBar*> DetectMuonHits(TreeEntryVector treeEntVec){
 	std::cout <<"Trying to detect Muon Hits.........." << std::endl;
-	/*gStyle->SetOptStat();//1001);
-
-	int qstart=0;
-	int qend=25000;
-	int nbins=1000;
-
-	new TCanvas();
-	TH1D *hist=new TH1D("Q-GeomMean","Q-GeomMean",nbins,qstart,qend);*/
 	std::vector<ScintillatorBar*> scintBarVec;
-
 	int qstart = 4000;
 	int qend = 18000;
 	for(unsigned int i = 0 ; i < treeEntVec.size() ; ){
 		std::string barId="";
 		unsigned int barIndex=0;
 		float qmean   = sqrt(treeEntVec[i].qlong*treeEntVec[i+1].qlong);
-		if(qmean > qstart && qmean < qend){
-			if(treeEntVec[i].brch < treeEntVec[i+1].brch){
-				scintBarVec.push_back(new ScintillatorBar(treeEntVec[i].brch,treeEntVec[i+1].brch,
-														  treeEntVec[i].tstamp,treeEntVec[i+1].tstamp,
-														  treeEntVec[i].qlong,treeEntVec[i+1].qlong,treeEntVec[i].time));
-				barIndex=treeEntVec[i].brch/2;
-			}
-			else{
-				scintBarVec.push_back(new ScintillatorBar(treeEntVec[i+1].brch,treeEntVec[i].brch,
-														  treeEntVec[i+1].tstamp,treeEntVec[i].tstamp,
-														  treeEntVec[i+1].qlong,treeEntVec[i].qlong,treeEntVec[i].time));
-				barIndex=treeEntVec[i+1].brch/2;
-			}
-
-			//float gmean=sqrt(treeEntVec[i].qlong*treeEntVec[i+1].qlong);
-			//vecOfEnergyHist[barIndex]->Fill(gmean);
-			vecOfEnergyHist[barIndex]->Fill(qmean);
+		ScintillatorBar *newScint ;
+		if(treeEntVec[i].brch < treeEntVec[i+1].brch){
+			newScint = new ScintillatorBar(treeEntVec[i].brch,treeEntVec[i+1].brch,
+  	  	  	  	  	  	  	  	  	       treeEntVec[i].tstamp,treeEntVec[i+1].tstamp,
+										   treeEntVec[i].qlong,treeEntVec[i+1].qlong,treeEntVec[i].time);
+		}
+		else{
+			newScint = new ScintillatorBar(treeEntVec[i+1].brch,treeEntVec[i].brch,
+					  	  	  	  	  	   treeEntVec[i+1].tstamp,treeEntVec[i].tstamp,
+										   treeEntVec[i+1].qlong,treeEntVec[i].qlong,treeEntVec[i].time);
 		}
 
-
+		if(newScint->validPair){
+			scintBarVec.push_back(newScint);
+			barIndex=newScint->barIndex;
+			vecOfEnergyHist[barIndex]->Fill(qmean);
+		}
 		i=i+2;
-
 	}
-
 	std::cout << "Length of Detected Muon Hits : " << scintBarVec.size() << std::endl;
 	return scintBarVec;
 }
@@ -540,7 +526,7 @@ std::vector< std::vector<ScintillatorBar*> > SortMuonTracksByBarIndex(std::vecto
 
 void FillCoincidenceHist(std::vector< std::vector<ScintillatorBar*> > muonTrackVec){
 	TH1F *coincidenceHist = new TH1F("CoincidenceHist","CoincidenceHist",20,0,100);
-	TH2F *coincidenceHist2D = new TH2F("CoincidenceHist2D","CoincidenceHist2D",9,0,9,9,0,9);
+	TH2F *coincidenceHist2D = new TH2F("CoincidenceHist2D","CoincidenceHist2D",numOfBarsInEachLayer,0,numOfBarsInEachLayer,numOfBarsInEachLayer,0,numOfBarsInEachLayer);
 	unsigned int muonTrackVecLength = muonTrackVec.size();
 	for(unsigned int i = 0 ; i < muonTrackVecLength ; i++){
 		std::vector<ScintillatorBar*> singleMuonTrack=muonTrackVec[i];
