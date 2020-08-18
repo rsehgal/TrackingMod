@@ -20,6 +20,8 @@ std::vector<unsigned int> vecOfdeltaTMin;
 std::vector<unsigned int> vecOfdeltaTMax;
 int qstart = 4000;
 int qend = 18000;
+int timeDiffNearFar = 25000 ; //ps
+
 //std::vector<ScintillatorBar*> eventsVec2={};
 
 /*void PrintPsBarVector(){
