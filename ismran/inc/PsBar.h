@@ -46,6 +46,8 @@ struct Point3D{
 
 };
 
+//extern std::string FileFrag[];
+extern std::vector<std::string> vecOfBarsName;
 
 struct ScintillatorBar{
 	std::string  scintName;    //! board #  and channel number ( its packed in as follows ) //! board*16 + chno.

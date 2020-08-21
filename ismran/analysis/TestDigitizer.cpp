@@ -1,6 +1,7 @@
 #include "includes.hh"
 #include "utilities.h"
 #include "PsBar.h"
+#include "TreeEntry.h"
 
 /*
 const int offset=0;
@@ -228,7 +229,7 @@ void InitializeVectOfEnergyHist(){
 	}
 }
 
-struct TreeEntry
+/*struct TreeEntry
 {
   UShort_t  brch;    //! board #  and channel number ( its packed in as follows )
   //! board*16 + chno.
@@ -250,7 +251,7 @@ struct TreeEntry
   	std::cout << brch <<" , " << qlong << " , " << tstamp <<" , "<< time << ", " << dt << std::endl;
   }
   
-};
+};*/
 
 
 using TreeEntryVector = std::vector<TreeEntry>;
@@ -260,6 +261,7 @@ bool CompareTimestamp(TreeEntry i1, TreeEntry i2)
 	return (i1.tstamp < i2.tstamp); 
 } 
 
+/*
 void CheckPairs(TreeEntryVector treeEntVec);
 
 void PrintEntryVector(TreeEntryVector treeEntVec){
@@ -271,6 +273,7 @@ void PrintEntryVector(TreeEntryVector treeEntVec){
 	
 	std::cout << "Printing timediff : " << treeEntVec[7].tstamp-treeEntVec[0].tstamp << std::endl;
 }
+*/
 
 void PlotHistOfTSDiff(TreeEntryVector treeEntVec){
 	gStyle->SetOptStat();//1001);
@@ -414,6 +417,7 @@ void PlotHistOfQ(TreeEntryVector treeEntVec){
 /*
  * Function to detect the Muon Hit based on the energy info
  */
+/*
 std::vector<ScintillatorBar*> DetectMuonHits(TreeEntryVector treeEntVec){
 	std::cout <<"Trying to detect Muon Hits.........." << std::endl;
 	std::vector<ScintillatorBar*> scintBarVec;
@@ -445,6 +449,7 @@ std::vector<ScintillatorBar*> DetectMuonHits(TreeEntryVector treeEntVec){
 	std::cout << "Length of Detected Muon Hits : " << scintBarVec.size() << std::endl;
 	return scintBarVec;
 }
+*/
 
 /*
  * Function to detect muon hits belonging to the muon track
@@ -686,6 +691,7 @@ void DigitizerAll()
   std::cout<<"Good bye : " <<"\t"<<std::endl;
 }
 
+/*
 void CheckPairs(TreeEntryVector treeEntVec){
 	TreeEntryVector smallTSEntVec;
 	TreeEntryVector pairedEntVec;
@@ -774,6 +780,7 @@ void CheckPairs(TreeEntryVector treeEntVec){
 	//PlotHistOfTS(smallTSEntVec);
 	//return;
 }
+*/
 
 int main(){
 
