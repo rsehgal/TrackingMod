@@ -76,7 +76,65 @@ Analyzer::Analyzer(std::string calibFileName, std::string dataFileName) {
 	}      //! event loop
 
 	TreeEntryVector pairedEntryVec = CheckPairs(fVecOfTreeEntry);
-	std::vector<ScintillatorBar*> scintBarVec = DetectMuonHits(pairedEntryVec);
+	scintBarVec = DetectMuonHits(pairedEntryVec);
 	//PrintScintillatorVector(scintBarVec);
 
+}
+
+void Analyzer::PerformDelTCorrection(){
+	for(unsigned int index = 0 ; index < scintBarVec.size(); index++){
+		scintBarVec[index]->corrected = true;
+		std::cout << "delT of barIndex : " << scintBarVec[index]->barIndex << " : " << scintBarVec[index]->deltaTstamp 
+		<< " : CorrectionOffset : " 
+				  << fCalib->GetCalibrationDataOf(scintBarVec[index]->barIndex)->fDeltaTCorr
+				  << std::endl;
+		scintBarVec[index]->deltaTstampCorrected = 
+				scintBarVec[index]->deltaTstamp - 
+				fCalib->GetCalibrationDataOf(scintBarVec[index]->barIndex)->fDeltaTCorr*1000;
+	}
+	std::cout<< "DelTCorrection done..." <<std::endl;
+}
+
+void Analyzer::EstimateZPositionOn(unsigned int barIndex){
+	TF1 *param = fCalib->GetCalibrationDataOf(barIndex)->fParameterization_F;
+	TH1F *hitZPos = new TH1F("Hit Position along Z","Hit Position along Z",100,-50.,50.0);
+	TH2F *hitZPos2D = new TH2F("Hit Position along Z 2D","Hit Position along Z 2D",100,-50.,50.0,100,0.,100.);
+	for(unsigned int index = 0 ; index < scintBarVec.size(); index++){
+		if(scintBarVec[index]->barIndex == barIndex){
+			long correctedDelT = scintBarVec[index]->deltaTstampCorrected/1000.;
+			float estZ = param->Eval(correctedDelT);
+			std::cout << "Corrected DelT : " << correctedDelT << " : Hit Position along Z : " << estZ << std::endl;
+			hitZPos->Fill(estZ);
+			hitZPos2D->Fill(estZ,49.5);
+		}
+	}
+	new TCanvas();
+	hitZPos->Draw();
+	new TCanvas();
+	hitZPos2D->Draw();
+
+}
+
+void Analyzer::PlotHistOf(unsigned int barIndex){
+		unsigned int nbins=100, tstart = -25000, tend = 25000;
+		TH1D *histDelT=new TH1D("DeltaT / DeltaT Corrected","TimeDiffHist",nbins,tstart,tend);
+		histDelT->SetLineColor(1);
+		TH1D *histDelTCorr=new TH1D("DeltaT Corr","DeltaT Corr",nbins,tstart,tend);
+		histDelTCorr->SetLineColor(2);
+		for(unsigned int index = 0 ; index < scintBarVec.size(); index++){
+			if(scintBarVec[index]->barIndex == barIndex){
+				histDelT->Fill(scintBarVec[index]->deltaTstamp);
+				histDelTCorr->Fill(scintBarVec[index]->deltaTstampCorrected);
+			}
+		}
+		auto legend = new TLegend();//0.1,0.7,0.48,0.9);
+	    legend->SetHeader("DeltaT histograms","C"); // option "C" allows to center the header
+	    legend->AddEntry(histDelT,"DeltaT Histogram","f");
+	    legend->AddEntry(histDelTCorr,"DeltaT Corrected Histogram","l");
+	    //legend->AddEntry("f1","Function abs(#frac{sin(x)}{x})","l");
+	    //legend->AddEntry("gr","Graph with error bars","lep");
+	    legend->Draw();
+		histDelT->Draw();
+		histDelTCorr->Draw("same");
+		
 }

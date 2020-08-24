@@ -50,6 +50,10 @@ public:
 		return fVecOfCalibrationData;
 	}
 
+	unsigned int GetNumberOfBars()const{
+		return fVecOfCalibrationData.size();
+	}
+
 	/*
 	 * Function to return Calibration data of specific Scintillator bar
 	 */

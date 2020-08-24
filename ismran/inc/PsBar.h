@@ -73,12 +73,16 @@ struct ScintillatorBar{
 	bool barHitted;
 	bool validPair;
 
+	bool corrected;
+	long deltaTstampCorrected;
+
 
 	ScintillatorBar(unsigned short l_channelNear, unsigned short l_channelFar,
 					ULong64_t l_tstampNear, ULong64_t l_tstampFar,
 					UInt_t l_qlongNear,	UInt_t l_qlongFar, UInt_t l_time){
 
 		barHitted = false;
+		corrected = false;
 		barIndex = l_channelNear/2;
 		layerIndex = barIndex/numOfBarsInEachLayer;
 		scintName="PsBar"+std::to_string(barIndex)+"-"+std::to_string(l_channelNear)+"-"+std::to_string(l_channelFar);
@@ -205,9 +209,6 @@ struct ScintillatorBar{
 		EstimateHitPositionAlongY();
 		EstimateHitPositionAlongZ();
 	}
-
-
-
 
 };
 
