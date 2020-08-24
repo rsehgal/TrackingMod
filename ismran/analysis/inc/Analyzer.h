@@ -20,9 +20,13 @@ class Analyzer {
 	Calibration *fCalib;
 	std::string fDataFileName;
 	TreeEntryVector fVecOfTreeEntry;
+	std::vector<ScintillatorBar*> scintBarVec;
 public:
 	Analyzer();
 	Analyzer(std::string calibFileName, std::string dataFileName);
+	void PerformDelTCorrection();
+	void PlotHistOf(unsigned int barIndex);
+	void EstimateZPositionOn(unsigned int barIndex);
 	virtual ~Analyzer();
 };
 

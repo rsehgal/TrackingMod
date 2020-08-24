@@ -44,7 +44,7 @@ std::vector<ScintillatorBar*> DetectMuonHits(TreeEntryVector treeEntVec){
 										   treeEntVec[i+1].qlong,treeEntVec[i].qlong,treeEntVec[i+1].time);
 		}
 
-		if(newScint->validPair){
+		if(newScint->validPair && newScint->barIndex < numOfLayers*numOfBarsInEachLayer){
 			scintBarVec.push_back(newScint);
 			barIndex=newScint->barIndex;
 			//vecOfEnergyHist[barIndex]->Fill(qmean);
