@@ -121,6 +121,35 @@ void Analyzer::EstimateZPositionOn(unsigned int barIndex){
 
 }
 
+void Analyzer::EstimateZPositionForAnEvenOnBar(std::vector<ScintillatorBar*> singleMuonTrack){
+	unsigned short startIndex = singleMuonTrack[0]->barIndex;
+	unsigned short endIndex = singleMuonTrack[singleMuonTrack.size()-1]->barIndex;
+
+	TF1 *paramStart = fCalib->GetCalibrationDataOf(startIndex)->fParameterization_F;
+	TF1 *paramEnd = fCalib->GetCalibrationDataOf(endIndex)->fParameterization_F;
+
+	scintBarVec[startIndex]->deltaTstampCorrected =
+					singleMuonTrack[startIndex]->deltaTstamp -
+					fCalib->GetCalibrationDataOf(singleMuonTrack[startIndex]->barIndex)->fDeltaTCorr*1000;
+
+	scintBarVec[endIndex]->deltaTstampCorrected =
+					scintBarVec[index]->deltaTstamp -
+					fCalib->GetCalibrationDataOf(scintBarVec[index]->barIndex)->fDeltaTCorr*1000;
+	for(unsigned int index = 0 ; index < scintBarVec.size(); index++){
+		if(scintBarVec[index]->barIndex == barIndex){
+			long double correctedDelT = scintBarVec[index]->deltaTstampCorrected/1000.;
+			float estZ = param->Eval(correctedDelT);
+			std::cout << "Corrected DelT : " << correctedDelT << " : Hit Position along Z : " << estZ << std::endl;
+			if(estZ > -50. && estZ < 50.){
+			hitZPos->Fill(estZ);
+			hitZPos2D->Fill(estZ,49.5);
+			}
+		}
+	}
+
+}
+
+
 void Analyzer::PlotHistOf(unsigned int barIndex){
 		unsigned int nbins=100, tstart = -25000, tend = 25000;
 		TH1D *histDelT=new TH1D("DeltaT / DeltaT Corrected","TimeDiffHist",nbins,tstart,tend);
