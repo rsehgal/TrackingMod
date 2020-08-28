@@ -77,7 +77,11 @@ Analyzer::Analyzer(std::string calibFileName, std::string dataFileName) {
 
 	TreeEntryVector pairedEntryVec = CheckPairs(fVecOfTreeEntry);
 	scintBarVec = DetectMuonHits(pairedEntryVec);
-	//PrintScintillatorVector(scintBarVec);
+	std::cout <<"========== Trying to Sort ScintillatorBar Vector ==============" << std::endl;
+	std::sort(scintBarVec.begin(),scintBarVec.end(),CompareTimestampScintillator);
+	PrintScintillatorVector(scintBarVec);
+	std::vector<std::vector<ScintillatorBar*>> muonTrackVec = DetectMuonTracks(scintBarVec);
+	PrintMuonTrackVectorAllLayers(muonTrackVec);
 
 }
 

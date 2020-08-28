@@ -40,5 +40,10 @@ using TreeEntryVector=std::vector<TreeEntry>;
 extern std::vector<TreeEntry> CheckPairs(std::vector<TreeEntry> treeEntVec);
 extern void PrintEntryVector(TreeEntryVector treeEntVec);
 extern std::vector<ScintillatorBar*> DetectMuonHits(TreeEntryVector treeEntVec);
-
+extern std::vector< std::vector<ScintillatorBar*> >  DetectMuonTracks(std::vector<ScintillatorBar*> muonHitVector);
+extern bool CompareTimestampScintillator(ScintillatorBar *i1, ScintillatorBar *i2);
+extern bool CompareBarIndexInScintillator(ScintillatorBar *i1, ScintillatorBar *i2);
+extern void PrintScintillatorVector(std::vector<ScintillatorBar*> scintBarVector);
+extern void PrintMuonTrackVector(std::vector< std::vector<ScintillatorBar*> > muonTrackVec);
+extern void PrintMuonTrackVectorAllLayers(std::vector< std::vector<ScintillatorBar*> > muonTrackVec);
 #endif /* ISMRAN_INC_TREEENTRY_H_ */

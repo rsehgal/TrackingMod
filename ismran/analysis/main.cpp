@@ -20,9 +20,9 @@ int main(){
 		//		"../ismran/Board13_72Det_noHVDet27_30July2020.root");
 	Analyzer az("/media/rsehgal/CMSSW/IsmranDataCalibrationFiles/FinalCorrectionFactors_70bars.root",
 					"/home/rsehgal/BackBoneSoftwares/ismranData/Board13_54Det_noHVDet27_30July2020.root");
-	az.PerformDelTCorrection();
-	az.PlotHistOf(13);
-	az.EstimateZPositionOn(20);
+	//az.PerformDelTCorrection();
+	//az.PlotHistOf(13);
+	//az.EstimateZPositionOn(20);
 
 	fApp->Run();
 
