@@ -97,15 +97,17 @@ void Analyzer::PerformDelTCorrection(){
 
 void Analyzer::EstimateZPositionOn(unsigned int barIndex){
 	TF1 *param = fCalib->GetCalibrationDataOf(barIndex)->fParameterization_F;
-	TH1F *hitZPos = new TH1F("Hit Position along Z","Hit Position along Z",100,-50.,50.0);
-	TH2F *hitZPos2D = new TH2F("Hit Position along Z 2D","Hit Position along Z 2D",100,-50.,50.0,100,0.,100.);
+	TH1F *hitZPos = new TH1F("Hit Position along Z","Hit Position along Z",100,-70.,70.0);
+	TH2F *hitZPos2D = new TH2F("Hit Position along Z 2D","Hit Position along Z 2D",100,-70.,70.0,100,0.,100.);
 	for(unsigned int index = 0 ; index < scintBarVec.size(); index++){
 		if(scintBarVec[index]->barIndex == barIndex){
-			long correctedDelT = scintBarVec[index]->deltaTstampCorrected/1000.;
+			long double correctedDelT = scintBarVec[index]->deltaTstampCorrected/1000.;
 			float estZ = param->Eval(correctedDelT);
 			std::cout << "Corrected DelT : " << correctedDelT << " : Hit Position along Z : " << estZ << std::endl;
+			if(estZ > -50. && estZ < 50.){
 			hitZPos->Fill(estZ);
 			hitZPos2D->Fill(estZ,49.5);
+			}
 		}
 	}
 	new TCanvas();
