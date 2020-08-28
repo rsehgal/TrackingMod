@@ -29,8 +29,8 @@ using Tomography::Coordinates;
 int main(){
 
 	TApplication *fApp = new TApplication("Test", NULL, NULL);
-	 Tomography::VisualizationHelper *v = Tomography::VisualizationHelper::instance();
-	  v->InitializeVisualizer();
+	Tomography::VisualizationHelper *v = Tomography::VisualizationHelper::instance();
+	v->InitializeVisualizer();
 
 	unsigned int numOfEvents = 100;
 	Coordinates c;
@@ -45,6 +45,8 @@ int main(){
 		Tracking::Vector3D<double> p2(x,y,zbot);
 		Tomography::Track t(p1,p2);
 		v->Register(&t);
+		sleep(1);
+		v->Show();
 
 	}
 
