@@ -81,7 +81,7 @@ struct ScintillatorBar{
 					ULong64_t l_tstampNear, ULong64_t l_tstampFar,
 					UInt_t l_qlongNear,	UInt_t l_qlongFar, UInt_t l_time){
 
-		barHitted = false;
+		barHitted = true;
 		corrected = false;
 		barIndex = l_channelNear/2;
 		layerIndex = barIndex/numOfBarsInEachLayer;

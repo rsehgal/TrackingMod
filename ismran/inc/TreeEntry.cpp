@@ -20,6 +20,56 @@ void PrintEntryVector(TreeEntryVector treeEntVec){
 	std::cout << "Printing timediff : " << treeEntVec[7].tstamp-treeEntVec[0].tstamp << std::endl;
 }
 
+void PrintScintillatorVector(std::vector<ScintillatorBar*> scintBarVector){
+	//unsigned int n = scintBarVector.size();
+	std::cout << "ScintBarVector size from  PrintScintillatorVector : " << scintBarVector.size() << std::endl;
+	unsigned int n=20;
+	std::cout << "======= Printing " << n <<" Scintillators entries===========" << std::endl;
+	std::cout << "BarName" << " , " << "qlongNear" << " , " << "qlongFar" << " , " << "qlongMean" << " , "
+					  << "tstampNear"  << " , " << "tstampFar" << " , " << "tsmallTimeStamp" << " , " << "deltaTstamp" << " , " << "ClockTime" << std::endl;
+	for(unsigned int i=0 ; i < n ; i++){
+		scintBarVector[i]->Print();
+	}
+}
+
+
+void PrintMuonTrackVector(std::vector< std::vector<ScintillatorBar*> > muonTrackVec){
+	//unsigned int muonTrackVecLength = muonTrackVec.size();
+	unsigned int muonTrackVecLength = 20;
+	for(unsigned int i = 0 ; i < muonTrackVecLength ; i++){
+		std::cout << "====== Print Muon Track : " << i << " : Num of Layers Hitted : " << muonTrackVec[i].size()  << " ======" << std::endl;
+		unsigned int muonHitLength = muonTrackVec[i].size();
+		for(unsigned int j = 0 ; j < muonHitLength ; j++){
+			muonTrackVec[i][j]->Print();
+		}
+	}
+}
+
+void PrintMuonTrackVectorAllLayers(std::vector< std::vector<ScintillatorBar*> > muonTrackVec){
+	//unsigned int muonTrackVecLength = muonTrackVec.size();
+	unsigned int muonTrackVecLength = 20;
+	int i = 0 ;
+	//for(unsigned int i = 0 ; i < muonTrackVecLength ; i++){
+	while(muonTrackVecLength){
+
+
+		if (muonTrackVec[i].size() >= numOfLayers) {
+			muonTrackVecLength--;
+			std::cout << "====== Print Muon Track : " << i << " : Num of Layers Hitted : " << muonTrackVec[i].size()  << " ======" << std::endl;
+
+			//Sorting each track by barIndex,
+			std::sort(muonTrackVec[i].begin(),muonTrackVec[i].end(),CompareBarIndexInScintillator);
+
+			unsigned int muonHitLength = muonTrackVec[i].size();
+			for (unsigned int j = 0; j < muonHitLength; j++) {
+				muonTrackVec[i][j]->Print();
+			}
+
+		}
+		i++;
+	}
+}
+
 /*
  * Function to detect the Muon Hit based on the energy info
  */
@@ -53,6 +103,51 @@ std::vector<ScintillatorBar*> DetectMuonHits(TreeEntryVector treeEntVec){
 	}
 	std::cout << "Length of Detected Muon Hits : " << scintBarVec.size() << std::endl;
 	return scintBarVec;
+}
+
+bool CompareTimestampScintillator(ScintillatorBar *i1, ScintillatorBar *i2)
+{
+	//return (i1->tstampNear < i2->tstampNear);
+	return (i1->tsmallTimeStamp < i2->tsmallTimeStamp);
+
+}
+
+bool CompareBarIndexInScintillator(ScintillatorBar *i1, ScintillatorBar *i2)
+{
+	//return (i1->tstampNear < i2->tstampNear);
+	return (i1->barIndex < i2->barIndex);
+}
+
+
+std::vector< std::vector<ScintillatorBar*> >  DetectMuonTracks(std::vector<ScintillatorBar*> muonHitVector){
+	unsigned int hitLength = muonHitVector.size();
+	std::cout << "HitLength from DetectMuonTracks : " << hitLength << std::endl;
+	std::vector < std::vector<ScintillatorBar*> > muonTrackVec;
+	std::vector<ScintillatorBar*> singleMuonTrack;
+	singleMuonTrack.push_back(muonHitVector[0]);
+	unsigned int hitInAllLayersCounter = 0;
+	for (unsigned int i = 1; i < hitLength; i++) {
+
+			if ((muonHitVector[i]->tsmallTimeStamp
+				- muonHitVector[i - 1]->tsmallTimeStamp) < 20000) {
+			//Within 20ns window
+			singleMuonTrack.push_back(muonHitVector[i]);
+		} else {
+			//Outside 20ns window
+			muonTrackVec.push_back(singleMuonTrack);
+			//Just counting the number of muon where all the layer detected the muon
+			//std::cout << "Track Finshed : Length : "  << singleMuonTrack.size() << std::endl;
+			if (singleMuonTrack.size() == numOfLayers)
+				hitInAllLayersCounter++;
+			singleMuonTrack.clear();
+			singleMuonTrack.push_back(muonHitVector[i]);
+		}
+	}
+
+	std::cout
+			<< "Number of Muon Tracks where all the layers detected the muon : "
+			<< hitInAllLayersCounter << std::endl;
+	return muonTrackVec;
 }
 
 std::vector<TreeEntry> CheckPairs(TreeEntryVector treeEntVec){
