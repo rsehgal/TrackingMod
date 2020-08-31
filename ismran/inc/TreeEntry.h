@@ -46,4 +46,5 @@ extern bool CompareBarIndexInScintillator(ScintillatorBar *i1, ScintillatorBar *
 extern void PrintScintillatorVector(std::vector<ScintillatorBar*> scintBarVector);
 extern void PrintMuonTrackVector(std::vector< std::vector<ScintillatorBar*> > muonTrackVec);
 extern void PrintMuonTrackVectorAllLayers(std::vector< std::vector<ScintillatorBar*> > muonTrackVec);
+extern double fitl(double *x, double *par);
 #endif /* ISMRAN_INC_TREEENTRY_H_ */

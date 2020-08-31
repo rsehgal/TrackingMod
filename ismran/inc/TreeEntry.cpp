@@ -118,6 +118,9 @@ bool CompareBarIndexInScintillator(ScintillatorBar *i1, ScintillatorBar *i2)
 	return (i1->barIndex > i2->barIndex);
 }
 
+double fitl(double *x, double *par){
+	return par[0]+par[1]*x[0];
+}
 
 std::vector< std::vector<ScintillatorBar*> >  DetectMuonTracks(std::vector<ScintillatorBar*> muonHitVector){
 	unsigned int hitLength = muonHitVector.size();
