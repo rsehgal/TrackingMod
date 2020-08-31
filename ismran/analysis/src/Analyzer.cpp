@@ -82,6 +82,11 @@ Analyzer::Analyzer(std::string calibFileName, std::string dataFileName) {
 	PrintScintillatorVector(scintBarVec);
 	std::vector<std::vector<ScintillatorBar*>> muonTrackVec = DetectMuonTracks(scintBarVec);
 	PrintMuonTrackVectorAllLayers(muonTrackVec);
+	std::cout<<"=========================================== Trying to estimate hit position ===========================================" << std::endl;
+	for(unsigned int index = 0 ; index < muonTrackVec.size() ; index++){
+		EstimateZPositionForAnEventOnBar(muonTrackVec[index]);
+	}
+	PrintMuonTrackVectorAllLayers(muonTrackVec);
 
 }
 
@@ -121,20 +126,54 @@ void Analyzer::EstimateZPositionOn(unsigned int barIndex){
 
 }
 
-void Analyzer::EstimateZPositionForAnEvenOnBar(std::vector<ScintillatorBar*> singleMuonTrack){
+/*
+ * Function to estimate the Hit position for a complete event on Bar
+ * It does delT correction and then calculates the estimated Z position.
+ *
+ * For X and Y, for the time being we are taking 5cm as X, and top plane
+ * of scintillator bar as Y
+ *
+ * @input : Single Muon Track for an event
+ * @output : Returns nothing, instead it just sets the **hitPosition** for
+ *           Scintillator Bars that forms the track
+ */
+void Analyzer::EstimateZPositionForAnEventOnBar(std::vector<ScintillatorBar*> singleMuonTrack){
 	unsigned short startIndex = singleMuonTrack[0]->barIndex;
 	unsigned short endIndex = singleMuonTrack[singleMuonTrack.size()-1]->barIndex;
 
 	TF1 *paramStart = fCalib->GetCalibrationDataOf(startIndex)->fParameterization_F;
 	TF1 *paramEnd = fCalib->GetCalibrationDataOf(endIndex)->fParameterization_F;
 
-	scintBarVec[startIndex]->deltaTstampCorrected =
-					singleMuonTrack[startIndex]->deltaTstamp -
-					fCalib->GetCalibrationDataOf(singleMuonTrack[startIndex]->barIndex)->fDeltaTCorr*1000;
+	/*
+	 * Doing delT correction for an event
+	 */
+	for(unsigned int index = 0 ; index < singleMuonTrack.size() ; index++){
+		singleMuonTrack[index]->corrected = true;
+		singleMuonTrack[index]->deltaTstampCorrected =
+							singleMuonTrack[index]->deltaTstamp -
+							fCalib->GetCalibrationDataOf(singleMuonTrack[index]->barIndex)->fDeltaTCorr*1000;
 
-	scintBarVec[endIndex]->deltaTstampCorrected =
-					scintBarVec[index]->deltaTstamp -
-					fCalib->GetCalibrationDataOf(scintBarVec[index]->barIndex)->fDeltaTCorr*1000;
+		TF1 *param = fCalib->GetCalibrationDataOf(index)->fParameterization_F;
+		long double correctedDelT = scintBarVec[index]->deltaTstampCorrected/1000.;
+		float estZ = param->Eval(correctedDelT);
+		if(estZ > -50. && estZ < 50.){
+			singleMuonTrack[index]->EstimateHitPositionAlongX();
+			singleMuonTrack[index]->EstimateHitPositionAlongZ();//Corresponds to Y, Will change the name later to Y
+			(singleMuonTrack[index]->hitPosition).y=estZ;
+
+		}
+
+
+	}
+
+	/*singleMuonTrack[0]->deltaTstampCorrected =
+					singleMuonTrack[0]->deltaTstamp -
+					fCalib->GetCalibrationDataOf(startIndex)->fDeltaTCorr*1000;
+
+	singleMuonTrack[singleMuonTrack.size()-1]->deltaTstampCorrected =
+			singleMuonTrack[singleMuonTrack.size()-1]->deltaTstamp -
+					fCalib->GetCalibrationDataOf(endIndex)->fDeltaTCorr*1000;
+
 	for(unsigned int index = 0 ; index < scintBarVec.size(); index++){
 		if(scintBarVec[index]->barIndex == barIndex){
 			long double correctedDelT = scintBarVec[index]->deltaTstampCorrected/1000.;
@@ -146,7 +185,7 @@ void Analyzer::EstimateZPositionForAnEvenOnBar(std::vector<ScintillatorBar*> sin
 			}
 		}
 	}
-
+*/
 }
 
 

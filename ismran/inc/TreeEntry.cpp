@@ -115,7 +115,7 @@ bool CompareTimestampScintillator(ScintillatorBar *i1, ScintillatorBar *i2)
 bool CompareBarIndexInScintillator(ScintillatorBar *i1, ScintillatorBar *i2)
 {
 	//return (i1->tstampNear < i2->tstampNear);
-	return (i1->barIndex < i2->barIndex);
+	return (i1->barIndex > i2->barIndex);
 }
 
 
