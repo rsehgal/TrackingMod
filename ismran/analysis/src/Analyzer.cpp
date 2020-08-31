@@ -126,6 +126,10 @@ void Analyzer::EstimateZPositionOn(unsigned int barIndex){
 
 }
 
+void Analyzer::EstimateFittedHitPosition(std::vector<ScintillatorBar*> singleMuonTrack){
+
+}
+
 /*
  * Function to estimate the Hit position for a complete event on Bar
  * It does delT correction and then calculates the estimated Z position.
@@ -138,11 +142,6 @@ void Analyzer::EstimateZPositionOn(unsigned int barIndex){
  *           Scintillator Bars that forms the track
  */
 void Analyzer::EstimateZPositionForAnEventOnBar(std::vector<ScintillatorBar*> singleMuonTrack){
-	unsigned short startIndex = singleMuonTrack[0]->barIndex;
-	unsigned short endIndex = singleMuonTrack[singleMuonTrack.size()-1]->barIndex;
-
-	TF1 *paramStart = fCalib->GetCalibrationDataOf(startIndex)->fParameterization_F;
-	TF1 *paramEnd = fCalib->GetCalibrationDataOf(endIndex)->fParameterization_F;
 
 	/*
 	 * Doing delT correction for an event
@@ -166,26 +165,6 @@ void Analyzer::EstimateZPositionForAnEventOnBar(std::vector<ScintillatorBar*> si
 
 	}
 
-	/*singleMuonTrack[0]->deltaTstampCorrected =
-					singleMuonTrack[0]->deltaTstamp -
-					fCalib->GetCalibrationDataOf(startIndex)->fDeltaTCorr*1000;
-
-	singleMuonTrack[singleMuonTrack.size()-1]->deltaTstampCorrected =
-			singleMuonTrack[singleMuonTrack.size()-1]->deltaTstamp -
-					fCalib->GetCalibrationDataOf(endIndex)->fDeltaTCorr*1000;
-
-	for(unsigned int index = 0 ; index < scintBarVec.size(); index++){
-		if(scintBarVec[index]->barIndex == barIndex){
-			long double correctedDelT = scintBarVec[index]->deltaTstampCorrected/1000.;
-			float estZ = param->Eval(correctedDelT);
-			std::cout << "Corrected DelT : " << correctedDelT << " : Hit Position along Z : " << estZ << std::endl;
-			if(estZ > -50. && estZ < 50.){
-			hitZPos->Fill(estZ);
-			hitZPos2D->Fill(estZ,49.5);
-			}
-		}
-	}
-*/
 }
 
 
