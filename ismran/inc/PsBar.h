@@ -104,7 +104,7 @@ struct ScintillatorBar{
 		 */
 		validPair = (abs(deltaTstamp) < timeDiffNearFar) && ((l_channelNear-l_channelFar) == -1) && validEnergy && !(l_channelNear%2);
 		time=l_time;
-		EstimateHitPosition();
+		//EstimateHitPosition();
 
 	}
 

@@ -27,7 +27,7 @@ public:
 	void PerformDelTCorrection();
 	void PlotHistOf(unsigned int barIndex);
 	void EstimateZPositionOn(unsigned int barIndex);
-	void EstimateZPositionForAnEvenOnBar(std::vector<ScintillatorBar*> singleMuonTrack);
+	void EstimateZPositionForAnEventOnBar(std::vector<ScintillatorBar*> singleMuonTrack);
 	virtual ~Analyzer();
 };
 
