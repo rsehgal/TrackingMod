@@ -28,6 +28,7 @@ public:
 	void PlotHistOf(unsigned int barIndex);
 	void EstimateZPositionOn(unsigned int barIndex);
 	void EstimateZPositionForAnEventOnBar(std::vector<ScintillatorBar*> singleMuonTrack);
+	void EstimateFittedHitPosition(std::vector<ScintillatorBar*> singleMuonTrack);
 	virtual ~Analyzer();
 };
 

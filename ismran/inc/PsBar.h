@@ -69,6 +69,7 @@ struct ScintillatorBar{
 	unsigned short layerIndex;
 
 	Point3D hitPosition;
+	Point3D fittedHitPosition;
 
 	bool barHitted;
 	bool validPair;
