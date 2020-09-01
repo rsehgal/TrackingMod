@@ -44,6 +44,7 @@ extern std::vector< std::vector<ScintillatorBar*> >  DetectMuonTracks(std::vecto
 extern bool CompareTimestampScintillator(ScintillatorBar *i1, ScintillatorBar *i2);
 extern bool CompareBarIndexInScintillator(ScintillatorBar *i1, ScintillatorBar *i2);
 extern void PrintScintillatorVector(std::vector<ScintillatorBar*> scintBarVector);
+extern void PrintMuonTrack(std::vector<ScintillatorBar*> singleMuonTrack);
 extern void PrintMuonTrackVector(std::vector< std::vector<ScintillatorBar*> > muonTrackVec);
 extern void PrintMuonTrackVectorAllLayers(std::vector< std::vector<ScintillatorBar*> > muonTrackVec);
 extern double fitl(double *x, double *par);

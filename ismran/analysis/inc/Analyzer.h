@@ -15,12 +15,15 @@
 #include "PsBar.h"
 using TreeEntryVector = std::vector<TreeEntry>;
 
+class TH1D;
+
 class Analyzer {
 
 	Calibration *fCalib;
 	std::string fDataFileName;
 	TreeEntryVector fVecOfTreeEntry;
 	std::vector<ScintillatorBar*> scintBarVec;
+	std::vector<TH1D*> histVec;
 public:
 	Analyzer();
 	Analyzer(std::string calibFileName, std::string dataFileName);
@@ -29,6 +32,11 @@ public:
 	void EstimateZPositionOn(unsigned int barIndex);
 	void EstimateZPositionForAnEventOnBar(std::vector<ScintillatorBar*> singleMuonTrack);
 	void EstimateFittedHitPosition(std::vector<ScintillatorBar*> singleMuonTrack);
+
+	void SystemHealthCheckup(TreeEntryVector treeEntryVec);
+	void DisplaySystemHealth();
+	void InitializeHistograms();
+
 	virtual ~Analyzer();
 };
 

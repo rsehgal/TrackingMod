@@ -7,6 +7,7 @@
 
 
 #include "Plotter.h"
+#include "TreeEntry.h"
 
 void PlotMuonTrack(std::vector<ScintillatorBar*> singleMuonTrack){
 	std::vector<Double_t> xvec,zvec;
@@ -14,11 +15,12 @@ void PlotMuonTrack(std::vector<ScintillatorBar*> singleMuonTrack){
 		xvec.push_back((singleMuonTrack[index]->hitPosition).x);
 		zvec.push_back((singleMuonTrack[index]->hitPosition).z);
 	}
-	TGraph *gr = new TGraph(xvec.size(),&xvec[0],&zvec[0]);
+	TGraph *gr = new TGraph(xvec.size(),&zvec[0],&xvec[0]);
 	gr->SetMarkerStyle(8);
 	gr->SetTitle("Muon Hit Points in different layers");
 	new TCanvas();
 	gr->Draw("ap");
+	gPad->RedrawAxis("g");
 }
 
 void PlotNMuonTrack(std::vector<std::vector<ScintillatorBar*>> muonTrackVec, unsigned int numOfMuons){
@@ -36,6 +38,7 @@ void PlotNMuonTrack(std::vector<std::vector<ScintillatorBar*>> muonTrackVec, uns
 			//std::cout << "====================== Before Plotting Track with index : " << i << " ================= " << std::endl;
 			if (muonTrackVec[i].size() >= numOfLayers) {
 				std::cout << "====================== Plotting Track with index : " << i << " ================= " << std::endl;
+				PrintMuonTrack(muonTrackVec[i]);
 				n--;
 				PlotMuonTrack(muonTrackVec[i]);
 
