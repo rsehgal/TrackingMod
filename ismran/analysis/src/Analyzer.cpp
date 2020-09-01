@@ -10,6 +10,7 @@
 #include "includes.hh"
 #include "PsBar.h"
 #include "TreeEntry.h"
+#include "Plotter.h"
 
 
 
@@ -84,9 +85,11 @@ Analyzer::Analyzer(std::string calibFileName, std::string dataFileName) {
 	PrintMuonTrackVectorAllLayers(muonTrackVec);
 	std::cout<<"=========================================== Trying to estimate hit position ===========================================" << std::endl;
 	for(unsigned int index = 0 ; index < muonTrackVec.size() ; index++){
+
 		EstimateZPositionForAnEventOnBar(muonTrackVec[index]);
 	}
 	PrintMuonTrackVectorAllLayers(muonTrackVec);
+	PlotNMuonTrack(muonTrackVec,10);
 
 }
 
@@ -126,6 +129,9 @@ void Analyzer::EstimateZPositionOn(unsigned int barIndex){
 
 }
 
+/*
+ * This function should be called only after **EstimateZPositionForAnEventOnBar**
+ */
 void Analyzer::EstimateFittedHitPosition(std::vector<ScintillatorBar*> singleMuonTrack){
 
 }
@@ -157,8 +163,10 @@ void Analyzer::EstimateZPositionForAnEventOnBar(std::vector<ScintillatorBar*> si
 		float estZ = param->Eval(correctedDelT);
 		if(estZ > -50. && estZ < 50.){
 			singleMuonTrack[index]->EstimateHitPositionAlongX();
-			singleMuonTrack[index]->EstimateHitPositionAlongZ();//Corresponds to Y, Will change the name later to Y
-			(singleMuonTrack[index]->hitPosition).y=estZ;
+			//singleMuonTrack[index]->EstimateHitPositionAlongY();//Corresponds to Y, Will change the name later to Y
+			//(singleMuonTrack[index]->hitPosition).x=0;
+			(singleMuonTrack[index]->hitPosition).y=0;
+			(singleMuonTrack[index]->hitPosition).z=estZ;
 
 		}
 
