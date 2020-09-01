@@ -32,6 +32,13 @@ void PrintScintillatorVector(std::vector<ScintillatorBar*> scintBarVector){
 	}
 }
 
+void PrintMuonTrack(std::vector<ScintillatorBar*> singleMuonTrack){
+	//unsigned int n = scintBarVector.size();
+
+	for(unsigned int i=0 ; i < singleMuonTrack.size() ; i++){
+		singleMuonTrack[i]->Print();
+	}
+}
 
 void PrintMuonTrackVector(std::vector< std::vector<ScintillatorBar*> > muonTrackVec){
 	//unsigned int muonTrackVecLength = muonTrackVec.size();

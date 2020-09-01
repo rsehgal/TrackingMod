@@ -23,6 +23,95 @@ Analyzer::~Analyzer() {
 	// TODO Auto-generated destructor stub
 }
 
+void Analyzer::SystemHealthCheckup(TreeEntryVector treeEntryVec){
+	unsigned int poscounter = 0;
+	unsigned int negcounter = 0;
+	for(unsigned int index = 0  ; index < treeEntryVec.size() ;){
+		unsigned int near = treeEntryVec[index].brch;
+		unsigned int far = treeEntryVec[index+1].brch;
+		unsigned int barIndex = near/2;
+		histVec[5*barIndex]->Fill(treeEntryVec[index].qlong);
+		histVec[5*barIndex+1]->Fill(treeEntryVec[index+1].qlong);
+		histVec[5*barIndex+2]->Fill(sqrt(treeEntryVec[index].qlong*treeEntryVec[index+1].qlong));
+		int diff = treeEntryVec[index].tstamp - treeEntryVec[index+1].tstamp;
+		if(diff < 0.)
+			negcounter++;
+		else
+			poscounter++;
+		histVec[5*barIndex+3]->Fill(diff);
+//		histVec[5*barIndex+4]->Fill();
+
+		index += 2;
+	}
+	std::cout <<"Positive Counter : " << poscounter <<" : Negative Counter : " << negcounter << std::endl;
+}
+
+
+void Analyzer::DisplaySystemHealth(){
+	TCanvas *systemHealthCanvas = new TCanvas("TestCanvas","TestCanvas",800,600);
+	unsigned int totalNumOfBars = numOfLayers*numOfBarsInEachLayer;
+	systemHealthCanvas->Divide(3,19);
+	/*systemHealthCanvas->Divide(2,2);
+	systemHealthCanvas->cd(1);
+	histVec[0]->SetLineColor(1);
+	histVec[0]->Draw();
+	histVec[1]->SetLineColor(2);
+	histVec[1]->Draw("same");*/
+	for(unsigned int index = 0 ; index < totalNumOfBars ; index++){
+		std::cout << "Changing to subplot : " << (4*index) << std::endl;
+		//int plotIndex = 4*index;
+		int plotIndex = index;
+		systemHealthCanvas->cd(plotIndex+1);
+		//new TCanvas();
+		histVec[5*index]->SetLineColor(1);
+		histVec[5*index]->Draw();
+		histVec[5*index+1]->SetLineColor(2);
+		histVec[5*index+1]->Draw("same");
+
+		/*systemHealthCanvas->cd(4*index+1);
+		histVec[5*index+2]->Draw();
+
+		systemHealthCanvas->cd(4*index+2);
+		histVec[5*index+3]->Draw();*/
+
+
+
+	}
+//	systemHealthCanvas->Update();
+	/*histVec[0]->SetLineColor(1);
+	histVec[0]->Draw();
+	histVec[1]->SetLineColor(2);
+	histVec[1]->Draw("same");*/
+
+
+
+}
+
+void Analyzer::InitializeHistograms(){
+	unsigned int numOfChannels = numOfLayers*numOfBarsInEachLayer*2;
+	for(unsigned short int i = 0 ; i < numOfChannels ; ){
+			unsigned int barIndex=i/2;
+			std::string barId="Bar-"+std::to_string(barIndex);
+			std::string histNearName = barId+"-Near";
+			std::string histFarName = barId+"-Far";
+			std::string histMeanName = barId+"-Mean";
+			std::string histDelTName = barId+"-DelT";
+			std::string histDelTCorrName = barId+"-DelTCorrected";
+			//const char *histMeanName=barId.c_str();
+			int qstart=0;
+			int qend=25000;
+			int nbins=500;
+			histVec.push_back(new TH1D(histNearName.c_str(),histNearName.c_str(),nbins,qstart,qend));
+			histVec.push_back(new TH1D(histFarName.c_str(),histFarName.c_str(),nbins,qstart,qend));
+			histVec.push_back(new TH1D(histMeanName.c_str(),histMeanName.c_str(),nbins,qstart,qend));
+			histVec.push_back(new TH1D(histDelTName.c_str(),histDelTName.c_str(),nbins,-25000,25000));
+			histVec.push_back(new TH1D(histDelTCorrName.c_str(),histDelTCorrName.c_str(),nbins,-25000,25000));
+			i=i+2;
+		}
+
+	std::cout << "@@@@@@@@@@@ Size of HIST-VECTOR : " << histVec.size() <<" @@@@@@@@@@" << std::endl;
+}
+
 Analyzer::Analyzer(std::string calibFileName, std::string dataFileName) {
 	fCalib = new Calibration(calibFileName);
 	fDataFileName = dataFileName;
@@ -77,6 +166,8 @@ Analyzer::Analyzer(std::string calibFileName, std::string dataFileName) {
 	}      //! event loop
 
 	TreeEntryVector pairedEntryVec = CheckPairs(fVecOfTreeEntry);
+
+/*
 	scintBarVec = DetectMuonHits(pairedEntryVec);
 	std::cout <<"========== Trying to Sort ScintillatorBar Vector ==============" << std::endl;
 	std::sort(scintBarVec.begin(),scintBarVec.end(),CompareTimestampScintillator);
@@ -89,7 +180,14 @@ Analyzer::Analyzer(std::string calibFileName, std::string dataFileName) {
 		EstimateZPositionForAnEventOnBar(muonTrackVec[index]);
 	}
 	PrintMuonTrackVectorAllLayers(muonTrackVec);
-	PlotNMuonTrack(muonTrackVec,10);
+	PlotNMuonTrack(muonTrackVec,20);
+
+
+*/
+	std::cout << "========== Trying to Check System Health ============" << std::endl;
+	InitializeHistograms();
+	SystemHealthCheckup(pairedEntryVec);
+	DisplaySystemHealth();
 
 }
 
