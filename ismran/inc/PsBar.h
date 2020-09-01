@@ -174,12 +174,9 @@ struct ScintillatorBar{
 	 *
 	 * IDEA : Map the deltaT to the corresponding position along Y
 	 */
-	void EstimateHitPositionAlongY(){
+	void EstimateHitPositionAlongZ(){
+		hitPosition.z = 0;
 
-		hitPosition.y = 30*(deltaTstamp/1000.0);///fwhm;
-		if(hitPosition.y < 0){
-			hitPosition.y = -1.*hitPosition.y;
-		}
 	}
 
 	/*
@@ -189,7 +186,8 @@ struct ScintillatorBar{
 	 * can be 5cm
 	 */
 	void EstimateHitPositionAlongX(){
-		hitPosition.x = 5;
+		//hitPosition.x = 0;
+		hitPosition.x = (layerIndex+1)*10.;
 	}
 
 	/*
@@ -201,8 +199,9 @@ struct ScintillatorBar{
 	 * General logic
 	 * Z=(layerIndex+1)*10
 	 */
-	void EstimateHitPositionAlongZ(){
-		hitPosition.z = (layerIndex+1)*10.;
+	void EstimateHitPositionAlongY(){
+		//hitPosition.z = (layerIndex+1)*10.;
+		hitPosition.y = 0;
 	}
 
 	void EstimateHitPosition(){

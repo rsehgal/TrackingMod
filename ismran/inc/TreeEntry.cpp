@@ -58,7 +58,7 @@ void PrintMuonTrackVectorAllLayers(std::vector< std::vector<ScintillatorBar*> > 
 			std::cout << "====== Print Muon Track : " << i << " : Num of Layers Hitted : " << muonTrackVec[i].size()  << " ======" << std::endl;
 
 			//Sorting each track by barIndex,
-			std::sort(muonTrackVec[i].begin(),muonTrackVec[i].end(),CompareBarIndexInScintillator);
+			//std::sort(muonTrackVec[i].begin(),muonTrackVec[i].end(),CompareBarIndexInScintillator);
 
 			unsigned int muonHitLength = muonTrackVec[i].size();
 			for (unsigned int j = 0; j < muonHitLength; j++) {
@@ -118,6 +118,9 @@ bool CompareBarIndexInScintillator(ScintillatorBar *i1, ScintillatorBar *i2)
 	return (i1->barIndex > i2->barIndex);
 }
 
+/*
+ * Function to fit straight line to muon hits
+ */
 double fitl(double *x, double *par){
 	return par[0]+par[1]*x[0];
 }
@@ -137,6 +140,8 @@ std::vector< std::vector<ScintillatorBar*> >  DetectMuonTracks(std::vector<Scint
 			singleMuonTrack.push_back(muonHitVector[i]);
 		} else {
 			//Outside 20ns window
+			//Sorting the single muon track by BarIndex (in DESCENDING order), to form a logical track
+			std::sort(singleMuonTrack.begin(),singleMuonTrack.end(),CompareBarIndexInScintillator);
 			muonTrackVec.push_back(singleMuonTrack);
 			//Just counting the number of muon where all the layer detected the muon
 			//std::cout << "Track Finshed : Length : "  << singleMuonTrack.size() << std::endl;
