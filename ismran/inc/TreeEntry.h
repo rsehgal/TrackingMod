@@ -20,7 +20,7 @@ struct TreeEntry
   UInt_t    time;    //! real computer time in sec
   Int_t     dt;      //! delt between near and far channels
 
-  TreeEntry(UShort_t br, UInt_t ql, ULong64_t ts,UInt_t t, Int_t delT){
+  TreeEntry(UShort_t br, UInt_t ql, ULong64_t ts,UInt_t t, Int_t delT=0){
     brch=br;
     qlong=ql;
     tstamp=ts;
@@ -28,6 +28,10 @@ struct TreeEntry
     dt=delT;
 
   }
+
+
+  TreeEntry(){}
+  ~TreeEntry(){}
 
   void Print(){
   	std::cout << brch <<" , " << qlong << " , " << tstamp <<" , "<< time << ", " << dt << std::endl;
@@ -48,4 +52,10 @@ extern void PrintMuonTrack(std::vector<ScintillatorBar*> singleMuonTrack);
 extern void PrintMuonTrackVector(std::vector< std::vector<ScintillatorBar*> > muonTrackVec);
 extern void PrintMuonTrackVectorAllLayers(std::vector< std::vector<ScintillatorBar*> > muonTrackVec);
 extern double fitl(double *x, double *par);
+
+//Improved functions
+extern std::vector<TreeEntry*> LoadDataAndSort(std::string dataFileName);
+extern bool CompareTimestamp(TreeEntry *i1, TreeEntry *i2);
+extern void PrintEntryVector_V2(std::vector<TreeEntry*> treeEntVec, unsigned int n=10);
+
 #endif /* ISMRAN_INC_TREEENTRY_H_ */

@@ -53,4 +53,8 @@ file(GLOB headers ${PROJECT_SOURCE_DIR}/inc/*.h ${PROJECT_SOURCE_DIR}/inc/*.hh .
 
 add_executable(mainAna main.cpp ${sources} ${headers})
 target_link_libraries(mainAna ${ROOT_LIBRARIES} ${TOMOLIB})
+
+add_executable(mainAna_V2 main_V2.cpp ${sources} ${headers})
+target_link_libraries(mainAna_V2 ${ROOT_LIBRARIES} ${TOMOLIB})
+
 #target_link_libraries(main ${Geant4_LIBRARIES} Tomo)
