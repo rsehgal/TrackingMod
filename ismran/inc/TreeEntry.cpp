@@ -20,6 +20,8 @@ void PrintEntryVector(TreeEntryVector treeEntVec){
 	std::cout << "Printing timediff : " << treeEntVec[7].tstamp-treeEntVec[0].tstamp << std::endl;
 }
 
+
+
 void PrintScintillatorVector(std::vector<ScintillatorBar*> scintBarVector){
 	//unsigned int n = scintBarVector.size();
 	std::cout << "ScintBarVector size from  PrintScintillatorVector : " << scintBarVector.size() << std::endl;
@@ -166,6 +168,7 @@ std::vector< std::vector<ScintillatorBar*> >  DetectMuonTracks(std::vector<Scint
 }
 
 std::vector<TreeEntry> CheckPairs(TreeEntryVector treeEntVec){
+	std::cout <<"=============== Checking Pairs ==================" << std::endl;
 	TreeEntryVector smallTSEntVec;
 	TreeEntryVector pairedEntVec;
 	TreeEntryVector unpairedEntVec;
@@ -190,13 +193,24 @@ std::vector<TreeEntry> CheckPairs(TreeEntryVector treeEntVec){
 			i++;
 
 		}else{
+			/*if(pairedEntVec.size()==16777215){
+							 treeEntVec[i].Print();
+
+			}*/
+
+			if(pairedEntVec.size()==16777216){
+				 treeEntVec[i].Print();
+				 std::cout << "Break at I : " << i << std::endl;
+				 pairedEntVec[16777215].Print();
+			}
 			pairedEntVec.push_back(treeEntVec[i]);
 			pairedEntVec.push_back(treeEntVec[i+1]);
+			/*
 			if(treeEntVec[i].tstamp > treeEntVec[i+1].tstamp)
 				smallTSEntVec.push_back(treeEntVec[i+1]);
 			else
 				smallTSEntVec.push_back(treeEntVec[i]);
-
+			*/
 			i = i+2;
 		}
 
@@ -258,4 +272,73 @@ std::vector<TreeEntry> CheckPairs(TreeEntryVector treeEntVec){
 }
 
 
+//============== Some New interesting functions ================
+
+bool CompareTimestamp(TreeEntry *i1, TreeEntry *i2)
+{
+	return (i1->tstamp < i2->tstamp);
+}
+
+std::vector<TreeEntry*> LoadDataAndSort(std::string dataFileName){
+	std::vector<TreeEntry*> fVecOfTreeEntry;
+
+	TFile *fp = new TFile(dataFileName.c_str(), "r");
+	UShort_t brch; //! board #  and channel number ( its packed in as follows )	//! board*16 + chno.
+	UInt_t qlong;   //! integrated charge in long gate 88 nsec
+	ULong64_t tstamp;  //! time stamp in pico sec.
+	UInt_t time;    //! real computer time in sec
+
+	TTree *tr = (TTree*) fp->Get("ftree");
+	tr->SetBranchAddress("fBrCh", &brch);
+	tr->SetBranchAddress("fQlong", &qlong);
+	tr->SetBranchAddress("fTstamp", &tstamp);
+	tr->SetBranchAddress("fTime", &time);
+
+	TTimeStamp *times = new TTimeStamp();
+	Long64_t nEntries = tr->GetEntries();
+	std::cout <<"Total number of Entries : " << nEntries << std::endl;
+
+	Long64_t nb = 0;
+
+	for (Long64_t iev = 0; iev < nEntries; iev++) {
+		nb += tr->GetEntry(iev);
+		if (0)
+			std::cout << brch << " , " << qlong << " , " << tstamp << " , " << time <<  std::endl;
+
+		fVecOfTreeEntry.push_back(new TreeEntry(brch, qlong, tstamp, time));
+		//if(iev==10000)
+			//break;
+
+		if (iev % 500000 == 0) {
+			times->Set(time, kTRUE, offset, kFALSE);
+			std::cout << " Processing event : " << iev << "\t"	<< times->GetTimeSpec() << std::endl;
+		}
+
+	}      //! event loop
+
+	fp->Close();
+
+	//Sorting the TreeEntryVec with *tstamp* in ascending order
+	std::cout << "=========== Trying to do inplace sorting in TreeEntryVector =========== "<< std::endl;
+	std::cout << "Size of TreeEntry vector to sort : " << fVecOfTreeEntry.size() << std::endl;
+	std::sort(fVecOfTreeEntry.begin(),fVecOfTreeEntry.end(),CompareTimestamp);
+	std::cout << "TreeEntryVector Sorting done..... " << std::endl;
+	sleep(60);
+	std::cout <<"Returning Vector to main ......." << std::endl;
+	return fVecOfTreeEntry;
+
+
+
+
+}
+
+void PrintEntryVector_V2(std::vector<TreeEntry*> treeEntVec, unsigned int n){
+	//int lenToPrint=treeEntVec.size();
+	unsigned int lenToPrint=n;
+	for(unsigned int i = 0 ; i < lenToPrint ; i++){
+		treeEntVec[i]->Print();
+	}
+
+	std::cout << "Printing timediff : " << treeEntVec[7]->tstamp-treeEntVec[0]->tstamp << std::endl;
+}
 
