@@ -14,10 +14,12 @@
 
 class ScintillatorBar_V2;
 class Histograms;
+class Calibration;
 
 class Analyzer_V2 {
 
 	std::string fDatafileName;
+	Calibration *fCalib;
 
 public:
 	std::vector<TreeEntry*> fVecOfTreeEntry;
@@ -31,7 +33,7 @@ public:
 
 public:
 	Analyzer_V2();
-	Analyzer_V2(std::string datafileName);
+	Analyzer_V2(std::string datafileName,Calibration *calib=NULL);
 	virtual ~Analyzer_V2();
 	void LoadDataAndSort();
 	void CheckPairs();

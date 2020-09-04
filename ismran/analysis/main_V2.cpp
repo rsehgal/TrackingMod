@@ -38,7 +38,14 @@ int main(){
 	//az.PlotHistOf(13);
 	//az.EstimateZPositionOn(20);
 
-	Analyzer_V2 av2("/home/rsehgal/BackBoneSoftwares/ismranData/ISMRAN_81bars_Th10All_CosmicRun_15hrs42mins_26Aug2020_2.root");
+	//if don't need calibration
+	//Analyzer_V2 av2("/home/rsehgal/BackBoneSoftwares/ismranData/ISMRAN_81bars_Th10All_CosmicRun_15hrs42mins_26Aug2020_2.root");
+
+	//If calibration required
+	Calibration *cb = new Calibration("/media/rsehgal/CMSSW/IsmranDataCalibrationFiles/FinalCorrectionFactors_70bars.root");
+	Analyzer_V2 av2("/home/rsehgal/BackBoneSoftwares/ismranData/ISMRAN_81bars_Th10All_CosmicRun_15hrs42mins_26Aug2020_2.root",cb);
+
+
 	//Analyzer_V2 av2("/home/rsehgal/BackBoneSoftwares/ismranData/Board13_54Det_noHVDet27_30July2020.root");
 	//PrintEntryVector_V2(av2.fVecOfTreeEntry,100);
 

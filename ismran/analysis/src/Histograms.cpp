@@ -20,8 +20,8 @@ Histograms::Histograms(std::string barName,unsigned int barIndex){
 
 
 	int qstart=0;
-	int qend=30000;
-	int nbins=500;
+	int qend=32000;
+	int nbins=1000;
 	unsigned short int numOfPlots = 4;
 	gStyle->SetOptStat(0);
 	/*fhistQNearFarPad = new TPad( (barName+"-NearFarPad").c_str(),(barName+"-NearFarPad").c_str(),
@@ -44,13 +44,13 @@ Histograms::Histograms(std::string barName,unsigned int barIndex){
 							   2*padWidth,barIndex*padHeight,
 							   3*padWidth,(barIndex+1)*padHeight);
 	fhistDelTPad->Draw();*/
-	fhistDelT  = new TH1D((barName+"-DelT").c_str(),(barName+"-DelT").c_str(),nbins,-25000,25000);
+	fhistDelT  = new TH1D((barName+"-DelT").c_str(),(barName+"-DelT").c_str(),200,-25000,25000);
 
 	/*fhistDelTCorrectedPad = new TPad( (barName+"-DelTCorrectedPad").c_str(),(barName+"-DelTCorrectedPad").c_str(),
 							  3*padWidth,barIndex*padHeight,
 							  4*padWidth,(barIndex+1)*padHeight);
 	fhistDelTCorrectedPad->Draw();*/
-	fhistDelTCorrected  = new TH1D((barName+"-DelTCorrected").c_str(),(barName+"-DelTCorrected").c_str(),nbins,-25000,25000);
+	fhistDelTCorrected  = new TH1D((barName+"-DelTCorrected").c_str(),(barName+"-DelTCorrected").c_str(),200,-25000,25000);
 
 
 }
