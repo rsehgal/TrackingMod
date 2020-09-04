@@ -10,7 +10,7 @@
 const int offset=0;
 const double kDelTBar = 32.0; //! ns
 TStopwatch timer;
-unsigned int numOfLayers=9;
+unsigned int numOfLayers=7;
 unsigned int numOfBarsInEachLayer=9;
 double fwhm = 2.355 * 5.66353 ;
 std::map<std::string,TH1D*> barsEnergyMap;
@@ -19,7 +19,7 @@ std::vector<TH1D*> vecOfTimeDiffHist;
 std::vector<unsigned int> vecOfdeltaTMin;
 std::vector<unsigned int> vecOfdeltaTMax;
 int qstart = 4000;
-int qend = 18000;
+int qend = 20000;
 int timeDiffNearFar = 25000 ; //ps
 //std::string FileFrag[]={
 std::vector<std::string> vecOfBarsName={

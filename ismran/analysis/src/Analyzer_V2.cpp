@@ -10,6 +10,7 @@
 #include "TreeEntry.h"
 #include "ScintillatorBar_V2.h"
 #include "Histograms.h"
+#include "Calibration.h"
 #include <TH1I.h>
 Analyzer_V2::Analyzer_V2() {
 	// TODO Auto-generated constructor stub
@@ -20,7 +21,8 @@ Analyzer_V2::~Analyzer_V2() {
 	// TODO Auto-generated destructor stub
 }
 
-Analyzer_V2::Analyzer_V2(std::string datafileName){
+Analyzer_V2::Analyzer_V2(std::string datafileName, Calibration *calib){
+	fCalib = calib;
 	fDatafileName = datafileName;
 	LoadDataAndSort();
 	CheckPairs();
@@ -185,20 +187,30 @@ void Analyzer_V2::CreateScintillatorVector(){
 	for(unsigned long int i = 0 ; i < fVecOfPairedTreeEntry.size(); ){
 		Double_t qmean = sqrt(fVecOfPairedTreeEntry[i]->qlong * fVecOfPairedTreeEntry[i+1]->qlong);
 
-		/*
-		 * Putting MUON ENERGY CUT
-		 */
-		if((qmean > qstart) && (qmean < qend)){
+		if((fVecOfPairedTreeEntry[i]->brch)/2 < (numOfLayers*numOfBarsInEachLayer)){
+			/*
+			 * Putting MUON ENERGY CUT
+			 */
+			if((qmean > qstart) && (qmean < qend)){
 
+				ScintillatorBar_V2 *scint;
+				if(fVecOfPairedTreeEntry[i]->brch < fVecOfPairedTreeEntry[i+1]->brch){
+					scint = new ScintillatorBar_V2(fVecOfPairedTreeEntry[i]->brch,fVecOfPairedTreeEntry[i+1]->brch,
+												   fVecOfPairedTreeEntry[i]->tstamp,fVecOfPairedTreeEntry[i+1]->tstamp,
+												   fVecOfPairedTreeEntry[i]->qlong,fVecOfPairedTreeEntry[i+1]->qlong);
+					//fVecOfScintillatorBar.push_back(scint);
+				}else{
+					scint = new ScintillatorBar_V2(fVecOfPairedTreeEntry[i+1]->brch,fVecOfPairedTreeEntry[i]->brch,
+												   fVecOfPairedTreeEntry[i+1]->tstamp,fVecOfPairedTreeEntry[i]->tstamp,
+												   fVecOfPairedTreeEntry[i+1]->qlong,fVecOfPairedTreeEntry[i]->qlong);
+					//fVecOfScintillatorBar.push_back(scint);
+				}
+				/*
+				 * Doing DelT correction if within the energy range
+				 */
 
-			if(fVecOfPairedTreeEntry[i]->brch < fVecOfPairedTreeEntry[i+1]->brch){
-				fVecOfScintillatorBar.push_back(new ScintillatorBar_V2(fVecOfPairedTreeEntry[i]->brch,fVecOfPairedTreeEntry[i+1]->brch,
-																	   fVecOfPairedTreeEntry[i]->tstamp,fVecOfPairedTreeEntry[i+1]->tstamp,
-																	   fVecOfPairedTreeEntry[i]->qlong,fVecOfPairedTreeEntry[i+1]->qlong));
-			}else{
-				fVecOfScintillatorBar.push_back(new ScintillatorBar_V2(fVecOfPairedTreeEntry[i+1]->brch,fVecOfPairedTreeEntry[i]->brch,
-																	   fVecOfPairedTreeEntry[i+1]->tstamp,fVecOfPairedTreeEntry[i]->tstamp,
-																	   fVecOfPairedTreeEntry[i+1]->qlong,fVecOfPairedTreeEntry[i]->qlong));
+				scint->deltaTstampCorrected = scint->deltaTstamp - fCalib->GetCalibrationDataOf(scint->barIndex)->fDeltaTCorr*1000;
+				fVecOfScintillatorBar.push_back(scint);
 			}
 		}
 		i+=2;
@@ -325,23 +337,31 @@ void Analyzer_V2::FillHistograms(){
 }
 
 void Analyzer_V2::DisplayHistograms(){
-	TCanvas *can = new TCanvas("Histograms","Histograms",800,6000);
+	TCanvas *can = new TCanvas("Histograms","Histograms",800,600);
+	can->SetLogx();
 	//TCanvas *can = new TCanvas("c1");
-	unsigned int totalNumOfBars = numOfLayers*numOfBarsInEachLayer;
+	unsigned int totalNumOfBars = 10;// numOfLayers*numOfBarsInEachLayer;
 	can->Divide(4,totalNumOfBars,0,0);
 	//std::cout<< "Number of Pads : " << (((TList*) can->GetListOfPrimitives())->GetSize()) << std::endl;
+
+	/*fhistogramsVec[0]->fhistQNear->Draw();
+	fhistogramsVec[0]->fhistQFar->Draw("same");*/
+
 	for(unsigned int barIndex = 0 ; barIndex < totalNumOfBars ; barIndex++){
 		int padIndex = 4*barIndex + 1;
-		std::cout << "Changing to subplot : " << padIndex << std::endl;
+		//std::cout << "Changing to subplot : " << padIndex << std::endl;
 		can->cd(padIndex);
+		gPad->SetLogy();
 		//fhistogramsVec[barIndex]->fhistQNearFarPad->cd();
 		fhistogramsVec[barIndex]->fhistQNear->Draw();
 		fhistogramsVec[barIndex]->fhistQFar->Draw("same");
 
 		can->cd(4*barIndex+2);
+		gPad->SetLogy();
 		fhistogramsVec[barIndex]->fhistQMean->Draw();
 
 		can->cd(4*barIndex+3);
+//		/gPad->SetLogy();
 		fhistogramsVec[barIndex]->fhistDelT->Draw();
 
 		can->cd(4*barIndex+4);
