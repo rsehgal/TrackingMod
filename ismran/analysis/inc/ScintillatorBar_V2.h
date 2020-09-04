@@ -45,6 +45,9 @@ public:
 						ULong64_t l_tstampNear, ULong64_t l_tstampFar,
 						UInt_t l_qlongNear,	UInt_t l_qlongFar);
 
+	void EstimateHitPositionAlongX();
+	void EstimateHitPositionAlongY();
+
 	void Print();
 	virtual ~ScintillatorBar_V2();
 };

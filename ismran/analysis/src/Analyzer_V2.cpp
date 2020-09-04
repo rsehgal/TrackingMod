@@ -30,12 +30,15 @@ Analyzer_V2::Analyzer_V2(std::string datafileName, Calibration *calib){
 	//ValidatePairs();
 	CreateScintillatorVector();
 	std::vector< std::vector<ScintillatorBar_V2*> > muonTrackVec = ReconstrutTrack();
-	PrintMuonTrackVector(muonTrackVec);
+
 	PlotHistOfNumOfMuonHitsInMuonTracks(muonTrackVec);
 	PlotHistOfDelTBetweenMuonTracks(muonTrackVec);
 	InitializeHistograms();
 	FillHistograms();
 	DisplayHistograms();
+
+	PrintMuonTrackVector(muonTrackVec);
+	PlotTracks(muonTrackVec);
 
 }
 
@@ -210,6 +213,7 @@ void Analyzer_V2::CreateScintillatorVector(){
 				 */
 
 				scint->deltaTstampCorrected = scint->deltaTstamp - fCalib->GetCalibrationDataOf(scint->barIndex)->fDeltaTCorr*1000;
+				EstimateHitPosition(scint);
 				fVecOfScintillatorBar.push_back(scint);
 			}
 		}
@@ -367,4 +371,53 @@ void Analyzer_V2::DisplayHistograms(){
 		can->cd(4*barIndex+4);
 		fhistogramsVec[barIndex]->fhistDelTCorrected->Draw();
 	}
+}
+
+void Analyzer_V2::EstimateHitPosition(ScintillatorBar_V2 *scint){
+	TF1 *param = fCalib->GetCalibrationDataOf(scint->barIndex)->fParameterization_F;
+	long double correctedDelT = scint->deltaTstampCorrected / 1000.;
+	float estZ = param->Eval(correctedDelT);
+	//std::cout << "Corrected DelT : " << correctedDelT << " : Hit Position along Z : " << estZ << std::endl;
+	(scint->hitPosition).z=estZ;
+	scint->EstimateHitPositionAlongY();
+	scint->EstimateHitPositionAlongX();
+
+	/*
+	 * Put a check on the estimated Z of the hit point
+	 */
+	if (estZ > -50. && estZ < 50.) {
+
+	}
+}
+
+void Analyzer_V2::PlotTracks(std::vector<std::vector<ScintillatorBar_V2*>> muonTrackVec,unsigned int numOfTracks){
+	unsigned int ntracks = numOfTracks;
+	if(numOfTracks==0){
+		numOfTracks = muonTrackVec.size();
+	}
+	/*for(unsigned int i = 0 ; i < numOfTracks ; i++ ){
+
+		PlotOneTrack(muonTrackVec[i]);
+	}*/
+	unsigned int counter = 0;
+	while(ntracks){
+		if((muonTrackVec[counter]).size() > 6){
+			PlotOneTrack(muonTrackVec[counter]);
+			ntracks--;
+		}
+		counter++;
+	}
+}
+
+void Analyzer_V2::PlotOneTrack(std::vector<ScintillatorBar_V2*> singleMuonTrack){
+	std::vector<Double_t> xvec, zvec;
+	for (unsigned int index = 0; index < singleMuonTrack.size(); index++) {
+		xvec.push_back((singleMuonTrack[index]->hitPosition).x);
+		zvec.push_back((singleMuonTrack[index]->hitPosition).z);
+	}
+	TGraph *gr = new TGraph(xvec.size(), &zvec[0], &xvec[0]);
+	gr->SetMarkerStyle(8);
+	gr->SetTitle("Muon Hit Points in different layers");
+	(new TCanvas())->SetGrid();
+	gr->Draw("ap");
 }

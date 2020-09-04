@@ -60,3 +60,11 @@ void ScintillatorBar_V2::Print(){
 
 
 }
+
+void ScintillatorBar_V2::EstimateHitPositionAlongX(){
+		hitPosition.x = (layerIndex+1)*10.;
+}
+
+void ScintillatorBar_V2::EstimateHitPositionAlongY(){
+		hitPosition.y = 0.;
+}

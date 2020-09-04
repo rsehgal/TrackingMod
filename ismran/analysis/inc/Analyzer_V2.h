@@ -62,6 +62,13 @@ public:
 	void PlotHistOfDelTBetweenMuonTracks(std::vector< std::vector<ScintillatorBar_V2*> > muonTrackVec);
 	void FillHistograms();
 	void DisplayHistograms();
+	void PlotTracks(std::vector<std::vector<ScintillatorBar_V2*>> muonTrackVec,unsigned int numOfTracks=20);
+	void PlotOneTrack(std::vector<ScintillatorBar_V2*> singleMuonTrack);
+
+	/*
+	 * Function to estimate hit position
+	 */
+	void EstimateHitPosition(ScintillatorBar_V2 *scint);
 };
 
 #endif /* ISMRAN_ANALYSIS_INC_ANALYZER_V2_H_ */
