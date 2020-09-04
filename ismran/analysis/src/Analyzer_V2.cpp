@@ -9,6 +9,7 @@
 #include "includes.hh"
 #include "TreeEntry.h"
 #include "ScintillatorBar_V2.h"
+#include "Histograms.h"
 #include <TH1I.h>
 Analyzer_V2::Analyzer_V2() {
 	// TODO Auto-generated constructor stub
@@ -30,6 +31,9 @@ Analyzer_V2::Analyzer_V2(std::string datafileName){
 	PrintMuonTrackVector(muonTrackVec);
 	PlotHistOfNumOfMuonHitsInMuonTracks(muonTrackVec);
 	PlotHistOfDelTBetweenMuonTracks(muonTrackVec);
+	InitializeHistograms();
+	FillHistograms();
+	DisplayHistograms();
 
 }
 
@@ -304,4 +308,43 @@ void Analyzer_V2::PlotHistOfDelTBetweenMuonTracks(std::vector< std::vector<Scint
 	}
 	new TCanvas();
 	hist->Draw();
+}
+
+void Analyzer_V2::InitializeHistograms(){
+	unsigned int numOfBars = numOfLayers*numOfBarsInEachLayer;
+	for(unsigned short int barIndex = 0 ; barIndex < numOfBars ; barIndex++ ){
+		fhistogramsVec.push_back( new Histograms("Bar-"+std::to_string(barIndex),barIndex ));
+	}
+	std::cout << "@@@@@@@@@@@ Size of HIST-VECTOR : " << fhistogramsVec.size() <<" @@@@@@@@@@" << std::endl;
+}
+
+void Analyzer_V2::FillHistograms(){
+	for(unsigned long int i = 0 ; i < fVecOfScintillatorBar.size() ; i++){
+		fhistogramsVec[fVecOfScintillatorBar[i]->barIndex]->FillHistogram(fVecOfScintillatorBar[i]);
+	}
+}
+
+void Analyzer_V2::DisplayHistograms(){
+	TCanvas *can = new TCanvas("Histograms","Histograms",800,6000);
+	//TCanvas *can = new TCanvas("c1");
+	unsigned int totalNumOfBars = numOfLayers*numOfBarsInEachLayer;
+	can->Divide(4,totalNumOfBars,0,0);
+	//std::cout<< "Number of Pads : " << (((TList*) can->GetListOfPrimitives())->GetSize()) << std::endl;
+	for(unsigned int barIndex = 0 ; barIndex < totalNumOfBars ; barIndex++){
+		int padIndex = 4*barIndex + 1;
+		std::cout << "Changing to subplot : " << padIndex << std::endl;
+		can->cd(padIndex);
+		//fhistogramsVec[barIndex]->fhistQNearFarPad->cd();
+		fhistogramsVec[barIndex]->fhistQNear->Draw();
+		fhistogramsVec[barIndex]->fhistQFar->Draw("same");
+
+		can->cd(4*barIndex+2);
+		fhistogramsVec[barIndex]->fhistQMean->Draw();
+
+		can->cd(4*barIndex+3);
+		fhistogramsVec[barIndex]->fhistDelT->Draw();
+
+		can->cd(4*barIndex+4);
+		fhistogramsVec[barIndex]->fhistDelTCorrected->Draw();
+	}
 }
