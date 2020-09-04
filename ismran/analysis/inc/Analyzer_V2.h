@@ -13,6 +13,7 @@
 #include <string>
 
 class ScintillatorBar_V2;
+class Histograms;
 
 class Analyzer_V2 {
 
@@ -22,6 +23,10 @@ public:
 	std::vector<TreeEntry*> fVecOfTreeEntry;
 	std::vector<TreeEntry*> fVecOfPairedTreeEntry;
 	std::vector<ScintillatorBar_V2*> fVecOfScintillatorBar;
+
+
+	//Various Required Histograms
+	std::vector<Histograms*> fhistogramsVec;
 
 
 public:
@@ -47,11 +52,14 @@ public:
 	 */
 	void PrintMuonTrackVector(std::vector< std::vector<ScintillatorBar_V2*> > muonTrackVec);
 
+	void InitializeHistograms();
 	/*
 	 * Functions to plot the require Histograms
 	 */
 	void PlotHistOfNumOfMuonHitsInMuonTracks(std::vector< std::vector<ScintillatorBar_V2*> > muonTrackVec);
 	void PlotHistOfDelTBetweenMuonTracks(std::vector< std::vector<ScintillatorBar_V2*> > muonTrackVec);
+	void FillHistograms();
+	void DisplayHistograms();
 };
 
 #endif /* ISMRAN_ANALYSIS_INC_ANALYZER_V2_H_ */
