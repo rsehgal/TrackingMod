@@ -15,6 +15,7 @@
 class ScintillatorBar_V2;
 class Histograms;
 class Calibration;
+class SingleMuonTrack;
 
 class Analyzer_V2 {
 
@@ -65,6 +66,7 @@ public:
 	void DisplayHistograms();
 	void PlotTracks(std::vector<std::vector<ScintillatorBar_V2*>> muonTrackVec,unsigned int numOfTracks=20);
 	void PlotOneTrack(std::vector<ScintillatorBar_V2*> singleMuonTrack);
+	void PlotEnergyLossDistributionOfMuons();
 
 	/*
 	 * Helper function to draw the Grid
@@ -76,6 +78,17 @@ public:
 	 * Function to estimate hit position
 	 */
 	void EstimateHitPosition(ScintillatorBar_V2 *scint);
+
+
+
+	/*
+	 * V2 of few functions
+	 */
+	void PlotHistOfNumOfMuonHitsInMuonTracks_V2(std::vector< SingleMuonTrack > muonTrackVec);
+	void PlotHistOfDelTBetweenMuonTracks_V2(std::vector< SingleMuonTrack > muonTrackVec);
+	std::vector < SingleMuonTrack >ReconstrutTrack_V2();
+	void PrintMuonTrackVector_V2(std::vector< SingleMuonTrack > muonTrackVec);
+	void PlotTracks_V2(std::vector< SingleMuonTrack > muonTrackVec,unsigned int numOfTracks=20);
 };
 
 #endif /* ISMRAN_ANALYSIS_INC_ANALYZER_V2_H_ */

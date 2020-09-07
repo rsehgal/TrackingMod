@@ -37,6 +37,9 @@ public:
 	Point3D hitPosition;
 	Point3D fittedHitPosition;
 
+	//Estimated Path length within each Bar
+	double pathLength;
+
 
 public:
 	ScintillatorBar_V2();
