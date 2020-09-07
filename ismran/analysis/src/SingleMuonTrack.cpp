@@ -26,7 +26,12 @@ void SingleMuonTrack::CalculateTotalEnergyDeposited(){
 	fTotalEnergyDeposited = 0.;
 	for(unsigned int i = 0 ; i < fSingleMuonTrack.size() ; i++){
 		fTotalEnergyDeposited += fSingleMuonTrack[i]->qlongMean;
+		if(i < (fSingleMuonTrack.size()-1))
+			fSingleMuonTrack[i]->pathLength = fSingleMuonTrack[i]->hitPosition.Distance(fSingleMuonTrack[i+1]->hitPosition);
+		else
+			fSingleMuonTrack[i]->pathLength = 0.;
 	}
+
 }
 
 bool SingleMuonTrack::CompareBarIndexInScintillator(ScintillatorBar_V2 *i1, ScintillatorBar_V2 *i2)

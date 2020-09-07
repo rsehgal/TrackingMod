@@ -47,6 +47,10 @@ struct Point3D{
 		std::cout << "( " << x << " , " << y <<" , "<< z <<" )" << std::endl;
 	}
 
+	double Distance(Point3D p2){
+		return sqrt((p2.x-this->x)*(p2.x-this->x) + (p2.y-this->y)*(p2.y-this->y) + (p2.z-this->z)*(p2.z-this->z));
+	}
+
 };
 
 //extern std::string FileFrag[];

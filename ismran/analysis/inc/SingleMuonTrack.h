@@ -17,6 +17,8 @@ class SingleMuonTrack {
 public:
 	double fTotalEnergyDeposited;
 	std::vector<ScintillatorBar_V2*> fSingleMuonTrack;
+
+
 public:
 	SingleMuonTrack();
 	virtual ~SingleMuonTrack();
@@ -40,6 +42,11 @@ public:
 	 * Print related functions
 	 */
 	void Print();
+
+	/*
+	 * Function to give Step information with the bar
+	 */
+	//void CalculateStep();
 };
 
 #endif /* ISMRAN_ANALYSIS_INC_SINGLEMUONTRACK_H_ */

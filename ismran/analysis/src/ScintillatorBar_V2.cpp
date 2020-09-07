@@ -59,7 +59,7 @@ void ScintillatorBar_V2::Print(){
 			std::cout << scintName << " , " << barIndex << " , " << qlongNear << " , " << qlongFar << " , " << qlongMean << " , "
 					  << tstampNear  << " , " << tstampFar << " , " << tsmallTimeStamp << " , " << deltaTstamp << " , "
 					  << " ( " << hitPosition.x << " , " << hitPosition.y << " , " << hitPosition.z << " )  : "
-					  << "Energy Deposited : " << qlongMean << std::endl;
+					  << "Energy Deposited : " << qlongMean << " : Path Length : " << pathLength << std::endl;
 
 
 }
