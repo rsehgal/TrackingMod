@@ -12,6 +12,9 @@
 #include "Histograms.h"
 #include "Calibration.h"
 #include <TH1I.h>
+
+unsigned long int Analyzer_V2::fMuonTrackNum = 0;
+
 Analyzer_V2::Analyzer_V2() {
 	// TODO Auto-generated constructor stub
 
@@ -378,15 +381,17 @@ void Analyzer_V2::EstimateHitPosition(ScintillatorBar_V2 *scint){
 	long double correctedDelT = scint->deltaTstampCorrected / 1000.;
 	float estZ = param->Eval(correctedDelT);
 	//std::cout << "Corrected DelT : " << correctedDelT << " : Hit Position along Z : " << estZ << std::endl;
-	(scint->hitPosition).z=estZ;
+	/*(scint->hitPosition).z=estZ;
 	scint->EstimateHitPositionAlongY();
 	scint->EstimateHitPositionAlongX();
-
+	 */
 	/*
 	 * Put a check on the estimated Z of the hit point
 	 */
 	if (estZ > -50. && estZ < 50.) {
-
+		(scint->hitPosition).z=estZ;
+		scint->EstimateHitPositionAlongY();
+		scint->EstimateHitPositionAlongX();
 	}
 }
 
@@ -409,15 +414,58 @@ void Analyzer_V2::PlotTracks(std::vector<std::vector<ScintillatorBar_V2*>> muonT
 	}
 }
 
+/*
+ * Function to Draw customized Grid Lines
+ */
+void Analyzer_V2::DrawGrid(std::string t, Int_t ngx, Int_t ngy)
+{
+	std::cout << "DrawGrid Called........: " << t << " : ....." << std::endl;
+   //new TCanvas();
+   Double_t x1 = -50;
+   Double_t x2 = 50;
+   Double_t y1 = 0;
+   Double_t y2 = 100;
+   Double_t xs = (x2-x1)/ngx;
+   Double_t ys = (y2-y1)/ngy;
+   Int_t i;
+
+   TH1F *h = gPad->DrawFrame(x1, y1, x2, y2);
+   h->GetXaxis()->SetNdivisions(20);
+   h->GetYaxis()->SetNdivisions(20);
+   h->GetYaxis()->SetTickLength(0.);
+   h->GetXaxis()->SetTickLength(0.);
+   h->GetXaxis()->SetLabelSize(0.025);
+   h->GetYaxis()->SetLabelSize(0.025);
+   h->SetTitle(t.c_str());
+   gPad-> Update();
+
+   TLine l;
+   l.SetLineColor(kGray);
+   Double_t x = x1+xs;
+   for (i = 0; i<ngx-1; i++) {
+      l.DrawLine(x,y1,x,y2);
+      x = x + xs;
+   }
+
+   Double_t y = y1+xs;
+   for (i = 0; i<ngy-1; i++) {
+      l.DrawLine(x1,y,x2,y);
+      y = y +ys;
+   }
+}
+
 void Analyzer_V2::PlotOneTrack(std::vector<ScintillatorBar_V2*> singleMuonTrack){
 	std::vector<Double_t> xvec, zvec;
 	for (unsigned int index = 0; index < singleMuonTrack.size(); index++) {
 		xvec.push_back((singleMuonTrack[index]->hitPosition).x);
 		zvec.push_back((singleMuonTrack[index]->hitPosition).z);
 	}
+	std::string trackname="MuonTrack-"+std::to_string(fMuonTrackNum);
+	TCanvas *c = new TCanvas(trackname.c_str(),trackname.c_str(), 800, 800);
 	TGraph *gr = new TGraph(xvec.size(), &zvec[0], &xvec[0]);
 	gr->SetMarkerStyle(8);
-	gr->SetTitle("Muon Hit Points in different layers");
-	(new TCanvas())->SetGrid();
-	gr->Draw("ap");
+	//gr->SetTitle("Muon Hit Points in different layers");
+	DrawGrid(trackname,10,10);
+	gr->Draw("p");
+	fMuonTrackNum++;
 }
