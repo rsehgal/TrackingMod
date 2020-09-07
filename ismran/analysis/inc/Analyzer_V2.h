@@ -20,6 +20,7 @@ class Analyzer_V2 {
 
 	std::string fDatafileName;
 	Calibration *fCalib;
+	static unsigned long int fMuonTrackNum;
 
 public:
 	std::vector<TreeEntry*> fVecOfTreeEntry;
@@ -64,6 +65,12 @@ public:
 	void DisplayHistograms();
 	void PlotTracks(std::vector<std::vector<ScintillatorBar_V2*>> muonTrackVec,unsigned int numOfTracks=20);
 	void PlotOneTrack(std::vector<ScintillatorBar_V2*> singleMuonTrack);
+
+	/*
+	 * Helper function to draw the Grid
+	 */
+	//void DrawGrid(TString t, Int_t ngx, Int_t ngy);
+	void DrawGrid(std::string t, Int_t ngx, Int_t ngy);
 
 	/*
 	 * Function to estimate hit position
