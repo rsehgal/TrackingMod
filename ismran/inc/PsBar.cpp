@@ -18,8 +18,8 @@ std::vector<TH1D*> vecOfEnergyHist;
 std::vector<TH1D*> vecOfTimeDiffHist;
 std::vector<unsigned int> vecOfdeltaTMin;
 std::vector<unsigned int> vecOfdeltaTMax;
-int qstart = 4000;
-int qend = 20000;
+int qstart = 3000;
+int qend = 25000;
 int timeDiffNearFar = 25000 ; //ps
 //std::string FileFrag[]={
 std::vector<std::string> vecOfBarsName={

@@ -32,6 +32,7 @@ ScintillatorBar_V2::ScintillatorBar_V2(unsigned short l_channelNear, unsigned sh
 		tsmallTimeStamp = (tstampNear < tstampFar) ? tstampNear : tstampFar;
 		deltaTstamp=tstampNear-tstampFar;
 		bool validEnergy = (qlongMean > qstart && qlongMean < qend);
+		pathLength = 0.;
 
 }
 
@@ -49,6 +50,7 @@ ScintillatorBar_V2::ScintillatorBar_V2(const ScintillatorBar_V2 &sbar){
 		tstampFar = sbar.tstampFar;
 		tsmallTimeStamp = sbar.tsmallTimeStamp;
 		deltaTstamp = sbar.deltaTstamp;
+		pathLength = 0.;
 
 	}
 
@@ -56,7 +58,8 @@ void ScintillatorBar_V2::Print(){
 
 			std::cout << scintName << " , " << barIndex << " , " << qlongNear << " , " << qlongFar << " , " << qlongMean << " , "
 					  << tstampNear  << " , " << tstampFar << " , " << tsmallTimeStamp << " , " << deltaTstamp << " , "
-					  << " ( " << hitPosition.x << " , " << hitPosition.y << " , " << hitPosition.z << " ) " << std::endl;
+					  << " ( " << hitPosition.x << " , " << hitPosition.y << " , " << hitPosition.z << " )  : "
+					  << "Energy Deposited : " << qlongMean << std::endl;
 
 
 }

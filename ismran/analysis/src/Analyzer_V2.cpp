@@ -12,6 +12,7 @@
 #include "Histograms.h"
 #include "Calibration.h"
 #include <TH1I.h>
+#include "SingleMuonTrack.h"
 
 unsigned long int Analyzer_V2::fMuonTrackNum = 0;
 
@@ -32,16 +33,18 @@ Analyzer_V2::Analyzer_V2(std::string datafileName, Calibration *calib){
 	ValidatePairs();
 	//ValidatePairs();
 	CreateScintillatorVector();
-	std::vector< std::vector<ScintillatorBar_V2*> > muonTrackVec = ReconstrutTrack();
+	//std::vector< std::vector<ScintillatorBar_V2*> > muonTrackVec = ReconstrutTrack_V2();
+	std::vector< SingleMuonTrack > muonTrackVec = ReconstrutTrack_V2();
 
-	PlotHistOfNumOfMuonHitsInMuonTracks(muonTrackVec);
-	PlotHistOfDelTBetweenMuonTracks(muonTrackVec);
+	PlotHistOfNumOfMuonHitsInMuonTracks_V2(muonTrackVec);
+	PlotHistOfDelTBetweenMuonTracks_V2(muonTrackVec);
 	InitializeHistograms();
 	FillHistograms();
 	DisplayHistograms();
 
-	PrintMuonTrackVector(muonTrackVec);
-	PlotTracks(muonTrackVec);
+	//PrintMuonTrackVector_V2(muonTrackVec);
+	PlotTracks_V2(muonTrackVec);
+	PlotEnergyLossDistributionOfMuons();
 
 }
 
@@ -268,6 +271,46 @@ std::vector< std::vector<ScintillatorBar_V2*> > Analyzer_V2::ReconstrutTrack(){
 	return muonTrackVec;
 }
 
+std::vector < SingleMuonTrack > Analyzer_V2::ReconstrutTrack_V2(){
+
+	std::sort(fVecOfScintillatorBar.begin(),fVecOfScintillatorBar.end(),CompareTimestampScintillator);
+
+	unsigned int hitLength = fVecOfScintillatorBar.size();
+	std::cout << "HitLength from DetectMuonTracks : " << hitLength << std::endl;
+	std::vector < SingleMuonTrack > muonTrackVec;
+	SingleMuonTrack singleMuonTrack;
+	singleMuonTrack.push_back(fVecOfScintillatorBar[0]);
+	unsigned int hitInAllLayersCounter = 0;
+	for (unsigned int i = 1; i < hitLength; i++) {
+
+		if ((fVecOfScintillatorBar[i]->tsmallTimeStamp
+				- fVecOfScintillatorBar[i - 1]->tsmallTimeStamp) < 20000) {
+			//Within 20ns window
+			singleMuonTrack.push_back(fVecOfScintillatorBar[i]);
+		} else {
+			//Outside 20ns window
+			//Sorting the single muon track by BarIndex (in DESCENDING order), to form a logical track
+			//std::sort(singleMuonTrack.begin(), singleMuonTrack.end(),CompareBarIndexInScintillator);
+			singleMuonTrack.Sort();
+			singleMuonTrack.CalculateTotalEnergyDeposited();
+			muonTrackVec.push_back(singleMuonTrack);
+			//Just counting the number of muon where all the layer detected the muon
+			//std::cout << "Track Finshed : Length : "  << singleMuonTrack.size() << std::endl;
+			if (singleMuonTrack.size() == numOfLayers)
+				hitInAllLayersCounter++;
+			singleMuonTrack.clear();
+			singleMuonTrack.push_back(fVecOfScintillatorBar[i]);
+		}
+	}
+
+	std::cout
+			<< "Number of Muon Tracks where all the layers detected the muon : "
+			<< hitInAllLayersCounter << std::endl;
+
+	return muonTrackVec;
+}
+
+
 bool Analyzer_V2::CompareTimestampScintillator(ScintillatorBar_V2 *i1, ScintillatorBar_V2 *i2)
 {
 	return (i1->tsmallTimeStamp < i2->tsmallTimeStamp);
@@ -291,6 +334,16 @@ void Analyzer_V2::PrintMuonTrackVector(std::vector< std::vector<ScintillatorBar_
 	}
 }
 
+void Analyzer_V2::PrintMuonTrackVector_V2(std::vector< SingleMuonTrack > muonTrackVec){
+	//unsigned int muonTrackVecLength = muonTrackVec.size();
+	unsigned int muonTrackVecLength = 20;
+	for(unsigned int i = 0 ; i < muonTrackVecLength ; i++){
+		std::cout << "====== Print Muon Track : " << i << " : Num of Layers Hitted : " << muonTrackVec[i].size()  << " ======" << std::endl;
+		muonTrackVec[i].Print();
+	}
+}
+
+
 void Analyzer_V2::PlotHistOfNumOfMuonHitsInMuonTracks(std::vector< std::vector<ScintillatorBar_V2*> > muonTrackVec){
 	TH1I *hist = new TH1I("Hist of Muon Hits In Muon Tracks","Hist of Muon Hits In Muon Tracks",20,0,20);
 	unsigned int muonTrackVecLength = muonTrackVec.size();
@@ -302,6 +355,19 @@ void Analyzer_V2::PlotHistOfNumOfMuonHitsInMuonTracks(std::vector< std::vector<S
 	new TCanvas();
 	hist->Draw();
 }
+
+void Analyzer_V2::PlotHistOfNumOfMuonHitsInMuonTracks_V2(std::vector< SingleMuonTrack > muonTrackVec){
+	TH1I *hist = new TH1I("Hist of Muon Hits In Muon Tracks","Hist of Muon Hits In Muon Tracks",20,0,20);
+	unsigned int muonTrackVecLength = muonTrackVec.size();
+
+	for(unsigned int i = 0 ; i < muonTrackVecLength ; i++){
+		unsigned int muonHitLength = muonTrackVec[i].fSingleMuonTrack.size();
+		hist->Fill(muonHitLength);
+	}
+	new TCanvas();
+	hist->Draw();
+}
+
 
 ULong64_t Analyzer_V2::GetMeanTValueOfATrack(std::vector<ScintillatorBar_V2*> singleMuonTrack){
 	ULong64_t sum = 0;
@@ -323,6 +389,23 @@ void Analyzer_V2::PlotHistOfDelTBetweenMuonTracks(std::vector< std::vector<Scint
 		//std::cout << "DelT in Millisecond : " << delT <<std::endl;
 		previous = next;
 		if(muonTrackVec[i].size() > 2)
+			hist->Fill(delTms);
+	}
+	new TCanvas();
+	hist->Draw();
+}
+
+void Analyzer_V2::PlotHistOfDelTBetweenMuonTracks_V2(std::vector< SingleMuonTrack > muonTrackVec){
+	TH1F *hist = new TH1F("Hist of DelT(ms) between Muon Tracks","Hist of DelT(ms) between Muon Tracks",100,0,40);
+	unsigned int muonTrackVecLength = muonTrackVec.size();
+	ULong64_t previous = GetMeanTValueOfATrack(muonTrackVec[0].fSingleMuonTrack);
+	for(unsigned int i = 1 ; i < muonTrackVecLength ; i++){
+		ULong64_t next = GetMeanTValueOfATrack(muonTrackVec[i].fSingleMuonTrack);
+		ULong64_t delT = next-previous;
+		Double_t delTms = 1.*delT/1e+6;
+		//std::cout << "DelT in Millisecond : " << delT <<std::endl;
+		previous = next;
+		if(muonTrackVec[i].fSingleMuonTrack.size() > 2)
 			hist->Fill(delTms);
 	}
 	new TCanvas();
@@ -414,12 +497,28 @@ void Analyzer_V2::PlotTracks(std::vector<std::vector<ScintillatorBar_V2*>> muonT
 	}
 }
 
+void Analyzer_V2::PlotTracks_V2(std::vector< SingleMuonTrack > muonTrackVec,unsigned int numOfTracks){
+	unsigned int ntracks = numOfTracks;
+	if(numOfTracks==0){
+		numOfTracks = muonTrackVec.size();
+	}
+	unsigned int counter = 0;
+	while(ntracks){
+		if(muonTrackVec[counter].fSingleMuonTrack.size() > 6){
+			PlotOneTrack(muonTrackVec[counter].fSingleMuonTrack);
+			muonTrackVec[counter].Print();
+			ntracks--;
+		}
+		counter++;
+	}
+}
+
 /*
  * Function to Draw customized Grid Lines
  */
 void Analyzer_V2::DrawGrid(std::string t, Int_t ngx, Int_t ngy)
 {
-	std::cout << "DrawGrid Called........: " << t << " : ....." << std::endl;
+//	std::cout << "DrawGrid Called........: " << t << " : ....." << std::endl;
    //new TCanvas();
    Double_t x1 = -50;
    Double_t x2 = 50;
@@ -457,10 +556,16 @@ void Analyzer_V2::DrawGrid(std::string t, Int_t ngx, Int_t ngy)
 void Analyzer_V2::PlotOneTrack(std::vector<ScintillatorBar_V2*> singleMuonTrack){
 	std::vector<Double_t> xvec, zvec;
 	for (unsigned int index = 0; index < singleMuonTrack.size(); index++) {
-		xvec.push_back((singleMuonTrack[index]->hitPosition).x);
-		zvec.push_back((singleMuonTrack[index]->hitPosition).z);
+		if((singleMuonTrack[index]->hitPosition).x <= 100 && (singleMuonTrack[index]->hitPosition).y <=50){
+			xvec.push_back((singleMuonTrack[index]->hitPosition).x);
+			zvec.push_back((singleMuonTrack[index]->hitPosition).z);
+		}
 	}
 	std::string trackname="MuonTrack-"+std::to_string(fMuonTrackNum);
+	std::cout << "TrackName : " << trackname <<" : Size : "  << singleMuonTrack.size() << std::endl;
+	/*for(unsigned int i = 0 ; i< singleMuonTrack.size() ; i++){
+		(singleMuonTrack[i]->hitPosition).Print();
+	}*/
 	TCanvas *c = new TCanvas(trackname.c_str(),trackname.c_str(), 800, 800);
 	TGraph *gr = new TGraph(xvec.size(), &zvec[0], &xvec[0]);
 	gr->SetMarkerStyle(8);
@@ -468,4 +573,14 @@ void Analyzer_V2::PlotOneTrack(std::vector<ScintillatorBar_V2*> singleMuonTrack)
 	DrawGrid(trackname,10,10);
 	gr->Draw("p");
 	fMuonTrackNum++;
+}
+
+void Analyzer_V2::PlotEnergyLossDistributionOfMuons(){
+	(new TCanvas())->SetLogy();
+	gStyle->SetOptStat(1);
+	TH1F *energyLossMuonsHist = new TH1F("Histogram of Energy loss of Muons","Histogram of Energy loss of Muons",1000,3000,25000);
+	for(unsigned long int i = 0 ; i < fVecOfScintillatorBar.size(); i++){
+		energyLossMuonsHist->Fill(fVecOfScintillatorBar[i]->qlongMean);
+	}
+	energyLossMuonsHist->Draw();
 }
