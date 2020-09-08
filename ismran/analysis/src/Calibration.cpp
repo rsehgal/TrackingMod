@@ -38,3 +38,7 @@ Calibration::Calibration(std::string fileName) {
 CalibrationData* Calibration::GetCalibrationDataOf(int barNo){
 	return fVecOfCalibrationData[barNo];
 }
+
+void Calibration::SetEnergyCalibrationFactorForMuon(int barNo, double eCalibFactor){
+	fVecOfCalibrationData[barNo]->fEnergyCalibFactorForMuon = eCalibFactor;
+}

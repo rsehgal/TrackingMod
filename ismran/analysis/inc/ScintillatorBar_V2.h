@@ -23,6 +23,7 @@ public:
 	UInt_t    qlongFar;   //! integrated charge in long gate 88 nsec
 	//UInt_t    qlongMean;   //! integrated charge in long gate 88 nsec
 	Double_t    qlongMean;   //! integrated charge in long gate 88 nsec
+	Double_t    qlongMeanCorrected;   //! integrated charge in long gate 88 nsec
 
 
 	ULong64_t tstampNear;  //! time stamp in pico sec.

@@ -28,6 +28,8 @@ extern int qstart;// = 4000;
 extern int qend;// = 18000;
 //time difference between Far and Near PMT of a PsBar
 extern int timeDiffNearFar; // =25000 (ps)
+extern int muonEnergyPeak;
+extern int nbins;
 
 extern double fwhm;// = 2.355 * 5.66353 ;
 

@@ -29,7 +29,11 @@ public:
 	std::vector<ScintillatorBar_V2*> fVecOfScintillatorBar;
 
 
-	//Various Required Histograms
+	/*
+	 * Various Required Histograms,
+	 *
+	 * This can be used to get the Energy calibration data for MUON
+	 */
 	std::vector<Histograms*> fhistogramsVec;
 
 
@@ -63,10 +67,12 @@ public:
 	void PlotHistOfNumOfMuonHitsInMuonTracks(std::vector< std::vector<ScintillatorBar_V2*> > muonTrackVec);
 	void PlotHistOfDelTBetweenMuonTracks(std::vector< std::vector<ScintillatorBar_V2*> > muonTrackVec);
 	void FillHistograms();
+	void FillCorrectedQMeanHistogram();
 	void DisplayHistograms();
+	void DoSinglePointEnergyCalibrationForMuon();
 	void PlotTracks(std::vector<std::vector<ScintillatorBar_V2*>> muonTrackVec,unsigned int numOfTracks=20);
 	void PlotOneTrack(std::vector<ScintillatorBar_V2*> singleMuonTrack);
-	void PlotEnergyLossDistributionOfMuons();
+	std::vector< SingleMuonTrack* > PlotEnergyLossDistributionOfMuonTracks(std::vector< SingleMuonTrack* > muonTrackVec);
 
 	/*
 	 * Helper function to draw the Grid
@@ -84,11 +90,12 @@ public:
 	/*
 	 * V2 of few functions
 	 */
-	void PlotHistOfNumOfMuonHitsInMuonTracks_V2(std::vector< SingleMuonTrack > muonTrackVec);
-	void PlotHistOfDelTBetweenMuonTracks_V2(std::vector< SingleMuonTrack > muonTrackVec);
-	std::vector < SingleMuonTrack >ReconstrutTrack_V2();
-	void PrintMuonTrackVector_V2(std::vector< SingleMuonTrack > muonTrackVec);
-	void PlotTracks_V2(std::vector< SingleMuonTrack > muonTrackVec,unsigned int numOfTracks=20);
+	void PlotHistOfNumOfMuonHitsInMuonTracks_V2(std::vector< SingleMuonTrack* > muonTrackVec);
+	void PlotHistOfDelTBetweenMuonTracks_V2(std::vector< SingleMuonTrack* > muonTrackVec);
+	std::vector < SingleMuonTrack* >ReconstrutTrack_V2();
+	void PrintMuonTrackVector_V2(std::vector< SingleMuonTrack* > muonTrackVec);
+	void PlotTracks_V2(std::vector< SingleMuonTrack* > muonTrackVec,unsigned int numOfTracks=20);
+	void CalculateTotalEnergyDepositionForMuonTracks(std::vector< SingleMuonTrack* > muonTrackVec);
 };
 
 #endif /* ISMRAN_ANALYSIS_INC_ANALYZER_V2_H_ */

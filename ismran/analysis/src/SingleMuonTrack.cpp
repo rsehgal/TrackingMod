@@ -25,12 +25,14 @@ void SingleMuonTrack::push_back(ScintillatorBar_V2 *hittedBar){
 void SingleMuonTrack::CalculateTotalEnergyDeposited(){
 	fTotalEnergyDeposited = 0.;
 	for(unsigned int i = 0 ; i < fSingleMuonTrack.size() ; i++){
-		fTotalEnergyDeposited += fSingleMuonTrack[i]->qlongMean;
+		//fTotalEnergyDeposited += fSingleMuonTrack[i]->qlongMean;
+		fTotalEnergyDeposited += fSingleMuonTrack[i]->qlongMeanCorrected;
 		if(i < (fSingleMuonTrack.size()-1))
 			fSingleMuonTrack[i]->pathLength = fSingleMuonTrack[i]->hitPosition.Distance(fSingleMuonTrack[i+1]->hitPosition);
 		else
 			fSingleMuonTrack[i]->pathLength = 0.;
 	}
+	//std::cout << "*********** Total Energy Deposited : " << fTotalEnergyDeposited << " **************" << std::endl;
 
 }
 
@@ -54,6 +56,6 @@ unsigned long int SingleMuonTrack::size(){
 void SingleMuonTrack::Print(){
 	for(unsigned int j = 0 ; j < fSingleMuonTrack.size() ; j++){
 		fSingleMuonTrack[j]->Print();
-		std::cout << "@@@@@@@@@2 Total Energy Deposited : " << fTotalEnergyDeposited << " @@@@@@@@@" <<  std::endl;
 	}
+	std::cout << "@@@@@@@@@2 Total Energy Deposited : " << fTotalEnergyDeposited << " @@@@@@@@@" <<  std::endl;
 }
