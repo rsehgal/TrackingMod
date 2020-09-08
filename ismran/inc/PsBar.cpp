@@ -20,7 +20,9 @@ std::vector<unsigned int> vecOfdeltaTMin;
 std::vector<unsigned int> vecOfdeltaTMax;
 int qstart = 3000;
 int qend = 25000;
+int nbins = 1000;
 int timeDiffNearFar = 25000 ; //ps
+int muonEnergyPeak = 20000;
 //std::string FileFrag[]={
 std::vector<std::string> vecOfBarsName={
   "PS01_S2AB1017","PS02_S2AB1005","PS03_S3AA1783","PS04_S2AB1007","PS05_S2AB1006",
