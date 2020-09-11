@@ -9,6 +9,7 @@
 #define ISMRAN_ANALYSIS_INC_SINGLEMUONTRACK_H_
 
 #include<vector>
+#include "includes.hh"
 
 class ScintillatorBar_V2;
 
@@ -17,6 +18,8 @@ class SingleMuonTrack {
 public:
 	double fTotalEnergyDeposited;
 	std::vector<ScintillatorBar_V2*> fSingleMuonTrack;
+	bool fIsValid;
+	static int fMuonTrackNum;
 
 
 public:
@@ -42,6 +45,13 @@ public:
 	 * Print related functions
 	 */
 	void Print();
+
+	/*
+	 * Function to plot the track
+	 */
+	void PlotTrack();
+	void DrawGrid(std::string t, Int_t ngx, Int_t ngy);
+
 
 	/*
 	 * Function to give Step information with the bar

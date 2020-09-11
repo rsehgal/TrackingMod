@@ -68,17 +68,11 @@ public:
 	void PlotHistOfDelTBetweenMuonTracks(std::vector< std::vector<ScintillatorBar_V2*> > muonTrackVec);
 	void FillHistograms();
 	void FillCorrectedQMeanHistogram();
-	void DisplayHistograms();
+	void DisplayHistograms(bool reverse=false);
+	void DisplayHistogramsOf(unsigned int barIndex);
 	void DoSinglePointEnergyCalibrationForMuon();
-	void PlotTracks(std::vector<std::vector<ScintillatorBar_V2*>> muonTrackVec,unsigned int numOfTracks=20);
-	void PlotOneTrack(std::vector<ScintillatorBar_V2*> singleMuonTrack);
 	std::vector< SingleMuonTrack* > PlotEnergyLossDistributionOfMuonTracks(std::vector< SingleMuonTrack* > muonTrackVec);
 
-	/*
-	 * Helper function to draw the Grid
-	 */
-	//void DrawGrid(TString t, Int_t ngx, Int_t ngy);
-	void DrawGrid(std::string t, Int_t ngx, Int_t ngy);
 
 	/*
 	 * Function to estimate hit position
@@ -96,6 +90,7 @@ public:
 	void PrintMuonTrackVector_V2(std::vector< SingleMuonTrack* > muonTrackVec);
 	void PlotTracks_V2(std::vector< SingleMuonTrack* > muonTrackVec,unsigned int numOfTracks=20);
 	void CalculateTotalEnergyDepositionForMuonTracks(std::vector< SingleMuonTrack* > muonTrackVec);
+
 };
 
 #endif /* ISMRAN_ANALYSIS_INC_ANALYZER_V2_H_ */

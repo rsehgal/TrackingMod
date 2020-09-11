@@ -30,6 +30,8 @@ extern int qend;// = 18000;
 extern int timeDiffNearFar; // =25000 (ps)
 extern int muonEnergyPeak;
 extern int nbins;
+extern int minEnergyDepositedByMuonTrack;// = 170000;
+extern int maxEnergyDepositedByMuonTrack;// = 190000;
 
 extern double fwhm;// = 2.355 * 5.66353 ;
 
