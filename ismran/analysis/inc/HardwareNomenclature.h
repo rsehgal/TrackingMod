@@ -12,6 +12,15 @@
 #include <string>
 
 extern std::string source;
+
+/*
+ * Used for Analysis
+ */
+extern std::vector<std::string> vecOfBarsNamess;
+
+/*
+ * Used for Calibration
+ */
 extern std::vector<std::string> vecOfOnlyBarsNames;
 extern std::string mode;
 extern std::vector<int> vecOfNearVoltage;

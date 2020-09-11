@@ -42,7 +42,8 @@ int main(){
 	//Analyzer_V2 av2("/home/rsehgal/BackBoneSoftwares/ismranData/ISMRAN_81bars_Th10All_CosmicRun_15hrs42mins_26Aug2020_2.root");
 
 	//If calibration required
-	Calibration *cb = new Calibration("/media/rsehgal/CMSSW/IsmranDataCalibrationFiles/FinalCorrectionFactors_70bars.root");
+	//Calibration *cb = new Calibration("/media/rsehgal/CMSSW/IsmranDataCalibrationFiles/FinalCorrectionFactors_70bars.root");
+	Calibration *cb = new Calibration("completeCalib.root");
 	Analyzer_V2 av2("/home/rsehgal/BackBoneSoftwares/ismranData/ISMRAN_81bars_Th10All_CosmicRun_15hrs42mins_26Aug2020_2.root",cb);
 
 

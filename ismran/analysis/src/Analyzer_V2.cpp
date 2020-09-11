@@ -39,7 +39,8 @@ Analyzer_V2::Analyzer_V2(std::string datafileName, Calibration *calib){
 	PlotHistOfNumOfMuonHitsInMuonTracks_V2(muonTrackVec);
 	PlotHistOfDelTBetweenMuonTracks_V2(muonTrackVec);
 	DoSinglePointEnergyCalibrationForMuon();
-	DisplayHistograms();
+	DisplayHistogramsOf(75);
+	//DisplayHistograms(true);
 
 
 	//PrintMuonTrackVector_V2(muonTrackVec);
@@ -460,7 +461,7 @@ void Analyzer_V2::FillHistograms(){
 	}
 }
 
-void Analyzer_V2::DisplayHistograms(){
+void Analyzer_V2::DisplayHistograms(bool reverse){
 	TCanvas *can = new TCanvas("Histograms","Histograms",800,600);
 	can->SetLogx();
 	//TCanvas *can = new TCanvas("c1");
@@ -470,31 +471,75 @@ void Analyzer_V2::DisplayHistograms(){
 
 	/*fhistogramsVec[0]->fhistQNear->Draw();
 	fhistogramsVec[0]->fhistQFar->Draw("same");*/
+	unsigned int totBars = numOfLayers*numOfBarsInEachLayer;
+	if(reverse){
+		for(unsigned int barIndex = (totBars-1) ; barIndex >= (totBars - totalNumOfBars) ; barIndex--){
+					int padIndex = 5*barIndex + 1;
+					//std::cout << "Changing to subplot : " << padIndex << std::endl;
+					can->cd(padIndex);
+					gPad->SetLogy();
+					//fhistogramsVec[barIndex]->fhistQNearFarPad->cd();
+					fhistogramsVec[barIndex]->fhistQNear->Draw();
+					fhistogramsVec[barIndex]->fhistQFar->Draw("same");
 
-	for(unsigned int barIndex = 0 ; barIndex < totalNumOfBars ; barIndex++){
-		int padIndex = 5*barIndex + 1;
-		//std::cout << "Changing to subplot : " << padIndex << std::endl;
-		can->cd(padIndex);
-		gPad->SetLogy();
-		//fhistogramsVec[barIndex]->fhistQNearFarPad->cd();
-		fhistogramsVec[barIndex]->fhistQNear->Draw();
-		fhistogramsVec[barIndex]->fhistQFar->Draw("same");
+					can->cd(5*barIndex+2);
+					gPad->SetLogy();
+					fhistogramsVec[barIndex]->fhistQMean->Draw();
 
-		can->cd(5*barIndex+2);
-		gPad->SetLogy();
-		fhistogramsVec[barIndex]->fhistQMean->Draw();
+					can->cd(5*barIndex+3);
+					gPad->SetLogy();
+					fhistogramsVec[barIndex]->fhistQMeanCorrected->Draw();
 
-		can->cd(5*barIndex+3);
-		gPad->SetLogy();
-		fhistogramsVec[barIndex]->fhistQMeanCorrected->Draw();
+					can->cd(5*barIndex+4);
+			//		/gPad->SetLogy();
+					fhistogramsVec[barIndex]->fhistDelT->Draw();
 
-		can->cd(5*barIndex+4);
-//		/gPad->SetLogy();
-		fhistogramsVec[barIndex]->fhistDelT->Draw();
+					can->cd(5*barIndex+5);
+					fhistogramsVec[barIndex]->fhistDelTCorrected->Draw();
+				}
+	}else{
+		for(unsigned int barIndex = 0 ; barIndex < totalNumOfBars ; barIndex++){
+			int padIndex = 5*barIndex + 1;
+			//std::cout << "Changing to subplot : " << padIndex << std::endl;
+			can->cd(padIndex);
+			gPad->SetLogy();
+			//fhistogramsVec[barIndex]->fhistQNearFarPad->cd();
+			fhistogramsVec[barIndex]->fhistQNear->Draw();
+			fhistogramsVec[barIndex]->fhistQFar->Draw("same");
 
-		can->cd(5*barIndex+5);
-		fhistogramsVec[barIndex]->fhistDelTCorrected->Draw();
+			can->cd(5*barIndex+2);
+			gPad->SetLogy();
+			fhistogramsVec[barIndex]->fhistQMean->Draw();
+
+			can->cd(5*barIndex+3);
+			gPad->SetLogy();
+			fhistogramsVec[barIndex]->fhistQMeanCorrected->Draw();
+
+			can->cd(5*barIndex+4);
+	//		/gPad->SetLogy();
+			fhistogramsVec[barIndex]->fhistDelT->Draw();
+
+			can->cd(5*barIndex+5);
+			fhistogramsVec[barIndex]->fhistDelTCorrected->Draw();
+		}
 	}
+}
+
+void Analyzer_V2::DisplayHistogramsOf(unsigned int barIndex){
+	new TCanvas();
+	fhistogramsVec[barIndex]->fhistQNear->Draw();
+	fhistogramsVec[barIndex]->fhistQFar->Draw("same");
+
+	new TCanvas();
+	fhistogramsVec[barIndex]->fhistQMean->Draw();
+	fhistogramsVec[barIndex]->fhistQMeanCorrected->SetLineColor(2);
+	fhistogramsVec[barIndex]->fhistQMeanCorrected->Draw("same");
+
+	new TCanvas();
+	fhistogramsVec[barIndex]->fhistDelT->Draw();
+	fhistogramsVec[barIndex]->fhistDelTCorrected->SetLineColor(2);
+	fhistogramsVec[barIndex]->fhistDelTCorrected->Draw("same");
+
 }
 
 void Analyzer_V2::EstimateHitPosition(ScintillatorBar_V2 *scint){
@@ -516,25 +561,6 @@ void Analyzer_V2::EstimateHitPosition(ScintillatorBar_V2 *scint){
 	}
 }
 
-void Analyzer_V2::PlotTracks(std::vector<std::vector<ScintillatorBar_V2*>> muonTrackVec,unsigned int numOfTracks){
-	unsigned int ntracks = numOfTracks;
-	if(numOfTracks==0){
-		numOfTracks = muonTrackVec.size();
-	}
-	/*for(unsigned int i = 0 ; i < numOfTracks ; i++ ){
-
-		PlotOneTrack(muonTrackVec[i]);
-	}*/
-	unsigned int counter = 0;
-	while(ntracks){
-		if((muonTrackVec[counter]).size() > 6){
-			PlotOneTrack(muonTrackVec[counter]);
-			ntracks--;
-		}
-		counter++;
-	}
-}
-
 void Analyzer_V2::PlotTracks_V2(std::vector< SingleMuonTrack* > muonTrackVec,unsigned int numOfTracks){
 	unsigned int ntracks = numOfTracks;
 	if(numOfTracks==0){
@@ -542,75 +568,16 @@ void Analyzer_V2::PlotTracks_V2(std::vector< SingleMuonTrack* > muonTrackVec,uns
 	}
 	unsigned int counter = 0;
 	while(ntracks){
-		if((muonTrackVec[counter]->fSingleMuonTrack).size() > 6){
-			PlotOneTrack(muonTrackVec[counter]->fSingleMuonTrack);
-			muonTrackVec[counter]->Print();
-			ntracks--;
+		if(muonTrackVec[counter]->fIsValid){
+			if((muonTrackVec[counter]->fSingleMuonTrack).size() > 6){
+				//PlotOneTrack(muonTrackVec[counter]->fSingleMuonTrack);
+				muonTrackVec[counter]->PlotTrack();
+				muonTrackVec[counter]->Print();
+				ntracks--;
+			}
 		}
 		counter++;
 	}
-}
-
-/*
- * Function to Draw customized Grid Lines
- */
-void Analyzer_V2::DrawGrid(std::string t, Int_t ngx, Int_t ngy)
-{
-//	std::cout << "DrawGrid Called........: " << t << " : ....." << std::endl;
-   //new TCanvas();
-   Double_t x1 = -50;
-   Double_t x2 = 50;
-   Double_t y1 = 0;
-   Double_t y2 = 100;
-   Double_t xs = (x2-x1)/ngx;
-   Double_t ys = (y2-y1)/ngy;
-   Int_t i;
-
-   TH1F *h = gPad->DrawFrame(x1, y1, x2, y2);
-   h->GetXaxis()->SetNdivisions(20);
-   h->GetYaxis()->SetNdivisions(20);
-   h->GetYaxis()->SetTickLength(0.);
-   h->GetXaxis()->SetTickLength(0.);
-   h->GetXaxis()->SetLabelSize(0.025);
-   h->GetYaxis()->SetLabelSize(0.025);
-   h->SetTitle(t.c_str());
-   gPad-> Update();
-
-   TLine l;
-   l.SetLineColor(kGray);
-   Double_t x = x1+xs;
-   for (i = 0; i<ngx-1; i++) {
-      l.DrawLine(x,y1,x,y2);
-      x = x + xs;
-   }
-
-   Double_t y = y1+xs;
-   for (i = 0; i<ngy-1; i++) {
-      l.DrawLine(x1,y,x2,y);
-      y = y +ys;
-   }
-}
-
-void Analyzer_V2::PlotOneTrack(std::vector<ScintillatorBar_V2*> singleMuonTrack){
-	std::vector<Double_t> xvec, zvec;
-	for (unsigned int index = 0; index < singleMuonTrack.size(); index++) {
-		if((singleMuonTrack[index]->hitPosition).x <= 100 && (singleMuonTrack[index]->hitPosition).y <=50){
-			xvec.push_back((singleMuonTrack[index]->hitPosition).x);
-			zvec.push_back((singleMuonTrack[index]->hitPosition).z);
-		}
-	}
-	std::string trackname="MuonTrack-"+std::to_string(fMuonTrackNum);
-	std::cout << "TrackName : " << trackname <<" : Size : "  << singleMuonTrack.size() << std::endl;
-	/*for(unsigned int i = 0 ; i< singleMuonTrack.size() ; i++){
-		(singleMuonTrack[i]->hitPosition).Print();
-	}*/
-	TCanvas *c = new TCanvas(trackname.c_str(),trackname.c_str(), 800, 800);
-	TGraph *gr = new TGraph(xvec.size(), &zvec[0], &xvec[0]);
-	gr->SetMarkerStyle(8);
-	//gr->SetTitle("Muon Hit Points in different layers");
-	DrawGrid(trackname,10,10);
-	gr->Draw("p");
-	fMuonTrackNum++;
 }
 
 std::vector< SingleMuonTrack* > Analyzer_V2::PlotEnergyLossDistributionOfMuonTracks(std::vector< SingleMuonTrack* > muonTrackVec){

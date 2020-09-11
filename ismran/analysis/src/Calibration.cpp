@@ -31,7 +31,12 @@ Calibration::Calibration(std::string fileName) {
 		for(int ip=0; ip < temp_F->GetNpar(); ip++){
 			paramertization_F->SetParameter(ip,temp_F->GetParameter(ip));
 		}
-	    fVecOfCalibrationData.push_back(new CalibrationData( delTShift_F, paramertization_F ));
+
+		int barPhyNum = std::stoi(vecOfBarsName[barIndex].substr(2,2));
+		if(barPhyNum <= 70)
+			fVecOfCalibrationData.push_back(new CalibrationData( delTShift_F, paramertization_F ));
+		else
+			fVecOfCalibrationData.push_back(new CalibrationData( delTShift_F, temp_F ));
 	}
 }
 
