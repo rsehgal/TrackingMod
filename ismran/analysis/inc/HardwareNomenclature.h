@@ -10,6 +10,8 @@
 
 #include <vector>
 #include <string>
+#include <iostream>
+#include "includes.hh"
 
 extern std::string source;
 
@@ -28,6 +30,28 @@ extern std::vector<int> vecOfFarVoltage;
 extern std::vector<int> vecOfNearThreshold;
 extern std::vector<int> vecOfFarThreshold;
 extern std::vector<int> vecOfSourcePositions;
+
+struct Point2D{
+	double x;
+	double y;
+
+	Point2D(double s_x, double s_y){
+		x = s_x;
+		y = s_y;
+	}
+
+	Point2D(){x = 100 ; y = 100.;}
+	void Print(){
+		std::cout << "( " << x << " , " << y <<" )" << std::endl;
+	}
+
+	double Distance(Point2D p2){
+		return sqrt((p2.x-this->x)*(p2.x-this->x) + (p2.y-this->y)*(p2.y-this->y));
+	}
+
+};
+extern std::vector<Point2D> vecOfScintXYCenter;
+extern void GenerateScintMatrixXYCenters();
 
 class HardWareNomenclature {
 public:

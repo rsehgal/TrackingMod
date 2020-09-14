@@ -11,7 +11,12 @@
 #include<vector>
 #include "includes.hh"
 
+
 class ScintillatorBar_V2;
+class TGraph;
+class Point3D;
+
+extern double LinearFit();
 
 class SingleMuonTrack {
 //Keeping data members public for the time being
@@ -20,6 +25,11 @@ public:
 	std::vector<ScintillatorBar_V2*> fSingleMuonTrack;
 	bool fIsValid;
 	static int fMuonTrackNum;
+
+	/*
+	 * Storing just the fitted muon track, NOT the vector of Scintillator bars
+	 */
+	std::vector<Point3D*> fSingleMuonTrackFitted;
 
 
 public:
@@ -49,8 +59,10 @@ public:
 	/*
 	 * Function to plot the track
 	 */
-	void PlotTrack();
+	std::vector<Point3D*> PlotTrack();
 	void DrawGrid(std::string t, Int_t ngx, Int_t ngy);
+	std::vector<double> GetFittedXorZ(TGraph *grxy);
+	//std::vector<double> GetFittedZ(TGraph *grzy);
 
 
 	/*

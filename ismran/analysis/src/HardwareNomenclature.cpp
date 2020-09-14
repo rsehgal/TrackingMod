@@ -6,6 +6,7 @@
  */
 
 #include "HardwareNomenclature.h"
+#include "PsBar.h"
 
 std::string source = "Cs137";
 
@@ -82,6 +83,17 @@ std::vector<int> vecOfSourcePositions{
 	-45, -40, -30, -20, -10, 0, 10, 20, 30, 40, 45
 };
 
+
+std::vector<Point2D> vecOfScintXYCenter;
+void GenerateScintMatrixXYCenters(){
+	for(unsigned int i = 0 ; i < numOfLayers ; i++){
+		for(unsigned int j = 0 ; j < numOfBarsInEachLayer ; j++){
+			double x = -1.*(numOfBarsInEachLayer*barWidth)/2. + barWidth/2. + (j*barWidth);
+			double y = -1.*(numOfLayers*barHeight)/2. + barHeight/2. + (i*barHeight);
+			vecOfScintXYCenter.push_back(Point2D(x,y));
+		}
+	}
+}
 HardWareNomenclature::~HardWareNomenclature() {
 	// TODO Auto-generated destructor stub
 }

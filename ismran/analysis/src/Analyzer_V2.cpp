@@ -13,6 +13,7 @@
 #include "Calibration.h"
 #include <TH1I.h>
 #include "SingleMuonTrack.h"
+#include "HardwareNomenclature.h"
 
 unsigned long int Analyzer_V2::fMuonTrackNum = 0;
 
@@ -25,7 +26,24 @@ Analyzer_V2::~Analyzer_V2() {
 	// TODO Auto-generated destructor stub
 }
 
+bool CheckRange(std::vector<Point3D*> singleMuonTrack){
+	for(unsigned int i = 0 ; i < singleMuonTrack.size() ; i++){
+		if(std::isinf(singleMuonTrack[i]->x) || std::isinf(singleMuonTrack[i]->y) || std::isinf(singleMuonTrack[i]->z)
+			// || (abs((singleMuonTrack[i]->x) <= 45.) ) || (abs((singleMuonTrack[i]->y) <= 45.) ) || (abs((singleMuonTrack[i]->z) <= 50.) )
+		){
+			return true;
+		}
+	}
+	return false;
+}
+
 Analyzer_V2::Analyzer_V2(std::string datafileName, Calibration *calib){
+	GenerateScintMatrixXYCenters();
+	for(unsigned int i = 0 ; i < vecOfScintXYCenter.size() ; i++){
+		vecOfScintXYCenter[i].Print();
+	}
+
+	//sleep(20);
 	fCalib = calib;
 	fDatafileName = datafileName;
 	LoadDataAndSort();
@@ -34,11 +52,13 @@ Analyzer_V2::Analyzer_V2(std::string datafileName, Calibration *calib){
 	//ValidatePairs();
 	CreateScintillatorVector();
 	//std::vector< std::vector<ScintillatorBar_V2*> > muonTrackVec = ReconstrutTrack_V2();
+	DoSinglePointEnergyCalibrationForMuon();
 	std::vector< SingleMuonTrack* > muonTrackVec = ReconstrutTrack_V2();
+	fVecOfScintillatorBar.clear();
 
 	PlotHistOfNumOfMuonHitsInMuonTracks_V2(muonTrackVec);
 	PlotHistOfDelTBetweenMuonTracks_V2(muonTrackVec);
-	DoSinglePointEnergyCalibrationForMuon();
+	//DoSinglePointEnergyCalibrationForMuon();
 	DisplayHistogramsOf(75);
 	//DisplayHistograms(true);
 
@@ -47,7 +67,8 @@ Analyzer_V2::Analyzer_V2(std::string datafileName, Calibration *calib){
 	CalculateTotalEnergyDepositionForMuonTracks(muonTrackVec);
 	//PlotTracks_V2(muonTrackVec);
 	std::vector< SingleMuonTrack* > filteredMuonTrackVec = PlotEnergyLossDistributionOfMuonTracks(muonTrackVec);
-	PlotTracks_V2(filteredMuonTrackVec);
+	//std::vector< std::vector<Point3D*> >
+	fittedMuonTracks = PlotTracks_V2(filteredMuonTrackVec,100);
 	/*DoSinglePointEnergyCalibrationForMuon();
 	DisplayHistograms();
 */
@@ -561,23 +582,41 @@ void Analyzer_V2::EstimateHitPosition(ScintillatorBar_V2 *scint){
 	}
 }
 
-void Analyzer_V2::PlotTracks_V2(std::vector< SingleMuonTrack* > muonTrackVec,unsigned int numOfTracks){
-	unsigned int ntracks = numOfTracks;
+//void Analyzer_V2::PlotTracks_V2(std::vector< SingleMuonTrack* > muonTrackVec,unsigned int numOfTracks){
+std::vector< std::vector<Point3D*> >  Analyzer_V2::PlotTracks_V2(std::vector< SingleMuonTrack* > muonTrackVec,unsigned int numOfTracks){
+
+	std::vector< std::vector<Point3D*> > fittedMuonTracks;
 	if(numOfTracks==0){
 		numOfTracks = muonTrackVec.size();
 	}
+	unsigned int ntracks = numOfTracks;
 	unsigned int counter = 0;
 	while(ntracks){
 		if(muonTrackVec[counter]->fIsValid){
 			if((muonTrackVec[counter]->fSingleMuonTrack).size() > 6){
 				//PlotOneTrack(muonTrackVec[counter]->fSingleMuonTrack);
-				muonTrackVec[counter]->PlotTrack();
-				muonTrackVec[counter]->Print();
-				ntracks--;
+
+
+				/*
+				 * Putting some more VERY STRINGENT cuts to select really good tracks for visualization purpose
+				 */
+				if( ((muonTrackVec[counter]->fSingleMuonTrack).size() == numOfLayers)
+					&& ((muonTrackVec[counter]->fSingleMuonTrack[0]->hitPosition).y > 35)
+					&& ((muonTrackVec[counter]->fSingleMuonTrack[numOfLayers-1]->hitPosition).y < -35) )
+
+				{
+					std::vector<Point3D*> fittedSingleMuonTrack = muonTrackVec[counter]->PlotTrack();
+					if(!CheckRange(fittedSingleMuonTrack)){
+						fittedMuonTracks.push_back(fittedSingleMuonTrack);
+						muonTrackVec[counter]->Print();
+						ntracks--;
+					}
+				}
 			}
 		}
 		counter++;
 	}
+	return fittedMuonTracks;
 }
 
 std::vector< SingleMuonTrack* > Analyzer_V2::PlotEnergyLossDistributionOfMuonTracks(std::vector< SingleMuonTrack* > muonTrackVec){

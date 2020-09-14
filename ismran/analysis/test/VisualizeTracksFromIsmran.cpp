@@ -25,32 +25,60 @@
 #include <fstream>
 #include "CommonFunc.h"
 
+/*
+ * ISMRAN related header file
+ */
+#include "Calibration.h"
+#include <iostream>
+#include "Analyzer_V2.h"
+#include "TApplication.h"
+#include "TreeEntry.h"
+
+
+
 using Tomography::Coordinates;
+
+bool OutsideRange(std::vector<Point3D*> singleTrack){
+	for(unsigned int i = 0 ; i < singleTrack.size() ; i++){
+		if( (abs(singleTrack[i]->x) > 45.) || (abs(singleTrack[i]->y) > 45.) || (abs(singleTrack[i]->z) > 50.)  ){
+			return true;
+		}
+	}
+	return false;
+}
 int main(){
 
 	TApplication *fApp = new TApplication("Test", NULL, NULL);
 	Tomography::VisualizationHelper *v = Tomography::VisualizationHelper::instance();
 	v->InitializeVisualizer();
 
+	/*
+	 * ISMRAN analysis objects to get the fitted muon tracks
+	 */
+	Calibration *cb = new Calibration("/home/rsehgal/BackBoneSoftwares/ismranData/completeCalib.root");
+	Analyzer_V2 av2("/home/rsehgal/BackBoneSoftwares/ismranData/ISMRAN_81bars_Th10All_CosmicRun_15hrs42mins_26Aug2020_2.root",cb);
+
 	unsigned int numOfEvents = 100;
-	Coordinates c;
-	double ztop = 50.;
-	double zbot = -50.;
-	for (int evNo = 0; evNo < numOfEvents; evNo++) {
-		double x = c.GenRandom(-50.,50);
-		double y = c.GenRandom(-50.,50);
-		Tracking::Vector3D<double> p1(x,y,ztop);
-		x = c.GenRandom(-50.,50);
-		y = c.GenRandom(-50.,50);
-		Tracking::Vector3D<double> p2(x,y,zbot);
-		Tomography::Track t(p1,p2);
-		v->Register(&t);
-		sleep(1);
-		v->Show();
+	std::cout << "NUM OF TRACKS TO PLOT : " << av2.fittedMuonTracks.size() << std::endl;
+	for (int evNo = 0; evNo < av2.fittedMuonTracks.size(); evNo++) {
+		std::vector<Point3D*> singleTrack = av2.fittedMuonTracks[evNo];
+		if(!OutsideRange(singleTrack)){
+			unsigned long int len = singleTrack.size();
+			len -= 1;
+			Tracking::Vector3D<double> p1(singleTrack[0]->x,singleTrack[0]->y,singleTrack[0]->z);
+			p1.Print();
+			Tracking::Vector3D<double> p2(singleTrack[len]->x,singleTrack[len]->y,singleTrack[len]->z);
+			p2.Print();
+
+			Tomography::Track t(p1,p2);
+			v->Register(&t);
+			sleep(1);
+			v->Show();
+		}
 
 	}
 
-	 v->Show();
+	v->Show();
 	fApp->Run();
 }
 

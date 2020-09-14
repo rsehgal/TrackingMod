@@ -25,6 +25,10 @@ int timeDiffNearFar = 25000 ; //ps
 int muonEnergyPeak = 20000;
 int minEnergyDepositedByMuonTrack = 170000;
 int maxEnergyDepositedByMuonTrack = 190000;
+float barWidth = 10.;
+float barHeight = 10.;
+float barLength = 100.;
+
 
 //std::string FileFrag[]={
 /*

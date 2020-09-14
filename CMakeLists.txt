@@ -295,6 +295,8 @@ ${CMAKE_SOURCE_DIR}/inc
 ${CMAKE_SOURCE_DIR}
 ${CMAKE_SOURCE_DIR}/CryGeantInterface
 ${CMAKE_SOURCE_DIR}/base
+#${CMAKE_SOURCE_DIR}/ismran/analysis/inc
+#${CMAKE_SOURCE_DIR}/ismran/inc
 )
 
 if(EVE)
@@ -357,8 +359,8 @@ ${CMAKE_SOURCE_DIR}/TemplatizedInterface/test/core
 ${CMAKE_SOURCE_DIR}/TemplatizedInterface/test/core/MLEM_Tests
 ${CMAKE_SOURCE_DIR}/TemplatizedInterface/test/core/TMVA_Tests
 ${CMAKE_SOURCE_DIR}/TemplatizedInterface/test/core/ISMRAN_Tests
-${CMAKE_SOURCE_DIR}/ismran/analysis
-${CMAKE_SOURCE_DIR}/ismran/analysis/test
+#${CMAKE_SOURCE_DIR}/ismran/analysis
+#${CMAKE_SOURCE_DIR}/ismran/analysis/test
 ${CMAKE_SOURCE_DIR}/TemplatizedInterface/test/plots
 if(GEANT4)
 ${CMAKE_SOURCE_DIR}/Simulations/MST/test

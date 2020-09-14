@@ -28,6 +28,8 @@ public:
 	std::vector<TreeEntry*> fVecOfPairedTreeEntry;
 	std::vector<ScintillatorBar_V2*> fVecOfScintillatorBar;
 
+	std::vector< std::vector<Point3D*> > fittedMuonTracks;
+
 
 	/*
 	 * Various Required Histograms,
@@ -88,7 +90,8 @@ public:
 	void PlotHistOfDelTBetweenMuonTracks_V2(std::vector< SingleMuonTrack* > muonTrackVec);
 	std::vector < SingleMuonTrack* >ReconstrutTrack_V2();
 	void PrintMuonTrackVector_V2(std::vector< SingleMuonTrack* > muonTrackVec);
-	void PlotTracks_V2(std::vector< SingleMuonTrack* > muonTrackVec,unsigned int numOfTracks=20);
+	//void PlotTracks_V2(std::vector< SingleMuonTrack* > muonTrackVec,unsigned int numOfTracks=20);
+	std::vector< std::vector<Point3D*> >  PlotTracks_V2(std::vector< SingleMuonTrack* > muonTrackVec,unsigned int numOfTracks=20);
 	void CalculateTotalEnergyDepositionForMuonTracks(std::vector< SingleMuonTrack* > muonTrackVec);
 
 };
