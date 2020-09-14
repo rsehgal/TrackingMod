@@ -51,13 +51,19 @@ include_directories(../../base)
 file(GLOB sources ${PROJECT_SOURCE_DIR}/src/*.cpp ${PROJECT_SOURCE_DIR}/src/*.cc ../inc/*.cpp)
 file(GLOB headers ${PROJECT_SOURCE_DIR}/inc/*.h ${PROJECT_SOURCE_DIR}/inc/*.hh ../../base/Vector3D.h) 
 
-add_executable(mainAna main.cpp ${sources} ${headers})
+add_executable(mainAna test/main.cpp ${sources} ${headers})
 target_link_libraries(mainAna ${ROOT_LIBRARIES} ${TOMOLIB})
 
-add_executable(mainAna_V2 main_V2.cpp ${sources} ${headers})
+add_executable(mainAna_V2 test/main_V2.cpp ${sources} ${headers})
 target_link_libraries(mainAna_V2 ${ROOT_LIBRARIES} ${TOMOLIB})
 
-add_executable(readCalibDatafile readCalibDataFile.cpp ${sources} ${headers})
+add_executable(readCalibDatafile test/readCalibDataFile.cpp ${sources} ${headers})
 target_link_libraries(readCalibDatafile ${ROOT_LIBRARIES} ${TOMOLIB})
+
+add_executable(VisualizeTracksFromIsmran test/VisualizeTracksFromIsmran.cpp ${sources} ${headers})
+target_link_libraries(VisualizeTracksFromIsmran ${ROOT_LIBRARIES} ${TOMOLIB})
+
+add_executable(DemoVisualizeTracksFromIsmran test/DemoVisualizeTracksFromIsmran.cpp)
+target_link_libraries(DemoVisualizeTracksFromIsmran ${ROOT_LIBRARIES} -lTomo)
 
 #target_link_libraries(main ${Geant4_LIBRARIES} Tomo)

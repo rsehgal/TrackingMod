@@ -6,6 +6,7 @@
  */
 
 #include "ScintillatorBar_V2.h"
+#include "HardwareNomenclature.h"
 
 
 ScintillatorBar_V2::ScintillatorBar_V2() {
@@ -65,9 +66,11 @@ void ScintillatorBar_V2::Print(){
 }
 
 void ScintillatorBar_V2::EstimateHitPositionAlongX(){
-		hitPosition.x = (layerIndex+1)*10.;
+		//hitPosition.x = (layerIndex+1)*10.;
+		hitPosition.x = vecOfScintXYCenter[barIndex].x;
 }
 
 void ScintillatorBar_V2::EstimateHitPositionAlongY(){
-		hitPosition.y = 0.;
+		//hitPosition.y = 0.;
+		hitPosition.y = vecOfScintXYCenter[barIndex].y;
 }

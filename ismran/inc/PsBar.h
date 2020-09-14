@@ -15,6 +15,9 @@ extern const double kDelTBar ;//= 32.0; //! ns
 extern TStopwatch timer;
 extern unsigned int numOfLayers;//=3;
 extern unsigned int numOfBarsInEachLayer;//=9;
+extern float barWidth;
+extern float barHeight;
+extern float barLength;
 
 extern std::map<std::string,TH1D*> barsEnergyMap;
 extern std::vector<TH1D*> vecOfEnergyHist;
