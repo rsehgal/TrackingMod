@@ -16,6 +16,8 @@
 #include "G4UnitsTable.hh"
 #include "G4SDManager.hh"
 #include "MySD.h"
+#include <G4GDMLParser.hh>
+
 MyDetectorConstruction::MyDetectorConstruction(){
 
 }
@@ -84,8 +86,8 @@ G4VPhysicalVolume* MyDetectorConstruction::Construct(){
   G4Material* bar_mat = nist->FindOrBuildMaterial("G4_POLYVINYL_CHLORIDE");
 
   double halfXOneBar = 5.*cm;
-  double halfYOneBar = 50.*cm;
-  double halfZOneBar = 5.*cm;
+  double halfYOneBar = 5.*cm;
+  double halfZOneBar = 50.*cm;
   //Lets try to build one bar of 10cm X 10cm X 10cm
   G4Box *psBar = new G4Box("PsBar",halfXOneBar,halfYOneBar,halfZOneBar);
   G4LogicalVolume *logicalPsBar = new G4LogicalVolume(psBar,bar_mat,"LogicalPsBar");
@@ -105,22 +107,22 @@ G4VPhysicalVolume* MyDetectorConstruction::Construct(){
                             checkOverlaps);
   */
   //Lets try to build the full matrix of PsBars
-  int barInX=9;
-  int barInZ=3;
-  double yval=0;
-  double xstart=-1*(barInX/2)*(2*halfXOneBar);
-  double zstart=-1*(barInZ/2)*(2*halfZOneBar);
-  std::cout <<"XStart : " << xstart <<" : ZStart : " << zstart << std::endl;
+  int barsInX=9;
+  int barsInY=9;
+  double zval=0;
+  double xstart=-1.*barsInX*halfXOneBar;
+  double ystart=-1.*barsInY*halfYOneBar;
+  std::cout <<"XStart : " << xstart <<" : YStart : " << ystart << std::endl;
   int counter=0;
-  for(unsigned int zindex = 0 ; zindex < barInZ ; zindex++ ){
-    double zval = zstart + (2*zindex+1)*halfZOneBar;
-    for(unsigned int xindex = 0 ; xindex < barInX ; xindex++ ){
+  for(unsigned int yindex = 0 ; yindex < barsInY ; yindex++ ){
+    double yval = ystart + (2*yindex+1)*halfYOneBar;
+    for(unsigned int xindex = 0 ; xindex < barsInX ; xindex++ ){
       double xval = xstart + (2*xindex+1)*halfXOneBar;
       std::cout <<xval<<","<<yval<<","<<zval<<std::endl;
       new G4PVPlacement(0,
                                   G4ThreeVector(xval,yval,zval),
                                   logicalPsBar,
-                                  "PhysicalPsBar-"+std::to_string(xindex)+"-"+std::to_string(zindex),
+                                  "PhysicalPsBar-"+std::to_string(xindex)+"-"+std::to_string(yindex),
                                   logicWorld,
                                   false,
                                   counter,
@@ -160,6 +162,8 @@ G4VPhysicalVolume* MyDetectorConstruction::Construct(){
                             checkOverlaps);*/
 
 
+G4GDMLParser parser;
+  parser.Write("ismran.gdml",physWorld);
 
 	return physWorld;
 
