@@ -14,6 +14,7 @@
 #include <TH1I.h>
 #include "SingleMuonTrack.h"
 #include "HardwareNomenclature.h"
+#include <TFile.h>
 
 unsigned long int Analyzer_V2::fMuonTrackNum = 0;
 
@@ -24,6 +25,7 @@ Analyzer_V2::Analyzer_V2() {
 
 Analyzer_V2::~Analyzer_V2() {
 	// TODO Auto-generated destructor stub
+	delete fout;
 }
 
 bool CheckRange(std::vector<Point3D*> singleMuonTrack){
@@ -38,6 +40,7 @@ bool CheckRange(std::vector<Point3D*> singleMuonTrack){
 }
 
 Analyzer_V2::Analyzer_V2(std::string datafileName, Calibration *calib){
+	fout = new TFile("calib.root","RECREATE");
 	GenerateScintMatrixXYCenters();
 	for(unsigned int i = 0 ; i < vecOfScintXYCenter.size() ; i++){
 		vecOfScintXYCenter[i].Print();
@@ -68,7 +71,7 @@ Analyzer_V2::Analyzer_V2(std::string datafileName, Calibration *calib){
 	//PlotTracks_V2(muonTrackVec);
 	std::vector< SingleMuonTrack* > filteredMuonTrackVec = PlotEnergyLossDistributionOfMuonTracks(muonTrackVec);
 	//std::vector< std::vector<Point3D*> >
-	fittedMuonTracks = PlotTracks_V2(filteredMuonTrackVec,100);
+	fittedMuonTracks = PlotTracks_V2(filteredMuonTrackVec,50);
 	/*DoSinglePointEnergyCalibrationForMuon();
 	DisplayHistograms();
 */
@@ -635,6 +638,10 @@ std::vector< SingleMuonTrack* > Analyzer_V2::PlotEnergyLossDistributionOfMuonTra
 	double bin = energyLossMuonsHist->GetXaxis()->GetBinCenter(binmax);
 	std::cout << "Peak of the Histogram of Energy Loss of Muon Tracks is at : " << bin << std::endl;
 
+	std::cout << "Going to Draw EnergyLossHistogram : " << __FILE__ << " : " << __LINE__ << std::endl;
+	sleep(5);
 	energyLossMuonsHist->Draw();
+	fout->cd();
+	energyLossMuonsHist->Write();
 	return filteredMuonTrackVec;
 }

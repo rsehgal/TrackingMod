@@ -196,9 +196,16 @@ static VisualizationHelper *instance();
   }
 
 
-  void Register(Tracking::Vector3D<double> pt){
+  void Register(Tracking::Vector3D<double> pt,double color = -1.){
   #ifdef USE_EVE
-	  fVis.AddMarkers_V2(pt);
+	  //fVis.AddMarkers_V2(pt);
+	  fVis.AddMarkers(pt);
+	  /*if(color < 0.)
+		  //fVis.AddMarkers_V2(pt);
+		  fVis.AddMarkers(pt);
+	  else
+		  //fVis.AddMarkers_V2(pt,color);
+		  fVis.AddMarkers(pt);*/
   #else
     fVis.AddMarkers(pt);
   #endif
@@ -259,6 +266,8 @@ void InitializeVisualizer(){
 #ifdef USE_EVE
   //Function to register directly from ROOT file
   void Register(std::string geomFile){
+	  std::cout << "USING Register function of " << __FILE__ << " : " << __LINE__ << std::endl;
+	  sleep(5);
     std::string finalName = GetFileName(geomFile);
     
 
@@ -275,7 +284,7 @@ void InitializeVisualizer(){
      
 	TGeoVolume* vol = node1->GetVolume();
 	TGeoShape* shape = vol->GetShape();
-        fVis.AddEveShape(name,shape,m);
+        fVis.AddEveShape(name,shape,m,18);
 
     }
   }

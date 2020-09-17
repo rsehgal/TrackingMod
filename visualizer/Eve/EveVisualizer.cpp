@@ -143,7 +143,7 @@ void EveVisualizer::AddMarkers(Vector3D<double> pt) {
 
    }
 
-void EveVisualizer::AddMarkers_V2(Vector3D<double> pt){
+void EveVisualizer::AddMarkers_V2(Vector3D<double> pt, double color){
 
  /* if(gEve){
   //  if(!fPointSetArray)
@@ -169,7 +169,10 @@ void EveVisualizer::AddMarkers_V2(Vector3D<double> pt){
 }*/
   if(gEve){
 	  std::cout<<"Color of POCA : " << pt.GetColor() << std::endl;
-  fPointSetArray->Fill(pt.x(),pt.y(),pt.z(),pt.GetColor());
+	  if(color < 0)
+		  fPointSetArray->Fill(pt.x(),pt.y(),pt.z(),pt.GetColor());
+	  else
+		  fPointSetArray->Fill(pt.x(),pt.y(),pt.z(),color);
  // fPointSetArray->CloseBins();
 }
 }
@@ -231,8 +234,8 @@ void EveVisualizer::AddEveShape(std::string shapeName,TGeoBBox *shape, TGeoHMatr
 if(gEve){
   fEveShape = new TEveGeoShape(shapeName.c_str());
   fEveShape->SetShape(shape);
-  fEveShape->SetMainColor(kGreen);
-  fEveShape->SetMainTransparency(50);
+  fEveShape->SetMainColor(kYellow);
+  fEveShape->SetMainTransparency(80);
   fEveShape->SetTransMatrix(mat);
   //fEveGeomList->AddElement(fEveShape);
   Singleton::instance()->AddElement(fEveShape);
@@ -241,12 +244,13 @@ if(gEve){
 }
 
 void EveVisualizer::AddEveShape(std::string shapeName,TGeoBBox *shape,  TGeoHMatrix &mat , int color){
-
+std::cout << "Adding EVE Shape from : " << __FILE__ << " : " << __LINE__ << std::endl;
+sleep(5);
 if(gEve){
   fEveShape = new TEveGeoShape(shapeName.c_str());
   fEveShape->SetShape(shape);
   fEveShape->SetMainColor(color);
-  fEveShape->SetMainTransparency(50);
+  fEveShape->SetMainTransparency(80);
   fEveShape->SetTransMatrix(mat);
   //fEveGeomList->AddElement(fEveShape);
   Singleton::instance()->AddElement(fEveShape);

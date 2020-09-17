@@ -16,7 +16,7 @@ class ScintillatorBar_V2;
 class Histograms;
 class Calibration;
 class SingleMuonTrack;
-
+class TFile;
 class Analyzer_V2 {
 
 	std::string fDatafileName;
@@ -24,6 +24,7 @@ class Analyzer_V2 {
 	static unsigned long int fMuonTrackNum;
 
 public:
+	TFile *fout;
 	std::vector<TreeEntry*> fVecOfTreeEntry;
 	std::vector<TreeEntry*> fVecOfPairedTreeEntry;
 	std::vector<ScintillatorBar_V2*> fVecOfScintillatorBar;

@@ -53,7 +53,7 @@ public:
   static void Show();
   static void UpdateScene();
   void AddMarkers(Vector3D<double> pt);
-  void AddMarkers_V2(Vector3D<double> pt);
+  void AddMarkers_V2(Vector3D<double> pt,double color=-1.);
   void AddMarkers(std::vector<TEvePointSet> pointSetVector);
   void ImportFromROOTFile(std::string geomFile);
   void CloseBins();
