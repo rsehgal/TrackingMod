@@ -39,7 +39,7 @@ Histograms::Histograms(std::string barName,unsigned int barIndex){
 							   padWidth,barIndex*padHeight,
 							   2*padWidth,(barIndex+1)*padHeight);
 	fhistQMeanPad->Draw();*/
-	fhistQMean  = new TH1D((barName+"-Mean").c_str(),(barName+"-Mean").c_str(),nbins,qstart,qend);
+	fhistQMean  = new TH1D((barName+"-QMean").c_str(),(barName+"-QMean").c_str(),nbins,qstart,qend);
 
 
 	/*fhistDelTPad = new TPad( (barName+"-DelTPad").c_str(),(barName+"-DelTPad").c_str(),
@@ -65,7 +65,7 @@ void Histograms::FillHistogram(ScintillatorBar_V2 *scintBar){
 	fhistQMean->Fill(scintBar->qlongMean);
 	fhistDelT->Fill(scintBar->deltaTstamp);
 	fhistDelTCorrected->Fill(scintBar->deltaTstampCorrected);
-	//fhistQMeanCorrected->Fill(fEnergyCalibrationFactor*scintBar->qlongMean);
+	fhistQMeanCorrected->Fill(scintBar->qlongMeanCorrected);
 }
 #if(0)
 //Working

@@ -7,13 +7,21 @@
 
 #include "SingleMuonTrack.h"
 #include "ScintillatorBar_V2.h"
+#include "SkimmedTracks.h"
+#include "HelperFunctions.h"
 
-int SingleMuonTrack::fMuonTrackNum = 0;
+unsigned long int SingleMuonTrack::fMuonTrackNum = 0;
 
+/*
 double LinearFit(Double_t *x,Double_t *par) {
 
       double fitval = par[0] + par[1]*x[0];
       return fitval;
+}
+*/
+
+void SingleMuonTrack::Reset(){
+	ResetVector<ScintillatorBar_V2>(fSingleMuonTrack);
 }
 
 SingleMuonTrack::SingleMuonTrack() {
@@ -74,7 +82,7 @@ void SingleMuonTrack::Print(){
 
 std::vector<double> SingleMuonTrack::GetFittedXorZ(TGraph *gr){
 	TF1 *formula = new TF1("Formula",LinearFit,-45,45,2);
-	gr->Fit(formula,"r");
+	gr->Fit(formula,"qn");
 	double c = formula->GetParameter(0);
 	double m = formula->GetParameter(1);
 	delete formula;
@@ -94,16 +102,58 @@ std::vector<double> SingleMuonTrack::GetFittedZ(TGraph *grzy){
 
 }
 */
+
+ULong64_t SingleMuonTrack::GetMeanTimeStampValue(){
+	ULong64_t sum = 0;
+	for(unsigned short int i =0 ; i < fSingleMuonTrack.size() ; i++){
+		sum += (fSingleMuonTrack[i]->tsmallTimeStamp/1000.); //Addition done in nanosecond, NOT in picosecond
+	}
+
+	return (sum/fSingleMuonTrack.size());
+}
+void SingleMuonTrack::FillSkimmedMuonTracksVector(){
+	std::vector<Double_t> xvec, yvec, zvec;
+	std::vector<Point3D*> rawMuonTrack;
+	std::vector<Point3D*> fittedMuonTrack;
+	for (unsigned int index = 0; index < fSingleMuonTrack.size(); index++) {
+			xvec.push_back((fSingleMuonTrack[index]->hitPosition).x);
+			yvec.push_back((fSingleMuonTrack[index]->hitPosition).y);
+			zvec.push_back((fSingleMuonTrack[index]->hitPosition).z);
+			rawMuonTrack.push_back(new Point3D(xvec[index],yvec[index],zvec[index]));
+	}
+
+	//Fitting in XY plane
+	TGraph *grxy = new TGraph(xvec.size(), &xvec[0], &yvec[0]);
+	std::vector<double> fittedX = GetFittedXorZ(grxy);
+	//Fitting in ZY plane
+	TGraph *grzy = new TGraph(zvec.size(), &zvec[0], &yvec[0]);
+	std::vector<double> fittedZ = GetFittedXorZ(grzy);
+	for (unsigned int i = 0; i < fSingleMuonTrack.size(); i++) {
+		fittedMuonTrack.push_back(new Point3D(fittedX[i],yvec[i],fittedZ[i]));
+	}
+	vecOfSkimmedMuonTracks.push_back(new SkimmedMuonTrack(rawMuonTrack,fittedMuonTrack,fTotalEnergyDeposited,GetMeanTimeStampValue(),fMuonTrackNum));
+
+	delete grxy;
+	delete grzy;
+	rawMuonTrack.clear();
+	fittedMuonTrack.clear();
+	fMuonTrackNum++;
+}
+
 std::vector<Point3D*> SingleMuonTrack::PlotTrack(){
 
 	//TMultiGraph *mg = new TMultiGraph();
 
 	std::vector<Double_t> xvec, yvec, zvec;
+	std::vector<Point3D*> rawMuonTrack;
+	std::vector<Point3D*> fittedMuonTrack;
+
 	for (unsigned int index = 0; index < fSingleMuonTrack.size(); index++) {
 		//if((singleMuonTrack[index]->hitPosition).x <= 100 && (singleMuonTrack[index]->hitPosition).y <=50){
 		xvec.push_back((fSingleMuonTrack[index]->hitPosition).x);
 		yvec.push_back((fSingleMuonTrack[index]->hitPosition).y);
 		zvec.push_back((fSingleMuonTrack[index]->hitPosition).z);
+		rawMuonTrack.push_back(new Point3D(xvec[index],yvec[index],zvec[index]));
 		//}
 	}
 	std::string trackname = "MuonTrack-" + std::to_string(fMuonTrackNum);
@@ -167,6 +217,7 @@ std::vector<Point3D*> SingleMuonTrack::PlotTrack(){
 /*
  * Function to Draw customized Grid Lines
  */
+#if(0)
 void SingleMuonTrack::DrawGrid(std::string t, Int_t ngx, Int_t ngy)
 {
 //	std::cout << "DrawGrid Called........: " << t << " : ....." << std::endl;
@@ -203,4 +254,4 @@ void SingleMuonTrack::DrawGrid(std::string t, Int_t ngx, Int_t ngy)
       y = y +ys;
    }
 }
-
+#endif

@@ -34,6 +34,7 @@
 #include "TApplication.h"
 #include "TreeEntry.h"
 #include "HelperFunctions.h"
+#include "SkimmedTracks.h"
 
 
 
@@ -62,10 +63,14 @@ int main(){
 
 	//Analyzer_V2 av2("/home/rsehgal/BackBoneSoftwares/ismranData/completeData_02Sep2020.root",cb);
 
-	unsigned int numOfEvents = 100;
+	unsigned long int outsideRangeCounter = 0 ;
+	unsigned int numOfEvents = 500;
 	std::cout << "NUM OF TRACKS TO PLOT : " << av2.fittedMuonTracks.size() << std::endl;
-	for (int evNo = 0; evNo < av2.fittedMuonTracks.size(); evNo++) {
-		std::vector<Point3D*> singleTrack = av2.fittedMuonTracks[evNo];
+	//for (int evNo = 0; evNo < av2.fittedMuonTracks.size(); evNo++) {
+	//for (int evNo = 0; evNo < vecOfSkimmedMuonTracks.size(); evNo++) {
+	for (int evNo = 0; evNo < numOfEvents; evNo++) {
+		//std::vector<Point3D*> singleTrack = av2.fittedMuonTracks[evNo];
+		std::vector<Point3D*> singleTrack = vecOfSkimmedMuonTracks[evNo]->sFittedMuonTrack;
 		if(!OutsideRange(singleTrack)){
 			unsigned long int len = singleTrack.size();
 			//Drawing the hit point of the tracks in different scintillator layers
@@ -85,10 +90,18 @@ int main(){
 			v->Register(&t,7);
 			//sleep(1);
 			//v->Show();
+		}else{
+			outsideRangeCounter++;
 		}
 
 	}
 
+	//Plotting the fitted tracks as ROOT graph
+	for(unsigned int i = 0 ; i < 10 ; i++){
+		vecOfSkimmedMuonTracks[i]->PlotTrack();
+	}
+
+	std::cout << "Num of Muon Tracks that are outside the range : " << outsideRangeCounter << std::endl;
 	v->Show();
 	fApp->Run();
 }
