@@ -22,6 +22,7 @@ class Analyzer_V2 {
 	std::string fDatafileName;
 	Calibration *fCalib;
 	static unsigned long int fMuonTrackNum;
+	unsigned long int fBunchSize;
 
 public:
 	TFile *fout;
@@ -38,11 +39,12 @@ public:
 	 * This can be used to get the Energy calibration data for MUON
 	 */
 	std::vector<Histograms*> fhistogramsVec;
+	std::vector<unsigned int> fVecOfSinglePointEnergyCalibOffsetForMuon;
 
 
 public:
 	Analyzer_V2();
-	Analyzer_V2(std::string datafileName,Calibration *calib=NULL);
+	Analyzer_V2(std::string datafileName,Calibration *calib=NULL, unsigned long int bunchSize=0);
 	virtual ~Analyzer_V2();
 	void LoadDataAndSort();
 	void CheckPairs();
@@ -70,19 +72,15 @@ public:
 	void PlotHistOfNumOfMuonHitsInMuonTracks(std::vector< std::vector<ScintillatorBar_V2*> > muonTrackVec);
 	void PlotHistOfDelTBetweenMuonTracks(std::vector< std::vector<ScintillatorBar_V2*> > muonTrackVec);
 	void FillHistograms();
-	void FillCorrectedQMeanHistogram();
 	void DisplayHistograms(bool reverse=false);
 	void DisplayHistogramsOf(unsigned int barIndex);
-	void DoSinglePointEnergyCalibrationForMuon();
-	std::vector< SingleMuonTrack* > PlotEnergyLossDistributionOfMuonTracks(std::vector< SingleMuonTrack* > muonTrackVec);
 
+	std::vector< SingleMuonTrack* > PlotEnergyLossDistributionOfMuonTracks(std::vector< SingleMuonTrack* > muonTrackVec);
 
 	/*
 	 * Function to estimate hit position
 	 */
 	void EstimateHitPosition(ScintillatorBar_V2 *scint);
-
-
 
 	/*
 	 * V2 of few functions
@@ -94,6 +92,13 @@ public:
 	//void PlotTracks_V2(std::vector< SingleMuonTrack* > muonTrackVec,unsigned int numOfTracks=20);
 	std::vector< std::vector<Point3D*> >  PlotTracks_V2(std::vector< SingleMuonTrack* > muonTrackVec,unsigned int numOfTracks=20);
 	void CalculateTotalEnergyDepositionForMuonTracks(std::vector< SingleMuonTrack* > muonTrackVec);
+
+
+	/*
+	 * Function to process data in bunch
+	 */
+	void ProcessBunch();
+	void ResetBunchMemory();
 
 };
 

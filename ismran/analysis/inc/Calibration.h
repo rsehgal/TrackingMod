@@ -20,7 +20,7 @@ struct CalibrationData{
 	float fDeltaTCorr;
 	TF1* fDelTCorr_F;
 	TF1* fParameterization_F;
-	double fEnergyCalibFactorForMuon;
+	//double fEnergyCalibFactorForMuon;
 
 	CalibrationData(){}
 	CalibrationData(TF1* delTCorr, TF1* parameterization, float energyCalibrationFactor=1){

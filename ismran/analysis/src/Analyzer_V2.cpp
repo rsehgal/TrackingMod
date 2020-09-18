@@ -15,6 +15,8 @@
 #include "SingleMuonTrack.h"
 #include "HardwareNomenclature.h"
 #include <TFile.h>
+#include "SinglePointEnergyCalibrationForMuon.h"
+#include "HelperFunctions.h"
 
 unsigned long int Analyzer_V2::fMuonTrackNum = 0;
 
@@ -39,7 +41,13 @@ bool CheckRange(std::vector<Point3D*> singleMuonTrack){
 	return false;
 }
 
-Analyzer_V2::Analyzer_V2(std::string datafileName, Calibration *calib){
+void ClearMuonTrackVec(std::vector< SingleMuonTrack* > muonTrackVec){
+	for(unsigned int i = 0 ; i < muonTrackVec.size() ; i++){
+		delete muonTrackVec[i];
+	}
+}
+Analyzer_V2::Analyzer_V2(std::string datafileName, Calibration *calib,unsigned long int bunchSize){
+	fBunchSize = bunchSize;
 	fout = new TFile("calib.root","RECREATE");
 	GenerateScintMatrixXYCenters();
 	for(unsigned int i = 0 ; i < vecOfScintXYCenter.size() ; i++){
@@ -50,31 +58,68 @@ Analyzer_V2::Analyzer_V2(std::string datafileName, Calibration *calib){
 	fCalib = calib;
 	fDatafileName = datafileName;
 	LoadDataAndSort();
+/*
 	CheckPairs();
 	ValidatePairs();
-	//ValidatePairs();
-	CreateScintillatorVector();
-	//std::vector< std::vector<ScintillatorBar_V2*> > muonTrackVec = ReconstrutTrack_V2();
-	DoSinglePointEnergyCalibrationForMuon();
-	std::vector< SingleMuonTrack* > muonTrackVec = ReconstrutTrack_V2();
-	fVecOfScintillatorBar.clear();
+
+	CreateScintillatorVector(); //Create Vector of Scintillator with delT correction and single point energy correction from Calibration files
+	std::vector< SingleMuonTrack* > muonTrackVec = ReconstrutTrack_V2(); //Create vector of muon tracks
+	//fVecOfScintillatorBar.clear();
 
 	PlotHistOfNumOfMuonHitsInMuonTracks_V2(muonTrackVec);
 	PlotHistOfDelTBetweenMuonTracks_V2(muonTrackVec);
-	//DoSinglePointEnergyCalibrationForMuon();
-	DisplayHistogramsOf(75);
-	//DisplayHistograms(true);
-
-
+	//DisplayHistogramsOf(75);
 	//PrintMuonTrackVector_V2(muonTrackVec);
 	CalculateTotalEnergyDepositionForMuonTracks(muonTrackVec);
-	//PlotTracks_V2(muonTrackVec);
 	std::vector< SingleMuonTrack* > filteredMuonTrackVec = PlotEnergyLossDistributionOfMuonTracks(muonTrackVec);
-	//std::vector< std::vector<Point3D*> >
+	muonTrackVec.clear();
 	fittedMuonTracks = PlotTracks_V2(filteredMuonTrackVec,50);
-	/*DoSinglePointEnergyCalibrationForMuon();
-	DisplayHistograms();
 */
+
+	//Uncomment below line to get the histograms
+	InitializeHistograms();
+	FillHistograms();
+	DisplayHistograms();
+
+
+}
+
+void Analyzer_V2::ProcessBunch(){
+	CheckPairs();
+	ValidatePairs();
+
+	CreateScintillatorVector(); //Create Vector of Scintillator with delT correction and single point energy correction from Calibration files
+	std::vector< SingleMuonTrack* > muonTrackVec = ReconstrutTrack_V2(); //Create vector of muon tracks
+	//fVecOfScintillatorBar.clear();
+
+	PlotHistOfNumOfMuonHitsInMuonTracks_V2(muonTrackVec);
+	PlotHistOfDelTBetweenMuonTracks_V2(muonTrackVec);
+	//DisplayHistogramsOf(75);
+	//PrintMuonTrackVector_V2(muonTrackVec);
+
+
+	CalculateTotalEnergyDepositionForMuonTracks(muonTrackVec);
+	std::vector< SingleMuonTrack* > filteredMuonTrackVec = PlotEnergyLossDistributionOfMuonTracks(muonTrackVec);
+	std::cout << "Going to Fill Skimmed Muon Track Vector........" << std::endl;
+	for(unsigned int i = 0 ; i < filteredMuonTrackVec.size() ; i++){
+		filteredMuonTrackVec[i]->FillSkimmedMuonTracksVector();
+	}
+	std::cout << "Skimmed Muon Track Vector filled ........" << std::endl;
+	//muonTrackVec.clear();
+	//fittedMuonTracks = PlotTracks_V2(filteredMuonTrackVec,50);
+
+	//Freeing the memory
+	ResetVector<SingleMuonTrack>(muonTrackVec);
+	filteredMuonTrackVec.clear();
+	ResetBunchMemory();
+}
+
+void Analyzer_V2::ResetBunchMemory(){
+	std::cout << "Resetting Bunch memory......." << std::endl;
+	ResetVector<TreeEntry>(fVecOfTreeEntry);
+	ResetVector<TreeEntry>(fVecOfPairedTreeEntry);
+	std::cout << "Bunch memory Freed......." << std::endl;
+	//ResetVector<ScintillatorBar_V2>(fVecOfScintillatorBar);
 
 }
 
@@ -97,20 +142,64 @@ void Analyzer_V2::LoadDataAndSort() {
 
 	Long64_t nb = 0;
 
-	for (Long64_t iev = 0; iev < nEntries; iev++) {
+	if(fBunchSize == 0){
+		fBunchSize = nEntries;
+	}
+	unsigned long int bunchSize = fBunchSize;
+	unsigned long int intSlot = nEntries / bunchSize;
+	unsigned long int tailEntries = nEntries % bunchSize;
+	unsigned long int intEntries = intSlot * bunchSize;
+
+	int bunchId = 0 ;
+
+	//for (Long64_t iev = 0; iev < nEntries; iev++) {
+	for (Long64_t iev = 0; iev < intEntries; iev++) {
+
 		nb += tr->GetEntry(iev);
 		if (0)
 			std::cout << brch << " , " << qlong << " , " << tstamp << " , " << time << std::endl;
 
 		fVecOfTreeEntry.push_back(new TreeEntry(brch, qlong, tstamp, time));
 
-		if (iev % 500000 == 0) {
+		if ((iev+1) % bunchSize == 0) {
+			std::cout << "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ PROCESSING BUNCHID from HEAD: " << bunchId << " @@@@@@@@@@@@@@@@@@@@@@@@@@ " << std::endl;
 			times->Set(time, kTRUE, offset, kFALSE);
 			std::cout << " Processing event : " << iev << "\t"
 					<< times->GetTimeSpec() << std::endl;
+			ProcessBunch();
+			bunchId++;
+			//return;
 		}
 
 	}      //! event loop
+
+	std::cout << "\n\n\nMemory Occupied by fVecOfTreeEntry : " << fVecOfTreeEntry.size()*sizeof(TreeEntry) << std::endl;
+	//sleep(10);
+	//Tail loop
+	std::cout << "\n\n\n\n @@@@@@@@@@@@@@@@@@ GOING TO PROCESS TAIL @@@@@@@@@@@@@@@@ \n\n\n\n ";
+	//sleep(10);
+	std::cout << "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ PROCESSING BUNCHID : " << bunchId << " @@@@@@@@@@@@@@@@@@@@@@@@@@ " << std::endl;
+	for (Long64_t iev = intEntries; iev < nEntries; iev++) {
+			nb += tr->GetEntry(iev);
+			if (0)
+				std::cout << brch << " , " << qlong << " , " << tstamp << " , " << time << std::endl;
+
+			fVecOfTreeEntry.push_back(new TreeEntry(brch, qlong, tstamp, time));
+
+
+
+			/*if (iev % bunchSize == 0 && iev!=0) {
+				times->Set(time, kTRUE, offset, kFALSE);
+				std::cout << " Processing event : " << iev << "\t"
+						<< times->GetTimeSpec() << std::endl;
+				ProcessBunch();
+				//return;
+			}*/
+
+		}      //! event loop
+	if(fVecOfTreeEntry.size() > 10){
+		ProcessBunch();
+	}
 
 	fp->Close();
 
@@ -130,7 +219,7 @@ void Analyzer_V2::LoadDataAndSort() {
 void Analyzer_V2::CheckPairs(){
 	std::cout << "=============== Checking Pairs =================="<< std::endl;
 
-	for (unsigned int i = 0; i < fVecOfTreeEntry.size();) {
+	for (unsigned int i = 0; i < fVecOfTreeEntry.size()-1;) {
 
 		/*if (abs(fVecOfTreeEntry[i]->brch - fVecOfTreeEntry[i + 1]->brch) > 1) {
 			i++;
@@ -249,6 +338,7 @@ void Analyzer_V2::CreateScintillatorVector(){
 				 */
 
 				scint->deltaTstampCorrected = scint->deltaTstamp - fCalib->GetCalibrationDataOf(scint->barIndex)->fDeltaTCorr*1000;
+				scint->qlongMeanCorrected = scint->qlongMean + fCalib->GetCalibrationDataOf(scint->barIndex)->fEnergyCalibrationFactor;
 				EstimateHitPosition(scint);
 				fVecOfScintillatorBar.push_back(scint);
 			}
@@ -450,27 +540,6 @@ void Analyzer_V2::PlotHistOfDelTBetweenMuonTracks_V2(std::vector< SingleMuonTrac
 	hist->Draw();
 }
 
-void Analyzer_V2::DoSinglePointEnergyCalibrationForMuon(){
-	InitializeHistograms();
-	FillHistograms();
-	for(unsigned int i = 0 ; i < fhistogramsVec.size() ; i++){
-		fhistogramsVec[i]->DoSinglePointEnergyCalibrationForMuon();
-		fCalib->SetEnergyCalibrationFactorForMuon(i,fhistogramsVec[i]->fEnergyCalibrationFactor);
-		//fhistogramsVec[i]->FillCorrectedQMean();
-	}
-	FillCorrectedQMeanHistogram();
-
-}
-
-void Analyzer_V2::FillCorrectedQMeanHistogram(){
-	for(unsigned long int i = 0 ; i < fVecOfScintillatorBar.size() ; i++){
-		double offset = fhistogramsVec[fVecOfScintillatorBar[i]->barIndex]->fEnergyCalibrationFactor;
-		fVecOfScintillatorBar[i]->qlongMeanCorrected = fVecOfScintillatorBar[i]->qlongMean + offset;
-		//fhistogramsVec[fVecOfScintillatorBar[i]->barIndex]->fhistQMeanCorrected->Fill(fVecOfScintillatorBar[i]->qlongMean + offset);
-		fhistogramsVec[fVecOfScintillatorBar[i]->barIndex]->fhistQMeanCorrected->Fill(fVecOfScintillatorBar[i]->qlongMeanCorrected);
-	}
-}
-
 void Analyzer_V2::InitializeHistograms(){
 	unsigned int numOfBars = numOfLayers*numOfBarsInEachLayer;
 	for(unsigned short int barIndex = 0 ; barIndex < numOfBars ; barIndex++ ){
@@ -639,9 +708,9 @@ std::vector< SingleMuonTrack* > Analyzer_V2::PlotEnergyLossDistributionOfMuonTra
 	std::cout << "Peak of the Histogram of Energy Loss of Muon Tracks is at : " << bin << std::endl;
 
 	std::cout << "Going to Draw EnergyLossHistogram : " << __FILE__ << " : " << __LINE__ << std::endl;
-	sleep(5);
-	energyLossMuonsHist->Draw();
-	fout->cd();
-	energyLossMuonsHist->Write();
+	//sleep(5);
+	//energyLossMuonsHist->Draw();
+	//fout->cd();
+	//energyLossMuonsHist->Write();
 	return filteredMuonTrackVec;
 }

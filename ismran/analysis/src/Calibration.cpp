@@ -9,6 +9,8 @@
 #include "TFile.h"
 #include "PsBar.h"
 #include "includes.hh"
+#include "HardwareNomenclature.h"
+#include <TH1D.h>
 
 Calibration::Calibration() {
 	// TODO Auto-generated constructor stub
@@ -32,11 +34,17 @@ Calibration::Calibration(std::string fileName) {
 			paramertization_F->SetParameter(ip,temp_F->GetParameter(ip));
 		}
 
+		TH1D *histEner = ((TH1D*)fp->Get((vecOfBarsNamess[barIndex]+"-QMean").c_str()));
+		int binmax = histEner->GetMaximumBin();
+		double bin = histEner->GetXaxis()->GetBinCenter(binmax);
+		int revBin = histEner->GetXaxis()->FindBin(bin);
+		double energyCalibrationFactor =  (1.0*muonEnergyPeak) - bin;
+
 		int barPhyNum = std::stoi(vecOfBarsName[barIndex].substr(2,2));
 		if(barPhyNum <= 70)
-			fVecOfCalibrationData.push_back(new CalibrationData( delTShift_F, paramertization_F ));
+			fVecOfCalibrationData.push_back(new CalibrationData( delTShift_F, paramertization_F , energyCalibrationFactor));
 		else
-			fVecOfCalibrationData.push_back(new CalibrationData( delTShift_F, temp_F ));
+			fVecOfCalibrationData.push_back(new CalibrationData( delTShift_F, temp_F ,energyCalibrationFactor));
 	}
 }
 
@@ -45,5 +53,7 @@ CalibrationData* Calibration::GetCalibrationDataOf(int barNo){
 }
 
 void Calibration::SetEnergyCalibrationFactorForMuon(int barNo, double eCalibFactor){
-	fVecOfCalibrationData[barNo]->fEnergyCalibFactorForMuon = eCalibFactor;
+	//fVecOfCalibrationData[barNo]->fEnergyCalibFactorForMuon = eCalibFactor;
+	fVecOfCalibrationData[barNo]->fEnergyCalibrationFactor = eCalibFactor;
+
 }

@@ -60,6 +60,9 @@ target_link_libraries(mainAna_V2 ${ROOT_LIBRARIES} ${TOMOLIB})
 add_executable(readCalibDatafile test/readCalibDataFile.cpp ${sources} ${headers})
 target_link_libraries(readCalibDatafile ${ROOT_LIBRARIES} ${TOMOLIB})
 
+add_executable(GenerateMuonSinglePointCalibration test/GenerateMuonSinglePointCalibration.cpp ${sources} ${headers})
+target_link_libraries(GenerateMuonSinglePointCalibration ${ROOT_LIBRARIES} ${TOMOLIB})
+
 add_executable(VisualizeTracksFromIsmran test/VisualizeTracksFromIsmran.cpp ${sources} ${headers})
 target_link_libraries(VisualizeTracksFromIsmran ${ROOT_LIBRARIES} ${TOMOLIB})
 
