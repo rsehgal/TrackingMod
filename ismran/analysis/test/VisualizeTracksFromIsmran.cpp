@@ -59,10 +59,11 @@ int main(){
 	 * ISMRAN analysis objects to get the fitted muon tracks
 	 */
 	Calibration *cb = new Calibration("/home/rsehgal/BackBoneSoftwares/ismranData/completeCalib.root");
-	Analyzer_V2 av2("/home/rsehgal/BackBoneSoftwares/ismranData/ISMRAN_81bars_Th10All_CosmicRun_15hrs42mins_26Aug2020_2.root",cb);
+	Analyzer_V2 av2("/home/rsehgal/BackBoneSoftwares/ismranData/ISMRAN_81bars_Th10All_CosmicRun_15hrs42mins_26Aug2020_2.root",cb,100000000);
 
 	//Analyzer_V2 av2("/home/rsehgal/BackBoneSoftwares/ismranData/completeData_02Sep2020.root",cb);
 
+/*
 	unsigned long int outsideRangeCounter = 0 ;
 	unsigned int numOfEvents = 500;
 	std::cout << "NUM OF TRACKS TO PLOT : " << av2.fittedMuonTracks.size() << std::endl;
@@ -74,9 +75,9 @@ int main(){
 		if(!OutsideRange(singleTrack)){
 			unsigned long int len = singleTrack.size();
 			//Drawing the hit point of the tracks in different scintillator layers
-			/*for(unsigned int i=0 ; i < len ; i++){
-				v->Register(ConvertToTomoVector3D(*singleTrack[i]),2);
-			}*/
+//			/for(unsigned int i=0 ; i < len ; i++){
+//				v->Register(ConvertToTomoVector3D(*singleTrack[i]),2);
+//			}
 
 			len -= 1;
 			//Tracking::Vector3D<double> p1(singleTrack[0]->x,singleTrack[0]->y,singleTrack[0]->z);
@@ -103,6 +104,7 @@ int main(){
 
 	std::cout << "Num of Muon Tracks that are outside the range : " << outsideRangeCounter << std::endl;
 	v->Show();
+*/
 	fApp->Run();
 }
 

@@ -75,6 +75,7 @@ public:
 	void DisplayHistograms(bool reverse=false);
 	void DisplayHistogramsOf(unsigned int barIndex);
 
+
 	std::vector< SingleMuonTrack* > PlotEnergyLossDistributionOfMuonTracks(std::vector< SingleMuonTrack* > muonTrackVec);
 
 	/*
@@ -87,11 +88,14 @@ public:
 	 */
 	void PlotHistOfNumOfMuonHitsInMuonTracks_V2(std::vector< SingleMuonTrack* > muonTrackVec);
 	void PlotHistOfDelTBetweenMuonTracks_V2(std::vector< SingleMuonTrack* > muonTrackVec);
+	void FillCoincidenceHist_V2(std::vector< SingleMuonTrack* > muonTrackVec);
 	std::vector < SingleMuonTrack* >ReconstrutTrack_V2();
 	void PrintMuonTrackVector_V2(std::vector< SingleMuonTrack* > muonTrackVec);
 	//void PlotTracks_V2(std::vector< SingleMuonTrack* > muonTrackVec,unsigned int numOfTracks=20);
 	std::vector< std::vector<Point3D*> >  PlotTracks_V2(std::vector< SingleMuonTrack* > muonTrackVec,unsigned int numOfTracks=20);
 	void CalculateTotalEnergyDepositionForMuonTracks(std::vector< SingleMuonTrack* > muonTrackVec);
+	void PlotCoincidenceCountGraph();
+	void PlotEnergyDistributionWithMultiplicity(std::vector<SingleMuonTrack*> muonTrackVec, unsigned int multiplicity = numOfLayers);
 
 
 	/*
