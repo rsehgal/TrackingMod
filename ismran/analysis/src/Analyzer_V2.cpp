@@ -57,7 +57,22 @@ Analyzer_V2::Analyzer_V2(std::string datafileName, Calibration *calib,unsigned l
 	//sleep(20);
 	fCalib = calib;
 	fDatafileName = datafileName;
+	//LoadDataAndSort();
 	LoadDataAndSort();
+	CheckPairs();
+	ValidatePairs();
+	CreateScintillatorVector();
+	std::vector< SingleMuonTrack* > muonTrackVec = ReconstrutTrack_V2();
+	PlotHistOfNumOfMuonHitsInMuonTracks_V2(muonTrackVec);
+	PlotHistOfDelTBetweenMuonTracks_V2(muonTrackVec);
+	CalculateTotalEnergyDepositionForMuonTracks(muonTrackVec);
+	std::vector< SingleMuonTrack* > filteredMuonTrackVec = PlotEnergyLossDistributionOfMuonTracks(muonTrackVec);
+	HistInitializer();
+	FillCoincidenceHist_V2(muonTrackVec);
+	PlotCoincidenceCountGraph();
+	PlotEnergyDistributionWithMultiplicity(muonTrackVec,0);
+	//fittedMuonTracks = PlotTracks_V2(filteredMuonTrackVec,50);
+
 /*
 	CheckPairs();
 	ValidatePairs();
@@ -111,7 +126,7 @@ void Analyzer_V2::ProcessBunch(){
 	//Freeing the memory
 	ResetVector<SingleMuonTrack>(muonTrackVec);
 	filteredMuonTrackVec.clear();
-	ResetBunchMemory();
+	//ResetBunchMemory();
 }
 
 void Analyzer_V2::ResetBunchMemory(){
@@ -142,6 +157,7 @@ void Analyzer_V2::LoadDataAndSort() {
 
 	Long64_t nb = 0;
 
+/*
 	if(fBunchSize == 0){
 		fBunchSize = nEntries;
 	}
@@ -150,14 +166,18 @@ void Analyzer_V2::LoadDataAndSort() {
 	unsigned long int tailEntries = nEntries % bunchSize;
 	unsigned long int intEntries = intSlot * bunchSize;
 
+	std::cout <<"Number of bunches : " << intSlot << std::endl;
+	std::cout <<"Number of entries in each bunch  : " << intEntries << std::endl;
+	std::cout <<"Number of entries in tail : " << tailEntries << std::endl;
+
 	int bunchId = 0 ;
 
-	//for (Long64_t iev = 0; iev < nEntries; iev++) {
-	for (Long64_t iev = 0; iev < intEntries; iev++) {
+	for (Long64_t iev = 0; iev < nEntries; iev++) {
+	//for (Long64_t iev = 0; iev < intEntries; iev++) {
 
 		nb += tr->GetEntry(iev);
 		if (0)
-			std::cout << brch << " , " << qlong << " , " << tstamp << " , " << time << std::endl;
+			std::cout <<"Entry : " << iev << " : "<< brch << " , " << qlong << " , " << tstamp << " , " << time << std::endl;
 
 		fVecOfTreeEntry.push_back(new TreeEntry(brch, qlong, tstamp, time));
 
@@ -182,24 +202,42 @@ void Analyzer_V2::LoadDataAndSort() {
 	for (Long64_t iev = intEntries; iev < nEntries; iev++) {
 			nb += tr->GetEntry(iev);
 			if (0)
-				std::cout << brch << " , " << qlong << " , " << tstamp << " , " << time << std::endl;
+				std::cout <<"Entry : " << iev << " : "<< brch << " , " << qlong << " , " << tstamp << " , " << time << std::endl;
 
 			fVecOfTreeEntry.push_back(new TreeEntry(brch, qlong, tstamp, time));
 
 
 
-			/*if (iev % bunchSize == 0 && iev!=0) {
+			if (iev % bunchSize == 0 && iev!=0) {
 				times->Set(time, kTRUE, offset, kFALSE);
 				std::cout << " Processing event : " << iev << "\t"
 						<< times->GetTimeSpec() << std::endl;
 				ProcessBunch();
 				//return;
-			}*/
+			}
 
 		}      //! event loop
 	if(fVecOfTreeEntry.size() > 10){
 		ProcessBunch();
 	}
+*/
+
+
+	for (Long64_t iev = 0; iev < nEntries; iev++) {
+			nb += tr->GetEntry(iev);
+			if (0)
+				std::cout << brch << " , " << qlong << " , " << tstamp << " , " << time << std::endl;
+
+			fVecOfTreeEntry.push_back(new TreeEntry(brch, qlong, tstamp, time));
+
+			if (iev % 500000 == 0) {
+				times->Set(time, kTRUE, offset, kFALSE);
+				std::cout << " Processing event : " << iev << "\t"
+						<< times->GetTimeSpec() << std::endl;
+			}
+
+		}      //! event loop
+
 
 	fp->Close();
 
@@ -540,6 +578,57 @@ void Analyzer_V2::PlotHistOfDelTBetweenMuonTracks_V2(std::vector< SingleMuonTrac
 	hist->Draw();
 }
 
+void Analyzer_V2::FillCoincidenceHist_V2(std::vector< SingleMuonTrack* > muonTrackVec){
+	TH2F *coincidenceHist2D = new TH2F("CoincidenceHist2D","CoincidenceHist2D",numOfBarsInEachLayer,0,numOfBarsInEachLayer,numOfBarsInEachLayer,0,numOfBarsInEachLayer);
+	unsigned int muonTrackVecLength = muonTrackVec.size();
+	for(unsigned int i = 0 ; i < muonTrackVecLength ; i++){
+			std::vector<ScintillatorBar_V2*> singleMuonTrack=muonTrackVec[i]->fSingleMuonTrack;
+			//std::cout << singleMuonTrack[0]->layerIndex <<" : " << singleMuonTrack[singleMuonTrack.size()-1]->layerIndex << std::endl;
+			if( (singleMuonTrack[0]->layerIndex == 8) && (singleMuonTrack[singleMuonTrack.size()-1]->layerIndex == 0)){
+				unsigned int x = singleMuonTrack[0]->barIndex % numOfBarsInEachLayer;
+				unsigned int y = singleMuonTrack[singleMuonTrack.size()-1]->barIndex % numOfBarsInEachLayer;
+				coincidenceHist2D->Fill(x,y);
+				Fill2DHist(x,y);
+			}
+
+	}
+
+	//TH1D * projh2X = coincidenceHist2D->ProjectionX();
+	//TH1D * projh2Y = coincidenceHist2D->ProjectionY();
+
+	std::vector<int> x={0,1,2,3,4,5,6,7,8};
+	std::vector<double> y;
+
+
+	for(unsigned int i = 0 ; i < x.size() ; i++){
+		y.push_back(coincidenceHist2D->GetBinContent(0,x[i]));
+		std::cout << "Bin Content : (0," << x[i] <<") : " << coincidenceHist2D->GetBinContent(0,x[i]) << std::endl;
+		std::cout << "Bin Content MyHist2D : (0," << x[i] <<") : " << myhist2D[0][x[i]] << std::endl;
+	}
+
+	new TCanvas();
+	coincidenceHist2D->Draw("LEGO2");
+
+	//new TCanvas();
+
+	//TGraph *gr = new TGraph(x.size(),&x[0],&y[0]);
+	//gr->Draw("p");
+
+	/*TCanvas *can = new TCanvas();
+	can->Divide(2,2);
+
+	can->cd(1);
+	coincidenceHist2D->Draw("LEGO2");
+
+	can->cd(3);
+	projh2X->Draw();
+
+	can->cd(4);
+	projh2Y->Draw();
+*/
+	return;
+}
+
 void Analyzer_V2::InitializeHistograms(){
 	unsigned int numOfBars = numOfLayers*numOfBarsInEachLayer;
 	for(unsigned short int barIndex = 0 ; barIndex < numOfBars ; barIndex++ ){
@@ -694,7 +783,7 @@ std::vector< std::vector<Point3D*> >  Analyzer_V2::PlotTracks_V2(std::vector< Si
 std::vector< SingleMuonTrack* > Analyzer_V2::PlotEnergyLossDistributionOfMuonTracks(std::vector< SingleMuonTrack* > muonTrackVec){
 	(new TCanvas())->SetLogy();
 	gStyle->SetOptStat(1);
-	TH1F *energyLossMuonsHist = new TH1F("Histogram of Energy loss of Muon Tracks","Histogram of Energy loss of Muon Tracks",1000,10000,200000);
+	TH1F *energyLossMuonsHist = new TH1F("Histogram of Energy loss of Muon Tracks","Histogram of Energy loss of Muon Tracks",1000,10000,400000);
 	std::vector< SingleMuonTrack* > filteredMuonTrackVec;
 	for(unsigned long int i = 0 ; i < muonTrackVec.size(); i++){
 		energyLossMuonsHist->Fill(muonTrackVec[i]->fTotalEnergyDeposited);
@@ -709,8 +798,127 @@ std::vector< SingleMuonTrack* > Analyzer_V2::PlotEnergyLossDistributionOfMuonTra
 
 	std::cout << "Going to Draw EnergyLossHistogram : " << __FILE__ << " : " << __LINE__ << std::endl;
 	//sleep(5);
-	//energyLossMuonsHist->Draw();
-	//fout->cd();
+	energyLossMuonsHist->Draw();
+	fout->cd();
 	//energyLossMuonsHist->Write();
 	return filteredMuonTrackVec;
+}
+
+void Analyzer_V2::PlotCoincidenceCountGraph(){
+	std::vector<int> xvec;
+	std::vector<std::vector<int>> yvec;
+	std::vector<TGraph*> vecOfGraphs;
+	/*for(unsigned int i = 0 ; i < numOfLayers ; i++){
+		xvec.push_back(i);
+	}*/
+	for(unsigned int i = 0 ; i < numOfLayers ; i++){
+		xvec.push_back(i);
+		std::vector<int> ysubVec;
+		for(unsigned int j = 0 ; j < numOfBarsInEachLayer ; j++){
+			ysubVec.push_back(myhist2D[i][j]);
+		}
+		yvec.push_back(ysubVec);
+	}
+
+
+	for(unsigned int i = 0 ; i < numOfBarsInEachLayer ; i++){
+		vecOfGraphs.push_back(new TGraph(xvec.size(),&xvec[0],&yvec[i][0]));
+		vecOfGraphs[i]->SetTitle(Form("Coincidence of %d  Bar in top layer with bottom layer",i+1));
+		vecOfGraphs[i]->SetLineColor(4);
+		vecOfGraphs[i]->SetMarkerStyle(8);
+		vecOfGraphs[i]->SetMarkerColor(6);
+		vecOfGraphs[i]->SetMarkerSize(0.8);
+		vecOfGraphs[i]->GetXaxis()->SetNdivisions(9);
+		vecOfGraphs[i]->GetXaxis()->SetTitle("Bar Number in Bottom layer");
+		//vecOfGraphs[i]->GetXaxis()->SetLabelSize(15);
+		vecOfGraphs[i]->GetXaxis()->CenterTitle(true);
+		vecOfGraphs[i]->GetYaxis()->SetTitle("Counts");
+		//vecOfGraphs[i]->GetYaxis()->SetTitleSize(1.5);
+		vecOfGraphs[i]->GetYaxis()->CenterTitle(true);
+		vecOfGraphs[i]->Draw("ap");
+	}
+
+	TCanvas *can = new TCanvas();
+	can->Divide(3,3);
+
+	for(unsigned int i = 0 ; i < numOfBarsInEachLayer ; i++){
+		can->cd(i+1);
+		std::string str = std::string(Form("Coincidence of %d  Bar in top layer with bottom layer",i+1));
+		DrawGrid(str, 9, 9);
+		vecOfGraphs[i]->Draw("ap");
+	}
+
+}
+
+void Analyzer_V2::PlotEnergyDistributionWithMultiplicity(std::vector<SingleMuonTrack*> muonTrackVec, unsigned int multiplicity){
+	std::vector<short int> multiplicityVec;
+	if(multiplicity == 0){
+		for(unsigned int i = 0 ; i < numOfLayers ; i++){
+			multiplicityVec.push_back(i+1);
+		}
+	}else{
+		multiplicityVec.push_back(multiplicity);
+	}
+
+	TCanvas *can = new TCanvas();
+	if(multiplicityVec.size()!=1){
+		float t = sqrt(multiplicityVec.size());
+		unsigned short rows = std::floor(t);
+		unsigned short cols = std::ceil(t);
+		can->Divide(cols,rows);
+
+	}
+
+	if(multiplicityVec.size()==1){
+		char *title = Form("Energy histogram for Multiplicity %d",multiplicity);
+		TH1D *histEnergyWithMultiplicity = new TH1D(title,title,500,100000,250000);
+		for(unsigned int i = 0 ; i < muonTrackVec.size() ; i ++){
+			if((muonTrackVec[i]->fSingleMuonTrack).size() == multiplicity){
+				histEnergyWithMultiplicity->Fill(muonTrackVec[i]->fTotalEnergyDeposited);
+			}
+		}
+		histEnergyWithMultiplicity->Draw();
+	}else{
+		std::vector<TH1D*> vecOfHists;
+		for(unsigned int i = 0 ; i < multiplicityVec.size() ; i++){
+			char *str = Form("Multiplicity-%d",i+1);
+			int xlow = multiplicityVec[i]*20000. - 60000;
+			int xhigh = multiplicityVec[i]*20000. + 60000;
+			xlow = 0;
+			xhigh = 240000;
+			vecOfHists.push_back(new TH1D(str,str,500,xlow,xhigh));
+			vecOfHists[i]->GetXaxis()->SetTitle("Energy sum");
+			vecOfHists[i]->GetXaxis()->CenterTitle(true);
+			vecOfHists[i]->GetYaxis()->SetTitle("Counts");
+			vecOfHists[i]->GetYaxis()->CenterTitle(true);
+		}
+		for(unsigned int i = 0 ; i < muonTrackVec.size() ; i ++){
+			//std::cout << "BREAK at Muon Track vector of size :  " << (muonTrackVec[i]->fSingleMuonTrack).size() << std::endl;
+			if((muonTrackVec[i]->fSingleMuonTrack).size() <= numOfLayers)
+				vecOfHists[(muonTrackVec[i]->fSingleMuonTrack).size()-1]->Fill(muonTrackVec[i]->fTotalEnergyDeposited);
+		}
+		for(unsigned int i = 0 ; i < multiplicityVec.size() ; i++){
+			can->cd(i+1);
+			vecOfHists[i]->Draw();
+		}
+
+		TLegend *legend = new TLegend();//0.1,0.7,0.48,0.9);
+	    legend->SetHeader("Multiplicity","C");
+		new TCanvas();
+
+		for(unsigned int i = 0 ; i < multiplicityVec.size() ; i++){
+			vecOfHists[i]->SetLineColor(i+1);
+			legend->AddEntry(vecOfHists[i],Form("Multiplicity_%d",i+1),"l");
+			vecOfHists[i]->GetXaxis()->SetNdivisions(12);
+			vecOfHists[i]->Draw("same");
+		}
+		legend->Draw();
+
+	}
+
+
+	//histEnergyWithMultiplicity->Draw();
+
+
+
 }

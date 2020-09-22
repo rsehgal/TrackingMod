@@ -10,6 +10,7 @@
 
 #include <base/Vector3D.h>
 #include "includes.hh"
+#include <vector>
 class Point3D;
 
 extern Tracking::Vector3D<double> ConvertToTomoVector3D(Point3D pt);
@@ -27,6 +28,11 @@ void ResetVector(std::vector<T*> vecToReset){
 extern void DrawGrid(std::string t, Int_t ngx, Int_t ngy);
 extern void GetFittedXorZ(TGraph *gr);
 extern double LinearFit(Double_t *x,Double_t *par);
+extern void PlotFittedLine(TGraph *gr);
+
+extern std::vector<std::vector<unsigned long int>> myhist2D;
+extern void Fill2DHist(unsigned int x, unsigned int y);
+extern void HistInitializer();
 
 class HelperFunctions {
 public:

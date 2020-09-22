@@ -9,6 +9,26 @@
 #include "PsBar.h"
 #include "includes.hh"
 
+
+std::vector<std::vector<unsigned long int>> myhist2D;
+void HistInitializer(){
+for(unsigned int i = 0 ; i < numOfLayers ; i++){
+	std::vector<unsigned long int> yvec;
+	for(unsigned int j = 0 ; j < numOfBarsInEachLayer ; j++){
+		yvec.push_back(0);
+	}
+	myhist2D.push_back(yvec);
+}
+}
+
+void Fill2DHist(unsigned int x, unsigned int y){
+	/*unsigned long int count = myhist2D[x][y];
+	count++;
+	myhist2D[x][y] = count;*/
+	myhist2D[x][y]++;
+
+}
+
 Tracking::Vector3D<double> ConvertToTomoVector3D(Point3D pt){
 	return Tracking::Vector3D<double>(pt.x,pt.y,pt.z);
 }
