@@ -161,9 +161,9 @@ G4VPhysicalVolume* MyDetectorConstruction::Construct(){
                             1,
                             checkOverlaps);*/
 
-
-G4GDMLParser parser;
-  parser.Write("ismran.gdml",physWorld);
+//Uncomment the below two lines, if you want to write the gdml file for the geometry
+//G4GDMLParser parser;
+//parser.Write("ismran.gdml",physWorld);
 
 	return physWorld;
 
