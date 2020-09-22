@@ -96,6 +96,7 @@ public:
 	void CalculateTotalEnergyDepositionForMuonTracks(std::vector< SingleMuonTrack* > muonTrackVec);
 	void PlotCoincidenceCountGraph();
 	void PlotEnergyDistributionWithMultiplicity(std::vector<SingleMuonTrack*> muonTrackVec, unsigned int multiplicity = numOfLayers);
+	std::vector<SingleMuonTrack*> FiltrationBasedOnCosmicMuonRate(std::vector<SingleMuonTrack*> muonTrackVec);
 
 
 	/*
