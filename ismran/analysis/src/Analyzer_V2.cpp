@@ -71,7 +71,9 @@ Analyzer_V2::Analyzer_V2(std::string datafileName, Calibration *calib,unsigned l
 	FillCoincidenceHist_V2(muonTrackVec);
 	PlotCoincidenceCountGraph();
 	PlotEnergyDistributionWithMultiplicity(muonTrackVec,0);
+	std::vector<SingleMuonTrack*> filtered = FiltrationBasedOnCosmicMuonRate(muonTrackVec);
 	//fittedMuonTracks = PlotTracks_V2(filteredMuonTrackVec,50);
+	fittedMuonTracks = PlotTracks_V2(filtered,10);
 
 /*
 	CheckPairs();
@@ -823,11 +825,11 @@ void Analyzer_V2::PlotCoincidenceCountGraph(){
 
 	for(unsigned int i = 0 ; i < numOfBarsInEachLayer ; i++){
 		vecOfGraphs.push_back(new TGraph(xvec.size(),&xvec[0],&yvec[i][0]));
-		vecOfGraphs[i]->SetTitle(Form("Coincidence of %d  Bar in top layer with bottom layer",i+1));
+		vecOfGraphs[i]->SetTitle(Form("Coincidence of bar num %d in top layer with bottom layer",i+1));
 		vecOfGraphs[i]->SetLineColor(4);
 		vecOfGraphs[i]->SetMarkerStyle(8);
 		vecOfGraphs[i]->SetMarkerColor(6);
-		vecOfGraphs[i]->SetMarkerSize(0.8);
+		vecOfGraphs[i]->SetMarkerSize(0.4);
 		vecOfGraphs[i]->GetXaxis()->SetNdivisions(9);
 		vecOfGraphs[i]->GetXaxis()->SetTitle("Bar Number in Bottom layer");
 		//vecOfGraphs[i]->GetXaxis()->SetLabelSize(15);
@@ -918,7 +920,23 @@ void Analyzer_V2::PlotEnergyDistributionWithMultiplicity(std::vector<SingleMuonT
 
 
 	//histEnergyWithMultiplicity->Draw();
+}
 
-
-
+std::vector<SingleMuonTrack*>  Analyzer_V2::FiltrationBasedOnCosmicMuonRate(std::vector<SingleMuonTrack*> muonTrackVec){
+		std::vector<SingleMuonTrack*> filteredMuonTrackVec;
+		unsigned int muonTrackVecLength = muonTrackVec.size();
+		ULong64_t previous = GetMeanTValueOfATrack(muonTrackVec[0]->fSingleMuonTrack);
+		for(unsigned int i = 1 ; i < muonTrackVecLength ; i++){
+			ULong64_t next = GetMeanTValueOfATrack(muonTrackVec[i]->fSingleMuonTrack);
+			ULong64_t delT = next-previous;
+			Double_t delTms = 1.*delT/1e+6;
+			//std::cout << "DelT in Millisecond : " << delT <<std::endl;
+			previous = next;
+			if(delTms > 2){
+				filteredMuonTrackVec.push_back(muonTrackVec[i]);
+			}
+		}
+		return filteredMuonTrackVec;
+		//new TCanvas();
+		//hist->Draw();
 }
