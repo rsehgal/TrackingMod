@@ -20,8 +20,8 @@ MyPrimaryGeneratorAction::MyPrimaryGeneratorAction() {
   // Set the kinetic energy of the protons to 50 keV
   // and tell the gun to emit them along the x-axis
   fParticleGun->SetParticleEnergy(50. * keV);
-  fParticleGun->SetParticlePosition(G4ThreeVector(0., 0., -120 * cm ));
-  fParticleGun->SetParticleMomentumDirection(G4ThreeVector(0., 0., 1.));
+  fParticleGun->SetParticlePosition(G4ThreeVector(0., 80.*cm, 0 * cm ));
+  fParticleGun->SetParticleMomentumDirection(G4ThreeVector(0., -1, 0));
 }
 
 MyPrimaryGeneratorAction::~MyPrimaryGeneratorAction() { delete fParticleGun; }
@@ -45,7 +45,7 @@ void MyPrimaryGeneratorAction::GeneratePrimaries(G4Event *event) {
 
    //fParticleGun->SetParticlePosition(G4ThreeVector(-50 * cm, 0., -120 * cm));
    //fParticleGun->GeneratePrimaryVertex(event);
-  fParticleGun->SetParticlePosition(G4ThreeVector(0., 0., -120 * cm));
+  fParticleGun->SetParticlePosition(G4ThreeVector(0., 80.*cm, 0.));
   fParticleGun->GeneratePrimaryVertex(event);
    //fParticleGun->SetParticlePosition(G4ThreeVector(50 * cm, 0., -120 * cm));
    //fParticleGun->GeneratePrimaryVertex(event);
