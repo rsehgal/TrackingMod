@@ -15,13 +15,16 @@
 #include "G4UnitsTable.hh"
 #include "G4VProcess.hh"
 #include "PsBar.h"
+#include "base/Global.h"
+#include "Analyzer_V2.h"
 
 int MySD::stepNum = 0;
 int MySD::numOfParticlesReached = 0;
 unsigned int MySD::evNo=0;
-std::vector< std::vector<ScintillatorBar*> > MySD::eventsVec;
+std::vector< std::vector<ScintillatorBar_V2*> > MySD::eventsVec;
+std::vector< SingleMuonTrack* > MySD::muonTrackVec;
 
-
+bool verbose = false;
 // std::vector<ScintillatorBar*> MySD::eventsVec2;
 
 /*
@@ -39,15 +42,16 @@ MySD::~MySD() {
 }
 
 void MySD::PrintVectorOfPsBars(){
-  std::cout << "===== Printing Vector of PsBars =======" << std::endl;
+  if(verbose)
+	  std::cout << "===== Printing Vector of PsBars =======" << std::endl;
   for (unsigned int i = 0 ; i < psBarVec.size() ; i++){
     psBarVec[i]->Print();
   }
 }
 
 void MySD::InitializeVectorOfPsBars(){
-
-	std::cout << "Initializing Vector of Scintillator Bars for the current event........." << std::endl;
+	if(verbose)
+		std::cout << "Initializing Vector of Scintillator Bars for the current event........." << std::endl;
     if(psBarVec.size()){
   	for(unsigned int i = 0 ; i < psBarVec.size() ; i++){
   		delete psBarVec[i];
@@ -57,7 +61,7 @@ void MySD::InitializeVectorOfPsBars(){
 	for (unsigned int layerNum = 0 ; layerNum < numOfLayers ; layerNum++){
 		for(unsigned int index = 0 ;  index < numOfBarsInEachLayer ; index++){
 			unsigned int barIndex = numOfBarsInEachLayer*layerNum+index;
-			psBarVec.push_back(new ScintillatorBar(barIndex));
+			psBarVec.push_back(new ScintillatorBar_V2(barIndex));
 		}
 	}
 }
@@ -72,10 +76,15 @@ MySD::MySD(const G4String& name, const G4String& hitsCollectionName)
 void MySD::Initialize(G4HCofThisEvent* hce)
 {
   // Create hits collection
-	std::cout <<" @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@" << std::endl;
-	std::cout <<"Processing Ev No : " << evNo << std::endl;
+	if(verbose){
+		std::cout <<" @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@" << std::endl;
+		std::cout <<"Processing Ev No : " << evNo << std::endl;
+		std::cout<<"RAMAN Entered Initialize Of SD" << std::endl;
+	}
 	InitializeVectorOfPsBars();
-	std::cout<<"RAMAN Entered Initialize Of SD" << std::endl;
+	reachedSensitiveRegion = false;
+
+	//Tomography::EventBreak::instance()->fEffEvNo++;
   numOfParticlesReached++;
   fHitsCollection
     = new MyHitsCollection(SensitiveDetectorName, collectionName[0]);
@@ -112,12 +121,15 @@ G4bool MySD::ProcessHits(G4Step* aStep,
   newHit->SetPos (aStep->GetPostStepPoint()->GetPosition());
 */
   if(isPrimary){
+
   newHit->SetPosition(aStep->GetPostStepPoint()->GetPosition());
   G4TouchableHandle touchable = aStep->GetPreStepPoint()->GetTouchableHandle();
   newHit->SetName(touchable->GetVolume(0)->GetName());
   newHit->SetCopyNum(touchable->GetVolume(0)->GetCopyNo());
   G4String particleName=track->GetDefinition()->GetParticleName() ;
-  std::cout << particleName << "  " << std::endl;
+  if(verbose)
+	  std::cout << particleName << "  " << std::endl;
+  if(verbose)
   std::cout << "Energy deposited in current step in : "
             << touchable->GetVolume(0)->GetName()
             << " : " << aStep->GetTotalEnergyDeposit() << std::endl;
@@ -131,12 +143,15 @@ G4bool MySD::ProcessHits(G4Step* aStep,
 
 void MySD::EndOfEvent(G4HCofThisEvent*)
 {
+	if(verbose){
   std::cout <<"++++"<<std::endl;
   std::cout << "No of Hits : " << fHitsCollection->entries() << std::endl;
   std::cout<<"RAMAN Entered EndOfEvent Of SD" << std::endl;
+	}
   //if ( verboseLevel>1 ) {
   if(1){
      G4int nofHits = fHitsCollection->entries();
+     if(verbose)
      G4cout << G4endl
             << "-------->Hits Collection: in this event there are " << nofHits
             << " hits  " << G4endl;
@@ -147,34 +162,41 @@ void MySD::EndOfEvent(G4HCofThisEvent*)
       
     }
 
-    std::vector<ScintillatorBar*> onlyHittedBarVec;
+    std::vector<ScintillatorBar_V2*> onlyHittedBarVec;
     for(unsigned int i = 0 ; i < psBarVec.size() ; i++){
       if(psBarVec[i]->barHitted){
-        //onlyHittedBarVec.push_back(psBarVec[i]);
-        ScintillatorBar *scintBar = new ScintillatorBar(*psBarVec[i]);
-        //eventsVec2.push_back(psBarVec[i]);
-        //eventsVec2.push_back(scintBar);
-        onlyHittedBarVec.push_back(scintBar);
-        //delete scintBar;
+        ScintillatorBar_V2 *scintBar = new ScintillatorBar_V2(*psBarVec[i]);
+        scintBar->qlongMeanCorrected = scintBar->qlongMean*1000.;
+        	onlyHittedBarVec.push_back(scintBar);
+        if(onlyHittedBarVec.size() > 0)
+        	reachedSensitiveRegion = true;
       }
     }
 
+    //verbose = true;
+    if(verbose){
     std::cout<< "********** Printing onlyHittedBarVec ***********" << std::endl;
     for(unsigned int i = 0 ; i < onlyHittedBarVec.size() ; i++){
       onlyHittedBarVec[i]->Print();
     }
     //std::cout << "888888 Printing eventsVec2 888888888" << std::endl;
     std::cout << "***********************************************" << std::endl;
+    }
     eventsVec.push_back(onlyHittedBarVec);
-    /*if(onlyHittedBarVec.size()){
-      for(unsigned int i = 0 ; i < onlyHittedBarVec.size() ; i++){
-        delete onlyHittedBarVec[i];
-      }
-    }*/
+    SingleMuonTrack *smt = new SingleMuonTrack(onlyHittedBarVec);
+    //std::cout << "Size of Muon Track : " << (smt->fSingleMuonTrack).size() << std::endl;
+    if(reachedSensitiveRegion)
+    	muonTrackVec.push_back(smt);
     onlyHittedBarVec.clear();
+    if(!(Tomography::EventBreak::instance()->fEffEvNo % 10000) &&   Tomography::EventBreak::instance()->fEffEvNo != 0){
+    	std::cout << "Processed : " << Tomography::EventBreak::instance()->fEffEvNo  << "  Events" << std::endl;
+    }
 
-    //PrintVectorOfPsBars();
   }
   //delete fHitsCollection;
+  if(reachedSensitiveRegion)
+  Tomography::EventBreak::instance()->fEffEvNo++;
+
+
 }
 

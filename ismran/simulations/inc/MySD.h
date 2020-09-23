@@ -13,11 +13,14 @@
 #include "vector"
 #include "includes.hh"
 #include "PsBar.h"
-
+#include "SingleMuonTrack.h"
+#include "ScintillatorBar_V2.h"
 
 
 class G4Step;
 class G4HCofThisEvent;
+
+
 
 class MySD : public G4VSensitiveDetector {
 
@@ -32,23 +35,28 @@ public:
 	virtual G4bool ProcessHits(G4Step* step, G4TouchableHistory* history);
 	virtual void   EndOfEvent(G4HCofThisEvent* hitCollection);
 	static int numOfParticlesReached;
+	bool reachedSensitiveRegion;
 
 	/*
 	 * Extra methods to store info in ScintillatorBar
 	 */
 	void InitializeVectorOfPsBars();
 
-	std::vector<ScintillatorBar*> psBarVec;
+	std::vector<ScintillatorBar_V2*> psBarVec;
 	void PrintVectorOfPsBars();
 
-	static std::vector< std::vector<ScintillatorBar*> > eventsVec;
+	static std::vector< std::vector<ScintillatorBar_V2*> > eventsVec;
 	// static std::vector<ScintillatorBar*> eventsVec2;
+
+	//As per the new functions
+	static std::vector< SingleMuonTrack* > muonTrackVec;
 
 	static void Print(){
 		/*std::cout << "888888 Printing eventsVec2 888888888" << std::endl;
 		for(unsigned int i = 0 ; i < eventsVec2.size() ; i++){
 			eventsVec2[i]->Print();
 		}*/		
+		if(0){
 		std::cout << "9999999999 Printing eventsVec 999999999" << std::endl;
 		for(unsigned int i = 0 ; i < eventsVec.size() ; i++){
 			std::cout << "@@@@@@@ Printing event num : " << i <<" @@@@@@@" << std::endl;
@@ -56,6 +64,7 @@ public:
 				eventsVec[i][j]->Print();	
 			}
 			
+		}
 		}
 	}
 

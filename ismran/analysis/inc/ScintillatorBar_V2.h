@@ -40,10 +40,12 @@ public:
 
 	//Estimated Path length within each Bar
 	double pathLength;
+	bool barHitted;
 
 
 public:
 	ScintillatorBar_V2();
+	ScintillatorBar_V2(unsigned int bIndex);
 	ScintillatorBar_V2(const ScintillatorBar_V2 &sbar);
 	ScintillatorBar_V2(unsigned short l_channelNear, unsigned short l_channelFar,
 						ULong64_t l_tstampNear, ULong64_t l_tstampFar,

@@ -564,13 +564,13 @@ void Analyzer_V2::PlotHistOfDelTBetweenMuonTracks(std::vector< std::vector<Scint
 }
 
 void Analyzer_V2::PlotHistOfDelTBetweenMuonTracks_V2(std::vector< SingleMuonTrack* > muonTrackVec){
-	TH1F *hist = new TH1F("Hist of DelT(ms) between Muon Tracks","Hist of DelT(ms) between Muon Tracks",100,0,40);
+	TH1F *hist = new TH1F("Hist of DelT(ms) between Muon Tracks","Hist of DelT(ms) between Muon Tracks",50,0,10);
 	unsigned int muonTrackVecLength = muonTrackVec.size();
 	ULong64_t previous = GetMeanTValueOfATrack(muonTrackVec[0]->fSingleMuonTrack);
 	for(unsigned int i = 1 ; i < muonTrackVecLength ; i++){
 		ULong64_t next = GetMeanTValueOfATrack(muonTrackVec[i]->fSingleMuonTrack);
 		ULong64_t delT = next-previous;
-		Double_t delTms = 1.*delT/1e+6;
+		Double_t delTms = 1.*delT/1e+3;
 		//std::cout << "DelT in Millisecond : " << delT <<std::endl;
 		previous = next;
 		if((muonTrackVec[i]->fSingleMuonTrack).size() > 2)
@@ -896,7 +896,7 @@ void Analyzer_V2::PlotEnergyDistributionWithMultiplicity(std::vector<SingleMuonT
 		}
 		for(unsigned int i = 0 ; i < muonTrackVec.size() ; i ++){
 			//std::cout << "BREAK at Muon Track vector of size :  " << (muonTrackVec[i]->fSingleMuonTrack).size() << std::endl;
-			if((muonTrackVec[i]->fSingleMuonTrack).size() <= numOfLayers)
+			if((muonTrackVec[i]->fSingleMuonTrack).size() <= numOfLayers && (muonTrackVec[i]->fSingleMuonTrack).size() > 0)
 				vecOfHists[(muonTrackVec[i]->fSingleMuonTrack).size()-1]->Fill(muonTrackVec[i]->fTotalEnergyDeposited);
 		}
 		for(unsigned int i = 0 ; i < multiplicityVec.size() ; i++){

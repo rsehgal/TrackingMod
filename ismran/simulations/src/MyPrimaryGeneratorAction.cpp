@@ -11,6 +11,7 @@
 #include "G4RunManager.hh"
 #include "G4SystemOfUnits.hh"
 #include "Randomize.hh"
+#include "base/Global.h"
 
 MyPrimaryGeneratorAction::MyPrimaryGeneratorAction() {
   G4int n_particle = 1;
@@ -37,9 +38,9 @@ MyPrimaryGeneratorAction::MyPrimaryGeneratorAction(const char *inputfile) {
 void MyPrimaryGeneratorAction::GeneratePrimaries(G4Event *event) {
 
    #ifdef USE_CRY
-  // if(Tomography::EventBreak::instance()->BreakSimulation())
-  //       return;
-        std::cout << "Generating Event using CRY @@@@@@@@@@@@@@@@@@@@ " << std::endl;
+   if(Tomography::EventBreak::instance()->BreakSimulation())
+         return;
+        //std::cout << "Generating Event using CRY @@@@@@@@@@@@@@@@@@@@ " << std::endl;
         cryG4Interface->GeneratePrimariesForCry(event,false);
    #else  
 

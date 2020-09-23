@@ -11,6 +11,9 @@
 #include "Files.h"
 #include "DetectorMapping.h"
 #include "base/Global.h"
+
+bool verbose = false;
+
 CryGeantInterface::CryGeantInterface() {
 	// TODO Auto-generated constructor stub
 
@@ -38,6 +41,7 @@ void CryGeantInterface::GeneratePrimariesForCry(G4Event *anEvent, bool tm){
 	  gen->genEvent(vect);
 
 	  //....debug output
+	  if(verbose)
 	  G4cout << "\nEvent=" << anEvent->GetEventID() << " "
 	         << "CRY generated nparticles=" << vect->size()
 	         << G4endl;
@@ -46,6 +50,7 @@ void CryGeantInterface::GeneratePrimariesForCry(G4Event *anEvent, bool tm){
 	    particleName=CRYUtils::partName((*vect)[j]->id());
 
 	    //....debug output
+	    if(verbose)
 	    std::cout << "  "          << particleName << " "
 	         << "charge="      << (*vect)[j]->charge() << " "
 	         << std::setprecision(4)
@@ -60,8 +65,8 @@ void CryGeantInterface::GeneratePrimariesForCry(G4Event *anEvent, bool tm){
 	    particleGun->SetParticleEnergy((*vect)[j]->ke()*MeV);
 
 	    double gunZ = Tomography::DetectorMapping::instance()->GetGunZ();
-	    particleGun->SetParticlePosition(G4ThreeVector((*vect)[j]->x()*m, (*vect)[j]->y()*m, gunZ)); //150*cm));
-	    particleGun->SetParticleMomentumDirection(G4ThreeVector((*vect)[j]->u(), (*vect)[j]->v(), (*vect)[j]->w()));
+	    particleGun->SetParticlePosition(G4ThreeVector((*vect)[j]->x()*m, gunZ, (*vect)[j]->y()*m)); //150*cm));
+	    particleGun->SetParticleMomentumDirection(G4ThreeVector((*vect)[j]->u(), (*vect)[j]->w(), (*vect)[j]->v()));
 	    particleGun->SetParticleTime((*vect)[j]->t());
 
         double solidAngleIncoming = CommonFunc::Functions::instance()->
@@ -70,8 +75,9 @@ void CryGeantInterface::GeneratePrimariesForCry(G4Event *anEvent, bool tm){
                                                                   (*vect)[j]->w()).Unit(),
                                                           Tracking::Vector3D<double>(0.,0.,-1.));
         double energy = (*vect)[j]->ke()*MeV;
-        std::cout <<"=========== ParticleName : " << particleName << " =============" << std::endl;
-        //if(particleName == "muon")
+        //if(verbose)
+        //	std::cout <<"=========== ParticleName : " << particleName << " =============" << std::endl;
+        if(particleName == "muon")
         {
         	if(tm)
         		Tomography::Files::instance()->Write("StatsFromGenerator.txt",3,1., solidAngleIncoming,energy);

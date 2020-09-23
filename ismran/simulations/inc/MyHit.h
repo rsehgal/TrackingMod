@@ -14,7 +14,7 @@
 #include "G4ThreeVector.hh"
 
 using Vec_t = G4ThreeVector;
-
+//bool verbosee = false;
 class MyHit : public G4VHit {
 
 private:
@@ -33,6 +33,7 @@ public:
     inline void operator delete(void *aHit);
     void Draw() const{}
     void Print() const{
+    	if(0)
     	std::cout << "Volume Name : " << fName << " : Copy No : " << fCopyNo 
     			  << " : Energy Deposited : " << fEDep << std::endl;
     }
