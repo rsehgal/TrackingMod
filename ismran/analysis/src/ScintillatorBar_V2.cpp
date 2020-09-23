@@ -8,6 +8,7 @@
 #include "ScintillatorBar_V2.h"
 #include "HardwareNomenclature.h"
 
+bool verbose = false;
 
 ScintillatorBar_V2::ScintillatorBar_V2() {
 	// TODO Auto-generated constructor stub
@@ -16,6 +17,34 @@ ScintillatorBar_V2::ScintillatorBar_V2() {
 
 ScintillatorBar_V2::~ScintillatorBar_V2() {
 	// TODO Auto-generated destructor stub
+}
+
+/*
+ * This constructor will be useful for simulation
+ */
+ScintillatorBar_V2::ScintillatorBar_V2(unsigned int bIndex){
+	barHitted = false;
+	barIndex = bIndex;
+	layerIndex = barIndex/numOfBarsInEachLayer;
+	unsigned short l_channelNear = 2*barIndex;
+	unsigned short l_channelFar = l_channelNear+1;
+	scintName="PsBar"+std::to_string(barIndex)+"-"+std::to_string(l_channelNear)+"-"+std::to_string(l_channelFar);
+
+	/* qlongMean, the most import parameter, should be filled as total energy
+	 * deposited in a bar, which is basically the sum of energy deposited in
+	 * individual steps
+	 *
+	 * remaining data members may be set to zero.
+	 */
+	qlongMean = 0;
+	qlongNear = 0;
+	qlongFar = 0;
+	tstampNear=0;
+	tstampFar=0;
+	tsmallTimeStamp = 0;
+	deltaTstamp=0;
+	//time=0;
+	//EstimateHitPosition();
 }
 
 ScintillatorBar_V2::ScintillatorBar_V2(unsigned short l_channelNear, unsigned short l_channelFar,
@@ -39,7 +68,8 @@ ScintillatorBar_V2::ScintillatorBar_V2(unsigned short l_channelNear, unsigned sh
 
 
 ScintillatorBar_V2::ScintillatorBar_V2(const ScintillatorBar_V2 &sbar){
-		std::cout << "======= COPY CONSTRUCTOR CaLLED ==========" << std::endl;
+		if(verbose)
+			std::cout << "======= COPY CONSTRUCTOR CaLLED ==========" << std::endl;
 		//barHitted = sbar.barHitted;
 		barIndex = sbar.barIndex;
 		layerIndex = sbar.layerIndex;

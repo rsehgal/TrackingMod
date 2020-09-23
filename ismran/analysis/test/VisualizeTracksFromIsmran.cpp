@@ -59,9 +59,9 @@ int main(){
 	 * ISMRAN analysis objects to get the fitted muon tracks
 	 */
 	Calibration *cb = new Calibration("/home/rsehgal/BackBoneSoftwares/ismranData/completeCalib.root");
-	Analyzer_V2 av2("/home/rsehgal/BackBoneSoftwares/ismranData/ISMRAN_81bars_Th10All_CosmicRun_15hrs42mins_26Aug2020_2.root",cb,100000000);
+	//Analyzer_V2 av2("/home/rsehgal/BackBoneSoftwares/ismranData/ISMRAN_81bars_Th10All_CosmicRun_15hrs42mins_26Aug2020_2.root",cb,100000000);
 
-	//Analyzer_V2 av2("/home/rsehgal/BackBoneSoftwares/ismranData/completeData_02Sep2020.root",cb);
+	Analyzer_V2 av2("/home/rsehgal/BackBoneSoftwares/ismranData/completeData_02Sep2020.root",cb);
 
 /*
 	unsigned long int outsideRangeCounter = 0 ;

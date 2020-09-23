@@ -40,6 +40,7 @@ private:
 
 public:
 	SingleMuonTrack();
+	SingleMuonTrack(std::vector<ScintillatorBar_V2*> singleMuonTrack);
 	virtual ~SingleMuonTrack();
 	void CalculateTotalEnergyDeposited();
 	ULong64_t GetMeanTimeStampValue();

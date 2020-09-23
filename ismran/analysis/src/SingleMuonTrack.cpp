@@ -31,6 +31,10 @@ SingleMuonTrack::SingleMuonTrack() {
 
 }
 
+SingleMuonTrack::SingleMuonTrack(std::vector<ScintillatorBar_V2*> singleMuonTrack){
+	fSingleMuonTrack = singleMuonTrack;
+}
+
 SingleMuonTrack::~SingleMuonTrack() {
 	// TODO Auto-generated destructor stub
 }

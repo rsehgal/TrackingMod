@@ -15,6 +15,8 @@
 #include "MySD.h"
 #include "TH1F.h"
 #include "TApplication.h"
+#include "Analyzer_V2.h"
+#include "base/Global.h"
 
 using namespace std;
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -45,7 +47,8 @@ void B1RunAction::BeginOfRunAction(const G4Run*)
 {
   G4RunManager::GetRunManager()->SetRandomNumberStore(false);
   fApp = new TApplication("Test", NULL, NULL);
-  energyHist = new TH1F("EnergyHist","EnergyHist",1000,0,25000);
+  energyHist = new TH1F("EnergyHist","EnergyHist",1000,0,250000);
+  Tomography::EventBreak::instance()->fEffEvNo = 0;
 
 }
 
@@ -58,7 +61,8 @@ void B1RunAction::EndOfRunAction(const G4Run* run)
 
   std::cout  << "====================================================================" << std::endl;
   std::cout << "Total Number of Event : " << nofEvents << std::endl;
-  std::cout << "No of Particles reaches Sensitive Detector Region : " << MySD::numOfParticlesReached << std::endl;  
+  //std::cout << "No of Particles reaches Sensitive Detector Region : " << MySD::numOfParticlesReached << std::endl;
+  std::cout << "No of Particles reaches Sensitive Detector Region : " << Tomography::EventBreak::instance()->fEffEvNo << std::endl;
   std::cout << "====================================================================" << std::endl;
   std::cout << "======= Printing finally stored events ==========" << std::endl;
   
@@ -72,6 +76,24 @@ void B1RunAction::EndOfRunAction(const G4Run* run)
   energyHist->Draw();
   MySD::Print();
   //PrintPsBarVector();
+
+  //Doing the processing of muon tracks vector using Analyzer.
+  Analyzer_V2 v;
+  v.CalculateTotalEnergyDepositionForMuonTracks(MySD::muonTrackVec);
+  v.PlotEnergyDistributionWithMultiplicity(MySD::muonTrackVec,0);
+
+  TH1D *globalMultiplicityHist = new TH1D("globalMultiplicityHist","globalMultiplicityHist",20,1,21);
+  for(unsigned int i = 0 ; i < MySD::muonTrackVec.size() ; i++){
+	  globalMultiplicityHist->Fill(MySD::muonTrackVec[i]->size());
+	  if(MySD::muonTrackVec[i]->size() > 9){
+		  std::cout <<"======================= Muon Track Length : " << MySD::muonTrackVec[i]->size() <<"  =======================================" << std::endl;
+		  MySD::muonTrackVec[i]->Print();
+	  }
+  }
+  new TCanvas();
+  globalMultiplicityHist->Draw();
+
+
   fApp->Run();
 }
 

@@ -295,7 +295,7 @@ ${CMAKE_SOURCE_DIR}/inc
 ${CMAKE_SOURCE_DIR}
 ${CMAKE_SOURCE_DIR}/CryGeantInterface
 ${CMAKE_SOURCE_DIR}/base
-#${CMAKE_SOURCE_DIR}/ismran/analysis/inc
+${CMAKE_SOURCE_DIR}/ismran/analysis/inc
 #${CMAKE_SOURCE_DIR}/ismran/inc
 )
 
@@ -331,6 +331,7 @@ ${CMAKE_SOURCE_DIR}/CoordinateGenerator/src
 ${CMAKE_SOURCE_DIR}/TemplatizedInterface/src
 ${CMAKE_SOURCE_DIR}/src
 ${CMAKE_SOURCE_DIR}/ismran/inc
+${CMAKE_SOURCE_DIR}/ismran/analysis/src
 )
 
 macro(collect_sources SOURCES)
