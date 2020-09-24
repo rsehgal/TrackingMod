@@ -169,7 +169,7 @@ void MySD::EndOfEvent(G4HCofThisEvent*)
         scintBar->qlongMeanCorrected = scintBar->qlongMean*1000.;
         	onlyHittedBarVec.push_back(scintBar);
         if(onlyHittedBarVec.size() > 0)
-        	reachedSensitiveRegion = true;
+        	reachedSensitiveRegion |= true;
       }
     }
 
@@ -188,7 +188,7 @@ void MySD::EndOfEvent(G4HCofThisEvent*)
     if(reachedSensitiveRegion)
     	muonTrackVec.push_back(smt);
     onlyHittedBarVec.clear();
-    if(!(Tomography::EventBreak::instance()->fEffEvNo % 10000) &&   Tomography::EventBreak::instance()->fEffEvNo != 0){
+    if(!(Tomography::EventBreak::instance()->fEffEvNo % 10000) &&   Tomography::EventBreak::instance()->fEffEvNo != 0 && reachedSensitiveRegion){
     	std::cout << "Processed : " << Tomography::EventBreak::instance()->fEffEvNo  << "  Events" << std::endl;
     }
 
@@ -196,6 +196,8 @@ void MySD::EndOfEvent(G4HCofThisEvent*)
   //delete fHitsCollection;
   if(reachedSensitiveRegion)
   Tomography::EventBreak::instance()->fEffEvNo++;
+
+ // std::cout << "DEBUG PRINTING>>>>>>>>>>>>>>>>>>>>>>>J::::::::::::::::K:POIK{PO{O{POL{L{" << std::endl;
 
 
 }
