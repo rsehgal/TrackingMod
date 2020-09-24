@@ -86,8 +86,8 @@ void B1RunAction::EndOfRunAction(const G4Run* run)
   for(unsigned int i = 0 ; i < MySD::muonTrackVec.size() ; i++){
 	  globalMultiplicityHist->Fill(MySD::muonTrackVec[i]->size());
 	  if(MySD::muonTrackVec[i]->size() > 9){
-		  std::cout <<"======================= Muon Track Length : " << MySD::muonTrackVec[i]->size() <<"  =======================================" << std::endl;
-		  MySD::muonTrackVec[i]->Print();
+		 // std::cout <<"======================= Muon Track Length : " << MySD::muonTrackVec[i]->size() <<"  =======================================" << std::endl;
+		 // MySD::muonTrackVec[i]->Print();
 	  }
   }
   new TCanvas();
