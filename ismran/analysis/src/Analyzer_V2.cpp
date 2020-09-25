@@ -910,6 +910,7 @@ void Analyzer_V2::PlotEnergyDistributionWithMultiplicity(std::vector<SingleMuonT
 
 		for(unsigned int i = 0 ; i < multiplicityVec.size() ; i++){
 			vecOfHists[i]->SetLineColor(i+1);
+			vecOfHists[i]->Scale(1/vecOfHists[i]->Integral());
 			legend->AddEntry(vecOfHists[i],Form("Multiplicity_%d",i+1),"l");
 			vecOfHists[i]->GetXaxis()->SetNdivisions(12);
 			vecOfHists[i]->Draw("same");

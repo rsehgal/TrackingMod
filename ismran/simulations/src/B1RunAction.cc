@@ -83,16 +83,23 @@ void B1RunAction::EndOfRunAction(const G4Run* run)
   v.PlotEnergyDistributionWithMultiplicity(MySD::muonTrackVec,0);
 
   TH1D *globalMultiplicityHist = new TH1D("globalMultiplicityHist","globalMultiplicityHist",20,1,21);
+  int count = 0;
   for(unsigned int i = 0 ; i < MySD::muonTrackVec.size() ; i++){
 	  globalMultiplicityHist->Fill(MySD::muonTrackVec[i]->size());
 	  if(MySD::muonTrackVec[i]->size() > 9){
-		 // std::cout <<"======================= Muon Track Length : " << MySD::muonTrackVec[i]->size() <<"  =======================================" << std::endl;
-		 // MySD::muonTrackVec[i]->Print();
+		  std::cout <<"======================= Muon Track Length : " << MySD::muonTrackVec[i]->size() <<"  =======================================" << std::endl;
+		  count++;
+		  //MySD::muonTrackVec[i]->Print();
+		  if(count==10)
+			  break;
 	  }
   }
   new TCanvas();
   globalMultiplicityHist->Draw();
 
+#ifdef USE_CRY
+  CryGeantInterface::energyHist->Draw();
+#endif
 
   fApp->Run();
 }

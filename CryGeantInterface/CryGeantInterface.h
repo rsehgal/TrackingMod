@@ -24,6 +24,8 @@
 
 #include "G4SystemOfUnits.hh"
 
+class TH1F;
+
 
 class CryGeantInterface {
 public:
@@ -45,6 +47,8 @@ private:
 	    CRYGenerator* gen;
 	    G4int InputState;
 	    PrimaryGeneratorMessenger* gunMessenger;
+public:
+	    static TH1F* energyHist;
 
 };
 
