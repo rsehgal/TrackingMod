@@ -97,6 +97,9 @@ void B1RunAction::EndOfRunAction(const G4Run* run)
   new TCanvas();
   globalMultiplicityHist->Draw();
 
+  std::cout << "Total Num of Stopped particles : " << MySD::numOfStoppedParticles << std::endl;
+  std::cout << ((1.0*MySD::numOfStoppedParticles/Tomography::EventBreak::instance()->fEffEvNo)*100)<<" % of Number of particles that reaches the Sensitive detector region" << std::endl;
+
 #ifdef USE_CRY
   CryGeantInterface::energyHist->Draw();
 #endif
