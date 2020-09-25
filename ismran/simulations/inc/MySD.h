@@ -73,6 +73,8 @@ private:
 	    MyHitsCollection* fHitsCollection;
 	    static int stepNum;
 	    static unsigned int evNo;
+public:
+	    static unsigned int numOfStoppedParticles;
 	    
 
 };

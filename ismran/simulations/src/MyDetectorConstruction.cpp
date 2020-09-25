@@ -106,7 +106,10 @@ G4VPhysicalVolume* MyDetectorConstruction::Construct(){
                             0,
                             checkOverlaps);
   */
-  //Lets try to build the full matrix of PsBars
+  /*
+   * Lets try to build the full matrix of PsBars
+   */
+
   int barsInX=9;
   int barsInY=9;
   double zval=0;
@@ -130,6 +133,21 @@ G4VPhysicalVolume* MyDetectorConstruction::Construct(){
       counter++;
     }
   }
+
+
+  /*
+   * Playing around with one bar
+   */
+/*
+  new G4PVPlacement( 0,
+                     G4ThreeVector(),
+                     logicalPsBar,
+                     "PhysicalPsBar",
+                     logicWorld,
+                     false,
+                     0,
+                     checkOverlaps);
+*/
 
 /*G4Box *testBox = new G4Box("testBox",50*cm,50*cm,0.5*cm);
   G4LogicalVolume *logicalTestBox = new G4LogicalVolume(testBox,bar_mat,"LogicalTestBox");

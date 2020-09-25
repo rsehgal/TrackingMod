@@ -24,6 +24,7 @@ int MySD::numOfParticlesReached = 0;
 unsigned int MySD::evNo=0;
 std::vector< std::vector<ScintillatorBar_V2*> > MySD::eventsVec;
 std::vector< SingleMuonTrack* > MySD::muonTrackVec;
+unsigned int MySD::numOfStoppedParticles = 0;
 
 bool verbose = false;
 // std::vector<ScintillatorBar*> MySD::eventsVec2;
@@ -131,12 +132,16 @@ G4bool MySD::ProcessHits(G4Step* aStep,
   G4String particleName=track->GetDefinition()->GetParticleName() ;
   if(verbose)
 	  std::cout << particleName << "  " << std::endl;
-  //if(verbose)
+  if(verbose)
   std::cout << "Energy deposited in current step in : "
             << touchable->GetVolume(0)->GetName()
             << " : " << aStep->GetTotalEnergyDeposit() << " : Current Energy : " << track->GetKineticEnergy() <<std::endl;
   newHit->SetEnergyDeposited(aStep->GetTotalEnergyDeposit());
   fHitsCollection->insert( newHit );
+
+	  if(track->GetKineticEnergy() == 0){
+		numOfStoppedParticles++;
+	  }
   }/*else{
 	  std::cout << "Energy deposited by secondary particle in current step in : "
 	              << touchable->GetVolume(0)->GetName()
