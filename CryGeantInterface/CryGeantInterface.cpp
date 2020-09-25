@@ -11,11 +11,14 @@
 #include "Files.h"
 #include "DetectorMapping.h"
 #include "base/Global.h"
+#include <TH1F.h>
 
 bool verbose = false;
+TH1F* CryGeantInterface::energyHist;
 
 CryGeantInterface::CryGeantInterface() {
 	// TODO Auto-generated constructor stub
+	energyHist = new TH1F("CosmicMuonEnergyDistribution","CosmicMuonEnergyDistribution",4000,0,4000);
 
 }
 
@@ -75,6 +78,7 @@ void CryGeantInterface::GeneratePrimariesForCry(G4Event *anEvent, bool tm){
                                                                   (*vect)[j]->w()).Unit(),
                                                           Tracking::Vector3D<double>(0.,0.,-1.));
         double energy = (*vect)[j]->ke()*MeV;
+        energyHist->Fill(energy);
         //if(verbose)
         //	std::cout <<"=========== ParticleName : " << particleName << " =============" << std::endl;
         if(particleName == "muon")

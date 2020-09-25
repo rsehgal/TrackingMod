@@ -17,6 +17,7 @@
 #include "PsBar.h"
 #include "base/Global.h"
 #include "Analyzer_V2.h"
+#include <TH1F.h>
 
 int MySD::stepNum = 0;
 int MySD::numOfParticlesReached = 0;
@@ -120,22 +121,27 @@ G4bool MySD::ProcessHits(G4Step* aStep,
   newHit->SetEdep(edep);
   newHit->SetPos (aStep->GetPostStepPoint()->GetPosition());
 */
+  G4TouchableHandle touchable;
   if(isPrimary){
 
   newHit->SetPosition(aStep->GetPostStepPoint()->GetPosition());
-  G4TouchableHandle touchable = aStep->GetPreStepPoint()->GetTouchableHandle();
+  touchable= aStep->GetPreStepPoint()->GetTouchableHandle();
   newHit->SetName(touchable->GetVolume(0)->GetName());
   newHit->SetCopyNum(touchable->GetVolume(0)->GetCopyNo());
   G4String particleName=track->GetDefinition()->GetParticleName() ;
   if(verbose)
 	  std::cout << particleName << "  " << std::endl;
-  if(verbose)
+  //if(verbose)
   std::cout << "Energy deposited in current step in : "
             << touchable->GetVolume(0)->GetName()
-            << " : " << aStep->GetTotalEnergyDeposit() << std::endl;
+            << " : " << aStep->GetTotalEnergyDeposit() << " : Current Energy : " << track->GetKineticEnergy() <<std::endl;
   newHit->SetEnergyDeposited(aStep->GetTotalEnergyDeposit());
   fHitsCollection->insert( newHit );
-  }
+  }/*else{
+	  std::cout << "Energy deposited by secondary particle in current step in : "
+	              << touchable->GetVolume(0)->GetName()
+	              << " : " << aStep->GetTotalEnergyDeposit() << " : Current Energy : " << track->GetKineticEnergy() <<std::endl;
+  }*/
 //  std::cout << "New Hit position : " << newHit->GetPosition() << std::endl;
 
   return true;
@@ -160,13 +166,22 @@ void MySD::EndOfEvent(G4HCofThisEvent*)
       psBarVec[(*fHitsCollection)[i]->GetCopyNum()]->barHitted=true;
       psBarVec[(*fHitsCollection)[i]->GetCopyNum()]->qlongMean += (*fHitsCollection)[i]->GetEnergyDeposited();
       
+
     }
 
     std::vector<ScintillatorBar_V2*> onlyHittedBarVec;
     for(unsigned int i = 0 ; i < psBarVec.size() ; i++){
       if(psBarVec[i]->barHitted){
+    	// std::cout <<"Going to insert hitted bar with index : " <<i <<  __FILE__ << " : "  << __LINE__ << std::endl;
         ScintillatorBar_V2 *scintBar = new ScintillatorBar_V2(*psBarVec[i]);
         scintBar->qlongMeanCorrected = scintBar->qlongMean*1000.;
+
+        /*
+         * PUTTING THE CUT ON THE ENERGY DEPOSITED
+         *
+         * tHIS GIVES SIMILAR MULTIPLICITY PICTURES AS WE ARE GETTING FROM DATA
+         */
+        if(scintBar->qlongMeanCorrected > 10000 && scintBar->qlongMeanCorrected < 35000)
         	onlyHittedBarVec.push_back(scintBar);
         if(onlyHittedBarVec.size() > 0)
         	reachedSensitiveRegion |= true;
