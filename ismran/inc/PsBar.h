@@ -38,6 +38,9 @@ extern int maxEnergyDepositedByMuonTrack;// = 190000;
 
 extern double fwhm;// = 2.355 * 5.66353 ;
 
+extern double errorX;
+extern double errorY;
+
 struct Point3D{
 	double x;
 	double y;

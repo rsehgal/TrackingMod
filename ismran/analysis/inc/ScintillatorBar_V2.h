@@ -36,6 +36,7 @@ public:
 	unsigned short layerIndex;
 
 	Point3D hitPosition;
+	Point3D hitPositionError;
 	Point3D fittedHitPosition;
 
 	//Estimated Path length within each Bar

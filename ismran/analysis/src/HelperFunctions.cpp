@@ -8,6 +8,7 @@
 #include "HelperFunctions.h"
 #include "PsBar.h"
 #include "includes.hh"
+#include <TMath.h>
 
 
 std::vector<std::vector<unsigned long int>> myhist2D;
@@ -51,6 +52,11 @@ double LinearFit(Double_t *x,Double_t *par) {
       return fitval;
 }
 
+double Cos2ThetaFit(Double_t *x, Double_t *par){
+	  double fitval = par[0]*pow(cos(x[0]),par[1]);
+	  return fitval;
+
+}
 
 //std::vector<double> GetFittedXorZ(TGraph *gr){
 void PlotFittedLine(TGraph *gr){

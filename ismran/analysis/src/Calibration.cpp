@@ -42,7 +42,8 @@ Calibration::Calibration(std::string fileName) {
 
 		int barPhyNum = std::stoi(vecOfBarsName[barIndex].substr(2,2));
 		if(barPhyNum <= 70)
-			fVecOfCalibrationData.push_back(new CalibrationData( delTShift_F, paramertization_F , energyCalibrationFactor));
+			//fVecOfCalibrationData.push_back(new CalibrationData( delTShift_F, paramertization_F , energyCalibrationFactor));
+			fVecOfCalibrationData.push_back(new CalibrationData( delTShift_F, temp_F , energyCalibrationFactor));
 		else
 			fVecOfCalibrationData.push_back(new CalibrationData( delTShift_F, temp_F ,energyCalibrationFactor));
 	}

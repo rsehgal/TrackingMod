@@ -29,6 +29,9 @@ float barWidth = 10.;
 float barHeight = 10.;
 float barLength = 100.;
 
+double errorX = 5.;
+double errorY = 5.;
+
 
 //std::string FileFrag[]={
 /*

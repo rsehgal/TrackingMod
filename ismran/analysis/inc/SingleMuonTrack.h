@@ -78,9 +78,9 @@ public:
 	/*
 	 * Function to plot the track
 	 */
-	std::vector<Point3D*> PlotTrack();
+	std::vector<Point3D*> PlotTrack(bool showTracks=true);
 	//void DrawGrid(std::string t, Int_t ngx, Int_t ngy);
-	std::vector<double> GetFittedXorZ(TGraph *grxy);
+	std::vector<double> GetFittedXorZ(TGraphErrors *grxy);
 	//std::vector<double> GetFittedZ(TGraph *grzy);
 
 	void FillSkimmedMuonTracksVector();

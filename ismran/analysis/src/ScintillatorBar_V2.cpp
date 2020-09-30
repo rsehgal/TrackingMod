@@ -28,8 +28,8 @@ ScintillatorBar_V2::ScintillatorBar_V2(unsigned int bIndex){
 	layerIndex = barIndex/numOfBarsInEachLayer;
 	unsigned short l_channelNear = 2*barIndex;
 	unsigned short l_channelFar = l_channelNear+1;
-	scintName="PsBar"+std::to_string(barIndex)+"-"+std::to_string(l_channelNear)+"-"+std::to_string(l_channelFar);
-
+	//scintName="PsBar"+std::to_string(barIndex)+"-"+std::to_string(l_channelNear)+"-"+std::to_string(l_channelFar);
+	scintName = vecOfBarsNamess[barIndex];
 	/* qlongMean, the most import parameter, should be filled as total energy
 	 * deposited in a bar, which is basically the sum of energy deposited in
 	 * individual steps
@@ -53,7 +53,8 @@ ScintillatorBar_V2::ScintillatorBar_V2(unsigned short l_channelNear, unsigned sh
 
 		barIndex = l_channelNear/2;
 		layerIndex = barIndex/numOfBarsInEachLayer;
-		scintName="PsBar"+std::to_string(barIndex)+"-"+std::to_string(l_channelNear)+"-"+std::to_string(l_channelFar);
+		//scintName="PsBar"+std::to_string(barIndex)+"-"+std::to_string(l_channelNear)+"-"+std::to_string(l_channelFar);
+		scintName = vecOfBarsNamess[barIndex];
 		qlongNear=l_qlongNear;
 		qlongFar=l_qlongFar;
 		qlongMean=sqrt(qlongNear*qlongFar);
@@ -98,9 +99,11 @@ void ScintillatorBar_V2::Print(){
 void ScintillatorBar_V2::EstimateHitPositionAlongX(){
 		//hitPosition.x = (layerIndex+1)*10.;
 		hitPosition.x = vecOfScintXYCenter[barIndex].x;
+		hitPositionError.x = errorX;
 }
 
 void ScintillatorBar_V2::EstimateHitPositionAlongY(){
 		//hitPosition.y = 0.;
 		hitPosition.y = vecOfScintXYCenter[barIndex].y;
+		hitPositionError.y = errorY;
 }

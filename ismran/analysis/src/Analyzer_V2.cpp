@@ -17,7 +17,8 @@
 #include <TFile.h>
 #include "SinglePointEnergyCalibrationForMuon.h"
 #include "HelperFunctions.h"
-
+#include <TVector3.h>
+#include <TMath.h>
 unsigned long int Analyzer_V2::fMuonTrackNum = 0;
 
 Analyzer_V2::Analyzer_V2() {
@@ -73,7 +74,8 @@ Analyzer_V2::Analyzer_V2(std::string datafileName, Calibration *calib,unsigned l
 	PlotEnergyDistributionWithMultiplicity(muonTrackVec,0);
 	std::vector<SingleMuonTrack*> filtered = FiltrationBasedOnCosmicMuonRate(muonTrackVec);
 	//fittedMuonTracks = PlotTracks_V2(filteredMuonTrackVec,50);
-	fittedMuonTracks = PlotTracks_V2(filtered,10);
+	fittedMuonTracks = PlotTracks_V2(filtered,0,false);
+	PlotZenithAngle();
 
 /*
 	CheckPairs();
@@ -237,6 +239,9 @@ void Analyzer_V2::LoadDataAndSort() {
 				std::cout << " Processing event : " << iev << "\t"
 						<< times->GetTimeSpec() << std::endl;
 			}
+
+			if(iev >= 300000000)
+				break;
 
 		}      //! event loop
 
@@ -728,8 +733,12 @@ void Analyzer_V2::DisplayHistogramsOf(unsigned int barIndex){
 
 void Analyzer_V2::EstimateHitPosition(ScintillatorBar_V2 *scint){
 	TF1 *param = fCalib->GetCalibrationDataOf(scint->barIndex)->fParameterization_F;
-	long double correctedDelT = scint->deltaTstampCorrected / 1000.;
+	//long double correctedDelT = scint->deltaTstampCorrected / 1000.;
+	double correctedDelT = scint->deltaTstampCorrected / 1000.;
 	float estZ = param->Eval(correctedDelT);
+	const double *errors = param->GetParErrors();
+	double estZError = errors[0]+errors[1]*correctedDelT+errors[2]*pow(correctedDelT,2)+errors[3]*pow(correctedDelT,3) ;
+	//param->EvalPar(&correctedDelT,param->GetParErrors());
 	//std::cout << "Corrected DelT : " << correctedDelT << " : Hit Position along Z : " << estZ << std::endl;
 	/*(scint->hitPosition).z=estZ;
 	scint->EstimateHitPositionAlongY();
@@ -740,13 +749,18 @@ void Analyzer_V2::EstimateHitPosition(ScintillatorBar_V2 *scint){
 	 */
 	if (estZ > -50. && estZ < 50.) {
 		(scint->hitPosition).z=estZ;
-		scint->EstimateHitPositionAlongY();
+		(scint->hitPositionError).z=estZError;
+		/*std::cout <<"==============================================================================================" << std::endl;
+		std::cout<<"Errors : (" << errors[0] << " : " << errors[1] <<" : " << errors[2] <<" : " << errors[3] << ")" << std::endl;
+		std::cout << "ScintName : " << scint->scintName << " : CorrectedDelT : " << correctedDelT << " : Estimated Z : " << estZ << " : Error in Z postion : " << estZError << " : " << __FILE__ <<" : " << __LINE__ << std::endl;
+		std::cout <<"==============================================================================================" << std::endl;
+		*/scint->EstimateHitPositionAlongY();
 		scint->EstimateHitPositionAlongX();
 	}
 }
 
 //void Analyzer_V2::PlotTracks_V2(std::vector< SingleMuonTrack* > muonTrackVec,unsigned int numOfTracks){
-std::vector< std::vector<Point3D*> >  Analyzer_V2::PlotTracks_V2(std::vector< SingleMuonTrack* > muonTrackVec,unsigned int numOfTracks){
+std::vector< std::vector<Point3D*> >  Analyzer_V2::PlotTracks_V2(std::vector< SingleMuonTrack* > muonTrackVec,unsigned int numOfTracks, bool showTracks){
 
 	std::vector< std::vector<Point3D*> > fittedMuonTracks;
 	if(numOfTracks==0){
@@ -754,8 +768,8 @@ std::vector< std::vector<Point3D*> >  Analyzer_V2::PlotTracks_V2(std::vector< Si
 	}
 	unsigned int ntracks = numOfTracks;
 	unsigned int counter = 0;
-	while(ntracks){
-		if(muonTrackVec[counter]->fIsValid){
+	while(ntracks && counter < numOfTracks){
+		if(muonTrackVec[counter]->fIsValid ){
 			if((muonTrackVec[counter]->fSingleMuonTrack).size() > 6){
 				//PlotOneTrack(muonTrackVec[counter]->fSingleMuonTrack);
 
@@ -768,10 +782,10 @@ std::vector< std::vector<Point3D*> >  Analyzer_V2::PlotTracks_V2(std::vector< Si
 					&& ((muonTrackVec[counter]->fSingleMuonTrack[numOfLayers-1]->hitPosition).y < -35) )
 
 				{
-					std::vector<Point3D*> fittedSingleMuonTrack = muonTrackVec[counter]->PlotTrack();
+					std::vector<Point3D*> fittedSingleMuonTrack = muonTrackVec[counter]->PlotTrack(showTracks);
 					if(!CheckRange(fittedSingleMuonTrack)){
 						fittedMuonTracks.push_back(fittedSingleMuonTrack);
-						muonTrackVec[counter]->Print();
+						//muonTrackVec[counter]->Print();
 						ntracks--;
 					}
 				}
@@ -815,6 +829,7 @@ void Analyzer_V2::PlotCoincidenceCountGraph(){
 	}*/
 	for(unsigned int i = 0 ; i < numOfLayers ; i++){
 		xvec.push_back(i);
+		//xvec.push_back(i*M_PI/18.);
 		std::vector<int> ysubVec;
 		for(unsigned int j = 0 ; j < numOfBarsInEachLayer ; j++){
 			ysubVec.push_back(myhist2D[i][j]);
@@ -847,6 +862,8 @@ void Analyzer_V2::PlotCoincidenceCountGraph(){
 		can->cd(i+1);
 		std::string str = std::string(Form("Coincidence of %d  Bar in top layer with bottom layer",i+1));
 		DrawGrid(str, 9, 9);
+		//TF1 *formula = new TF1("Formula",Cos2ThetaFit,0,M_PI/2,2);
+		//vecOfGraphs[i]->Fit(formula,"r");
 		vecOfGraphs[i]->Draw("ap");
 	}
 
@@ -940,4 +957,85 @@ std::vector<SingleMuonTrack*>  Analyzer_V2::FiltrationBasedOnCosmicMuonRate(std:
 		return filteredMuonTrackVec;
 		//new TCanvas();
 		//hist->Draw();
+}
+
+void Analyzer_V2::PlotZenithAngle(){
+	TVector3 ref(0.,-1.,0.);
+	int numOfBins = 100;
+	TH1D *zenithAngleHist = new TH1D("ZenithAngle", "ZenithAngle Distribution",numOfBins,0.,1.5);
+	for(unsigned int trackIndex = 0 ; trackIndex < fittedMuonTracks.size() ; trackIndex++){
+		std::vector<Point3D*> singleMuonTrack = fittedMuonTracks[trackIndex];
+		Point3D *startPoint = singleMuonTrack[0];
+		Point3D *endPoint = singleMuonTrack[singleMuonTrack.size()-1];
+		TVector3 muonDir(TVector3(endPoint->x,endPoint->y,endPoint->z)-TVector3(startPoint->x,startPoint->y,startPoint->z));
+		//double zenitAngle = acos(muonDir.Y()/muonDir.Mag());//muonDir.Theta();
+		//double zenitAngle = muonDir.Theta();
+		double zenitAngle = muonDir.Angle(ref);
+		zenithAngleHist->Fill(zenitAngle);
+	}
+	//zenithAngleHist->Scale(1/zenithAngleHist->Integral());
+	std::cout << "@@@@@@@@@@ Fitted Parameter for ZenithAngle Histogram @@@@@@@@@" << std::endl;
+	new TCanvas();
+	TF1 *zenForm = new TF1("zenForm", "[0]*sin(x)*pow(cos(x),[1])", 0.,M_PI/2.);
+	zenithAngleHist->Fit(zenForm,"r");
+	zenithAngleHist->Draw();
+
+	std::cout << "@@@@@@@@@@ Fitted Parameter for SolidAngle Corrected Histogram @@@@@@@@@" << std::endl;
+	TH1F *solidAngleCorrectedHist = new TH1F("Solid angle corrected AngularDistribution ","Solid angle corrected AngularDistribution",numOfBins,0.,M_PI/2.);
+	solidAngleCorrectedHist->GetYaxis()->SetTitle("I_{#theta}  ( cm^{-2}sec^{-1}st^{-1})");
+	solidAngleCorrectedHist->GetXaxis()->SetTitle("#theta (radian)");
+
+	for(int i =0  ; i < numOfBins ; i++){
+	 	double binCenter = zenithAngleHist->GetXaxis()->GetBinCenter(i);
+	   	double binContent = zenithAngleHist->GetBinContent(i);
+	   	//std::cout << "binContent : " << binContent << " : binCenter : " << binCenter << std::endl;
+	   	solidAngleCorrectedHist->SetBinContent(i,binContent/(2*M_PI*std::sin(binCenter)*std::cos(binCenter)));
+	}
+	new TCanvas();
+	//TF1 *cosSqr = new TF1("cosSqr",Cos2ThetaFit,0,M_PI/2,2);
+	TF1 *cosSqr = new TF1("cosSqr", "[0]*pow(cos(x),[1])", 0.,M_PI/2.);
+	solidAngleCorrectedHist->Fit(cosSqr,"r");
+	solidAngleCorrectedHist->Draw();
+
+
+	//New Histogram
+	TH1F *zenithAngle2D = new TH1F("ZenithAngle in 2D","ZenithAngle in 2D using  #frac{z_{2}-z_{1}}{#sqrt{(x_{2}-x_{1})^{2} + (y_{2}-y_{1})^{2} + (z_{2}-z_{1})^{2}}}",numOfBins,-1*M_PI/2.,M_PI/2.);
+	//zenithAngle2D->GetYaxis()->SetTitle("I_{#theta}  ( cm^{-2}sec^{-1}st^{-1})");
+	zenithAngle2D->GetXaxis()->SetTitle("#theta (radian)");
+	for(unsigned int trackIndex = 0 ; trackIndex < fittedMuonTracks.size() ; trackIndex++){
+			std::vector<Point3D*> singleMuonTrack = fittedMuonTracks[trackIndex];
+			Point3D *startPoint = singleMuonTrack[0];
+			//std::cout <<"Start Point : ";
+			//startPoint->Print();
+			Point3D *endPoint = singleMuonTrack[singleMuonTrack.size()-1];
+			//std::cout << "End Point : " ;
+			//endPoint->Print();
+			TVector3 muonDir(TVector3(endPoint->x,endPoint->y,endPoint->z)-TVector3(startPoint->x,startPoint->y,startPoint->z));
+			double angVal = asin((endPoint->z-startPoint->z)/muonDir.Mag());
+			//std::cout << "Angle Value : " << angVal << std::endl;
+			//zenithAngle2D->Fill((angVal*M_PI/180.)*1000.);
+			//if(fabs(startPoint->z) < 50. && fabs(endPoint->z) < 50.)
+			zenithAngle2D->Fill(angVal);
+	}
+	new TCanvas();
+	zenithAngle2D->Draw();
+	/*
+	for(int i =0  ; i < numOfBins ; i++){
+	 	double binCenter = zenithAngleHist->GetXaxis()->GetBinCenter(i);
+	   	double binContent = zenithAngleHist->GetBinContent(i);
+	   	//std::cout << "binContent : " << binContent << " : binCenter : " << binCenter << std::endl;
+	   	solidAngleCorrectedHist2->SetBinContent(i,binContent/(2*M_PI*std::sin(binCenter)*std::cos(binCenter)));
+	}
+	new TCanvas();
+	//TF1 *cosSqr = new TF1("cosSqr",Cos2ThetaFit,0,M_PI/2,2);
+	TF1 *cosSqr = new TF1("cosSqr", "[0]*pow(cos(x),[1])", 0.,M_PI/2.);
+	solidAngleCorrectedHist->Fit(cosSqr,"r");
+	solidAngleCorrectedHist->Draw();*/
+
+}
+
+void Analyzer_V2::FillSkimmedMuonTracksVector(){
+	/*for(unsigned int i = 0 ; i < filteredMuonTrackVec.size() ; i++){
+			filteredMuonTrackVec[i]->FillSkimmedMuonTracksVector();
+		}*/
 }
