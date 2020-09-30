@@ -28,6 +28,7 @@ void ResetVector(std::vector<T*> vecToReset){
 extern void DrawGrid(std::string t, Int_t ngx, Int_t ngy);
 extern void GetFittedXorZ(TGraph *gr);
 extern double LinearFit(Double_t *x,Double_t *par);
+extern double Cos2ThetaFit(Double_t *x, Double_t *par);
 extern void PlotFittedLine(TGraph *gr);
 
 extern std::vector<std::vector<unsigned long int>> myhist2D;

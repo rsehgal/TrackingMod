@@ -92,11 +92,13 @@ public:
 	std::vector < SingleMuonTrack* >ReconstrutTrack_V2();
 	void PrintMuonTrackVector_V2(std::vector< SingleMuonTrack* > muonTrackVec);
 	//void PlotTracks_V2(std::vector< SingleMuonTrack* > muonTrackVec,unsigned int numOfTracks=20);
-	std::vector< std::vector<Point3D*> >  PlotTracks_V2(std::vector< SingleMuonTrack* > muonTrackVec,unsigned int numOfTracks=20);
+	std::vector< std::vector<Point3D*> >  PlotTracks_V2(std::vector< SingleMuonTrack* > muonTrackVec,unsigned int numOfTracks=20, bool showTracks=true);
 	void CalculateTotalEnergyDepositionForMuonTracks(std::vector< SingleMuonTrack* > muonTrackVec);
 	void PlotCoincidenceCountGraph();
 	void PlotEnergyDistributionWithMultiplicity(std::vector<SingleMuonTrack*> muonTrackVec, unsigned int multiplicity = numOfLayers);
 	std::vector<SingleMuonTrack*> FiltrationBasedOnCosmicMuonRate(std::vector<SingleMuonTrack*> muonTrackVec);
+	void PlotZenithAngle();
+	void FillSkimmedMuonTracksVector();
 
 
 	/*
