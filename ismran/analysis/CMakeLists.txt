@@ -69,4 +69,7 @@ target_link_libraries(VisualizeTracksFromIsmran ${ROOT_LIBRARIES} ${TOMOLIB})
 add_executable(DemoVisualizeTracksFromIsmran test/DemoVisualizeTracksFromIsmran.cpp)
 target_link_libraries(DemoVisualizeTracksFromIsmran ${ROOT_LIBRARIES} -lTomo)
 
+add_executable(readCalibrationFormulaFile test/readCalibrationFormulaFile.cpp ${sources} ${headers})
+target_link_libraries(readCalibrationFormulaFile ${ROOT_LIBRARIES} ${TOMOLIB})
+
 #target_link_libraries(main ${Geant4_LIBRARIES} Tomo)

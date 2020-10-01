@@ -30,6 +30,13 @@ Calibration::Calibration(std::string fileName) {
 		TF1 *delTShift_F = (TF1*)fp->Get(Form("fdelt_shift_Cs137_%s_0cm",vecOfBarsName[barIndex].c_str()));
 		TF1 *temp_F = (TF1*)fp->Get(Form("fzparam_%s",vecOfBarsName[barIndex].c_str()));
 		TF1 *paramertization_F = new TF1(Form("fzparam_%s",vecOfBarsName[barIndex].c_str()),temp_F->GetExpFormula(),-60.0,60.0);
+		int barPhyNum = std::stoi(vecOfBarsName[barIndex].substr(2,2));
+		TGraph *gr;
+		if(barPhyNum <= 70)
+			gr = (TGraphErrors*)fp->Get(Form("grDeltMZpos_Cs137_%s",vecOfBarsName[barIndex].c_str()));
+		else
+			gr = (TGraph*)fp->Get(Form("grDelTCorrected-%s",vecOfBarsName[barIndex].c_str()));
+
 		for(int ip=0; ip < temp_F->GetNpar(); ip++){
 			paramertization_F->SetParameter(ip,temp_F->GetParameter(ip));
 		}
@@ -40,12 +47,15 @@ Calibration::Calibration(std::string fileName) {
 		int revBin = histEner->GetXaxis()->FindBin(bin);
 		double energyCalibrationFactor =  (1.0*muonEnergyPeak) - bin;
 
-		int barPhyNum = std::stoi(vecOfBarsName[barIndex].substr(2,2));
-		if(barPhyNum <= 70)
+		//int barPhyNum = std::stoi(vecOfBarsName[barIndex].substr(2,2));
+		/*if(barPhyNum <= 70)
 			//fVecOfCalibrationData.push_back(new CalibrationData( delTShift_F, paramertization_F , energyCalibrationFactor));
 			fVecOfCalibrationData.push_back(new CalibrationData( delTShift_F, temp_F , energyCalibrationFactor));
 		else
-			fVecOfCalibrationData.push_back(new CalibrationData( delTShift_F, temp_F ,energyCalibrationFactor));
+			fVecOfCalibrationData.push_back(new CalibrationData( delTShift_F, temp_F ,energyCalibrationFactor));*/
+		//fVecOfCalibrationData.push_back(new CalibrationData( delTShift_F, temp_F ,energyCalibrationFactor));
+		fVecOfCalibrationData.push_back(new CalibrationData( delTShift_F, temp_F ,gr,energyCalibrationFactor));
+
 	}
 }
 
