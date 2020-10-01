@@ -151,7 +151,7 @@ void SingleMuonTrack::FillSkimmedMuonTracksVector(){
 std::vector<Point3D*> SingleMuonTrack::PlotTrack(bool showTracks){
 
 	//TMultiGraph *mg = new TMultiGraph();
-
+	//std::cout << "SHOW TRACKS from PLOTTRACK: " << showTracks << " : " << __FILE__ << " : " << __LINE__ << std::endl;
 	std::vector<Double_t> xvec, yvec, zvec;
 	std::vector<Double_t> xvecErr, yvecErr, zvecErr;
 	std::vector<Point3D*> rawMuonTrack;
@@ -217,6 +217,7 @@ std::vector<Point3D*> SingleMuonTrack::PlotTrack(bool showTracks){
 	/*DrawGrid("Fitted Muon Track in ZY plane; Z axis ; Y axis", 9, 9);
 	grzFitted->Draw("p");*/
 
+	//std::cout << "SHOW TRACKS : " << showTracks << std::endl;
 	if(showTracks){
 		TCanvas *c = new TCanvas(trackname.c_str(), trackname.c_str(), 800, 800);
 		c->Divide(2,2);

@@ -85,10 +85,10 @@ int main(){
 				len -= 1;
 				//Tracking::Vector3D<double> p1(singleTrack[0]->x,singleTrack[0]->y,singleTrack[0]->z);
 				Tracking::Vector3D<double> p1 = ConvertToTomoVector3D(*singleTrack[0]);
-				p1.Print();
+				//p1.Print();
 				//Tracking::Vector3D<double> p2(singleTrack[len]->x,singleTrack[len]->y,singleTrack[len]->z);
 				Tracking::Vector3D<double> p2 = ConvertToTomoVector3D(*singleTrack[len]);
-				p2.Print();
+				//p2.Print();
 
 				Tomography::Track t(p1,p2);
 				v->Register(&t,7);

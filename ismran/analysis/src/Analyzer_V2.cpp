@@ -73,6 +73,7 @@ Analyzer_V2::Analyzer_V2(std::string datafileName, Calibration *calib,unsigned l
 	PlotCoincidenceCountGraph();
 	PlotEnergyDistributionWithMultiplicity(muonTrackVec,0);
 	std::vector<SingleMuonTrack*> filtered = FiltrationBasedOnCosmicMuonRate(muonTrackVec);
+	std::cout << "Size of Filtered track vector : " << filtered.size() << std::endl;
 	//fittedMuonTracks = PlotTracks_V2(filteredMuonTrackVec,50);
 	fittedMuonTracks = PlotTracks_V2(filtered,0,false);
 	PlotZenithAngle();
@@ -731,6 +732,8 @@ void Analyzer_V2::DisplayHistogramsOf(unsigned int barIndex){
 
 }
 
+#if(0)
+//Working code, keeping it as a backup, before modifying to get estZ using new technique
 void Analyzer_V2::EstimateHitPosition(ScintillatorBar_V2 *scint){
 	TF1 *param = fCalib->GetCalibrationDataOf(scint->barIndex)->fParameterization_F;
 	//long double correctedDelT = scint->deltaTstampCorrected / 1000.;
@@ -758,10 +761,42 @@ void Analyzer_V2::EstimateHitPosition(ScintillatorBar_V2 *scint){
 		scint->EstimateHitPositionAlongX();
 	}
 }
+#endif
 
+#if(1)
+void Analyzer_V2::EstimateHitPosition(ScintillatorBar_V2 *scint){
+	TF1 *param = fCalib->GetCalibrationDataOf(scint->barIndex)->fParameterization_F;
+	//long double correctedDelT = scint->deltaTstampCorrected / 1000.;
+	double correctedDelT = scint->deltaTstampCorrected / 1000.;
+	//float estZ = param->Eval(correctedDelT);
+	float estZ = 0.5*correctedDelT*fCalib->GetCalibrationDataOf(scint->barIndex)->fVelocityInsideScintillator;
+	const double *errors = param->GetParErrors();
+	double estZError = errors[0]+errors[1]*correctedDelT+errors[2]*pow(correctedDelT,2)+errors[3]*pow(correctedDelT,3) ;
+	//param->EvalPar(&correctedDelT,param->GetParErrors());
+	//std::cout << "Corrected DelT : " << correctedDelT << " : Hit Position along Z : " << estZ << std::endl;
+	/*(scint->hitPosition).z=estZ;
+	scint->EstimateHitPositionAlongY();
+	scint->EstimateHitPositionAlongX();
+	 */
+	/*
+	 * Put a check on the estimated Z of the hit point
+	 */
+	if (estZ > -50. && estZ < 50.) {
+		(scint->hitPosition).z=estZ;
+		(scint->hitPositionError).z=estZError;
+		/*std::cout <<"==============================================================================================" << std::endl;
+		std::cout<<"Errors : (" << errors[0] << " : " << errors[1] <<" : " << errors[2] <<" : " << errors[3] << ")" << std::endl;
+		std::cout << "ScintName : " << scint->scintName << " : CorrectedDelT : " << correctedDelT << " : Estimated Z : " << estZ << " : Error in Z postion : " << estZError << " : " << __FILE__ <<" : " << __LINE__ << std::endl;
+		std::cout <<"==============================================================================================" << std::endl;
+		*/scint->EstimateHitPositionAlongY();
+		scint->EstimateHitPositionAlongX();
+	}
+}
+#endif
 //void Analyzer_V2::PlotTracks_V2(std::vector< SingleMuonTrack* > muonTrackVec,unsigned int numOfTracks){
 std::vector< std::vector<Point3D*> >  Analyzer_V2::PlotTracks_V2(std::vector< SingleMuonTrack* > muonTrackVec,unsigned int numOfTracks, bool showTracks){
 
+	std::cout << "Value of ShowTracks from PlotTracks_V2 : " << showTracks << std::endl;
 	std::vector< std::vector<Point3D*> > fittedMuonTracks;
 	if(numOfTracks==0){
 		numOfTracks = muonTrackVec.size();
@@ -795,6 +830,7 @@ std::vector< std::vector<Point3D*> >  Analyzer_V2::PlotTracks_V2(std::vector< Si
 	}
 	return fittedMuonTracks;
 }
+
 
 std::vector< SingleMuonTrack* > Analyzer_V2::PlotEnergyLossDistributionOfMuonTracks(std::vector< SingleMuonTrack* > muonTrackVec){
 	(new TCanvas())->SetLogy();
@@ -976,7 +1012,7 @@ void Analyzer_V2::PlotZenithAngle(){
 	//zenithAngleHist->Scale(1/zenithAngleHist->Integral());
 	std::cout << "@@@@@@@@@@ Fitted Parameter for ZenithAngle Histogram @@@@@@@@@" << std::endl;
 	new TCanvas();
-	TF1 *zenForm = new TF1("zenForm", "[0]*sin(x)*pow(cos(x),[1])", 0.,M_PI/2.);
+	TF1 *zenForm = new TF1("zenForm", "[0]*sin(x)*pow(cos(x),[1])", 0.05,M_PI/2.);
 	zenithAngleHist->Fit(zenForm,"r");
 	zenithAngleHist->Draw();
 
@@ -993,7 +1029,7 @@ void Analyzer_V2::PlotZenithAngle(){
 	}
 	new TCanvas();
 	//TF1 *cosSqr = new TF1("cosSqr",Cos2ThetaFit,0,M_PI/2,2);
-	TF1 *cosSqr = new TF1("cosSqr", "[0]*pow(cos(x),[1])", 0.,M_PI/2.);
+	TF1 *cosSqr = new TF1("cosSqr", "[0]*pow(cos(x),[1])", 0.2,0.6);
 	solidAngleCorrectedHist->Fit(cosSqr,"r");
 	solidAngleCorrectedHist->Draw();
 

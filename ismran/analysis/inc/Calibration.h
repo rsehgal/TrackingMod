@@ -13,13 +13,16 @@
 #include <iostream>
 
 #include <TF1.h>
-
+#include <TGraphErrors.h>
 
 struct CalibrationData{
 	float fEnergyCalibrationFactor;
 	float fDeltaTCorr;
 	TF1* fDelTCorr_F;
 	TF1* fParameterization_F;
+	TGraph* fParameterization_G;
+
+	double fVelocityInsideScintillator;
 	//double fEnergyCalibFactorForMuon;
 
 	CalibrationData(){}
@@ -28,10 +31,31 @@ struct CalibrationData{
 		fParameterization_F = parameterization;
 		fDeltaTCorr = fDelTCorr_F->GetParameter(1);
 		fEnergyCalibrationFactor = energyCalibrationFactor;
+
+	}
+	CalibrationData(TF1* delTCorr, TF1* parameterization, TGraph* parameterization_g, float energyCalibrationFactor=1){
+			fDelTCorr_F = delTCorr;
+			fParameterization_F = parameterization;
+			fDeltaTCorr = fDelTCorr_F->GetParameter(1);
+			fEnergyCalibrationFactor = energyCalibrationFactor;
+
+			//CalibrationData(delTCorr,parameterization,energyCalibrationFactor);
+			fParameterization_G = parameterization_g;
+			EstimateVelocity();
 	}
 
 	void Print(){
 		std::cout << "DelT Correction : " << fDeltaTCorr << std::endl;
+	}
+
+	void EstimateVelocity(){
+		TF1* formula = new TF1("LinearFit","[0]+[1]*x",-10.,10.);
+		fParameterization_G->Fit(formula,"qn");
+		fVelocityInsideScintillator = formula->GetParameter(1);
+		//long double correctedDelT = scint->deltaTstampCorrected / 1000.;
+		//double correctedDelT = scint->deltaTstampCorrected / 1000.;
+		//float estZ = param->Eval(correctedDelT);
+		//float estZ = 0.5*correctedDelT*m;
 	}
 
 };
