@@ -47,6 +47,11 @@ void ClearMuonTrackVec(std::vector< SingleMuonTrack* > muonTrackVec){
 		delete muonTrackVec[i];
 	}
 }
+
+Analyzer_V2::Analyzer_V2(Calibration *calib){
+
+}
+
 Analyzer_V2::Analyzer_V2(std::string datafileName, Calibration *calib,unsigned long int bunchSize){
 	fBunchSize = bunchSize;
 	fout = new TFile("calib.root","RECREATE");
@@ -827,7 +832,9 @@ std::vector< std::vector<Point3D*> >  Analyzer_V2::PlotTracks_V2(std::vector< Si
 	}
 	unsigned int ntracks = numOfTracks;
 	unsigned int counter = 0;
+	bool breakCondCounter = 0 ;
 	while(ntracks && counter < numOfTracks){
+	//while(counter < numOfTracks){
 		if(muonTrackVec[counter]->fIsValid ){
 			//std::cout << "@@@@@@@@@@@@@@@@@ Valid Track Counter @@@@@@@@@@@@@ : " << __FILE__ << " : " << __LINE__ << std::endl; 
 			if((muonTrackVec[counter]->fSingleMuonTrack).size() > 6){
@@ -838,12 +845,13 @@ std::vector< std::vector<Point3D*> >  Analyzer_V2::PlotTracks_V2(std::vector< Si
 				 * Putting some more VERY STRINGENT cuts to select really good tracks for visualization purpose
 				 */
 				if( ((muonTrackVec[counter]->fSingleMuonTrack).size() == numOfLayers)
-					//&&((muonTrackVec[counter]->fSingleMuonTrack[0]->hitPosition).y > 35)
-					//&& ((muonTrackVec[counter]->fSingleMuonTrack[numOfLayers-1]->hitPosition).y < -35) 
+					&&((muonTrackVec[counter]->fSingleMuonTrack[0]->hitPosition).y > 35)
+					&& ((muonTrackVec[counter]->fSingleMuonTrack[numOfLayers-1]->hitPosition).y < -35)
 					)
 
 				{
-					//std::cout << "Num of fire layers and Y criteria match :  " << __FILE__ << " : " << __LINE__ << std::endl; 
+					std::cout << "Num of fire layers and Y criteria match :  " << __FILE__ << " : " << __LINE__ << std::endl;
+					breakCondCounter++;
 					std::vector<Point3D*> fittedSingleMuonTrack = muonTrackVec[counter]->PlotTrack(showTracks);
 					if(!CheckRange(fittedSingleMuonTrack)){
 						std::cout << "@@@@@@@@@@ Is in correct range @@@@@@@@@@@ :  " << __FILE__ << " : " << __LINE__ << std::endl; 
@@ -852,6 +860,9 @@ std::vector< std::vector<Point3D*> >  Analyzer_V2::PlotTracks_V2(std::vector< Si
 						//muonTrackVec[counter]->Print();
 						ntracks--;
 					}
+
+					if(breakCondCounter == numOfTracks)
+						break;
 				}
 			}
 		}

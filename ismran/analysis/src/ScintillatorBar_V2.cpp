@@ -8,7 +8,7 @@
 #include "ScintillatorBar_V2.h"
 #include "HardwareNomenclature.h"
 #include "G4SystemOfUnits.hh"
-
+#include "Calibration.h"
 bool verbose = false;
 
 ScintillatorBar_V2::ScintillatorBar_V2() {
@@ -115,6 +115,37 @@ void ScintillatorBar_V2::Print(){
 					  << "Energy Deposited : " << qlongMeanCorrected << " : Path Length : " << pathLength << std::endl;
 
 
+}
+
+void ScintillatorBar_V2::EstimateHitPosition(Calibration *fCalib){
+	TF1 *param = fCalib->GetCalibrationDataOf(barIndex)->fParameterization_F;
+	//long double correctedDelT = scint->deltaTstampCorrected / 1000.;
+	//double correctedDelT = scint->deltaTstampCorrected / 1000.;
+	double correctedDelT = deltaTstamp;
+	//float estZ = param->Eval(correctedDelT);
+	float estZ = 0.5*correctedDelT*fCalib->GetCalibrationDataOf(barIndex)->fVelocityInsideScintillator;
+	const double *errors = param->GetParErrors();
+	double estZError = errors[0]+errors[1]*correctedDelT+errors[2]*pow(correctedDelT,2)+errors[3]*pow(correctedDelT,3) ;
+	//param->EvalPar(&correctedDelT,param->GetParErrors());
+	//std::cout << "Corrected DelT : " << correctedDelT << " : Hit Position along Z : " << estZ << std::endl;
+	/*(scint->hitPosition).z=estZ;
+	scint->EstimateHitPositionAlongY();
+	scint->EstimateHitPositionAlongX();
+	 */
+	/*
+	 * Put a check on the estimated Z of the hit point
+	 */
+	if (estZ > -50. && estZ < 50.) {
+		(hitPosition).z=estZ;
+		(hitPositionError).z=estZError;
+		/*std::cout <<"==============================================================================================" << std::endl;
+		std::cout<<"Errors : (" << errors[0] << " : " << errors[1] <<" : " << errors[2] <<" : " << errors[3] << ")" << std::endl;
+		std::cout << "ScintName : " << scint->scintName << " : CorrectedDelT : " << correctedDelT << " : Estimated Z : " << estZ << " : Error in Z postion : " << estZError << " : " << __FILE__ <<" : " << __LINE__ << std::endl;
+		std::cout <<"==============================================================================================" << std::endl;
+		*/
+		EstimateHitPositionAlongY();
+		EstimateHitPositionAlongX();
+	}
 }
 
 void ScintillatorBar_V2::EstimateHitPositionAlongX(){

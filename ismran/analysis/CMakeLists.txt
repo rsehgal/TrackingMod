@@ -75,7 +75,7 @@ target_link_libraries(readCalibrationFormulaFile ${ROOT_LIBRARIES} ${TOMOLIB})
 add_executable(TestDataTree test/TestDataTree.cpp ${sources} ${headers})
 target_link_libraries(TestDataTree ${ROOT_LIBRARIES} ${TOMOLIB})
 
-add_executable(TestDataTree2 test/TestDataTree2.cpp ${sources} ${headers})
-target_link_libraries(TestDataTree2 ${ROOT_LIBRARIES} ${TOMOLIB})
+#add_executable(TestDataTree2 test/TestDataTree2.cpp ${sources} ${headers})
+#target_link_libraries(TestDataTree2 ${ROOT_LIBRARIES} ${TOMOLIB})
 
 #target_link_libraries(main ${Geant4_LIBRARIES} Tomo)
