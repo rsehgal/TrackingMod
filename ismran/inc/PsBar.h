@@ -35,6 +35,7 @@ extern int muonEnergyPeak;
 extern int nbins;
 extern int minEnergyDepositedByMuonTrack;// = 170000;
 extern int maxEnergyDepositedByMuonTrack;// = 190000;
+extern unsigned long int timeBetweenTwoMuonTracks;
 
 extern double fwhm;// = 2.355 * 5.66353 ;
 

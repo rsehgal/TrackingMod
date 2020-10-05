@@ -18,6 +18,8 @@
 #include "Analyzer_V2.h"
 #include "base/Global.h"
 
+#include "DataTree.h"
+
 using namespace std;
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
@@ -50,8 +52,29 @@ void B1RunAction::BeginOfRunAction(const G4Run*)
   energyHist = new TH1F("EnergyHist","EnergyHist",1000,0,250000);
   Tomography::EventBreak::instance()->fEffEvNo = 0;
 
+  fDataTree = new DataTree();
 }
 
+void B1RunAction::WriteData(){
+  for(unsigned int i = 0 ; i < MySD::muonTrackVec.size() ; i++){
+    SingleMuonTrack *singleMuonTrack = MySD::muonTrackVec[i];
+    for(unsigned int j = 0 ; j < singleMuonTrack->size() ; j++){
+      ScintillatorBar_V2 *scint = (singleMuonTrack->fSingleMuonTrack)[j];
+      fDataTree->Fill((scint->scintName).c_str(),scint->qlongNear,scint->qlongFar,scint->qlongMean,
+                      scint->qlongMeanCorrected,scint->tstampNear, scint->tstampFar,
+                      scint->tsmallTimeStamp,scint->deltaTstamp,scint->deltaTstampCorrected,
+                      scint->barIndex,scint->layerIndex);
+
+      /*void Fill(char *scintname,UInt_t qlongnear,UInt_t qlongfar, Double_t qlongmean,
+          Double_t qlongmeancorrected, ULong64_t tstampnear, ULong64_t tstampfar,
+          ULong64_t tsmalltimestamp, Long64_t deltatstamp, Long64_t deltatstampcorrected,
+          unsigned short barindex, unsigned short layerindex);*/
+    }
+  }
+  fDataTree->Write();
+  energyHist->Write();
+  fDataTree->Close();
+}
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 void B1RunAction::EndOfRunAction(const G4Run* run)
@@ -86,16 +109,20 @@ void B1RunAction::EndOfRunAction(const G4Run* run)
   int count = 0;
   for(unsigned int i = 0 ; i < MySD::muonTrackVec.size() ; i++){
 	  globalMultiplicityHist->Fill(MySD::muonTrackVec[i]->size());
-	  if(MySD::muonTrackVec[i]->size() > 9){
+	  /*
+      //NOT MAKING ANY SENSE
+      
+      if(MySD::muonTrackVec[i]->size() > 9){
 		  std::cout <<"======================= Muon Track Length : " << MySD::muonTrackVec[i]->size() <<"  =======================================" << std::endl;
 		  count++;
 		  //MySD::muonTrackVec[i]->Print();
 		  if(count==10)
 			  break;
-	  }
+	  }*/
   }
   new TCanvas();
   globalMultiplicityHist->Draw();
+  globalMultiplicityHist->Write();
 
   std::cout << "Total Num of Stopped particles : " << MySD::numOfStoppedParticles << std::endl;
   std::cout << ((1.0*MySD::numOfStoppedParticles/Tomography::EventBreak::instance()->fEffEvNo)*100)<<" % of Number of particles that reaches the Sensitive detector region" << std::endl;
@@ -103,6 +130,8 @@ void B1RunAction::EndOfRunAction(const G4Run* run)
 #ifdef USE_CRY
   CryGeantInterface::energyHist->Draw();
 #endif
+
+  WriteData();
 
   fApp->Run();
 }
