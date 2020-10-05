@@ -23,7 +23,7 @@ unsigned long int Analyzer_V2::fMuonTrackNum = 0;
 
 Analyzer_V2::Analyzer_V2() {
 	// TODO Auto-generated constructor stub
-
+	fout = new TFile("calib.root","RECREATE");
 }
 
 Analyzer_V2::~Analyzer_V2() {
@@ -97,6 +97,30 @@ Analyzer_V2::Analyzer_V2(std::string datafileName, Calibration *calib,unsigned l
 */
 
 	//Uncomment below line to get the histograms
+	InitializeHistograms();
+	FillHistograms();
+	DisplayHistograms();
+
+
+}
+
+/* 
+ * New constructor for analysis of muon track vector generated from simulation
+ */
+Analyzer_V2::Analyzer_V2(std::vector< SingleMuonTrack* > muonTrackVec ){
+	PlotHistOfNumOfMuonHitsInMuonTracks_V2(muonTrackVec);
+	PlotHistOfDelTBetweenMuonTracks_V2(muonTrackVec);
+	CalculateTotalEnergyDepositionForMuonTracks(muonTrackVec);
+	std::vector< SingleMuonTrack* > filteredMuonTrackVec = PlotEnergyLossDistributionOfMuonTracks(muonTrackVec);
+	HistInitializer();
+	FillCoincidenceHist_V2(muonTrackVec);
+	PlotCoincidenceCountGraph();
+	PlotEnergyDistributionWithMultiplicity(muonTrackVec,0);
+	std::vector<SingleMuonTrack*> filtered = FiltrationBasedOnCosmicMuonRate(muonTrackVec);
+	std::cout << "Size of Filtered track vector : " << filtered.size() << std::endl;
+	//fittedMuonTracks = PlotTracks_V2(filteredMuonTrackVec,50);
+	fittedMuonTracks = PlotTracks_V2(filtered,0,false);
+	PlotZenithAngle();
 	InitializeHistograms();
 	FillHistograms();
 	DisplayHistograms();
@@ -805,20 +829,25 @@ std::vector< std::vector<Point3D*> >  Analyzer_V2::PlotTracks_V2(std::vector< Si
 	unsigned int counter = 0;
 	while(ntracks && counter < numOfTracks){
 		if(muonTrackVec[counter]->fIsValid ){
+			//std::cout << "@@@@@@@@@@@@@@@@@ Valid Track Counter @@@@@@@@@@@@@ : " << __FILE__ << " : " << __LINE__ << std::endl; 
 			if((muonTrackVec[counter]->fSingleMuonTrack).size() > 6){
 				//PlotOneTrack(muonTrackVec[counter]->fSingleMuonTrack);
 
-
+				//std::cout << "######### Track Size > 6 ########## : " << __FILE__ << " : " << __LINE__ << std::endl; 
 				/*
 				 * Putting some more VERY STRINGENT cuts to select really good tracks for visualization purpose
 				 */
 				if( ((muonTrackVec[counter]->fSingleMuonTrack).size() == numOfLayers)
-					&& ((muonTrackVec[counter]->fSingleMuonTrack[0]->hitPosition).y > 35)
-					&& ((muonTrackVec[counter]->fSingleMuonTrack[numOfLayers-1]->hitPosition).y < -35) )
+					//&&((muonTrackVec[counter]->fSingleMuonTrack[0]->hitPosition).y > 35)
+					//&& ((muonTrackVec[counter]->fSingleMuonTrack[numOfLayers-1]->hitPosition).y < -35) 
+					)
 
 				{
+					//std::cout << "Num of fire layers and Y criteria match :  " << __FILE__ << " : " << __LINE__ << std::endl; 
 					std::vector<Point3D*> fittedSingleMuonTrack = muonTrackVec[counter]->PlotTrack(showTracks);
 					if(!CheckRange(fittedSingleMuonTrack)){
+						std::cout << "@@@@@@@@@@ Is in correct range @@@@@@@@@@@ :  " << __FILE__ << " : " << __LINE__ << std::endl; 
+					
 						fittedMuonTracks.push_back(fittedSingleMuonTrack);
 						//muonTrackVec[counter]->Print();
 						ntracks--;
@@ -999,14 +1028,19 @@ void Analyzer_V2::PlotZenithAngle(){
 	TVector3 ref(0.,-1.,0.);
 	int numOfBins = 100;
 	TH1D *zenithAngleHist = new TH1D("ZenithAngle", "ZenithAngle Distribution",numOfBins,0.,1.5);
+	std::cout << "Size of fittedMuonTracks  from Analyzer PlotZenithAngle : " << fittedMuonTracks.size() << std::endl;
 	for(unsigned int trackIndex = 0 ; trackIndex < fittedMuonTracks.size() ; trackIndex++){
 		std::vector<Point3D*> singleMuonTrack = fittedMuonTracks[trackIndex];
 		Point3D *startPoint = singleMuonTrack[0];
 		Point3D *endPoint = singleMuonTrack[singleMuonTrack.size()-1];
 		TVector3 muonDir(TVector3(endPoint->x,endPoint->y,endPoint->z)-TVector3(startPoint->x,startPoint->y,startPoint->z));
+		std::cout << "STARTPOINT : "; startPoint->Print();
+		std::cout << "ENDPOINT : " ; endPoint->Print();
+		std::cout << "MUON DIR : " << muonDir.x() <<" , " << muonDir.y() <<" , " << muonDir.z() << std::endl;
 		//double zenitAngle = acos(muonDir.Y()/muonDir.Mag());//muonDir.Theta();
 		//double zenitAngle = muonDir.Theta();
 		double zenitAngle = muonDir.Angle(ref);
+		std::cout << "ZenithAngle : " << zenitAngle << std::endl;
 		zenithAngleHist->Fill(zenitAngle);
 	}
 	//zenithAngleHist->Scale(1/zenithAngleHist->Integral());

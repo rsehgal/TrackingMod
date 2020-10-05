@@ -19,6 +19,7 @@
 
 class G4Step;
 class G4HCofThisEvent;
+class TTree;
 
 
 
@@ -43,6 +44,7 @@ public:
 	 */
 	void InitializeVectorOfPsBars();
 
+	//static 
 	std::vector<ScintillatorBar_V2*> psBarVec;
 	void PrintVectorOfPsBars();
 
@@ -73,9 +75,12 @@ private:
 	    MyHitsCollection* fHitsCollection;
 	    static int stepNum;
 	    static unsigned int evNo;
+
 public:
 	    static unsigned int numOfStoppedParticles;
+	    static unsigned long int muonNum;
 	    
+
 
 };
 

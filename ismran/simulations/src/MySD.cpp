@@ -18,6 +18,7 @@
 #include "base/Global.h"
 #include "Analyzer_V2.h"
 #include <TH1F.h>
+#include "HardwareNomenclature.h"
 
 int MySD::stepNum = 0;
 int MySD::numOfParticlesReached = 0;
@@ -25,6 +26,8 @@ unsigned int MySD::evNo=0;
 std::vector< std::vector<ScintillatorBar_V2*> > MySD::eventsVec;
 std::vector< SingleMuonTrack* > MySD::muonTrackVec;
 unsigned int MySD::numOfStoppedParticles = 0;
+//std::vector<ScintillatorBar_V2*> MySD::psBarVec;
+unsigned long int MySD::muonNum = -1;
 
 bool verbose = false;
 // std::vector<ScintillatorBar*> MySD::eventsVec2;
@@ -78,6 +81,7 @@ MySD::MySD(const G4String& name, const G4String& hitsCollectionName)
 void MySD::Initialize(G4HCofThisEvent* hce)
 {
   // Create hits collection
+  //muonNum++;
 	if(verbose){
 		std::cout <<" @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@" << std::endl;
 		std::cout <<"Processing Ev No : " << evNo << std::endl;
@@ -170,26 +174,66 @@ void MySD::EndOfEvent(G4HCofThisEvent*)
       (*fHitsCollection)[i]->Print();
       psBarVec[(*fHitsCollection)[i]->GetCopyNum()]->barHitted=true;
       psBarVec[(*fHitsCollection)[i]->GetCopyNum()]->qlongMean += (*fHitsCollection)[i]->GetEnergyDeposited();
-      
+      G4ThreeVector hitPosition = (*fHitsCollection)[i]->GetPosition();
+      //G4cout << "MuonNum : " << muonNum<< " : BarName : " << vecOfBarsNamess[(*fHitsCollection)[i]->GetCopyNum()] 
+        //     << " : G4Hit Position : " <<  hitPosition << G4endl;
+      (psBarVec[(*fHitsCollection)[i]->GetCopyNum()]->hitsVectorInAnEventInABar).push_back(
+        new Point3D(hitPosition.x(),hitPosition.y(),hitPosition.z())
+      );
 
+
+      //hitsVectorInAnEventInABar
     }
 
+
+    /*-------------------------------------*/
+    {
+      /*int debugCounter=0;
+      for(unsigned int i = 0 ; i < psBarVec.size() ; i++){
+        if(psBarVec[i]->barHitted){
+          debugCounter++;
+          std::cout << "Num of hits in " << i << " bar : " << (psBarVec[i]->hitsVectorInAnEventInABar).size() << " : " << __FILE__ << " : " << __LINE__ << std::endl;
+        }
+      }
+      std::cout << "Number of Hitted bars : " << debugCounter << " : " << __FILE__ <<" : " << __LINE__ << std::endl;
+      */
+    }    
+
+    /*-------------------------------------*/
+    /*
+     *Loop to maintain the correct muon numbers
+     */
+    for(unsigned int i = 0 ; i < psBarVec.size() ; i++){
+      if(psBarVec[i]->barHitted){
+        muonNum++;
+        break;
+      }
+    }
+
+    //std::cout << "Length of HIT POINTs in an event : " << nofHits << std::endl;
     std::vector<ScintillatorBar_V2*> onlyHittedBarVec;
     for(unsigned int i = 0 ; i < psBarVec.size() ; i++){
       if(psBarVec[i]->barHitted){
+
     	// std::cout <<"Going to insert hitted bar with index : " <<i <<  __FILE__ << " : "  << __LINE__ << std::endl;
         ScintillatorBar_V2 *scintBar = new ScintillatorBar_V2(*psBarVec[i]);
         scintBar->qlongMeanCorrected = scintBar->qlongMean*1000.;
+        //scintBar->CalculateVariousPhysicalParameters(muonNum);
+        //scintBar->Print();
 
         /*
          * PUTTING THE CUT ON THE ENERGY DEPOSITED
          *
          * tHIS GIVES SIMILAR MULTIPLICITY PICTURES AS WE ARE GETTING FROM DATA
          */
-        if(scintBar->qlongMeanCorrected > 10000 && scintBar->qlongMeanCorrected < 35000)
+        if(scintBar->qlongMeanCorrected > 10000 && scintBar->qlongMeanCorrected < 35000){
         	onlyHittedBarVec.push_back(scintBar);
-        if(onlyHittedBarVec.size() > 0)
+          scintBar->CalculateVariousPhysicalParameters(muonNum);
+        }
+        if(onlyHittedBarVec.size() > 0){
         	reachedSensitiveRegion |= true;
+          
+        }
       }
     }
 

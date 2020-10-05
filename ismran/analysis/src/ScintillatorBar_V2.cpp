@@ -7,6 +7,7 @@
 
 #include "ScintillatorBar_V2.h"
 #include "HardwareNomenclature.h"
+#include "G4SystemOfUnits.hh"
 
 bool verbose = false;
 
@@ -83,11 +84,31 @@ ScintillatorBar_V2::ScintillatorBar_V2(const ScintillatorBar_V2 &sbar){
 		tsmallTimeStamp = sbar.tsmallTimeStamp;
 		deltaTstamp = sbar.deltaTstamp;
 		pathLength = 0.;
+		hitsVectorInAnEventInABar = sbar.hitsVectorInAnEventInABar;
 
 	}
 
-void ScintillatorBar_V2::Print(){
+/*
+ * Constructor to be used only for Simulated data
+ */
+ScintillatorBar_V2::ScintillatorBar_V2(ULong64_t tstampnear, ULong64_t tstampfar,
+					   Double_t qlongmean, unsigned short barindex){
 
+		barIndex = barindex;
+		layerIndex = barIndex/numOfBarsInEachLayer;
+		scintName = vecOfBarsNamess[barIndex];
+		qlongMean = qlongmean;
+		qlongMeanCorrected = qlongMean*1000.;
+		qlongNear = 0;
+		qlongFar = 0;
+		tstampNear = tstampnear;
+		tstampFar = tstampfar;
+		tsmallTimeStamp = (tstampNear < tstampFar) ? tstampNear : tstampFar;
+		deltaTstamp=tstampNear-tstampFar;
+		pathLength = 0.;
+}
+void ScintillatorBar_V2::Print(){
+			std::cout <<"*************************************************************" << std::endl;
 			std::cout << scintName << " , " << barIndex << " , " << qlongNear << " , " << qlongFar << " , " << qlongMean << " , "
 					  << tstampNear  << " , " << tstampFar << " , " << tsmallTimeStamp << " , " << deltaTstamp << " , "
 					  << " ( " << hitPosition.x << " , " << hitPosition.y << " , " << hitPosition.z << " )  : "
@@ -106,4 +127,32 @@ void ScintillatorBar_V2::EstimateHitPositionAlongY(){
 		//hitPosition.y = 0.;
 		hitPosition.y = vecOfScintXYCenter[barIndex].y;
 		hitPositionError.y = errorY;
+}
+
+void ScintillatorBar_V2::CalculateVariousPhysicalParameters(unsigned long muonNum){
+	qlongMeanCorrected = qlongMean*1000.;
+	meanHitPosition.x = 0.;
+	meanHitPosition.y = 0.;
+	meanHitPosition.z = 0.;
+	for(unsigned int i = 0 ; i < hitsVectorInAnEventInABar.size() ; i++){
+		//std::cout << "Hit point Vec from ScintillatorBar_V2 : "; hitsVectorInAnEventInABar[i]->Print();
+		meanHitPosition.x += hitsVectorInAnEventInABar[i]->x;
+		meanHitPosition.y += hitsVectorInAnEventInABar[i]->y;
+		meanHitPosition.z += hitsVectorInAnEventInABar[i]->z;
+	}
+	meanHitPosition.x /= hitsVectorInAnEventInABar.size();
+	meanHitPosition.y /= hitsVectorInAnEventInABar.size();
+	meanHitPosition.z /= hitsVectorInAnEventInABar.size();
+
+	unsigned long int startTime = muonNum*timeBetweenTwoMuonTracks;
+	//std::cout << "Muon Number : " << muonNum << " : startTime : " << startTime << " : " << __FILE__ <<" : " << __LINE__ << std::endl;
+	//std::cout << "hitsVector.size() : " << hitsVectorInAnEventInABar.size() << std::endl;
+	//meanHitPosition.Print();
+
+	tstampNear = startTime + ((barLength/2. * cm + meanHitPosition.z)/(barLength*cm))*timeDiffNearFar;
+	tstampFar = startTime + ((barLength/2. * cm - meanHitPosition.z)/(barLength*cm))*timeDiffNearFar;
+	//std::cout << "TimeStampNear : " << tstampNear <<" : TimeStampFar : " << tstampFar << std::endl;
+	tsmallTimeStamp = (tstampNear < tstampFar) ? tstampNear : tstampFar;
+	deltaTstamp = tstampNear-tstampFar;
+	deltaTstampCorrected = deltaTstamp;	
 }

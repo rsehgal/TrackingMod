@@ -22,6 +22,7 @@ int qstart = 3000;
 int qend = 25000;
 int nbins = 1000;
 int timeDiffNearFar = 25000 ; //ps
+unsigned long int timeBetweenTwoMuonTracks = 3e+9;;
 int muonEnergyPeak = 20000;
 int minEnergyDepositedByMuonTrack = 170000;
 int maxEnergyDepositedByMuonTrack = 190000;

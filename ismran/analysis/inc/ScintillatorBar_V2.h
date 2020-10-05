@@ -39,6 +39,17 @@ public:
 	Point3D hitPositionError;
 	Point3D fittedHitPosition;
 
+
+	/*
+	 * Introduced ONLY FOR SIMULATION to store the hits within
+	 * each scintillator, must be cleared at the end of each
+	 * event, after calculation of delT
+	 */
+	std::vector<Point3D*> hitsVectorInAnEventInABar;
+	Point3D meanHitPosition;
+	void CalculateVariousPhysicalParameters(unsigned long muonNum);
+
+
 	//Estimated Path length within each Bar
 	double pathLength;
 	bool barHitted;
@@ -51,6 +62,10 @@ public:
 	ScintillatorBar_V2(unsigned short l_channelNear, unsigned short l_channelFar,
 						ULong64_t l_tstampNear, ULong64_t l_tstampFar,
 						UInt_t l_qlongNear,	UInt_t l_qlongFar);
+
+	//Constructor to generate Scintillator from simulated data
+	ScintillatorBar_V2(ULong64_t l_tstampNear, ULong64_t l_tstampFar,
+					   Double_t qlongmean, unsigned short barIndex);
 
 	void EstimateHitPositionAlongX();
 	void EstimateHitPositionAlongY();
