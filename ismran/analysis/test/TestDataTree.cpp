@@ -6,6 +6,7 @@
 #include "SingleMuonTrack.h"
 #include "Histograms.h"
 #include "HelperFunctions.h"
+#include "Calibration.h"
 int main(){
 	/*DataTree t("simulatedData.root");
 	unsigned int numOfEntries = t.GetEntries();
@@ -56,6 +57,11 @@ int main(){
 	fTree->SetBranchAddress("layerIndex", &layerIndex);
 
 	unsigned int fNumOfEntries = fTree->GetEntries();
+
+	Calibration *cb = new Calibration("/home/rsehgal/BackBoneSoftwares/ismranData/completeCalib.root");
+	Analyzer_V2 av;
+
+	GenerateScintMatrixXYCenters();
 	std::vector<ScintillatorBar_V2*> scintBarVec;
 	//fNumOfEntries = 10;
 	for(unsigned int i = 0 ; i < fNumOfEntries ; i++){
@@ -67,14 +73,15 @@ int main(){
 		          << " , " << tsmallTimeStamp << " , " << deltaTstamp << " , " << deltaTstampCorrected
 		          << " , " << barIndex << " , " << layerIndex << std::endl;*/
 		scintBarVec.push_back(new ScintillatorBar_V2(tstampNear,tstampFar,qlongMean,barIndex));
+		scintBarVec[i]->EstimateHitPosition(cb);
 	}
 
 
 	/*for(unsigned int i = 0 ; i < fNumOfEntries ; i++){
 		scintBarVec[i]->Print();
 	}*/
-   	
-	Analyzer_V2 av;
+
+
 	av.fVecOfScintillatorBar = scintBarVec;
 	std::vector< SingleMuonTrack* > muonTrackVec = av.ReconstrutTrack_V2();
 	av.PlotHistOfNumOfMuonHitsInMuonTracks_V2(muonTrackVec);

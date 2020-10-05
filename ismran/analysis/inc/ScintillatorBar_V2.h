@@ -11,6 +11,7 @@
 #include "includes.hh"
 #include "PsBar.h"
 
+class Calibration;
 
 class ScintillatorBar_V2 {
 
@@ -62,6 +63,7 @@ public:
 	ScintillatorBar_V2(unsigned short l_channelNear, unsigned short l_channelFar,
 						ULong64_t l_tstampNear, ULong64_t l_tstampFar,
 						UInt_t l_qlongNear,	UInt_t l_qlongFar);
+	void EstimateHitPosition(Calibration *fCalib);
 
 	//Constructor to generate Scintillator from simulated data
 	ScintillatorBar_V2(ULong64_t l_tstampNear, ULong64_t l_tstampFar,
