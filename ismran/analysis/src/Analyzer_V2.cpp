@@ -822,6 +822,55 @@ void Analyzer_V2::EstimateHitPosition(ScintillatorBar_V2 *scint){
 	}
 }
 #endif
+
+std::vector< std::vector<Point3D*> >  Analyzer_V2::PlotTracks_V2(std::vector< SingleMuonTrack* > muonTrackVec,unsigned int numOfTracks, bool showTracks){
+
+	std::cout << "Value of ShowTracks from PlotTracks_V2 : " << showTracks << std::endl;
+	std::vector< std::vector<Point3D*> > fittedMuonTracks;
+	if(numOfTracks==0){
+		numOfTracks = muonTrackVec.size();
+	}
+	unsigned int ntracks = numOfTracks;
+	unsigned int counter = 0;
+	unsigned int breakCondCounter = 0 ;
+
+	int minNumOfLayers = 6;
+
+	while(counter < numOfTracks){
+
+		if( ((muonTrackVec[counter]->fSingleMuonTrack).size() >= minNumOfLayers)
+			//&&((muonTrackVec[counter]->fSingleMuonTrack[0]->hitPosition).y > 35)
+			//&& ((muonTrackVec[counter]->fSingleMuonTrack[numOfLayers-1]->hitPosition).y < -35)
+				){
+
+			std::vector<Point3D*> fittedSingleMuonTrack = muonTrackVec[counter]->PlotTrack(showTracks);
+			//std::cout << "Fitted track size : " << fittedSingleMuonTrack.size() << std::endl;
+			//fittedMuonTracks.push_back(fittedSingleMuonTrack);
+			//breakCondCounter++;
+
+			if(!CheckRange(fittedSingleMuonTrack)){
+				//std::cout << "@@@@@@@@@@ Is in correct range @@@@@@@@@@@ :  " << __FILE__ << " : " << __LINE__ << std::endl;
+				fittedMuonTracks.push_back(fittedSingleMuonTrack);
+				//muonTrackVec[counter]->Print();
+				breakCondCounter++;
+			}
+
+
+		}
+
+		//Condition to break the loop
+		if(breakCondCounter == numOfTracks)
+			break;
+
+		counter++;
+	}
+
+	return fittedMuonTracks;
+}
+
+
+#if(0)
+//Old defintion
 //void Analyzer_V2::PlotTracks_V2(std::vector< SingleMuonTrack* > muonTrackVec,unsigned int numOfTracks){
 std::vector< std::vector<Point3D*> >  Analyzer_V2::PlotTracks_V2(std::vector< SingleMuonTrack* > muonTrackVec,unsigned int numOfTracks, bool showTracks){
 
@@ -870,6 +919,7 @@ std::vector< std::vector<Point3D*> >  Analyzer_V2::PlotTracks_V2(std::vector< Si
 	}
 	return fittedMuonTracks;
 }
+#endif
 
 
 std::vector< SingleMuonTrack* > Analyzer_V2::PlotEnergyLossDistributionOfMuonTracks(std::vector< SingleMuonTrack* > muonTrackVec){
@@ -1045,13 +1095,13 @@ void Analyzer_V2::PlotZenithAngle(){
 		Point3D *startPoint = singleMuonTrack[0];
 		Point3D *endPoint = singleMuonTrack[singleMuonTrack.size()-1];
 		TVector3 muonDir(TVector3(endPoint->x,endPoint->y,endPoint->z)-TVector3(startPoint->x,startPoint->y,startPoint->z));
-		std::cout << "STARTPOINT : "; startPoint->Print();
-		std::cout << "ENDPOINT : " ; endPoint->Print();
-		std::cout << "MUON DIR : " << muonDir.x() <<" , " << muonDir.y() <<" , " << muonDir.z() << std::endl;
+		//std::cout << "STARTPOINT : "; startPoint->Print();
+		//std::cout << "ENDPOINT : " ; endPoint->Print();
+		//std::cout << "MUON DIR : " << muonDir.x() <<" , " << muonDir.y() <<" , " << muonDir.z() << std::endl;
 		//double zenitAngle = acos(muonDir.Y()/muonDir.Mag());//muonDir.Theta();
 		//double zenitAngle = muonDir.Theta();
 		double zenitAngle = muonDir.Angle(ref);
-		std::cout << "ZenithAngle : " << zenitAngle << std::endl;
+		//std::cout << "ZenithAngle : " << zenitAngle << std::endl;
 		zenithAngleHist->Fill(zenitAngle);
 	}
 	//zenithAngleHist->Scale(1/zenithAngleHist->Integral());

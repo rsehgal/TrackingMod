@@ -34,6 +34,10 @@ if(CRY)
 add_definitions(-DUSE_CRY)
 endif(CRY)
 
+if(USE_RND)
+add_definitions(-DRANDOM_GUN)
+endif(USE_RND)
+
 find_package(ROOT REQUIRED)
 include_directories(${ROOT_INCLUDE_DIR})
 
