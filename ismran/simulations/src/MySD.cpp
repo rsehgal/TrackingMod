@@ -175,8 +175,8 @@ void MySD::EndOfEvent(G4HCofThisEvent*)
       psBarVec[(*fHitsCollection)[i]->GetCopyNum()]->barHitted=true;
       psBarVec[(*fHitsCollection)[i]->GetCopyNum()]->qlongMean += (*fHitsCollection)[i]->GetEnergyDeposited();
       G4ThreeVector hitPosition = (*fHitsCollection)[i]->GetPosition();
-      //G4cout << "MuonNum : " << muonNum<< " : BarName : " << vecOfBarsNamess[(*fHitsCollection)[i]->GetCopyNum()] 
-        //     << " : G4Hit Position : " <<  hitPosition << G4endl;
+     // G4cout << "MuonNum : " << muonNum<< " : BarName : " << vecOfBarsNamess[(*fHitsCollection)[i]->GetCopyNum()]
+           //  << " : G4Hit Position : " <<  hitPosition << G4endl;
       (psBarVec[(*fHitsCollection)[i]->GetCopyNum()]->hitsVectorInAnEventInABar).push_back(
         new Point3D(hitPosition.x(),hitPosition.y(),hitPosition.z())
       );
@@ -185,7 +185,7 @@ void MySD::EndOfEvent(G4HCofThisEvent*)
       //hitsVectorInAnEventInABar
     }
 
-
+     //std::cout << "==============================================================" << std::endl;
     /*-------------------------------------*/
     {
       /*int debugCounter=0;
@@ -214,6 +214,7 @@ void MySD::EndOfEvent(G4HCofThisEvent*)
     std::vector<ScintillatorBar_V2*> onlyHittedBarVec;
     for(unsigned int i = 0 ; i < psBarVec.size() ; i++){
       if(psBarVec[i]->barHitted){
+    	 // std::cout << "BAR : " << i << "  Hitted : Energy Deposited : " << psBarVec[i]->qlongMean << std::endl;
 
     	// std::cout <<"Going to insert hitted bar with index : " <<i <<  __FILE__ << " : "  << __LINE__ << std::endl;
         ScintillatorBar_V2 *scintBar = new ScintillatorBar_V2(*psBarVec[i]);
@@ -237,6 +238,7 @@ void MySD::EndOfEvent(G4HCofThisEvent*)
       }
     }
 
+    //std::cout <<"++++++++++++++++++++++++++++++++++++++++++++++++++++++++++" << std::endl;
     //verbose = true;
     if(verbose){
     std::cout<< "********** Printing onlyHittedBarVec ***********" << std::endl;

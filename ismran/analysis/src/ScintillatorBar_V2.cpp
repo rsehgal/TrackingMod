@@ -105,6 +105,7 @@ ScintillatorBar_V2::ScintillatorBar_V2(ULong64_t tstampnear, ULong64_t tstampfar
 		tstampFar = tstampfar;
 		tsmallTimeStamp = (tstampNear < tstampFar) ? tstampNear : tstampFar;
 		deltaTstamp=tstampNear-tstampFar;
+		deltaTstampCorrected=deltaTstamp;
 		pathLength = 0.;
 }
 void ScintillatorBar_V2::Print(){
@@ -121,8 +122,9 @@ void ScintillatorBar_V2::EstimateHitPosition(Calibration *fCalib){
 	TF1 *param = fCalib->GetCalibrationDataOf(barIndex)->fParameterization_F;
 	//long double correctedDelT = scint->deltaTstampCorrected / 1000.;
 	//double correctedDelT = scint->deltaTstampCorrected / 1000.;
-	double correctedDelT = deltaTstamp;
+	double correctedDelT = deltaTstampCorrected/1000.;
 	//float estZ = param->Eval(correctedDelT);
+	float estZparm = param->Eval(correctedDelT);
 	float estZ = 0.5*correctedDelT*fCalib->GetCalibrationDataOf(barIndex)->fVelocityInsideScintillator;
 	const double *errors = param->GetParErrors();
 	double estZError = errors[0]+errors[1]*correctedDelT+errors[2]*pow(correctedDelT,2)+errors[3]*pow(correctedDelT,3) ;
@@ -138,11 +140,15 @@ void ScintillatorBar_V2::EstimateHitPosition(Calibration *fCalib){
 	if (estZ > -50. && estZ < 50.) {
 		(hitPosition).z=estZ;
 		(hitPositionError).z=estZError;
-		/*std::cout <<"==============================================================================================" << std::endl;
-		std::cout<<"Errors : (" << errors[0] << " : " << errors[1] <<" : " << errors[2] <<" : " << errors[3] << ")" << std::endl;
-		std::cout << "ScintName : " << scint->scintName << " : CorrectedDelT : " << correctedDelT << " : Estimated Z : " << estZ << " : Error in Z postion : " << estZError << " : " << __FILE__ <<" : " << __LINE__ << std::endl;
-		std::cout <<"==============================================================================================" << std::endl;
-		*/
+		verbose = false;
+		if(verbose){
+			std::cout <<"==============================================================================================" << std::endl;
+			std::cout<<"Errors : (" << errors[0] << " : " << errors[1] <<" : " << errors[2] <<" : " << errors[3] << ")" << std::endl;
+			std::cout << "ScintName : " << scintName << " : TNear : " << tstampNear <<" : TFar : " << tstampFar << " : CorrectedDelT : " << correctedDelT << " : Estimated Z : " << estZ <<" : EstZParam : " << estZparm
+					  << " : Diff : " << (estZ-estZparm) <<  " : Error in Z postion : " << estZError << " : " << __FILE__ <<" : " << __LINE__ << std::endl;
+			std::cout <<"==============================================================================================" << std::endl;
+		}
+
 		EstimateHitPositionAlongY();
 		EstimateHitPositionAlongX();
 	}

@@ -8,6 +8,7 @@
 #include "HelperFunctions.h"
 #include "Calibration.h"
 int main(){
+	bool verbose = false;
 	/*DataTree t("simulatedData.root");
 	unsigned int numOfEntries = t.GetEntries();
 	numOfEntries = 10;
@@ -77,9 +78,14 @@ int main(){
 	}
 
 
-	/*for(unsigned int i = 0 ; i < fNumOfEntries ; i++){
-		scintBarVec[i]->Print();
-	}*/
+	if(verbose){
+	//JUST FOR DEBUGGING
+		std::cout << "============== DEBUGGING PRINT STATEMENTS ==============" << std::endl;
+		fNumOfEntries = 10;
+		for(unsigned int i = 0 ; i < fNumOfEntries ; i++){
+			scintBarVec[i]->Print();
+		}
+	}
 
 
 	av.fVecOfScintillatorBar = scintBarVec;
@@ -98,6 +104,19 @@ int main(){
 	av.PlotEnergyDistributionWithMultiplicity(muonTrackVec,0);
 	
 	av.fittedMuonTracks = av.PlotTracks_V2(muonTrackVec,0,false);
+	if(verbose){
+		std::cout << "=============== TRYING TO PRINT FITTED MUON TRACKS ===============" << std::endl;
+		for(unsigned int i = 0 ; i < av.fittedMuonTracks.size() ; i++){
+			std::cout <<"============================================================" << std::endl;
+			for(unsigned int j = 0 ; j < av.fittedMuonTracks[i].size() ; j++){
+				av.fittedMuonTracks[i][j]->Print();
+			}
+
+		}
+	}
+	av.InitializeHistograms();
+	av.FillHistograms();
+	av.DisplayHistograms();
 	std::cout << "Size of Fitted Muon Track vector : " << av.fittedMuonTracks.size() << std::endl;
 	av.PlotZenithAngle();
 	fApp->Run();
