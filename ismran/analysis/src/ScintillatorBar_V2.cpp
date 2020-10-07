@@ -125,7 +125,19 @@ void ScintillatorBar_V2::EstimateHitPosition(Calibration *fCalib){
 	double correctedDelT = deltaTstampCorrected/1000.;
 	//float estZ = param->Eval(correctedDelT);
 	float estZparm = param->Eval(correctedDelT);
+
+	//Using  3rd order polynomial
+	//float estZ = param->Eval(correctedDelT);
+
+
+	float estZ2 = 0.5*correctedDelT*fCalib->GetCalibrationDataOf(barIndex)->fVelocityInsideScintillator;
+	//Using new logic based on traversal of light in scintillator
 	float estZ = 0.5*correctedDelT*fCalib->GetCalibrationDataOf(barIndex)->fVelocityInsideScintillator;
+
+	//Using y = mx + c
+	//float estZ = fCalib->GetCalibrationDataOf(barIndex)->c +
+		//		 correctedDelT*fCalib->GetCalibrationDataOf(barIndex)->fVelocityInsideScintillator;
+
 	const double *errors = param->GetParErrors();
 	double estZError = errors[0]+errors[1]*correctedDelT+errors[2]*pow(correctedDelT,2)+errors[3]*pow(correctedDelT,3) ;
 	//param->EvalPar(&correctedDelT,param->GetParErrors());
@@ -144,8 +156,8 @@ void ScintillatorBar_V2::EstimateHitPosition(Calibration *fCalib){
 		if(verbose){
 			std::cout <<"==============================================================================================" << std::endl;
 			std::cout<<"Errors : (" << errors[0] << " : " << errors[1] <<" : " << errors[2] <<" : " << errors[3] << ")" << std::endl;
-			std::cout << "ScintName : " << scintName << " : TNear : " << tstampNear <<" : TFar : " << tstampFar << " : CorrectedDelT : " << correctedDelT << " : Estimated Z : " << estZ <<" : EstZParam : " << estZparm
-					  << " : Diff : " << (estZ-estZparm) <<  " : Error in Z postion : " << estZError << " : " << __FILE__ <<" : " << __LINE__ << std::endl;
+			std::cout << "ScintName : " << scintName << " : TNear : " << tstampNear <<" : TFar : " << tstampFar << " : CorrectedDelT : " << correctedDelT << " : Estimated Z : " << estZ2 <<" : EstZParam : " << estZparm
+					  << " : Diff : " << (estZ2-estZparm) <<  " : Error in Z postion : " << estZError << " : " << __FILE__ <<" : " << __LINE__ << std::endl;
 			std::cout <<"==============================================================================================" << std::endl;
 		}
 
