@@ -23,6 +23,7 @@ struct CalibrationData{
 	TGraph* fParameterization_G;
 
 	double fVelocityInsideScintillator;
+	double c;
 	//double fEnergyCalibFactorForMuon;
 
 	CalibrationData(){}
@@ -52,6 +53,7 @@ struct CalibrationData{
 		TF1* formula = new TF1("LinearFit","[0]+[1]*x",-10.,10.);
 		fParameterization_G->Fit(formula,"qn");
 		fVelocityInsideScintillator = formula->GetParameter(1);
+		c = formula->GetParameter(0);
 		//long double correctedDelT = scint->deltaTstampCorrected / 1000.;
 		//double correctedDelT = scint->deltaTstampCorrected / 1000.;
 		//float estZ = param->Eval(correctedDelT);

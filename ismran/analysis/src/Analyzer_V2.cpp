@@ -684,7 +684,7 @@ void Analyzer_V2::DisplayHistograms(bool reverse){
 	TCanvas *can = new TCanvas("Histograms","Histograms",800,600);
 	can->SetLogx();
 	//TCanvas *can = new TCanvas("c1");
-	unsigned int totalNumOfBars = 8;// numOfLayers*numOfBarsInEachLayer;
+	unsigned int totalNumOfBars = 4;// numOfLayers*numOfBarsInEachLayer;
 	can->Divide(5,totalNumOfBars,0,0);
 	//std::cout<< "Number of Pads : " << (((TList*) can->GetListOfPrimitives())->GetSize()) << std::endl;
 
