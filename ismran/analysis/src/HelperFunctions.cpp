@@ -11,6 +11,7 @@
 #include <TMath.h>
 
 
+
 std::vector<std::vector<unsigned long int>> myhist2D;
 void HistInitializer(){
 for(unsigned int i = 0 ; i < numOfLayers ; i++){
@@ -110,6 +111,34 @@ void DrawGrid(std::string t, Int_t ngx, Int_t ngy)
       y = y +ys;
    }
 }
+
+TH1D* PlotZenithAngle(std::vector<std::vector<Point3D*>> muonTrackVec, std::string histTitle){
+	TVector3 ref(0.,-1.,0.);
+	int numOfBins = 100;
+	TH1D *zenithAngleHist ;
+	//zenithAngleHist = new TH1D("ZenithAngle", "ZenithAngle Distribution",numOfBins,0.,1.5);
+	zenithAngleHist = new TH1D(histTitle.c_str(),histTitle.c_str(),numOfBins,0.,1.39626);
+	for(unsigned int trackIndex = 0 ; trackIndex < muonTrackVec.size() ; trackIndex++){
+		std::vector<Point3D*> singleMuonTrack = muonTrackVec[trackIndex];
+		Point3D *startPoint = singleMuonTrack[0];
+		Point3D *endPoint = singleMuonTrack[singleMuonTrack.size()-1];
+		TVector3 muonDir(TVector3(endPoint->x,endPoint->y,endPoint->z)-TVector3(startPoint->x,startPoint->y,startPoint->z));
+		double zenitAngle = muonDir.Angle(ref);
+		if(zenitAngle > -0.0872665 && zenitAngle < 0.0872665){
+
+		}else{
+			zenithAngleHist->Fill(zenitAngle);
+		}
+	}
+	//TF1 *zenForm = new TF1("zenForm", "[0]*sin(x)*pow(cos(x),[1])", 0.05,M_PI/2.);
+	TF1 *zenForm = new TF1("zenForm", "[0]*sin(x)*cos(x)*pow(cos(x),[1])", 0.05,1.39626);
+	//zenithAngleHist->Fit(zenForm,"r");
+	//zenithAngleHist->Draw();
+
+	return zenithAngleHist;
+
+}
+
 
 HelperFunctions::HelperFunctions() {
 	// TODO Auto-generated constructor stub

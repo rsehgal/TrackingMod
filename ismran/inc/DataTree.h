@@ -36,6 +36,10 @@ class DataTree{
 	unsigned short barIndex;
 	unsigned short layerIndex;
 
+	double hitX;
+	double hitY;
+	double hitZ;
+
 
 	/*TTree object*/
 	TTree *fTree;
@@ -49,6 +53,10 @@ public:
 					Double_t qlongmeancorrected, ULong64_t tstampnear, ULong64_t tstampfar,
 					ULong64_t tsmalltimestamp, Long64_t deltatstamp, Long64_t deltatstampcorrected,
 					unsigned short barindex, unsigned short layerindex);
+	void Fill(const char *scintname,UInt_t qlongnear,UInt_t qlongfar, Double_t qlongmean,
+					Double_t qlongmeancorrected, ULong64_t tstampnear, ULong64_t tstampfar,
+					ULong64_t tsmalltimestamp, Long64_t deltatstamp, Long64_t deltatstampcorrected,
+					unsigned short barindex, unsigned short layerindex,double hitx, double hity, double hitz);
 	void Write();
 	void Close();
 	void GetEntry(unsigned int entry);
