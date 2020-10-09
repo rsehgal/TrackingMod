@@ -10,6 +10,7 @@
 
 #include "includes.hh"
 #include "PsBar.h"
+#include "HitPositionAndError.h"
 
 class Calibration;
 
@@ -37,8 +38,11 @@ public:
 	unsigned short layerIndex;
 
 	Point3D hitPosition;
+	Point3D hitPositionParam;
 	Point3D hitPositionError;
 	Point3D fittedHitPosition;
+	HitPositionAndError hitPositionnParam; //To Store estimated hit position from the parameterization
+	HitPositionAndError hitPostionSOL; //To Store the estimated hit postition from the Speed Of Light logic
 
 
 	/*
@@ -48,6 +52,8 @@ public:
 	 */
 	std::vector<Point3D*> hitsVectorInAnEventInABar;
 	Point3D meanHitPosition;
+	HitPositionAndError meanHitPositionAndError;
+
 	void CalculateVariousPhysicalParameters(unsigned long muonNum);
 
 
@@ -68,9 +74,13 @@ public:
 	//Constructor to generate Scintillator from simulated data
 	ScintillatorBar_V2(ULong64_t l_tstampNear, ULong64_t l_tstampFar,
 					   Double_t qlongmean, unsigned short barIndex);
+	ScintillatorBar_V2(ULong64_t tstampnear, ULong64_t tstampfar,
+					   Double_t qlongmean, unsigned short barindex, double hitx,double hity, double hitz);
 
 	void EstimateHitPositionAlongX();
+	void EstimateHitPositionAlongX(Point3D *temp, Point3D *tempError);
 	void EstimateHitPositionAlongY();
+	void EstimateHitPositionAlongY(Point3D *temp, Point3D *tempError);
 
 	void Print();
 	virtual ~ScintillatorBar_V2();

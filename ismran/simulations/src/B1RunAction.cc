@@ -60,10 +60,15 @@ void B1RunAction::WriteData(){
     SingleMuonTrack *singleMuonTrack = MySD::muonTrackVec[i];
     for(unsigned int j = 0 ; j < singleMuonTrack->size() ; j++){
       ScintillatorBar_V2 *scint = (singleMuonTrack->fSingleMuonTrack)[j];
-      fDataTree->Fill((scint->scintName).c_str(),scint->qlongNear,scint->qlongFar,scint->qlongMean,
+      /*fDataTree->Fill((scint->scintName).c_str(),scint->qlongNear,scint->qlongFar,scint->qlongMean,
                       scint->qlongMeanCorrected,scint->tstampNear, scint->tstampFar,
                       scint->tsmallTimeStamp,scint->deltaTstamp,scint->deltaTstampCorrected,
-                      scint->barIndex,scint->layerIndex);
+                      scint->barIndex,scint->layerIndex);*/
+
+      fDataTree->Fill((scint->scintName).c_str(),scint->qlongNear,scint->qlongFar,scint->qlongMean,
+                       scint->qlongMeanCorrected,scint->tstampNear, scint->tstampFar,
+                       scint->tsmallTimeStamp,scint->deltaTstamp,scint->deltaTstampCorrected,
+                       scint->barIndex,scint->layerIndex,(scint->meanHitPosition).x,(scint->meanHitPosition).y,(scint->meanHitPosition).z);
 
       /*void Fill(char *scintname,UInt_t qlongnear,UInt_t qlongfar, Double_t qlongmean,
           Double_t qlongmeancorrected, ULong64_t tstampnear, ULong64_t tstampfar,

@@ -100,14 +100,20 @@ public:
 	void PlotEnergyDistributionWithMultiplicity(std::vector<SingleMuonTrack*> muonTrackVec, unsigned int multiplicity = numOfLayers);
 	std::vector<SingleMuonTrack*> FiltrationBasedOnCosmicMuonRate(std::vector<SingleMuonTrack*> muonTrackVec);
 	void PlotZenithAngle();
+	//void PlotZenithAngle(std::vector<std::vector<Point3D*>> muonTrackVec,bool exact=false);
 	void FillSkimmedMuonTracksVector();
+	void PlotDiffZHistogram();
 
+	void PlotZenithAngle_YZ();
+
+	std::vector< std::vector<Point3D*> >  GetFittedMeanHitPointTrack(std::vector< SingleMuonTrack* > muonTrackVec);
 
 	/*
 	 * Function to process data in bunch
 	 */
 	void ProcessBunch();
 	void ResetBunchMemory();
+
 
 };
 

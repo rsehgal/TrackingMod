@@ -29,6 +29,9 @@ DataTree::DataTree() {
    	fTree->Branch("deltaTstampCorrected",&deltaTstampCorrected,"deltaTstampCorrected/L");
    	fTree->Branch("barIndex",&barIndex,"barIndex/s");
    	fTree->Branch("layerIndex",&layerIndex,"layerIndex/s");
+   	fTree->Branch("hitX",&hitX,"hitX/d");
+   	fTree->Branch("hitY",&hitY,"hitY/d");
+   	fTree->Branch("hitZ",&hitZ,"hitZ/d");
    	
 }
 
@@ -67,6 +70,9 @@ DataTree::DataTree(std::string filename) {
 	fTree->SetBranchAddress("deltaTstampCorrected", &deltaTstampCorrected);
 	fTree->SetBranchAddress("barIndex", &barIndex);
 	fTree->SetBranchAddress("layerIndex", &layerIndex);
+	fTree->SetBranchAddress("hitX",&hitX);
+	fTree->SetBranchAddress("hitY",&hitY);
+	fTree->SetBranchAddress("hitZ",&hitZ);
 
 	fNumOfEntries = fTree->GetEntries();
    	
@@ -103,6 +109,35 @@ void DataTree::Fill(const char *scintname,
 	deltaTstampCorrected = deltatstampcorrected;
 	barIndex = barindex;
 	layerIndex = layerindex;
+
+	//std::cout << "Going to fill ROOT TTree...." << std::endl;
+	fTree->Fill();
+}
+
+void DataTree::Fill(const char *scintname,
+					UInt_t qlongnear,UInt_t qlongfar, Double_t qlongmean,
+					Double_t qlongmeancorrected, ULong64_t tstampnear, ULong64_t tstampfar,
+					ULong64_t tsmalltimestamp, Long64_t deltatstamp, Long64_t deltatstampcorrected,
+					unsigned short barindex, unsigned short layerindex,double hitx, double hity, double hitz){
+
+	//std::cout << "Fill function called........" << std::endl;
+
+	//scintName = scintname;
+	//std::cout << "ScintName : " << scintName << std::endl;
+	qlongFar = qlongfar;
+	qlongNear = qlongnear;
+	qlongMean = qlongmean;
+	qlongMeanCorrected = qlongmeancorrected;
+	tstampNear = tstampnear;
+	tstampFar = tstampfar;
+	tsmallTimeStamp = tsmalltimestamp;
+	deltaTstamp = deltatstamp;
+	deltaTstampCorrected = deltatstampcorrected;
+	barIndex = barindex;
+	layerIndex = layerindex;
+	hitX = hitx;
+	hitY = hity;
+	hitZ = hitz;
 
 	//std::cout << "Going to fill ROOT TTree...." << std::endl;
 	fTree->Fill();

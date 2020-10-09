@@ -84,6 +84,20 @@ void SingleMuonTrack::Print(){
 }
 
 
+std::vector<double> SingleMuonTrack::GetFittedXorZ(TGraph *gr){
+	TF1 *formula = new TF1("Formula",LinearFit,-45,45,2);
+	gr->Fit(formula,"qn");
+	double c = formula->GetParameter(0);
+	double m = formula->GetParameter(1);
+	delete formula;
+
+	std::vector<double> vecOfEstimatedXorZ;
+	for(unsigned int i = 0 ; i < fSingleMuonTrack.size() ; i++){
+		vecOfEstimatedXorZ.push_back( ((fSingleMuonTrack[i]->meanHitPosition).y - c)/m );
+	}
+	return vecOfEstimatedXorZ;
+}
+
 std::vector<double> SingleMuonTrack::GetFittedXorZ(TGraphErrors *gr){
 	TF1 *formula = new TF1("Formula",LinearFit,-45,45,2);
 	gr->Fit(formula,"qn");
@@ -147,6 +161,56 @@ void SingleMuonTrack::FillSkimmedMuonTracksVector(){
 	fittedMuonTrack.clear();
 	fMuonTrackNum++;
 }
+
+
+
+std::vector<Point3D*> SingleMuonTrack::GetFittedMeanHitPointTrack(){
+
+	std::vector<Double_t> xvec, yvec, zvec;
+	std::vector<Point3D*> fittedMuonTrack;
+
+	for (unsigned int index = 0; index < fSingleMuonTrack.size(); index++) {
+		xvec.push_back((fSingleMuonTrack[index]->meanHitPosition).x);
+		yvec.push_back((fSingleMuonTrack[index]->meanHitPosition).y);
+		zvec.push_back((fSingleMuonTrack[index]->meanHitPosition).z);
+	}
+
+	TGraph *grxy = new TGraph(xvec.size(), &xvec[0], &yvec[0]);
+	std::vector<double> fittedX = GetFittedXorZ(grxy);
+	TGraph *grzy = new TGraph(zvec.size(), &zvec[0], &yvec[0]);
+	std::vector<double> fittedZ = GetFittedXorZ(grzy);
+
+	for (unsigned int i = 0; i < fSingleMuonTrack.size(); i++) {
+		fSingleMuonTrackFitted.push_back(new Point3D(fittedX[i],yvec[i],fittedZ[i]));
+	}
+
+	return fSingleMuonTrackFitted;
+}
+
+#if(0)
+std::vector<Point3D*> SingleMuonTrack::GetFittedHitPointTrackUsingParameterization(){
+
+	std::vector<Double_t> xvec, yvec, zvec;
+	std::vector<Point3D*> fittedMuonTrack;
+
+	for (unsigned int index = 0; index < fSingleMuonTrack.size(); index++) {
+		xvec.push_back((fSingleMuonTrack[index]->hitPositionParam).x);
+		yvec.push_back((fSingleMuonTrack[index]->hitPositionParam).y);
+		zvec.push_back((fSingleMuonTrack[index]->hitPositionParam).z);
+	}
+
+	TGraph *grxy = new TGraph(xvec.size(), &xvec[0], &yvec[0]);
+	std::vector<double> fittedX = GetFittedXorZ(grxy);
+	TGraph *grzy = new TGraph(zvec.size(), &zvec[0], &yvec[0]);
+	std::vector<double> fittedZ = GetFittedXorZ(grzy);
+
+	for (unsigned int i = 0; i < fSingleMuonTrack.size(); i++) {
+		fSingleMuonTrackFitted.push_back(new Point3D(fittedX[i],yvec[i],fittedZ[i]));
+	}
+
+	return fSingleMuonTrackFitted;
+}
+#endif
 
 std::vector<Point3D*> SingleMuonTrack::PlotTrack(bool showTracks){
 

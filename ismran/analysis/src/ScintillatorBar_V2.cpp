@@ -9,6 +9,7 @@
 #include "HardwareNomenclature.h"
 #include "G4SystemOfUnits.hh"
 #include "Calibration.h"
+#include "colors.h"
 bool verbose = false;
 
 ScintillatorBar_V2::ScintillatorBar_V2() {
@@ -108,6 +109,27 @@ ScintillatorBar_V2::ScintillatorBar_V2(ULong64_t tstampnear, ULong64_t tstampfar
 		deltaTstampCorrected=deltaTstamp;
 		pathLength = 0.;
 }
+
+ScintillatorBar_V2::ScintillatorBar_V2(ULong64_t tstampnear, ULong64_t tstampfar,
+					   Double_t qlongmean, unsigned short barindex, double hitx,double hity, double hitz){
+
+		barIndex = barindex;
+		layerIndex = barIndex/numOfBarsInEachLayer;
+		scintName = vecOfBarsNamess[barIndex];
+		qlongMean = qlongmean;
+		qlongMeanCorrected = qlongMean*1000.;
+		qlongNear = 0;
+		qlongFar = 0;
+		tstampNear = tstampnear;
+		tstampFar = tstampfar;
+		tsmallTimeStamp = (tstampNear < tstampFar) ? tstampNear : tstampFar;
+		deltaTstamp=tstampNear-tstampFar;
+		deltaTstampCorrected=deltaTstamp;
+		pathLength = 0.;
+		meanHitPosition.x = hitx;
+		meanHitPosition.y = hity;
+		meanHitPosition.z = hitz;
+}
 void ScintillatorBar_V2::Print(){
 			std::cout <<"*************************************************************" << std::endl;
 			std::cout << scintName << " , " << barIndex << " , " << qlongNear << " , " << qlongFar << " , " << qlongMean << " , "
@@ -118,14 +140,70 @@ void ScintillatorBar_V2::Print(){
 
 }
 
+void ScintillatorBar_V2::EstimateHitPosition_V2(Calibration *fCalib){
+	Point3D *temp = new Point3();
+	Point3D *tempError  = new Point3();
+
+	TF1 *param = fCalib->GetCalibrationDataOf(barIndex)->fParameterization_F;
+	double correctedDelT = deltaTstampCorrected/1000.;
+	float estZparm = param->Eval(correctedDelT);
+	const double *errors = param->GetParErrors();
+	double estZparamError = errors[0]+errors[1]*correctedDelT+errors[2]*pow(correctedDelT,2)+errors[3]*pow(correctedDelT,3) ;
+	temp->z = estZparm;
+	tempError->z = estZparamError;
+
+
+	float estZSOL = 0.5*correctedDelT*fCalib->GetCalibrationDataOf(barIndex)->fVelocityInsideScintillator;
+	double estZSOLError = 0.;
+	/*
+	 * Put a check on the estimated Z of the hit point
+	 */
+	if (estZ > -50. && estZ < 50.) {
+		hitPosition.z=estZSOL;
+		hitPositionParam.z = estZparm;
+		hitPositionError.z=estZparamError;
+
+
+
+		hitPositionnParam
+		verbose = false;
+		if(verbose)
+		{
+			std::cout <<"==============================================================================================" << std::endl;
+			std::cout<<"Errors : (" << errors[0] << " : " << errors[1] <<" : " << errors[2] <<" : " << errors[3] << ")" << std::endl;
+			std::cout << "ScintName : " << scintName << " : TNear : " << tstampNear <<" : TFar : " << tstampFar << " : CorrectedDelT : "
+					  << correctedDelT << GREEN << " : Mean Hit Position Z : " << meanHitPosition.z << YELLOW << " : Estimated Z : "
+					  << estZSOL << MAGENTA << " : EstZParam : " << estZparm  << RESET << RED
+					  << " : Diff between two methods of estimation : " << (estZSOL-estZparm) << RESET
+					  << " : Error in Z postion : " << estZparamError << " : " << __FILE__ <<" : " << __LINE__ << std::endl;
+			std::cout <<"==============================================================================================" << std::endl;
+		}
+
+		EstimateHitPositionAlongY();
+		EstimateHitPositionAlongX();
+	}
+
+
+}
+
+void ScintillatorBar_V2::EstimateHitPositionAlongX(Point3D *temp, Point3D *tempError){
+		temp->x = vecOfScintXYCenter[barIndex].x;
+		tempError->x = errorX;
+}
+
+void ScintillatorBar_V2::EstimateHitPositionAlongX(Point3D *temp, Point3D *tempError){
+		temp->y = vecOfScintXYCenter[barIndex].y;
+		tempError->y = errorY;
+}
+
+
 void ScintillatorBar_V2::EstimateHitPosition(Calibration *fCalib){
 	TF1 *param = fCalib->GetCalibrationDataOf(barIndex)->fParameterization_F;
 	//long double correctedDelT = scint->deltaTstampCorrected / 1000.;
 	//double correctedDelT = scint->deltaTstampCorrected / 1000.;
 	double correctedDelT = deltaTstampCorrected/1000.;
-	//float estZ = param->Eval(correctedDelT);
-	float estZparm = param->Eval(correctedDelT);
 
+	float estZparm = param->Eval(correctedDelT);
 	//Using  3rd order polynomial
 	//float estZ = param->Eval(correctedDelT);
 
@@ -151,13 +229,18 @@ void ScintillatorBar_V2::EstimateHitPosition(Calibration *fCalib){
 	 */
 	if (estZ > -50. && estZ < 50.) {
 		(hitPosition).z=estZ;
+		hitPositionParam.z = estZparm;
 		(hitPositionError).z=estZError;
 		verbose = false;
-		if(verbose){
+		if(verbose)
+		{
 			std::cout <<"==============================================================================================" << std::endl;
 			std::cout<<"Errors : (" << errors[0] << " : " << errors[1] <<" : " << errors[2] <<" : " << errors[3] << ")" << std::endl;
-			std::cout << "ScintName : " << scintName << " : TNear : " << tstampNear <<" : TFar : " << tstampFar << " : CorrectedDelT : " << correctedDelT << " : Estimated Z : " << estZ2 <<" : EstZParam : " << estZparm
-					  << " : Diff : " << (estZ2-estZparm) <<  " : Error in Z postion : " << estZError << " : " << __FILE__ <<" : " << __LINE__ << std::endl;
+			std::cout << "ScintName : " << scintName << " : TNear : " << tstampNear <<" : TFar : " << tstampFar << " : CorrectedDelT : "
+					  << correctedDelT << GREEN << " : Mean Hit Position Z : " << meanHitPosition.z << YELLOW << " : Estimated Z : "
+					  << estZ2 << MAGENTA << " : EstZParam : " << estZparm  << RESET << RED
+					  << " : Diff between two methods of estimation : " << (estZ2-estZparm) << RESET
+					  << " : Error in Z postion : " << estZError << " : " << __FILE__ <<" : " << __LINE__ << std::endl;
 			std::cout <<"==============================================================================================" << std::endl;
 		}
 
@@ -169,12 +252,16 @@ void ScintillatorBar_V2::EstimateHitPosition(Calibration *fCalib){
 void ScintillatorBar_V2::EstimateHitPositionAlongX(){
 		//hitPosition.x = (layerIndex+1)*10.;
 		hitPosition.x = vecOfScintXYCenter[barIndex].x;
+		hitPositionParam.x =  vecOfScintXYCenter[barIndex].x;
 		hitPositionError.x = errorX;
+
+
 }
 
 void ScintillatorBar_V2::EstimateHitPositionAlongY(){
 		//hitPosition.y = 0.;
 		hitPosition.y = vecOfScintXYCenter[barIndex].y;
+		hitPositionParam.y = vecOfScintXYCenter[barIndex].y;
 		hitPositionError.y = errorY;
 }
 

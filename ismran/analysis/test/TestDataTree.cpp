@@ -7,6 +7,7 @@
 #include "Histograms.h"
 #include "HelperFunctions.h"
 #include "Calibration.h"
+#include "colors.h"
 int main(){
 	bool verbose = false;
 	/*DataTree t("simulatedData.root");
@@ -39,6 +40,10 @@ int main(){
 	unsigned short barIndex;
 	unsigned short layerIndex;
 
+	double hitX;
+	double hitY;
+	double hitZ;
+
 
 
 	TFile *fp = new TFile("simulatedData.root");
@@ -56,6 +61,9 @@ int main(){
 	fTree->SetBranchAddress("deltaTstampCorrected", &deltaTstampCorrected);
 	fTree->SetBranchAddress("barIndex", &barIndex);
 	fTree->SetBranchAddress("layerIndex", &layerIndex);
+	fTree->SetBranchAddress("hitX",&hitX);
+	fTree->SetBranchAddress("hitY",&hitY);
+	fTree->SetBranchAddress("hitZ",&hitZ);
 
 	unsigned int fNumOfEntries = fTree->GetEntries();
 
@@ -73,7 +81,7 @@ int main(){
 		          << " , " << qlongMeanCorrected << " , " << tstampNear <<" , " << tstampFar
 		          << " , " << tsmallTimeStamp << " , " << deltaTstamp << " , " << deltaTstampCorrected
 		          << " , " << barIndex << " , " << layerIndex << std::endl;*/
-		scintBarVec.push_back(new ScintillatorBar_V2(tstampNear,tstampFar,qlongMean,barIndex));
+		scintBarVec.push_back(new ScintillatorBar_V2(tstampNear,tstampFar,qlongMean,barIndex,hitX/10.,hitY/10.,hitZ/10.));
 		scintBarVec[i]->EstimateHitPosition(cb);
 	}
 
@@ -103,7 +111,9 @@ int main(){
 	
 	av.PlotEnergyDistributionWithMultiplicity(muonTrackVec,0);
 	
-	av.fittedMuonTracks = av.PlotTracks_V2(muonTrackVec,0,false);
+	//av.fittedMuonTracks = av.PlotTracks_V2(muonTrackVec,0,false);
+	av.fittedMuonTracks = av.GetFittedMeanHitPointTrack(muonTrackVec);
+
 	if(verbose){
 		std::cout << "=============== TRYING TO PRINT FITTED MUON TRACKS ===============" << std::endl;
 		for(unsigned int i = 0 ; i < av.fittedMuonTracks.size() ; i++){
@@ -118,7 +128,26 @@ int main(){
 	av.FillHistograms();
 	av.DisplayHistograms();
 	std::cout << "Size of Fitted Muon Track vector : " << av.fittedMuonTracks.size() << std::endl;
-	av.PlotZenithAngle();
+	TH1 *hist = PlotZenithAngle(av.fittedMuonTracks,"Zenith Angle Hist using Exact Mean Hit Points");
+//	hist->Scale(1/hist->Integral());
+	hist->SetLineColor(3);
+	new TCanvas();
+//	hist->Draw();
+
+	//vecOfHists[i]->Scale(1/vecOfHists[i]->Integral());
+
+
+	//delete hist;
+	av.fittedMuonTracks = av.PlotTracks_V2(muonTrackVec,0,false);
+	TH1 *hist2 = PlotZenithAngle(av.fittedMuonTracks,"Zenith Angle Hist using Estimated Hit Points");
+	hist2->Scale(1/hist2->Integral());
+	hist->Scale(1/hist->Integral());
+	hist2->SetLineColor(6);
+	hist->Draw();
+	hist2->Draw("same");
+
+	av.PlotZenithAngle_YZ();
+	av.PlotDiffZHistogram();
 	fApp->Run();
 	return 0;
 }

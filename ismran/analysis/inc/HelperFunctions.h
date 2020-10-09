@@ -34,6 +34,7 @@ extern void PlotFittedLine(TGraph *gr);
 extern std::vector<std::vector<unsigned long int>> myhist2D;
 extern void Fill2DHist(unsigned int x, unsigned int y);
 extern void HistInitializer();
+extern TH1D* PlotZenithAngle(std::vector<std::vector<Point3D*>> muonTrackVec, std::string histTitle="Zenith Angle Distribution");
 
 class HelperFunctions {
 public:

@@ -823,6 +823,56 @@ void Analyzer_V2::EstimateHitPosition(ScintillatorBar_V2 *scint){
 }
 #endif
 
+std::vector< std::vector<Point3D*> >  Analyzer_V2::GetFittedMeanHitPointTrack(std::vector< SingleMuonTrack* > muonTrackVec){
+		std::cout << "Value of ShowTracks from GetFittedMeanHitPointTrack : "  << std::endl;
+		std::vector< std::vector<Point3D*> > fittedMuonTracks;
+
+		int minNumOfLayers = 6;
+
+		for(unsigned int i = 0 ; i < muonTrackVec.size() ; i++){
+		if( ((muonTrackVec[i]->fSingleMuonTrack).size() >= minNumOfLayers)
+				//&&((muonTrackVec[counter]->fSingleMuonTrack[0]->hitPosition).y > 35)
+				//&& ((muonTrackVec[counter]->fSingleMuonTrack[numOfLayers-1]->hitPosition).y < -35)
+					){
+
+				std::vector<Point3D*> fittedSingleMuonTrack = muonTrackVec[i]->GetFittedMeanHitPointTrack();
+
+				if(!CheckRange(fittedSingleMuonTrack)){
+					fittedMuonTracks.push_back(fittedSingleMuonTrack);
+				}
+			}
+		}
+
+		return fittedMuonTracks;
+
+}
+
+#if(0)
+std::vector< std::vector<Point3D*> >  Analyzer_V2::GetFittedHitPointTrackUsin(std::vector< SingleMuonTrack* > muonTrackVec){
+		std::cout << "Value of ShowTracks from GetFittedMeanHitPointTrack : "  << std::endl;
+		std::vector< std::vector<Point3D*> > fittedMuonTracks;
+
+		int minNumOfLayers = 6;
+
+		for(unsigned int i = 0 ; i < muonTrackVec.size() ; i++){
+		if( ((muonTrackVec[i]->fSingleMuonTrack).size() >= minNumOfLayers)
+				//&&((muonTrackVec[counter]->fSingleMuonTrack[0]->hitPosition).y > 35)
+				//&& ((muonTrackVec[counter]->fSingleMuonTrack[numOfLayers-1]->hitPosition).y < -35)
+					){
+
+				std::vector<Point3D*> fittedSingleMuonTrack = muonTrackVec[i]->GetFittedMeanHitPointTrack();
+
+				if(!CheckRange(fittedSingleMuonTrack)){
+					fittedMuonTracks.push_back(fittedSingleMuonTrack);
+				}
+			}
+		}
+
+		return fittedMuonTracks;
+
+}
+#endif
+
 std::vector< std::vector<Point3D*> >  Analyzer_V2::PlotTracks_V2(std::vector< SingleMuonTrack* > muonTrackVec,unsigned int numOfTracks, bool showTracks){
 
 	std::cout << "Value of ShowTracks from PlotTracks_V2 : " << showTracks << std::endl;
@@ -1085,6 +1135,29 @@ std::vector<SingleMuonTrack*>  Analyzer_V2::FiltrationBasedOnCosmicMuonRate(std:
 		//hist->Draw();
 }
 
+void Analyzer_V2::PlotZenithAngle_YZ(){
+	int numOfBins = 18;
+	TH1D *zenithAngleHist = new TH1D("ZenithAngleYZ", "ZenithAngle Distribution in YZ Plane",numOfBins,-90.,90.);
+	for(unsigned int trackIndex = 0 ; trackIndex < fittedMuonTracks.size() ; trackIndex++){
+		std::vector<Point3D*> singleMuonTrack = fittedMuonTracks[trackIndex];
+		Point3D *startPoint = singleMuonTrack[0];
+		Point3D *endPoint = singleMuonTrack[singleMuonTrack.size()-1];
+//		std::cout << "STARTPOINT : "; startPoint->Print();
+//		std::cout << "ENDPOINT : " ; endPoint->Print();
+
+		double zenithAngle = atan((endPoint->z - startPoint->z)/fabs(endPoint->y - startPoint->y))*180/M_PI;
+
+		if(zenithAngle > -0.01 && zenithAngle < 0.01){
+
+		}else{
+		zenithAngleHist->Fill(zenithAngle);
+		}
+	}
+	new TCanvas();
+	zenithAngleHist->Draw();
+}
+
+
 void Analyzer_V2::PlotZenithAngle(){
 	TVector3 ref(0.,-1.,0.);
 	int numOfBins = 100;
@@ -1100,14 +1173,20 @@ void Analyzer_V2::PlotZenithAngle(){
 		//std::cout << "MUON DIR : " << muonDir.x() <<" , " << muonDir.y() <<" , " << muonDir.z() << std::endl;
 		//double zenitAngle = acos(muonDir.Y()/muonDir.Mag());//muonDir.Theta();
 		//double zenitAngle = muonDir.Theta();
+
 		double zenitAngle = muonDir.Angle(ref);
-		//std::cout << "ZenithAngle : " << zenitAngle << std::endl;
-		zenithAngleHist->Fill(zenitAngle);
+		if(zenitAngle > -0.0872665 && zenitAngle < 0.0872665){
+
+		}else{
+			//std::cout << "ZenithAngle : " << zenitAngle << std::endl;
+			zenithAngleHist->Fill(zenitAngle);
+		}
 	}
 	//zenithAngleHist->Scale(1/zenithAngleHist->Integral());
 	std::cout << "@@@@@@@@@@ Fitted Parameter for ZenithAngle Histogram @@@@@@@@@" << std::endl;
 	new TCanvas();
 	TF1 *zenForm = new TF1("zenForm", "[0]*sin(x)*pow(cos(x),[1])", 0.05,M_PI/2.);
+	//TF1 *zenForm = new TF1("zenForm", "[0]*pow(cos(x),[1]+1)", 0.05,M_PI/2.);
 	zenithAngleHist->Fit(zenForm,"r");
 	zenithAngleHist->Draw();
 
@@ -1163,6 +1242,19 @@ void Analyzer_V2::PlotZenithAngle(){
 	solidAngleCorrectedHist->Fit(cosSqr,"r");
 	solidAngleCorrectedHist->Draw();*/
 
+}
+
+void Analyzer_V2::PlotDiffZHistogram(){
+	TH1D *diffZHist = new TH1D("DiffZHistogram","Histogram of Diff between Act. and Est. Z", 500, -50.,50.);
+	TH1D *diffZHistParam = new TH1D("DiffZHistogramParam","Histogram of Diff between Act. and Est. Z using Parameterization", 100, -50.,50.);
+	for(unsigned int i = 0 ; i < fVecOfScintillatorBar.size() ; i++){
+		diffZHist->Fill((fVecOfScintillatorBar[i]->hitPosition).z - (fVecOfScintillatorBar[i]->meanHitPosition).z);
+		diffZHistParam->Fill((fVecOfScintillatorBar[i]->hitPositionParam).z - (fVecOfScintillatorBar[i]->meanHitPosition).z);
+	}
+	new TCanvas();
+	diffZHist->Draw();
+	new TCanvas();
+	diffZHistParam->Draw();
 }
 
 void Analyzer_V2::FillSkimmedMuonTracksVector(){
