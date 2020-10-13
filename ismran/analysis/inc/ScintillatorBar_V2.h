@@ -37,12 +37,21 @@ public:
 	unsigned short barIndex;
 	unsigned short layerIndex;
 
+
+
+	/*These data members may be removed once
+	 * the new mechanism starts working.
+	 */
 	Point3D hitPosition;
 	Point3D hitPositionParam;
 	Point3D hitPositionError;
 	Point3D fittedHitPosition;
-	HitPositionAndError hitPositionnParam; //To Store estimated hit position from the parameterization
-	HitPositionAndError hitPostionSOL; //To Store the estimated hit postition from the Speed Of Light logic
+
+	/*
+	 * Data members for new mechanism
+	 */
+	HitPositionAndError fhitPositionParam; //To Store estimated hit position from the parameterization
+	HitPositionAndError fhitPostionSOL; //To Store the estimated hit postition from the Speed Of Light logic
 
 
 	/*
@@ -81,6 +90,8 @@ public:
 	void EstimateHitPositionAlongX(Point3D *temp, Point3D *tempError);
 	void EstimateHitPositionAlongY();
 	void EstimateHitPositionAlongY(Point3D *temp, Point3D *tempError);
+
+	void EstimateHitPosition_V2(Calibration *fCalib);
 
 	void Print();
 	virtual ~ScintillatorBar_V2();

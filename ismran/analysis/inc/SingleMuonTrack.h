@@ -15,6 +15,7 @@
 class ScintillatorBar_V2;
 class TGraph;
 class Point3D;
+class FittedTracks;
 
 //extern double LinearFit();
 
@@ -31,6 +32,9 @@ public:
 	 */
 	//This may be replaced by fittedSingleMuonTrack later.
 	std::vector<Point3D*> fSingleMuonTrackFitted;
+
+	/* Using new scheme */
+	FittedTracks *fFittedTrack;
 
 private:
 
@@ -77,6 +81,8 @@ public:
 
 	/*
 	 * Function to plot the track
+	 *
+	 * THESE MAY BE REMOVED ONCE NEW SCHEME IS DONE
 	 */
 	//std::vector<Point3D*> PlotTrack();
 	std::vector<Point3D*> PlotTrack(bool showTracks);//=true);
@@ -84,6 +90,12 @@ public:
 	std::vector<double> GetFittedXorZ(TGraphErrors *grxy);
 	std::vector<double> GetFittedXorZ(TGraph *gr);
 	//std::vector<double> GetFittedZ(TGraph *grzy);
+
+
+	/*
+	 * NEW SchEME
+	 */
+	void CreateFittedMuonTrack(unsigned short int trackType = 0);
 
 	void FillSkimmedMuonTracksVector();
 

@@ -141,31 +141,27 @@ void ScintillatorBar_V2::Print(){
 }
 
 void ScintillatorBar_V2::EstimateHitPosition_V2(Calibration *fCalib){
-	Point3D *temp = new Point3();
-	Point3D *tempError  = new Point3();
 
 	TF1 *param = fCalib->GetCalibrationDataOf(barIndex)->fParameterization_F;
 	double correctedDelT = deltaTstampCorrected/1000.;
-	float estZparm = param->Eval(correctedDelT);
+
+	double estZparam = param->Eval(correctedDelT);
 	const double *errors = param->GetParErrors();
 	double estZparamError = errors[0]+errors[1]*correctedDelT+errors[2]*pow(correctedDelT,2)+errors[3]*pow(correctedDelT,3) ;
-	temp->z = estZparm;
-	tempError->z = estZparamError;
 
-
-	float estZSOL = 0.5*correctedDelT*fCalib->GetCalibrationDataOf(barIndex)->fVelocityInsideScintillator;
+	double estZSOL = 0.5*correctedDelT*fCalib->GetCalibrationDataOf(barIndex)->fVelocityInsideScintillator;
 	double estZSOLError = 0.;
+
 	/*
 	 * Put a check on the estimated Z of the hit point
 	 */
-	if (estZ > -50. && estZ < 50.) {
-		hitPosition.z=estZSOL;
-		hitPositionParam.z = estZparm;
-		hitPositionError.z=estZparamError;
+	if (estZSOL > -50. && estZSOL < 50.) {
 
+		fhitPositionParam.SetHitPositionAndError(vecOfScintXYCenter[barIndex].x, vecOfScintXYCenter[barIndex].y, estZparam,
+												 errorX, errorY, estZparamError);
+		fhitPostionSOL.SetHitPositionAndError(vecOfScintXYCenter[barIndex].x, vecOfScintXYCenter[barIndex].y, estZSOL,
+											  errorX, errorY, estZSOLError);
 
-
-		hitPositionnParam
 		verbose = false;
 		if(verbose)
 		{
@@ -173,14 +169,12 @@ void ScintillatorBar_V2::EstimateHitPosition_V2(Calibration *fCalib){
 			std::cout<<"Errors : (" << errors[0] << " : " << errors[1] <<" : " << errors[2] <<" : " << errors[3] << ")" << std::endl;
 			std::cout << "ScintName : " << scintName << " : TNear : " << tstampNear <<" : TFar : " << tstampFar << " : CorrectedDelT : "
 					  << correctedDelT << GREEN << " : Mean Hit Position Z : " << meanHitPosition.z << YELLOW << " : Estimated Z : "
-					  << estZSOL << MAGENTA << " : EstZParam : " << estZparm  << RESET << RED
-					  << " : Diff between two methods of estimation : " << (estZSOL-estZparm) << RESET
-					  << " : Error in Z postion : " << estZparamError << " : " << __FILE__ <<" : " << __LINE__ << std::endl;
+					  << estZSOL << MAGENTA << " : EstZParam : " << estZparam  << RESET << RED
+					  << " : Diff between two methods of estimation : " << (estZSOL-estZparam) << RESET
+					  << " : Error in estimated Z postion from parameterization : " << estZparamError << " : " << __FILE__ <<" : " << __LINE__ << std::endl;
 			std::cout <<"==============================================================================================" << std::endl;
 		}
 
-		EstimateHitPositionAlongY();
-		EstimateHitPositionAlongX();
 	}
 
 
@@ -191,7 +185,7 @@ void ScintillatorBar_V2::EstimateHitPositionAlongX(Point3D *temp, Point3D *tempE
 		tempError->x = errorX;
 }
 
-void ScintillatorBar_V2::EstimateHitPositionAlongX(Point3D *temp, Point3D *tempError){
+void ScintillatorBar_V2::EstimateHitPositionAlongY(Point3D *temp, Point3D *tempError){
 		temp->y = vecOfScintXYCenter[barIndex].y;
 		tempError->y = errorY;
 }
