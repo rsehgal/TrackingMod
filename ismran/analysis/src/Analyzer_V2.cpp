@@ -52,7 +52,7 @@ Analyzer_V2::Analyzer_V2(Calibration *calib){
 
 }
 
-Analyzer_V2::Analyzer_V2(std::string datafileName, Calibration *calib,unsigned long int bunchSize){
+Analyzer_V2::Analyzer_V2(std::string datafileName, Calibration *calib,unsigned long int bunchSize,bool automatic){
 	fBunchSize = bunchSize;
 	fout = new TFile("calib.root","RECREATE");
 	GenerateScintMatrixXYCenters();
@@ -68,43 +68,45 @@ Analyzer_V2::Analyzer_V2(std::string datafileName, Calibration *calib,unsigned l
 	CheckPairs();
 	ValidatePairs();
 	CreateScintillatorVector();
-	std::vector< SingleMuonTrack* > muonTrackVec = ReconstrutTrack_V2();
-	PlotHistOfNumOfMuonHitsInMuonTracks_V2(muonTrackVec);
-	PlotHistOfDelTBetweenMuonTracks_V2(muonTrackVec);
-	CalculateTotalEnergyDepositionForMuonTracks(muonTrackVec);
-	std::vector< SingleMuonTrack* > filteredMuonTrackVec = PlotEnergyLossDistributionOfMuonTracks(muonTrackVec);
-	HistInitializer();
-	FillCoincidenceHist_V2(muonTrackVec);
-	PlotCoincidenceCountGraph();
-	PlotEnergyDistributionWithMultiplicity(muonTrackVec,0);
-	std::vector<SingleMuonTrack*> filtered = FiltrationBasedOnCosmicMuonRate(muonTrackVec);
-	std::cout << "Size of Filtered track vector : " << filtered.size() << std::endl;
-	//fittedMuonTracks = PlotTracks_V2(filteredMuonTrackVec,50);
-	fittedMuonTracks = PlotTracks_V2(filtered,0,false);
-	PlotZenithAngle();
+	if(automatic){
+		std::vector< SingleMuonTrack* > muonTrackVec = ReconstrutTrack_V2();
+		PlotHistOfNumOfMuonHitsInMuonTracks_V2(muonTrackVec);
+		PlotHistOfDelTBetweenMuonTracks_V2(muonTrackVec);
+		CalculateTotalEnergyDepositionForMuonTracks(muonTrackVec);
+		std::vector< SingleMuonTrack* > filteredMuonTrackVec = PlotEnergyLossDistributionOfMuonTracks(muonTrackVec);
+		HistInitializer();
+		FillCoincidenceHist_V2(muonTrackVec);
+		PlotCoincidenceCountGraph();
+		PlotEnergyDistributionWithMultiplicity(muonTrackVec,0);
+		std::vector<SingleMuonTrack*> filtered = FiltrationBasedOnCosmicMuonRate(muonTrackVec);
+		std::cout << "Size of Filtered track vector : " << filtered.size() << std::endl;
+		//fittedMuonTracks = PlotTracks_V2(filteredMuonTrackVec,50);
+		fittedMuonTracks = PlotTracks_V2(filtered,0,false);
+		PlotZenithAngle();
 
-/*
-	CheckPairs();
-	ValidatePairs();
+		/*
+		CheckPairs();
+		ValidatePairs();
 
-	CreateScintillatorVector(); //Create Vector of Scintillator with delT correction and single point energy correction from Calibration files
-	std::vector< SingleMuonTrack* > muonTrackVec = ReconstrutTrack_V2(); //Create vector of muon tracks
-	//fVecOfScintillatorBar.clear();
+		CreateScintillatorVector(); //Create Vector of Scintillator with delT correction and single point energy correction from Calibration files
+		std::vector< SingleMuonTrack* > muonTrackVec = ReconstrutTrack_V2(); //Create vector of muon tracks
+		//fVecOfScintillatorBar.clear();
 
-	PlotHistOfNumOfMuonHitsInMuonTracks_V2(muonTrackVec);
-	PlotHistOfDelTBetweenMuonTracks_V2(muonTrackVec);
-	//DisplayHistogramsOf(75);
-	//PrintMuonTrackVector_V2(muonTrackVec);
-	CalculateTotalEnergyDepositionForMuonTracks(muonTrackVec);
-	std::vector< SingleMuonTrack* > filteredMuonTrackVec = PlotEnergyLossDistributionOfMuonTracks(muonTrackVec);
-	muonTrackVec.clear();
-	fittedMuonTracks = PlotTracks_V2(filteredMuonTrackVec,50);
-*/
+		PlotHistOfNumOfMuonHitsInMuonTracks_V2(muonTrackVec);
+		PlotHistOfDelTBetweenMuonTracks_V2(muonTrackVec);
+		//DisplayHistogramsOf(75);
+		//PrintMuonTrackVector_V2(muonTrackVec);
+		CalculateTotalEnergyDepositionForMuonTracks(muonTrackVec);
+		std::vector< SingleMuonTrack* > filteredMuonTrackVec = PlotEnergyLossDistributionOfMuonTracks(muonTrackVec);
+		muonTrackVec.clear();
+		fittedMuonTracks = PlotTracks_V2(filteredMuonTrackVec,50);
+		 */
 
-	//Uncomment below line to get the histograms
-	InitializeHistograms();
-	FillHistograms();
-	DisplayHistograms();
+		//Uncomment below line to get the histograms
+		InitializeHistograms();
+		FillHistograms();
+		DisplayHistograms();
+	}
 
 
 }
@@ -414,7 +416,8 @@ void Analyzer_V2::CreateScintillatorVector(){
 
 				scint->deltaTstampCorrected = scint->deltaTstamp - fCalib->GetCalibrationDataOf(scint->barIndex)->fDeltaTCorr*1000;
 				scint->qlongMeanCorrected = scint->qlongMean + fCalib->GetCalibrationDataOf(scint->barIndex)->fEnergyCalibrationFactor;
-				EstimateHitPosition(scint);
+				//EstimateHitPosition(scint);
+				scint->EstimateHitPosition_V2(fCalib);
 				fVecOfScintillatorBar.push_back(scint);
 			}
 		}
@@ -1081,16 +1084,16 @@ void Analyzer_V2::PlotEnergyDistributionWithMultiplicity(std::vector<SingleMuonT
 			int xhigh = multiplicityVec[i]*20000. + 60000;
 			xlow = 0;
 			xhigh = 240000;
-			vecOfHists.push_back(new TH1D(str,str,500,xlow,xhigh));
-			vecOfHists[i]->GetXaxis()->SetTitle("Energy sum");
+			vecOfHists.push_back(new TH1D(str,str,50,xlow/1000.,xhigh/1000.));
+			vecOfHists[i]->GetXaxis()->SetTitle("Energy sum (MeV)");
 			vecOfHists[i]->GetXaxis()->CenterTitle(true);
-			vecOfHists[i]->GetYaxis()->SetTitle("Counts");
+			vecOfHists[i]->GetYaxis()->SetTitle("Normalized Counts");
 			vecOfHists[i]->GetYaxis()->CenterTitle(true);
 		}
 		for(unsigned int i = 0 ; i < muonTrackVec.size() ; i ++){
 			//std::cout << "BREAK at Muon Track vector of size :  " << (muonTrackVec[i]->fSingleMuonTrack).size() << std::endl;
 			if((muonTrackVec[i]->fSingleMuonTrack).size() <= numOfLayers && (muonTrackVec[i]->fSingleMuonTrack).size() > 0)
-				vecOfHists[(muonTrackVec[i]->fSingleMuonTrack).size()-1]->Fill(muonTrackVec[i]->fTotalEnergyDeposited);
+				vecOfHists[(muonTrackVec[i]->fSingleMuonTrack).size()-1]->Fill(muonTrackVec[i]->fTotalEnergyDeposited / 1000.);
 		}
 		for(unsigned int i = 0 ; i < multiplicityVec.size() ; i++){
 			can->cd(i+1);

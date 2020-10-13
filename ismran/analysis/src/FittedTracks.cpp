@@ -16,6 +16,8 @@ FittedTracks::FittedTracks() {
 
 FittedTracks::~FittedTracks() {
 	// TODO Auto-generated destructor stub
+	delete grxy;
+	delete grzy;
 }
 
 FittedTracks::FittedTracks(std::vector<Double_t> xvec, std::vector<Double_t> yvec, std::vector<Double_t> zvec) : xVec(xvec),yVec(yvec),zVec(zvec){
@@ -35,9 +37,12 @@ FittedTracks::FittedTracks(std::vector<Double_t> xvec, std::vector<Double_t> yve
 }
 
 void FittedTracks::CreateFittedTrack(){
-	TGraphErrors *grxy = new TGraphErrors(xVec.size(), &xVec[0], &yVec[0],&xVecErr[0],&yVecErr[0]);
+	//std::cout <<"================= Trying to create the Fitted Track from Class FittedTracks ==================== : " << __FILE__ << " : " << __LINE__ << std::endl;
+	grxy = new TGraphErrors(xVec.size(), &xVec[0], &yVec[0],&xVecErr[0],&yVecErr[0]);
+	//std::cout << "++++++++++++++ Fit XY ++++++++++++++++" << std::endl;
 	std::vector<double> fittedX = GetFittedXorZ(grxy);
-	TGraphErrors *grzy = new TGraphErrors(zVec.size(), &zVec[0], &yVec[0], &zVecErr[0], &yVecErr[0]);
+	grzy = new TGraphErrors(zVec.size(), &zVec[0], &yVec[0], &zVecErr[0], &yVecErr[0]);
+	//std::cout << "++++++++++++++ Fit ZY ++++++++++++++++" << std::endl;
 	std::vector<double> fittedZ = GetFittedXorZ(grzy);
 	for (unsigned int i = 0; i < xVec.size(); i++) {
 		fittedMuonTrack.push_back(new Point3D(fittedX[i],yVec[i],fittedZ[i]));
@@ -47,6 +52,7 @@ void FittedTracks::CreateFittedTrack(){
 std::vector<double> FittedTracks::GetFittedXorZ(TGraphErrors *gr){
 	TF1 *formula = new TF1("Formula",LinearFit,-45,45,2);
 	gr->Fit(formula,"qn");
+	//gr->Fit(formula,"r");
 	double c = formula->GetParameter(0);
 	double m = formula->GetParameter(1);
 	delete formula;
@@ -60,4 +66,23 @@ std::vector<double> FittedTracks::GetFittedXorZ(TGraphErrors *gr){
 
 std::vector<Point3D*> FittedTracks::GetFittedTrack() const{
 	return fittedMuonTrack;
+}
+
+void FittedTracks::PlotTrack(){
+	TCanvas *can = new TCanvas();
+	can->Divide(2,2);
+	can->cd(1);
+	DrawGrid("Muon Track in XY plane; X axis ; Y axis", 9, 9);
+	grxy->Draw("p");
+	can->cd(2);
+	DrawGrid("Muon Track in ZY plane; X axis ; Y axis", 9, 9);
+	grzy->Draw("p");
+
+
+}
+
+void FittedTracks::Print(){
+	for(unsigned int  i = 0 ; i < xVec.size() ; i++){
+		std::cout << "Point : (" << xVec[i] << "," << yVec[i] << "," << zVec[i] << ") :: Error : (" << xVecErr[i] << "," << yVecErr[i] << "," << zVecErr[i] << ")" << std::endl;
+	}
 }

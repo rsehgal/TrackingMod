@@ -62,6 +62,12 @@ struct Point3D{
 		return sqrt((p2.x-this->x)*(p2.x-this->x) + (p2.y-this->y)*(p2.y-this->y) + (p2.z-this->z)*(p2.z-this->z));
 	}
 
+	void SetZero(){
+		x = 0 ;
+		y = 0 ;
+		z = 0;
+	}
+
 };
 
 //extern std::string FileFrag[];

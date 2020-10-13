@@ -15,7 +15,12 @@ class Point3D;
 class FittedTracks {
 	std::vector<Double_t> xVec, yVec, zVec;
 	std::vector<Double_t> xVecErr, yVecErr, zVecErr;
+	TGraphErrors *grxy;
+	TGraphErrors *grzy;
+
 	std::vector<Point3D*> fittedMuonTrack;
+	TGraphErrors *grxyFitted;
+	TGraphErrors *grzyFitted;
 
 public:
 	FittedTracks();
@@ -26,6 +31,8 @@ public:
 	std::vector<double> GetFittedXorZ(TGraphErrors *gr);
 	virtual ~FittedTracks();
 	std::vector<Point3D*>  GetFittedTrack() const;
+	void PlotTrack();
+	void Print();
 };
 
 #endif /* ISMRAN_ANALYSIS_INC_FITTEDTRACKS_H_ */

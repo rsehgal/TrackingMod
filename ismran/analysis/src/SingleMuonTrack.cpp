@@ -9,6 +9,7 @@
 #include "ScintillatorBar_V2.h"
 #include "SkimmedTracks.h"
 #include "HelperFunctions.h"
+#include "FittedTracks.h"
 
 unsigned long int SingleMuonTrack::fMuonTrackNum = 0;
 
@@ -37,11 +38,46 @@ SingleMuonTrack::SingleMuonTrack(std::vector<ScintillatorBar_V2*> singleMuonTrac
 
 SingleMuonTrack::~SingleMuonTrack() {
 	// TODO Auto-generated destructor stub
+	if(fFittedTrack != NULL)
+		delete fFittedTrack;
 }
 
 void SingleMuonTrack::push_back(ScintillatorBar_V2 *hittedBar){
 	fSingleMuonTrack.push_back(hittedBar);
 }
+
+void SingleMuonTrack::CreateFittedMuonTrack(unsigned short int trackType){
+
+	std::vector<double> xvec, yvec, zvec;
+	std::vector<double> xvecErr, yvecErr, zvecErr;
+	for(unsigned int i = 0 ; i < fSingleMuonTrack.size() ; i++){
+		/* ------- Parameterized -------*/
+		if(trackType == 0){
+			xvec.push_back((fSingleMuonTrack[i]->fhitPositionParam).fHitPosition.x);
+			yvec.push_back((fSingleMuonTrack[i]->fhitPositionParam).fHitPosition.y);
+			zvec.push_back((fSingleMuonTrack[i]->fhitPositionParam).fHitPosition.z);
+			xvecErr.push_back((fSingleMuonTrack[i]->fhitPositionParam).fHitPositionError.x);
+			yvecErr.push_back((fSingleMuonTrack[i]->fhitPositionParam).fHitPositionError.y);
+			zvecErr.push_back((fSingleMuonTrack[i]->fhitPositionParam).fHitPositionError.z);
+		}else{
+			/*------ SOL ------*/
+			if(trackType==1){
+				xvec.push_back((fSingleMuonTrack[i]->fhitPostionSOL).fHitPosition.x);
+				yvec.push_back((fSingleMuonTrack[i]->fhitPostionSOL).fHitPosition.y);
+				zvec.push_back((fSingleMuonTrack[i]->fhitPostionSOL).fHitPosition.z);
+				xvecErr.push_back((fSingleMuonTrack[i]->fhitPostionSOL).fHitPositionError.x);
+				yvecErr.push_back((fSingleMuonTrack[i]->fhitPostionSOL).fHitPositionError.y);
+				zvecErr.push_back((fSingleMuonTrack[i]->fhitPostionSOL).fHitPositionError.z);
+			}
+			else{
+
+			}
+		}
+	}
+	fFittedTrack = new FittedTracks(xvec,yvec,zvec,xvecErr,yvecErr,zvecErr);
+}
+
+
 
 void SingleMuonTrack::CalculateTotalEnergyDeposited(){
 	fTotalEnergyDeposited = 0.;

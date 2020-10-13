@@ -45,7 +45,7 @@ public:
 public:
 	Analyzer_V2();
 	Analyzer_V2(Calibration *calib);
-	Analyzer_V2(std::string datafileName,Calibration *calib=NULL, unsigned long int bunchSize=0);
+	Analyzer_V2(std::string datafileName,Calibration *calib=NULL, unsigned long int bunchSize=0, bool automatic=false);
 	Analyzer_V2(std::vector< SingleMuonTrack* > muonTrackVec );
 	virtual ~Analyzer_V2();
 	void LoadDataAndSort();
