@@ -53,14 +53,14 @@ int main(){
 	TApplication *fApp = new TApplication("Test", NULL, NULL);
 	Tomography::VisualizationHelper *v = Tomography::VisualizationHelper::instance();
 	v->InitializeVisualizer();
-	v->Register("ismran.gdml");
+	//v->Register("ismran.gdml");
 	/*
 	 * ISMRAN analysis objects to get the fitted muon tracks
 	 */
-	/*
+
 	Calibration *cb = new Calibration("/home/rsehgal/BackBoneSoftwares/ismranData/completeCalib.root");
-	Analyzer_V2 av2("/home/rsehgal/BackBoneSoftwares/ismranData/ISMRAN_81bars_Th10All_CosmicRun_15hrs42mins_26Aug2020_2.root",cb);
-	//Analyzer_V2 av2("/home/rsehgal/BackBoneSoftwares/ismranData/ISMRAN_81bars_Th10All_CosmicRun_09hrs34mins_02Sep2020_0.root",cb);
+	//Analyzer_V2 av2("/home/rsehgal/BackBoneSoftwares/ismranData/ISMRAN_81bars_Th10All_CosmicRun_15hrs42mins_26Aug2020_2.root",cb);
+	Analyzer_V2 av2("/home/rsehgal/BackBoneSoftwares/ismranData/ISMRAN_81bars_Th10All_CosmicRun_09hrs34mins_02Sep2020_0.root",cb,0,true);
 	//Analyzer_V2 av2("/home/rsehgal/BackBoneSoftwares/ismranData/completeData_02Sep2020.root",cb);
 	bool showTracks = false;
 	if(showTracks){
@@ -102,7 +102,7 @@ int main(){
 		}
 		std::cout << "Num of Muon Tracks that are outside the range : " << outsideRangeCounter << std::endl;
 	}
-*/
+
 	//Plotting the fitted tracks as ROOT graph
 	/*for(unsigned int i = 0 ; i < 10 ; i++){
 		vecOfSkimmedMuonTracks[i]->PlotTrack();

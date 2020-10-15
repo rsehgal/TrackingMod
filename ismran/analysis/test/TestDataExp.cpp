@@ -52,8 +52,10 @@ int main(){
 	}*/
 
 	for(unsigned int i = 0 ; i < muonTrackVec.size() ;i++){
-		muonTrackVec[i]->CreateFittedMuonTrack(1);
-		av.fittedMuonTracks.push_back(muonTrackVec[i]->fFittedTrack->GetFittedTrack());
+		if(muonTrackVec[i]->size() >= 5){
+			muonTrackVec[i]->CreateFittedMuonTrack(1);
+			av.fittedMuonTracks.push_back(muonTrackVec[i]->fFittedTrack->GetFittedTrack());
+		}
 	}
 
 	av.PlotZenithAngle();

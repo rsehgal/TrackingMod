@@ -418,6 +418,7 @@ void Analyzer_V2::CreateScintillatorVector(){
 				scint->qlongMeanCorrected = scint->qlongMean + fCalib->GetCalibrationDataOf(scint->barIndex)->fEnergyCalibrationFactor;
 				//EstimateHitPosition(scint);
 				scint->EstimateHitPosition_V2(fCalib);
+				//scint->EstimateHitPosition(fCalib);
 				fVecOfScintillatorBar.push_back(scint);
 			}
 		}
@@ -887,7 +888,7 @@ std::vector< std::vector<Point3D*> >  Analyzer_V2::PlotTracks_V2(std::vector< Si
 	unsigned int counter = 0;
 	unsigned int breakCondCounter = 0 ;
 
-	int minNumOfLayers = 6;
+	int minNumOfLayers = 9;
 
 	while(counter < numOfTracks){
 
@@ -1182,7 +1183,8 @@ void Analyzer_V2::PlotZenithAngle(){
 
 		}else{
 			//std::cout << "ZenithAngle : " << zenitAngle << std::endl;
-			zenithAngleHist->Fill(zenitAngle);
+			if(zenitAngle < 0.96)
+				zenithAngleHist->Fill(zenitAngle);
 		}
 	}
 	//zenithAngleHist->Scale(1/zenithAngleHist->Integral());
