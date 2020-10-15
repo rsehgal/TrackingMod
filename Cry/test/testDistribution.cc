@@ -158,7 +158,9 @@ int main( int argc, const char *argv[]) {
   solidAngleHist->Draw();
 
   new TCanvas();
+
   solidAngleCorrectedHist->Draw();
+  solidAngleCorrectedHist->Scale(1/solidAngleCorrectedHist->Integral());
   solidAngleCorrectedHist->Fit("cosSqr");
 
   fApp->Run();

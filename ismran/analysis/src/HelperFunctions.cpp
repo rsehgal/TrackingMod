@@ -127,7 +127,8 @@ TH1D* PlotZenithAngle(std::vector<std::vector<Point3D*>> muonTrackVec, std::stri
 		if(zenitAngle > -0.0872665 && zenitAngle < 0.0872665){
 
 		}else{
-			zenithAngleHist->Fill(zenitAngle);
+			if(zenitAngle < 0.96)
+				zenithAngleHist->Fill(zenitAngle);
 		}
 	}
 	//TF1 *zenForm = new TF1("zenForm", "[0]*sin(x)*pow(cos(x),[1])", 0.05,M_PI/2.);
