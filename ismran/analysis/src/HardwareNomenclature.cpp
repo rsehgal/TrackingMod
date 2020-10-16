@@ -79,8 +79,12 @@ std::vector<int> vecOfFarThreshold={
 	20, 12, 12, 12, 12
 };
 
-std::vector<int> vecOfSourcePositions{
+/*std::vector<int> vecOfSourcePositions{
 	-45, -40, -30, -20, -10, 0, 10, 20, 30, 40, 45
+};*/
+
+std::vector<int> vecOfSourcePositions{
+	-40, -30, -20, -10, 0, 10, 20, 30, 40
 };
 
 
