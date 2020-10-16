@@ -26,7 +26,7 @@ int main(){
 	TCanvas *can = new TCanvas();
 	can->Divide(3,3);
 
-	short int barIndex = 0;
+	short int barIndex = 72;
 	for(unsigned short int i = 0 ; i < (vecOfCalibData[barIndex]->fVectorOfDelT_F).size() ; i++){
 		can->cd(i+1);
 		//(vecOfCalibData[barIndex]->fVectorOfDelT_F)[i]->Scale(1/(vecOfCalibData[barIndex]->fVectorOfDelT_F)[i]->Integral)->Draw();
@@ -35,7 +35,7 @@ int main(){
 		 * Lets try to sample some random number from the formula and
 		 * display its histogram
 		 */
-		unsigned int numOfSamples = 2500;
+		unsigned int numOfSamples = 1400000;
 		char *name = Form("HistSampleFromData_%d",i);
 		TH1D *histo = new TH1D(name,name,100,-50.,50.);
 		for(unsigned int sampleNo = 0 ; sampleNo < numOfSamples ; sampleNo++){

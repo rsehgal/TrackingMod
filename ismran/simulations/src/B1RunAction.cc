@@ -13,14 +13,18 @@
 #include <string.h>
 //#include "B1EventAction.hh"
 #include "MySD.h"
+#include "B1RunAction.hh"
 #include "TH1F.h"
 #include "TApplication.h"
 #include "Analyzer_V2.h"
 #include "base/Global.h"
-
+#include "Calibration.h"
 #include "DataTree.h"
 
 using namespace std;
+
+Calibration* B1RunAction::fCalib;
+
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 //ofstream* B1RunAction::myfile=NULL;
@@ -53,6 +57,7 @@ void B1RunAction::BeginOfRunAction(const G4Run*)
   Tomography::EventBreak::instance()->fEffEvNo = 0;
 
   fDataTree = new DataTree();
+  fCalib = new Calibration("/home/rsehgal/BackBoneSoftwares/ismranData/completeCalib.root");
 }
 
 void B1RunAction::WriteData(){
