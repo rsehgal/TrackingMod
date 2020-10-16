@@ -105,8 +105,12 @@ public:
 	void PlotDiffZHistogram();
 
 	void PlotZenithAngle_YZ();
+	void PlotZenithAngle_XY();
 
-	std::vector< std::vector<Point3D*> >  GetFittedMeanHitPointTrack(std::vector< SingleMuonTrack* > muonTrackVec);
+	//Commented for new schemem
+	//std::vector< std::vector<Point3D*> >  GetFittedMeanHitPointTrack(std::vector< SingleMuonTrack* > muonTrackVec);
+	std::vector< std::vector<Point3D*> >  GetFittedTrackVector(std::vector< SingleMuonTrack* > muonTrackVec,unsigned short int trackType=0);
+
 
 	/*
 	 * Function to process data in bunch

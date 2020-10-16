@@ -52,6 +52,7 @@ public:
 	 */
 	HitPositionAndError fhitPositionParam; //To Store estimated hit position from the parameterization
 	HitPositionAndError fhitPostionSOL; //To Store the estimated hit postition from the Speed Of Light logic
+	HitPositionAndError fhitPostionMean; //To Store the meanHit Position from simulation
 
 
 	/*

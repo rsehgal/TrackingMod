@@ -31,15 +31,21 @@ public:
 	 * Storing just the fitted muon track, NOT the vector of Scintillator bars
 	 */
 	//This may be replaced by fittedSingleMuonTrack later.
+	/*
+		//Commenting for new schemem
 	std::vector<Point3D*> fSingleMuonTrackFitted;
+	*/
 
 	/* Using new scheme */
 	FittedTracks *fFittedTrack;
+	std::vector<Point3D*> GetFittedTrack()const;
 
 private:
-
+	/*
+	//Commenting for new schemem
 	std::vector<Point3D*> fRawMuonTrack;
 	std::vector<Point3D*> fFittedMuonTrack;
+	*/
 
 
 public:
@@ -49,17 +55,20 @@ public:
 	void CalculateTotalEnergyDeposited();
 	ULong64_t GetMeanTimeStampValue();
 
+
 	/*
 	 * Required Getters
 	 */
-	std::vector<Point3D*> GetRawMuonTrack()const{
+	/*
+	 //Commenting for new schemem
+	 std::vector<Point3D*> GetRawMuonTrack()const{
 		return fRawMuonTrack;
 	}
 
 	std::vector<Point3D*> GetFittedMuonTrack()const{
 		return fFittedMuonTrack;
 	}
-
+*/
 	/*
 	 * Sorting related functions
 	 */

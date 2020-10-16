@@ -35,6 +35,9 @@ extern std::vector<std::vector<unsigned long int>> myhist2D;
 extern void Fill2DHist(unsigned int x, unsigned int y);
 extern void HistInitializer();
 extern TH1D* PlotZenithAngle(std::vector<std::vector<Point3D*>> muonTrackVec, std::string histTitle="Zenith Angle Distribution");
+extern TH1D* PlotZenithAngle_XY(std::vector<std::vector<Point3D*>> muonTrackVec, std::string histTitle);
+extern bool CheckRange(std::vector<Point3D*> singleMuonTrack);
+extern void PrintPoint3DVector(std::vector<Point3D*> vect);
 
 class HelperFunctions {
 public:
