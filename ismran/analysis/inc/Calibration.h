@@ -26,6 +26,11 @@ struct CalibrationData{
 	double c;
 	//double fEnergyCalibFactorForMuon;
 
+	/*
+	 * Vector of TF1 corresponding to delT histogram at different locations
+	 */
+	std::vector<TF1*> fVectorOfDelT_F;
+
 	CalibrationData(){}
 	CalibrationData(TF1* delTCorr, TF1* parameterization, float energyCalibrationFactor=1){
 		fDelTCorr_F = delTCorr;
@@ -45,6 +50,18 @@ struct CalibrationData{
 			EstimateVelocity();
 	}
 
+	CalibrationData(TF1* delTCorr, TF1* parameterization, TGraph* parameterization_g, std::vector<TF1*> vecOfDelTFormula, float energyCalibrationFactor=1){
+				fDelTCorr_F = delTCorr;
+				fParameterization_F = parameterization;
+				fDeltaTCorr = fDelTCorr_F->GetParameter(1);
+				fEnergyCalibrationFactor = energyCalibrationFactor;
+				fVectorOfDelT_F = vecOfDelTFormula;
+
+				//CalibrationData(delTCorr,parameterization,energyCalibrationFactor);
+				fParameterization_G = parameterization_g;
+				EstimateVelocity();
+		}
+
 	void Print(){
 		std::cout << "DelT Correction : " << fDeltaTCorr << std::endl;
 	}
@@ -59,6 +76,8 @@ struct CalibrationData{
 		//float estZ = param->Eval(correctedDelT);
 		//float estZ = 0.5*correctedDelT*m;
 	}
+
+
 
 };
 

@@ -54,7 +54,20 @@ Calibration::Calibration(std::string fileName) {
 		else
 			fVecOfCalibrationData.push_back(new CalibrationData( delTShift_F, temp_F ,energyCalibrationFactor));*/
 		//fVecOfCalibrationData.push_back(new CalibrationData( delTShift_F, temp_F ,energyCalibrationFactor));
-		fVecOfCalibrationData.push_back(new CalibrationData( delTShift_F, temp_F ,gr,energyCalibrationFactor));
+
+
+		//Better idea would be to calculate the offset here itself and send as an parameter.
+		//fVecOfCalibrationData.push_back(new CalibrationData( delTShift_F, temp_F ,gr,energyCalibrationFactor));
+
+		//Filling delT formula at different source position
+		std::vector<TF1*> vecOfDelTFormula;
+		for(unsigned short int sourceIndex = 0 ;  sourceIndex < vecOfSourcePositions.size() ; sourceIndex++){
+			vecOfDelTFormula.push_back((TF1*)fp->Get(Form("fdelt_shift_Cs137_%s_%dcm",vecOfBarsName[barIndex].c_str(),vecOfSourcePositions[sourceIndex])) );
+		}
+		fVecOfCalibrationData.push_back(new CalibrationData( delTShift_F, temp_F ,gr,vecOfDelTFormula,energyCalibrationFactor));
+
+		/*double offset = delTShift_F->GetParameter(1);
+		fVecOfCalibrationData.push_back(new CalibrationData( delTShift_F,offset, temp_F ,gr,energyCalibrationFactor));*/
 
 	}
 }
