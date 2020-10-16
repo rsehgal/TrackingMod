@@ -45,7 +45,11 @@ void FittedTracks::CreateFittedTrack(){
 	//std::cout << "++++++++++++++ Fit ZY ++++++++++++++++" << std::endl;
 	std::vector<double> fittedZ = GetFittedXorZ(grzy);
 	for (unsigned int i = 0; i < xVec.size(); i++) {
+		/*Point3D *pt = new Point3D(fittedX[i],yVec[i],fittedZ[i]);
+		std::cout << "From CreateFitted Track : " << __FILE__ <<" : " << __LINE__ ; pt->Print();
+		fittedMuonTrack.push_back(pt);*/
 		fittedMuonTrack.push_back(new Point3D(fittedX[i],yVec[i],fittedZ[i]));
+
 	}
 }
 

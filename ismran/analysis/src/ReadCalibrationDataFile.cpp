@@ -51,7 +51,7 @@ void ReadCalibrationDataFile::ReadDataFile(){
 									vecOfNearVoltage[i], vecOfNearThreshold[i],
 									vecOfFarVoltage[i], vecOfFarThreshold[i]);
 
-		std::string filename = "data/CalibData-71-81/"+std::string(datafileName);
+		std::string filename = "/home/rsehgal/BackBoneSoftwares/ismranData/CalibData-71-81/"+std::string(datafileName);
 		std::cout << "Working on file : " << filename << std::endl;
 		TFile *fp = new TFile(filename.c_str(), "r");
 		UShort_t brch; //! board #  and channel number ( its packed in as follows )	//! board*16 + chno.
@@ -134,7 +134,7 @@ double ReadCalibrationDataFile::CalculateBarDelTOffsetOf(unsigned int barIndex){
 									vecOfNearVoltage[barIndex], vecOfNearThreshold[barIndex],
 									vecOfFarVoltage[barIndex], vecOfFarThreshold[barIndex]);
 
-		std::string filename = "data/CalibData-71-81/"+std::string(datafileName);
+		std::string filename = "/home/rsehgal/BackBoneSoftwares/ismranData/CalibData-71-81/"+std::string(datafileName);
 		std::cout << "Working on file : " << filename << std::endl;
 		TFile *fp = new TFile(filename.c_str(), "r");
 		UShort_t brch; //! board #  and channel number ( its packed in as follows )	//! board*16 + chno.
@@ -207,7 +207,7 @@ double ReadCalibrationDataFile::CalculateBarDelTOffsetOf(unsigned int barIndex){
 
 double ReadCalibrationDataFile::CalculateBarDelTOffsetOf(std::string datafileName, unsigned int barIndex, int sourcePos){
 
-	std::string filename = "data/CalibData-71-81/"
+	std::string filename = "/home/rsehgal/BackBoneSoftwares/ismranData/CalibData-71-81/"
 			+ vecOfOnlyBarsNames[barIndex] + "/" + datafileName;
 	std::cout << "Working on file : " << filename << std::endl;
 	TFile *fp = new TFile(filename.c_str(), "r");
@@ -270,8 +270,8 @@ double ReadCalibrationDataFile::CalculateBarDelTOffsetOf(std::string datafileNam
 	/*if want to write formula for hist at each position then
 	 * uncomment the below two lines
 	 */
-	//fout->cd();
-	//formula->Write();
+	fout->cd();
+	formula->Write();
 	delete hist;
 	delete fp;
 

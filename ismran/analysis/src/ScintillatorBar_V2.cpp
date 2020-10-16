@@ -126,9 +126,15 @@ ScintillatorBar_V2::ScintillatorBar_V2(ULong64_t tstampnear, ULong64_t tstampfar
 		deltaTstamp=tstampNear-tstampFar;
 		deltaTstampCorrected=deltaTstamp;
 		pathLength = 0.;
+
+		//May be remove lateron, with new schemem in place
 		meanHitPosition.x = hitx;
 		meanHitPosition.y = hity;
 		meanHitPosition.z = hitz;
+
+		fhitPostionMean.SetHitPosition(hitx,hity,hitz);
+
+
 }
 void ScintillatorBar_V2::Print(){
 			std::cout <<"*************************************************************" << std::endl;
@@ -152,6 +158,7 @@ void ScintillatorBar_V2::EstimateHitPosition_V2(Calibration *fCalib){
 	double estZSOL = 0.5*correctedDelT*fCalib->GetCalibrationDataOf(barIndex)->fVelocityInsideScintillator;
 	double estZSOLError = 0.;
 
+	//std::cout << "========= : EstZSOL : " << estZSOL <<" :=================" << std::endl;
 	/*
 	 * Put a check on the estimated Z of the hit point
 	 */
@@ -259,7 +266,9 @@ void ScintillatorBar_V2::EstimateHitPositionAlongY(){
 		hitPositionError.y = errorY;
 }
 
-void ScintillatorBar_V2::CalculateVariousPhysicalParameters(unsigned long muonNum){
+
+ //Commented for new schemem
+  void ScintillatorBar_V2::CalculateVariousPhysicalParameters(unsigned long muonNum){
 	qlongMeanCorrected = qlongMean*1000.;
 	meanHitPosition.x = 0.;
 	meanHitPosition.y = 0.;
@@ -286,3 +295,35 @@ void ScintillatorBar_V2::CalculateVariousPhysicalParameters(unsigned long muonNu
 	deltaTstamp = tstampNear-tstampFar;
 	deltaTstampCorrected = deltaTstamp;	
 }
+
+/*
+void ScintillatorBar_V2::CalculateVariousPhysicalParameters(unsigned long muonNum){
+	qlongMeanCorrected = qlongMean*1000.;
+	Point3D meanHitPosition_l;
+	meanHitPosition_l.x = 0.;
+	meanHitPosition_l.y = 0.;
+	meanHitPosition_l.z = 0.;
+	for(unsigned int i = 0 ; i < hitsVectorInAnEventInABar.size() ; i++){
+		//std::cout << "Hit point Vec from ScintillatorBar_V2 : "; hitsVectorInAnEventInABar[i]->Print();
+		meanHitPosition_l.x += hitsVectorInAnEventInABar[i]->x;
+		meanHitPosition_l.y += hitsVectorInAnEventInABar[i]->y;
+		meanHitPosition_l.z += hitsVectorInAnEventInABar[i]->z;
+	}
+	meanHitPosition_l.x /= hitsVectorInAnEventInABar.size();
+	meanHitPosition_l.y /= hitsVectorInAnEventInABar.size();
+	meanHitPosition_l.z /= hitsVectorInAnEventInABar.size();
+
+	unsigned long int startTime = muonNum*timeBetweenTwoMuonTracks;
+	//std::cout << "Muon Number : " << muonNum << " : startTime : " << startTime << " : " << __FILE__ <<" : " << __LINE__ << std::endl;
+	//std::cout << "hitsVector.size() : " << hitsVectorInAnEventInABar.size() << std::endl;
+	//meanHitPosition.Print();
+
+	tstampNear = startTime + ((barLength/2. * cm + meanHitPosition.z)/(barLength*cm))*timeDiffNearFar;
+	tstampFar = startTime + ((barLength/2. * cm - meanHitPosition.z)/(barLength*cm))*timeDiffNearFar;
+	//std::cout << "TimeStampNear : " << tstampNear <<" : TimeStampFar : " << tstampFar << std::endl;
+	tsmallTimeStamp = (tstampNear < tstampFar) ? tstampNear : tstampFar;
+	deltaTstamp = tstampNear-tstampFar;
+	deltaTstampCorrected = deltaTstamp;
+	fhitPostionMean.SetHitPosition(meanHitPosition_l);
+}
+*/

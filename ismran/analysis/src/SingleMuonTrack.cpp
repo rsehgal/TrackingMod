@@ -46,6 +46,10 @@ void SingleMuonTrack::push_back(ScintillatorBar_V2 *hittedBar){
 	fSingleMuonTrack.push_back(hittedBar);
 }
 
+std::vector<Point3D*> SingleMuonTrack::GetFittedTrack()const {
+	return fFittedTrack->GetFittedTrack();
+}
+
 void SingleMuonTrack::CreateFittedMuonTrack(unsigned short int trackType){
 
 	std::vector<double> xvec, yvec, zvec;
@@ -70,10 +74,27 @@ void SingleMuonTrack::CreateFittedMuonTrack(unsigned short int trackType){
 				zvecErr.push_back((fSingleMuonTrack[i]->fhitPostionSOL).fHitPositionError.z);
 			}
 			else{
+				/*---- Mean Hit Point from Simulations -----*/
+				if(trackType==2){
+					xvec.push_back((fSingleMuonTrack[i]->fhitPostionMean).fHitPosition.x);
+					yvec.push_back((fSingleMuonTrack[i]->fhitPostionMean).fHitPosition.y);
+					zvec.push_back((fSingleMuonTrack[i]->fhitPostionMean).fHitPosition.z);
+					xvecErr.push_back((fSingleMuonTrack[i]->fhitPostionMean).fHitPositionError.x);
+					yvecErr.push_back((fSingleMuonTrack[i]->fhitPostionMean).fHitPositionError.y);
+					zvecErr.push_back((fSingleMuonTrack[i]->fhitPostionMean).fHitPositionError.z);
+				}
+				else{
+
+				}
 
 			}
 		}
 	}
+	/*std::cout << "Printing XVec from CreateFittedMuonTrack : " << __FILE__ << " : " << __LINE__<<std::endl;
+	for(unsigned int i=0 ; i< xvec.size() ; i++){
+		std::cout << xvec[i] << " , " ;
+	}
+	std::cout << std::endl;*/
 	fFittedTrack = new FittedTracks(xvec,yvec,zvec,xvecErr,yvecErr,zvecErr);
 }
 
@@ -91,7 +112,8 @@ void SingleMuonTrack::CalculateTotalEnergyDeposited(){
 	}
 	//std::cout << "*********** Total Energy Deposited : " << fTotalEnergyDeposited << " **************" << std::endl;
 	if(fTotalEnergyDeposited > minEnergyDepositedByMuonTrack && fTotalEnergyDeposited < maxEnergyDepositedByMuonTrack){
-		fIsValid = true;
+		//if( (fSingleMuonTrack[0]->layerIndex == 8) && (fSingleMuonTrack[fSingleMuonTrack.size()-1]->layerIndex==0) )
+			fIsValid = true;
 	}
 }
 
@@ -199,7 +221,8 @@ void SingleMuonTrack::FillSkimmedMuonTracksVector(){
 }
 
 
-
+/*
+	 //Commenting for new schemem
 std::vector<Point3D*> SingleMuonTrack::GetFittedMeanHitPointTrack(){
 
 	std::vector<Double_t> xvec, yvec, zvec;
@@ -216,12 +239,15 @@ std::vector<Point3D*> SingleMuonTrack::GetFittedMeanHitPointTrack(){
 	TGraph *grzy = new TGraph(zvec.size(), &zvec[0], &yvec[0]);
 	std::vector<double> fittedZ = GetFittedXorZ(grzy);
 
-	for (unsigned int i = 0; i < fSingleMuonTrack.size(); i++) {
+
+
+	 for (unsigned int i = 0; i < fSingleMuonTrack.size(); i++) {
 		fSingleMuonTrackFitted.push_back(new Point3D(fittedX[i],yvec[i],fittedZ[i]));
 	}
 
 	return fSingleMuonTrackFitted;
 }
+*/
 
 #if(0)
 std::vector<Point3D*> SingleMuonTrack::GetFittedHitPointTrackUsingParameterization(){
@@ -248,6 +274,8 @@ std::vector<Point3D*> SingleMuonTrack::GetFittedHitPointTrackUsingParameterizati
 }
 #endif
 
+/*
+	 //Commenting for new schemem
 std::vector<Point3D*> SingleMuonTrack::PlotTrack(bool showTracks){
 
 	//TMultiGraph *mg = new TMultiGraph();
@@ -269,56 +297,27 @@ std::vector<Point3D*> SingleMuonTrack::PlotTrack(bool showTracks){
 		//}
 	}
 	std::string trackname = "MuonTrack-" + std::to_string(fMuonTrackNum);
-	//std::cout << "TrackName : " << trackname << " : Size : "<< fSingleMuonTrack.size() << std::endl;
-	/*for(unsigned int i = 0 ; i< singleMuonTrack.size() ; i++){
-	 (singleMuonTrack[i]->hitPosition).Print();
-	 }*/
-
-
-	/*TCanvas *c = new TCanvas(trackname.c_str(), trackname.c_str(), 800, 800);
-	c->Divide(2,2);
-	//TGraph *gr = new TGraph(xvec.size(), &zvec[0], &xvec[0]);
-	c->cd(1);
-	*/
 	TGraphErrors *grxy = new TGraphErrors(xvec.size(), &xvec[0], &yvec[0],&xvecErr[0],&yvecErr[0]);
 	grxy->SetMarkerStyle(8);
 	grxy->SetMarkerSize(0.6);
 	grxy->SetTitle("Muon Track in XY plane; X axis ; Y axis");
-	/*DrawGrid("Muon Track in XY plane; X axis ; Y axis", 9, 9);
-	grxy->Draw("p");*/
-	//mg->Add(grxy);
-
-	//c->cd(2);
 	std::vector<double> fittedX = GetFittedXorZ(grxy);
 	TGraph *grxFitted = new TGraph(fittedX.size(), &fittedX[0], &yvec[0]);
 	grxFitted->SetMarkerStyle(8);
 	grxFitted->SetMarkerSize(0.6);
 	grxFitted->SetTitle("Fitted Muon Track in XY plane; X axis ; Y axis");
 	grxFitted->SetMarkerColor(2);
-	/*DrawGrid("Fitted Muon Track in XY plane; X axis ; Y axis", 9, 9);
-	grxFitted->Draw("p");*/
-
-
-	//c->cd(3);
 	TGraphErrors *grzy = new TGraphErrors(zvec.size(), &zvec[0], &yvec[0], &zvecErr[0], &yvecErr[0]);
 	grzy->SetMarkerStyle(8);
 	grzy->SetMarkerSize(0.6);
 	grzy->SetTitle("Muon Track in ZY plane; Z axis ; Y axis");
-	/*DrawGrid("Muon Track in ZY plane;Z axis ; Y axis", 9, 9);
-	grzy->Draw("p");*/
-
-	//c->cd(4);
 	std::vector<double> fittedZ = GetFittedXorZ(grzy);
 	TGraph *grzFitted = new TGraph(fittedZ.size(), &fittedZ[0], &yvec[0]);
 	grzFitted->SetMarkerStyle(8);
 	grzFitted->SetMarkerSize(0.6);
 	grzFitted->SetTitle("Fitted Muon Track in ZY plane; Z axis ; Y axis");
 	grzFitted->SetMarkerColor(2);
-	/*DrawGrid("Fitted Muon Track in ZY plane; Z axis ; Y axis", 9, 9);
-	grzFitted->Draw("p");*/
-
-	//std::cout << "SHOW TRACKS : " << showTracks << std::endl;
-	if(showTracks){
+		if(showTracks){
 		TCanvas *c = new TCanvas(trackname.c_str(), trackname.c_str(), 800, 800);
 		c->Divide(2,2);
 		c->cd(1);
@@ -342,16 +341,10 @@ std::vector<Point3D*> SingleMuonTrack::PlotTrack(bool showTracks){
 		fSingleMuonTrackFitted.push_back(new Point3D(fittedX[i],yvec[i],fittedZ[i]));
 	}
 
-	/*c->cd(3);
-	TGraph *grzx = new TGraph(zvec.size(), &zvec[0], &xvec[0]);
-	grzx->SetMarkerStyle(8);
-	grzx->SetTitle("Muon Track in ZX plane; Z axis; X axis");
-	DrawGrid("Muon Track in ZX plane; Z axis; X axis", 9, 9);
-	grzx->Draw("p");*/
-
-	fMuonTrackNum++;
+		fMuonTrackNum++;
 	return fSingleMuonTrackFitted;
 }
+*/
 
 /*
  * Function to Draw customized Grid Lines

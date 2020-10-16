@@ -31,7 +31,8 @@ Analyzer_V2::~Analyzer_V2() {
 	delete fout;
 }
 
-bool CheckRange(std::vector<Point3D*> singleMuonTrack){
+
+/*bool CheckRange(std::vector<Point3D*> singleMuonTrack){
 	for(unsigned int i = 0 ; i < singleMuonTrack.size() ; i++){
 		if(std::isinf(singleMuonTrack[i]->x) || std::isinf(singleMuonTrack[i]->y) || std::isinf(singleMuonTrack[i]->z)
 			// || (abs((singleMuonTrack[i]->x) <= 45.) ) || (abs((singleMuonTrack[i]->y) <= 45.) ) || (abs((singleMuonTrack[i]->z) <= 50.) )
@@ -40,7 +41,8 @@ bool CheckRange(std::vector<Point3D*> singleMuonTrack){
 		}
 	}
 	return false;
-}
+}*/
+
 
 void ClearMuonTrackVec(std::vector< SingleMuonTrack* > muonTrackVec){
 	for(unsigned int i = 0 ; i < muonTrackVec.size() ; i++){
@@ -826,7 +828,8 @@ void Analyzer_V2::EstimateHitPosition(ScintillatorBar_V2 *scint){
 	}
 }
 #endif
-
+/*
+	 //Commenting for new schemem
 std::vector< std::vector<Point3D*> >  Analyzer_V2::GetFittedMeanHitPointTrack(std::vector< SingleMuonTrack* > muonTrackVec){
 		std::cout << "Value of ShowTracks from GetFittedMeanHitPointTrack : "  << std::endl;
 		std::vector< std::vector<Point3D*> > fittedMuonTracks;
@@ -850,6 +853,67 @@ std::vector< std::vector<Point3D*> >  Analyzer_V2::GetFittedMeanHitPointTrack(st
 		return fittedMuonTracks;
 
 }
+*/
+
+/*std::vector< std::vector<Point3D*> >  Analyzer_V2::GetFittedMeanHitPointTrack(std::vector< SingleMuonTrack* > muonTrackVec){
+		std::cout << "Value of ShowTracks from GetFittedMeanHitPointTrack : "  << std::endl;
+		std::vector< std::vector<Point3D*> > fittedMuonTracks;
+
+		int minNumOfLayers = 6;
+
+		for(unsigned int i = 0 ; i < muonTrackVec.size() ; i++){
+		if( ((muonTrackVec[i]->fSingleMuonTrack).size() >= minNumOfLayers)
+				//&&((muonTrackVec[counter]->fSingleMuonTrack[0]->hitPosition).y > 35)
+				//&& ((muonTrackVec[counter]->fSingleMuonTrack[numOfLayers-1]->hitPosition).y < -35)
+					){
+
+				muonTrackVec[i]->CreateFittedMuonTrack(2);
+				//std::vector<Point3D*> fittedSingleMuonTrack = muonTrackVec[i]->GetFittedMeanHitPointTrack();
+				std::vector<Point3D*> fittedSingleMuonTrack = muonTrackVec[i]->GetFittedTrack();
+
+				if(!CheckRange(fittedSingleMuonTrack)){
+					fittedMuonTracks.push_back(fittedSingleMuonTrack);
+				}
+			}
+		}
+
+		return fittedMuonTracks;
+
+}*/
+std::vector< std::vector<Point3D*> >  Analyzer_V2::GetFittedTrackVector(std::vector< SingleMuonTrack* > muonTrackVec,unsigned short int trackType){
+		std::cout << "Value of ShowTracks from GetFittedMeanHitPointTrack : "  << std::endl;
+		std::vector< std::vector<Point3D*> > fittedMuonTracks;
+
+		int minNumOfLayers = 6;
+		//std::cout << "Size of MuonTrackVec : " << muonTrackVec.size() << " : " << __FILE__ << " : " << __LINE__ << std::endl;
+
+		for(unsigned int i = 0 ; i < muonTrackVec.size() ; i++){
+
+		if( ((muonTrackVec[i]->fSingleMuonTrack).size() >= minNumOfLayers)
+				//&&((muonTrackVec[counter]->fSingleMuonTrack[0]->hitPosition).y > 35)
+				//&& ((muonTrackVec[counter]->fSingleMuonTrack[numOfLayers-1]->hitPosition).y < -35)
+					){
+			//std::cout << "Size of Individual Track : " << muonTrackVec[i]->size() << " : Greater than : " << minNumOfLayers <<" : " << __FILE__ << " : " << __LINE__ << std::endl;
+				muonTrackVec[i]->CreateFittedMuonTrack(trackType);
+				//std::vector<Point3D*> fittedSingleMuonTrack = muonTrackVec[i]->GetFittedMeanHitPointTrack();
+				std::vector<Point3D*> fittedSingleMuonTrack = muonTrackVec[i]->GetFittedTrack();
+				//std::cout << "Track is in Range : " << !CheckRange(fittedSingleMuonTrack) << std::endl;
+				if(!CheckRange(fittedSingleMuonTrack)){
+					fittedMuonTracks.push_back(fittedSingleMuonTrack);
+					/*std::cout <<"+++++++++++++++++++++++++++++++++++++++++++++++++" << std::endl;
+					for(unsigned int j =0 ; j < fittedSingleMuonTrack.size() ; j++){
+						fittedSingleMuonTrack[j]->Print();
+					}*/
+				}
+			}
+		}
+
+		std::cout << "Size of Fitted MuonTrack Vector : " << fittedMuonTracks.size() << " : " << __FILE__ <<" : " << __LINE__ << std::endl;
+
+		return fittedMuonTracks;
+
+}
+
 
 #if(0)
 std::vector< std::vector<Point3D*> >  Analyzer_V2::GetFittedHitPointTrackUsin(std::vector< SingleMuonTrack* > muonTrackVec){
@@ -897,7 +961,10 @@ std::vector< std::vector<Point3D*> >  Analyzer_V2::PlotTracks_V2(std::vector< Si
 			//&& ((muonTrackVec[counter]->fSingleMuonTrack[numOfLayers-1]->hitPosition).y < -35)
 				){
 
-			std::vector<Point3D*> fittedSingleMuonTrack = muonTrackVec[counter]->PlotTrack(showTracks);
+			//std::vector<Point3D*> fittedSingleMuonTrack = muonTrackVec[counter]->PlotTrack(showTracks);
+			std::vector<Point3D*> fittedSingleMuonTrack = muonTrackVec[counter]->GetFittedTrack();
+
+
 			//std::cout << "Fitted track size : " << fittedSingleMuonTrack.size() << std::endl;
 			//fittedMuonTracks.push_back(fittedSingleMuonTrack);
 			//breakCondCounter++;
@@ -1085,8 +1152,8 @@ void Analyzer_V2::PlotEnergyDistributionWithMultiplicity(std::vector<SingleMuonT
 			int xhigh = multiplicityVec[i]*20000. + 60000;
 			xlow = 0;
 			xhigh = 240000;
-			vecOfHists.push_back(new TH1D(str,str,50,xlow/1000.,xhigh/1000.));
-			vecOfHists[i]->GetXaxis()->SetTitle("Energy sum (MeV)");
+			vecOfHists.push_back(new TH1D(str,str,50,xlow,xhigh));
+			vecOfHists[i]->GetXaxis()->SetTitle("Energy sum");
 			vecOfHists[i]->GetXaxis()->CenterTitle(true);
 			vecOfHists[i]->GetYaxis()->SetTitle("Normalized Counts");
 			vecOfHists[i]->GetYaxis()->CenterTitle(true);
@@ -1094,7 +1161,7 @@ void Analyzer_V2::PlotEnergyDistributionWithMultiplicity(std::vector<SingleMuonT
 		for(unsigned int i = 0 ; i < muonTrackVec.size() ; i ++){
 			//std::cout << "BREAK at Muon Track vector of size :  " << (muonTrackVec[i]->fSingleMuonTrack).size() << std::endl;
 			if((muonTrackVec[i]->fSingleMuonTrack).size() <= numOfLayers && (muonTrackVec[i]->fSingleMuonTrack).size() > 0)
-				vecOfHists[(muonTrackVec[i]->fSingleMuonTrack).size()-1]->Fill(muonTrackVec[i]->fTotalEnergyDeposited / 1000.);
+				vecOfHists[(muonTrackVec[i]->fSingleMuonTrack).size()-1]->Fill(muonTrackVec[i]->fTotalEnergyDeposited );
 		}
 		for(unsigned int i = 0 ; i < multiplicityVec.size() ; i++){
 			can->cd(i+1);
@@ -1161,6 +1228,25 @@ void Analyzer_V2::PlotZenithAngle_YZ(){
 	zenithAngleHist->Draw();
 }
 
+void Analyzer_V2::PlotZenithAngle_XY(){
+	int numOfBins = 45;
+	TH1D *zenithAngleHistXY = new TH1D("ZenithAngleXY", "ZenithAngle Distribution in XY Plane",numOfBins,0.,90.);
+	for(unsigned int trackIndex = 0 ; trackIndex < fittedMuonTracks.size() ; trackIndex++){
+		std::vector<Point3D*> singleMuonTrack = fittedMuonTracks[trackIndex];
+		Point3D *startPoint = singleMuonTrack[0];
+		Point3D *endPoint = singleMuonTrack[singleMuonTrack.size()-1];
+//		std::cout << "STARTPOINT : "; startPoint->Print();
+//		std::cout << "ENDPOINT : " ; endPoint->Print();
+
+		double zenithAngle = atan(fabs(endPoint->x - startPoint->x)/fabs(endPoint->y - startPoint->y))*180/M_PI;
+		zenithAngleHistXY->Fill(zenithAngle);
+
+	}
+	new TCanvas();
+	//zenithAngleHistXY->Scale(1/zenithAngleHistXY->Integral());
+	zenithAngleHistXY->Draw();
+}
+
 
 void Analyzer_V2::PlotZenithAngle(){
 	TVector3 ref(0.,-1.,0.);
@@ -1183,7 +1269,7 @@ void Analyzer_V2::PlotZenithAngle(){
 
 		}else{
 			//std::cout << "ZenithAngle : " << zenitAngle << std::endl;
-			if(zenitAngle < 0.96)
+			//if(zenitAngle < 0.96)
 				zenithAngleHist->Fill(zenitAngle);
 		}
 	}
@@ -1208,7 +1294,7 @@ void Analyzer_V2::PlotZenithAngle(){
 	}
 	new TCanvas();
 	//TF1 *cosSqr = new TF1("cosSqr",Cos2ThetaFit,0,M_PI/2,2);
-	TF1 *cosSqr = new TF1("cosSqr", "[0]*pow(cos(x),[1])", 0.2,0.6);
+	TF1 *cosSqr = new TF1("cosSqr", "[0]*pow(cos(x),[1])", 0.2,0.96);
 	solidAngleCorrectedHist->Fit(cosSqr,"r");
 	solidAngleCorrectedHist->Draw();
 
@@ -1249,12 +1335,25 @@ void Analyzer_V2::PlotZenithAngle(){
 
 }
 
-void Analyzer_V2::PlotDiffZHistogram(){
-	TH1D *diffZHist = new TH1D("DiffZHistogram","Histogram of Diff between Act. and Est. Z", 500, -50.,50.);
+/*void Analyzer_V2::PlotDiffZHistogram(){
+	TH1D *diffZHist = new TH1D("DiffZHistogram","Histogram of Diff between Act. and Est. Z", 100, -50.,50.);
 	TH1D *diffZHistParam = new TH1D("DiffZHistogramParam","Histogram of Diff between Act. and Est. Z using Parameterization", 100, -50.,50.);
 	for(unsigned int i = 0 ; i < fVecOfScintillatorBar.size() ; i++){
 		diffZHist->Fill((fVecOfScintillatorBar[i]->hitPosition).z - (fVecOfScintillatorBar[i]->meanHitPosition).z);
 		diffZHistParam->Fill((fVecOfScintillatorBar[i]->hitPositionParam).z - (fVecOfScintillatorBar[i]->meanHitPosition).z);
+	}
+	new TCanvas();
+	diffZHist->Draw();
+	new TCanvas();
+	diffZHistParam->Draw();
+}*/
+
+void Analyzer_V2::PlotDiffZHistogram(){
+	TH1D *diffZHist = new TH1D("DiffZHistogram","Histogram of Diff between Act. and Est. Z", 100, -50.,50.);
+	TH1D *diffZHistParam = new TH1D("DiffZHistogramParam","Histogram of Diff between Act. and Est. Z using Parameterization", 100, -50.,50.);
+	for(unsigned int i = 0 ; i < fVecOfScintillatorBar.size() ; i++){
+		diffZHist->Fill( ((fVecOfScintillatorBar[i]->fhitPostionSOL).fHitPosition).z - ((fVecOfScintillatorBar[i]->fhitPostionMean).fHitPosition).z );
+		diffZHistParam->Fill(((fVecOfScintillatorBar[i]->fhitPositionParam).fHitPosition).z - ((fVecOfScintillatorBar[i]->fhitPostionMean).fHitPosition).z );
 	}
 	new TCanvas();
 	diffZHist->Draw();
