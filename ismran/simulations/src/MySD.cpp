@@ -19,6 +19,7 @@
 #include "Analyzer_V2.h"
 #include <TH1F.h>
 #include "HardwareNomenclature.h"
+#include "B1RunAction.hh"
 
 int MySD::stepNum = 0;
 int MySD::numOfParticlesReached = 0;
@@ -229,7 +230,8 @@ void MySD::EndOfEvent(G4HCofThisEvent*)
          */
         if(scintBar->qlongMeanCorrected > 10000 && scintBar->qlongMeanCorrected < 35000){
         	onlyHittedBarVec.push_back(scintBar);
-          scintBar->CalculateVariousPhysicalParameters(muonNum);
+          //scintBar->CalculateVariousPhysicalParameters(muonNum);
+        	scintBar->CalculateVariousPhysicalParameters(muonNum,B1RunAction::fCalib);
         }
         if(onlyHittedBarVec.size() > 0){
         	reachedSensitiveRegion |= true;

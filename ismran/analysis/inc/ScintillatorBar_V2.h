@@ -65,6 +65,7 @@ public:
 	HitPositionAndError meanHitPositionAndError;
 
 	void CalculateVariousPhysicalParameters(unsigned long muonNum);
+	void CalculateVariousPhysicalParameters(unsigned long muonNum, Calibration *calib);
 
 
 	//Estimated Path length within each Bar
@@ -80,6 +81,7 @@ public:
 						ULong64_t l_tstampNear, ULong64_t l_tstampFar,
 						UInt_t l_qlongNear,	UInt_t l_qlongFar);
 	void EstimateHitPosition(Calibration *fCalib);
+
 
 	//Constructor to generate Scintillator from simulated data
 	ScintillatorBar_V2(ULong64_t l_tstampNear, ULong64_t l_tstampFar,

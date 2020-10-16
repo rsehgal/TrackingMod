@@ -13,6 +13,7 @@ class G4LogicalVolume;
 class TH1F;
 class TApplication;
 class DataTree;
+class Calibration;
 
 
 /// Run action class
@@ -27,6 +28,9 @@ class B1RunAction : public G4UserRunAction
   public:
    //static ofstream *myfile;
     //static ofstream GetEnergyFile(){return myfile;}
+
+	static Calibration *fCalib;
+
     B1RunAction();
     virtual ~B1RunAction();
 
