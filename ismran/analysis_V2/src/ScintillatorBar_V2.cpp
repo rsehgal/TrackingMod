@@ -21,7 +21,7 @@ ScintillatorBar_V2::ScintillatorBar_V2(ushort barIndex, ushort qlongNear,
 	fQlongNear = qlongNear;
 	fQlongMean = qlongMean;
 	fTSmallTimeStamp = tstampSmall;
-	fDelTstamp = delTStamp
+	fDelTstamp = delTStamp;
 
 }
 
@@ -64,7 +64,7 @@ UInt_t ScintillatorBar_V2::GetQLongFar(){
 	return (fQlongMean*fQlongMean)/fQlongNear;
 }
 Double_t ScintillatorBar_V2::GetQLongMean() const{
-	return fQlongMean
+	return fQlongMean;
 }
 ULong64_t ScintillatorBar_V2::GetTSmallTimestamp() const{
 	return fTSmallTimeStamp;

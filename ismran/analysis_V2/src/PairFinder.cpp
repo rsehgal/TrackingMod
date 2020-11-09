@@ -145,7 +145,7 @@ void PairFinder::ValidatePairs(){
 	//sleep(10);
 }
 
-std::vector<TreeEntry*> GetVectorOfPairedTreeEntries() const {
+std::vector<TreeEntry*> PairFinder::GetVectorOfPairedTreeEntries() const {
 	return fVecOfPairedTreeEntry;
 }
 

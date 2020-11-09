@@ -48,37 +48,10 @@ include_directories(${PROJECT_SOURCE_DIR}/inc)
 include_directories(../..)
 include_directories(../inc)
 include_directories(../../base)
+
 file(GLOB sources ${PROJECT_SOURCE_DIR}/src/*.cpp ${PROJECT_SOURCE_DIR}/src/*.cc ../inc/*.cpp)
 file(GLOB headers ${PROJECT_SOURCE_DIR}/inc/*.h ${PROJECT_SOURCE_DIR}/inc/*.hh ../../base/Vector3D.h) 
 
-add_executable(mainAna test/main.cpp ${sources} ${headers})
-target_link_libraries(mainAna ${ROOT_LIBRARIES} ${TOMOLIB})
+add_executable(AnalyzeData test/AnalyzeData.cpp ${sources} ${headers})
+target_link_libraries(AnalyzeData ${ROOT_LIBRARIES} ${TOMOLIB})
 
-add_executable(mainAna_V2 test/main_V2.cpp ${sources} ${headers})
-target_link_libraries(mainAna_V2 ${ROOT_LIBRARIES} ${TOMOLIB})
-
-add_executable(readCalibDatafile test/readCalibDataFile.cpp ${sources} ${headers})
-target_link_libraries(readCalibDatafile ${ROOT_LIBRARIES} ${TOMOLIB})
-
-add_executable(GenerateMuonSinglePointCalibration test/GenerateMuonSinglePointCalibration.cpp ${sources} ${headers})
-target_link_libraries(GenerateMuonSinglePointCalibration ${ROOT_LIBRARIES} ${TOMOLIB})
-
-add_executable(VisualizeTracksFromIsmran test/VisualizeTracksFromIsmran.cpp ${sources} ${headers})
-target_link_libraries(VisualizeTracksFromIsmran ${ROOT_LIBRARIES} ${TOMOLIB})
-
-add_executable(DemoVisualizeTracksFromIsmran test/DemoVisualizeTracksFromIsmran.cpp)
-target_link_libraries(DemoVisualizeTracksFromIsmran ${ROOT_LIBRARIES} -lTomo)
-
-add_executable(readCalibrationFormulaFile test/readCalibrationFormulaFile.cpp ${sources} ${headers})
-target_link_libraries(readCalibrationFormulaFile ${ROOT_LIBRARIES} ${TOMOLIB})
-
-add_executable(TestDataTree test/TestDataTree.cpp ${sources} ${headers})
-target_link_libraries(TestDataTree ${ROOT_LIBRARIES} ${TOMOLIB})
-
-add_executable(TestDataExp test/TestDataExp.cpp ${sources} ${headers})
-target_link_libraries(TestDataExp ${ROOT_LIBRARIES} ${TOMOLIB})
-
-#add_executable(TestDataTree2 test/TestDataTree2.cpp ${sources} ${headers})
-#target_link_libraries(TestDataTree2 ${ROOT_LIBRARIES} ${TOMOLIB})
-
-#target_link_libraries(main ${Geant4_LIBRARIES} Tomo)

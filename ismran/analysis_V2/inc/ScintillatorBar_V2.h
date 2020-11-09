@@ -10,7 +10,7 @@
 
 #include "includes.hh"
 
-//#include "PsBar.h"
+#include "PsBar.h"
 //#include "HitPositionAndError.h"
 
 //class Calibration;
