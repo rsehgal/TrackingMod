@@ -13,7 +13,7 @@
 #include <TApplication.h>
 #include "PsBar.h"
 #include <TH1F.h>
-
+#include "ScintillatorBar_V2.h"
 namespace lite_interface{
 
 	/*
