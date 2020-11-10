@@ -22,10 +22,18 @@ namespace lite_interface{
 	 * opt : 1 -> QNear
 	 * opt : 2 -> QFar
 	 */
-	extern TH1F* PlotQ_012(std::vector<ScintillatorBar_V2*> scintBarVec, ushort opt);
-	extern TH1F* PlotQMean(std::vector<ScintillatorBar_V2*> scintBarVec);
-	extern TH1F* PlotQNear(std::vector<ScintillatorBar_V2*> scintBarVec);
-	extern TH1F* PlotQFar(std::vector<ScintillatorBar_V2*> scintBarVec);
+	extern TH1F* PlotQ(std::vector<ScintillatorBar_V2*> scintBarVec, ushort barIndex);
+	extern TH1F* PlotQ_0123(std::vector<ScintillatorBar_V2*> scintBarVec,ushort barIndex, ushort opt);
+	extern TH1F* PlotQMean(std::vector<ScintillatorBar_V2*> scintBarVec,ushort barIndex);
+	extern TH1F* PlotQMeanCorrected(std::vector<ScintillatorBar_V2*> scintBarVec,ushort barIndex);
+	extern TH1F* PlotQNear(std::vector<ScintillatorBar_V2*> scintBarVec,ushort barIndex);
+	extern TH1F* PlotQFar(std::vector<ScintillatorBar_V2*> scintBarVec,ushort barIndex);
 
-} /* End of lite_interface */ 
+	/*
+	 * Histogram of DelT
+	 */
+	extern TH1F* PlotDelT(std::vector<ScintillatorBar_V2*> scintBarVec, ushort barIndex);
+	extern TH1F* PlotDelTCorrected(std::vector<ScintillatorBar_V2*> scintBarVec, ushort barIndex);
+
+} /* End of lite_interface */
 #endif /* ISMRAN_ANALYSIS_V2_INC_PLOTTER_H_ */
