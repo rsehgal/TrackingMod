@@ -10,10 +10,14 @@
 
 #include "includes.hh"
 
-#include "PsBar.h"
+//#include "PsBar.h"
+#include "Point3D.h"
 //#include "HitPositionAndError.h"
 
 //class Calibration;
+#pragma once
+#include <TROOT.h>
+
 class TH1F;
 
 namespace lite_interface{
@@ -35,6 +39,7 @@ public:
 	ScintillatorBar_V2(const ScintillatorBar_V2 &sbar);
 	ScintillatorBar_V2(ushort barIndex, ushort qlongNear, ushort qlongMean,
 						ULong64_t tstampSmall, Long_t delTStamp);
+	//ScintillatorBar_V2(const ScintillatorBar_V2 &sbar);
 	//void EstimateHitPosition(Calibration *fCalib);
 
 
@@ -52,6 +57,8 @@ public:
 	Double_t GetQLongMean() const;
 	ULong64_t GetTSmallTimestamp() const;
 	Long_t GetDelT() const;
+	Long_t GetDelTCorrected();
+	Double_t GetQMeanCorrected();
 
 	//void EstimateHitPosition_V2(Calibration *fCalib);
 
@@ -65,6 +72,8 @@ public:
 	//TH1F* GetHistQ_012(ushort opt);
 
 	virtual ~ScintillatorBar_V2();
+
+	ClassDef(ScintillatorBar_V2,1)
 };
 } /* End of lite_interface namespace */
 #endif /* ISMRAN_ANALYSIS_V2_INC_SCINTILLATORBAR_V2_H_ */

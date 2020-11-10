@@ -8,6 +8,7 @@
 #ifndef ISMRAN_INC_PSBAR_H_
 #define ISMRAN_INC_PSBAR_H_
 #include "includes.hh"
+#include "Point3D.h"
 
 //namespace ismran{
 extern const int offset ; //=0;
