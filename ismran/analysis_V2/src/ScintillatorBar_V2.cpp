@@ -6,6 +6,8 @@ ClassImp(lite_interface::ScintillatorBar_V2);
 namespace lite_interface{
 
 ScintillatorBar_V2::ScintillatorBar_V2(){
+	//std::cout << "SCINTILLATORBAR_V2 : Default Constructor called" << std::endl;
+	fBarIndex = 1234;
 
 }
 
@@ -26,7 +28,8 @@ ScintillatorBar_V2::ScintillatorBar_V2(ushort barIndex, ushort qlongNear,
 
 ScintillatorBar_V2::ScintillatorBar_V2(const ScintillatorBar_V2 &sbar){
 		//if(verbose)
-			std::cout << "======= COPY CONSTRUCTOR CaLLED ==========" << std::endl;
+			//std::cout << "======= COPY CONSTRUCTOR CaLLED ==========" << std::endl;
+	//std::cout << "SCINTILLATORBAR_V2 : Copy Constructor called" << std::endl;
 			fBarIndex = sbar.fBarIndex;
 			fQlongNear = sbar.fQlongNear;
 			fQlongMean = sbar.fQlongMean;
