@@ -16,9 +16,12 @@ namespace lite_interface {
 class ScintillatorBar_V2;
 
 class SingleMuonTrack {
+public:
+
 	std::vector<ScintillatorBar_V2*> fSingleMuonTrack;
 public:
 	SingleMuonTrack();
+	SingleMuonTrack(const SingleMuonTrack &smt);
 	virtual ~SingleMuonTrack();
 	/*
 	 * Sorting related functions

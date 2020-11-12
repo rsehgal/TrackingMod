@@ -8,13 +8,23 @@
 #include "SingleMuonTrack.h"
 #include "ScintillatorBar_V2.h"
 
-ClassImp(lite_interface::SingleMuonTrack);
+ClassImp(lite_interface::SingleMuonTrack)
 
 namespace lite_interface {
 
 SingleMuonTrack::SingleMuonTrack() {
 	// TODO Auto-generated constructor stub
+	//std::cout << "SINGLEMUONTRACK : DEfault Contructor called" << std::endl;
 
+}
+
+SingleMuonTrack::SingleMuonTrack(const SingleMuonTrack &smt){
+	//std::cout << "SINGLEMUONTRACK : Copy Contructor called" << std::endl;
+	//smt.GetMuonTrack()[0]->Print();
+	for(unsigned int i = 0 ; i < smt.GetMuonTrack().size() ; i++){
+		//fSingleMuonTrack.push_back(new ScintillatorBar_V2(*smt.GetMuonTrack()[i]));
+		fSingleMuonTrack.push_back(smt.GetMuonTrack()[i]);
+	}
 }
 
 SingleMuonTrack::~SingleMuonTrack() {

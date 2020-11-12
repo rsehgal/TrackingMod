@@ -26,11 +26,16 @@ class ScintillatorBar_V2 {
 
 //Keeping data member also PUBLIC
 public:
-	ushort  fBarIndex;    //! board #  and channel number ( its packed in as follows ) //! board*16 + chno.
-	UInt_t    fQlongNear;   //! integrated charge in long gate 88 nsec
-	Double_t  fQlongMean;   //! integrated charge in long gate 88 nsec
-	ULong64_t fTSmallTimeStamp;  //! time stamp in pico sec.
-	Long_t fDelTstamp;  //! time stamp in pico sec.
+	 //! board #  and channel number ( its packed in as follows ) //! board*16 + chno.
+	ushort  fBarIndex;
+	 //! integrated charge in long gate 88 nsec
+	UInt_t    fQlongNear;
+	 //! integrated charge in long gate 88 nsec
+	Double_t  fQlongMean;
+	 //! time stamp in pico sec.
+	ULong64_t fTSmallTimeStamp;
+	 //! time stamp in pico sec.
+	Long_t fDelTstamp;
 
 
 public:

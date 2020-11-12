@@ -99,31 +99,43 @@ void Analyzer::ReconstructMuonTrack(){
 	std::cout << "ScintVectSize : " << scintVecSize << std::endl;
 	//std::vector<SingleMuonTrack*> muonTrackVec;
 	lite_interface::SingleMuonTrack *singleMuonTrack = new lite_interface::SingleMuonTrack();
-	//SingleMuonTrack *smt;
+
+	//std::vector<ScintillatorBar_V2*> smt = singleMuonTrack->GetMuonTrack();
+	//SingleMuonTrack *smt=new SingleMuonTrack;
 	//std::vector<ScintillatorBar_V2*> smt = singleMuonTrack->GetMuonTrack();
 
 	unsigned int hitInAllLayersCounter = 0;
 	TFile *tracksFile = new TFile("tracks.root","RECREATE");
 	TTree *tracksTree = new TTree("TracksTree","TracksTree");
 	//tracksTree->Branch("MuonTracks","MuonTracks", &smt);
-	//tracksTree->Branch("MuonTracks","lite_interface::SingleMuonTrack", &singleMuonTrack);
 	tracksTree->Branch("MuonTracks","lite_interface::SingleMuonTrack", &singleMuonTrack);
+	//tracksTree->Branch("MuonTracks","lite_interface::SingleMuonTrack", &smt);
 
 	singleMuonTrack->push_back(fVecOfScintillatorBar[0]);
+	unsigned int count=0;
 	for (unsigned int i = 1; i < scintVecSize; i++) {
-		if(!(i%100000))
-			std::cout << "Processed : " << i << " : bars " << std::endl;
+		//if(!(i%100000))
+			//std::cout << "Processed : " << i << " : bars " << std::endl;
 
 		if ((fVecOfScintillatorBar[i]->fTSmallTimeStamp - fVecOfScintillatorBar[i - 1]->fTSmallTimeStamp) < 20000) {
 			//Within 20ns window
 			singleMuonTrack->push_back(fVecOfScintillatorBar[i]);
 		} else {
+
 			//Outside 20ns window, implied track ends, hence either store it in the vector of write it to the ROOT file
 			singleMuonTrack->Sort();
+			//smt = new SingleMuonTrack(*singleMuonTrack);
+
+			//std::cout << smt <<" : " << singleMuonTrack << std::endl;
 			//muonTrackVec.push_back(singleMuonTrack);
 			//smt = singleMuonTrack->GetMuonTrack();
 			//tracksTree->Fill();
-			if(singleMuonTrack->size() > 4){
+			if(singleMuonTrack->size() > 6){
+				count++;
+				if(count <= 4){
+					std::cout << "======== Single Muon Track Count : " << count << " =========" << std::endl;
+					singleMuonTrack->Print();
+				}
 				tracksTree->Fill();
 			//std::cout << "=====================" << std::endl;
 			//singleMuonTrack->Print();
@@ -137,6 +149,14 @@ void Analyzer::ReconstructMuonTrack(){
 				hitInAllLayersCounter++;
 
 			//singleMuonTrack = new SingleMuonTrack();
+
+			/*if(smt->size() > 4){
+				if(count <= 4){
+					std::cout << "======== SMT Count : " << count << " =========" << std::endl;
+					smt->Print();
+				}
+			}*/
+
 			singleMuonTrack->clear();
 			singleMuonTrack->push_back(fVecOfScintillatorBar[i]);
 		}
