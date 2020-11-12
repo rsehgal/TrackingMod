@@ -130,7 +130,7 @@ void Analyzer::ReconstructMuonTrack(){
 			//muonTrackVec.push_back(singleMuonTrack);
 			//smt = singleMuonTrack->GetMuonTrack();
 			//tracksTree->Fill();
-			if(singleMuonTrack->size() > 6){
+			if(singleMuonTrack->size() > 8){
 				count++;
 				if(count <= 4){
 					std::cout << "======== Single Muon Track Count : " << count << " =========" << std::endl;

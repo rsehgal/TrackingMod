@@ -23,6 +23,9 @@ public:
 
 public:
 	Point3D();
+	double GetX()const{return fX;}
+	double GetY()const{return fY;}
+	double GetZ()const{return fZ;}
 	Point3D(double x, double y, double z);
 	void SetZero();
 	double Distance(Point3D p2);

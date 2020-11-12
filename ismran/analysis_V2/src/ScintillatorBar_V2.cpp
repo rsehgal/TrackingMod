@@ -1,5 +1,7 @@
 #include "ScintillatorBar_V2.h"
 #include "Calibration.h"
+#include "HardwareNomenclature.h"
+#include "Point3D.h"
 
 ClassImp(lite_interface::ScintillatorBar_V2);
 
@@ -8,6 +10,10 @@ namespace lite_interface{
 ScintillatorBar_V2::ScintillatorBar_V2(){
 	//std::cout << "SCINTILLATORBAR_V2 : Default Constructor called" << std::endl;
 	fBarIndex = 1234;
+		fQlongNear = 0;
+		fQlongMean = 0;
+		fTSmallTimeStamp = 0;
+		fDelTstamp = 0;
 
 }
 
@@ -17,12 +23,12 @@ ScintillatorBar_V2::ScintillatorBar_V2(unsigned int bIndex){
 
 ScintillatorBar_V2::ScintillatorBar_V2(ushort barIndex, ushort qlongNear, 
 									   ushort qlongMean,ULong64_t tstampSmall, 
-									   Long_t delTStamp){
-	fBarIndex = barIndex;
-	fQlongNear = qlongNear;
-	fQlongMean = qlongMean;
-	fTSmallTimeStamp = tstampSmall;
-	fDelTstamp = delTStamp;
+									   Long_t delTStamp):fBarIndex(barIndex),
+fQlongNear(qlongNear),
+fQlongMean(qlongMean),
+fTSmallTimeStamp(tstampSmall),
+fDelTstamp(delTStamp){
+
 
 }
 
@@ -41,13 +47,21 @@ ScintillatorBar_V2::ScintillatorBar_V2(const ScintillatorBar_V2 &sbar){
 
 //void ScintillatorBar_V2::EstimateHitPosition(Calibration *fCalib);
 
+lite_interface::Point3D* ScintillatorBar_V2::EstimateHitPosition(){
+	//(1.0*100)/22.0) = 545454545
+	double zval = ( 4.545454545 * ( GetDelTCorrected()/1000. + 11.)) - 50.;
+	return (new lite_interface::Point3D(vecOfScintXYCenter[fBarIndex].x,
+						 vecOfScintXYCenter[fBarIndex].y,
+						 zval));
+}
 
 void ScintillatorBar_V2::EstimateHitPositionAlongX(){
 
 }
 
 void ScintillatorBar_V2::EstimateHitPositionAlongX(Point3D *temp, Point3D *tempError){
-
+	temp->x = vecOfScintXYCenter[fBarIndex].x;
+	tempError->x = errorX;
 }
 
 void ScintillatorBar_V2::EstimateHitPositionAlongY(){
@@ -55,7 +69,8 @@ void ScintillatorBar_V2::EstimateHitPositionAlongY(){
 }
 
 void ScintillatorBar_V2::EstimateHitPositionAlongY(Point3D *temp, Point3D *tempError){
-
+	temp->y = vecOfScintXYCenter[fBarIndex].y;
+	tempError->y = errorY;
 }
 
 //void ScintillatorBar_V2::EstimateHitPosition_V2(Calibration *fCalib);

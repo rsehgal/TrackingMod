@@ -22,6 +22,8 @@ class TH1F;
 
 namespace lite_interface{
 
+class Point3D;
+
 class ScintillatorBar_V2 {
 
 //Keeping data member also PUBLIC
@@ -48,6 +50,7 @@ public:
 	//void EstimateHitPosition(Calibration *fCalib);
 
 
+	lite_interface::Point3D* EstimateHitPosition();
 	void EstimateHitPositionAlongX();
 	void EstimateHitPositionAlongX(Point3D *temp, Point3D *tempError);
 	void EstimateHitPositionAlongY();
