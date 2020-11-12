@@ -53,6 +53,7 @@ unsigned long int SingleMuonTrack::size(){
 }
 
 void SingleMuonTrack::Print(){
+	std::cout << "==== Print from SingleMuonTrack =====" << std::endl;
 	for(unsigned int j = 0 ; j < fSingleMuonTrack.size() ; j++){
 		fSingleMuonTrack[j]->Print();
 	}
