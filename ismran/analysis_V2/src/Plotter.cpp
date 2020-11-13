@@ -161,4 +161,50 @@ namespace lite_interface{
 		}
 		return hist;
 	}
+
+	TGraphErrors* PlotMuonTrack(lite_interface::SingleMuonTrack *smt,int opt){
+		return PlotMuonTrack(smt->Get3DHitPointVector(),opt);
+	}
+
+	TGraphErrors* PlotMuonTrack(std::vector<lite_interface::Point3D*> vecOfPoint3D, int opt){
+		std::vector<Double_t> xVec, yVec, zVec;
+		std::vector<Double_t> xVecErr, yVecErr, zVecErr;
+		std::vector<lite_interface::Point3D*>::iterator itr;
+		for(itr = vecOfPoint3D.begin() ; itr!=vecOfPoint3D.end() ; itr++){
+			//std::cout <<"=================" << std::endl;
+			//(*itr)->Print();
+			xVec.push_back((*itr)->GetX());
+			xVecErr.push_back(0.);
+			yVec.push_back((*itr)->GetY());
+			yVecErr.push_back(0.);
+			zVec.push_back((*itr)->GetZ());
+			zVecErr.push_back(0.);
+		}
+		TGraphErrors *grxy = new TGraphErrors(xVec.size(), &xVec[0], &yVec[0],&xVecErr[0],&yVecErr[0]);
+		grxy->SetMarkerStyle(8);
+		grxy->SetMarkerColor(kMagenta);
+		TGraphErrors *grzy = new TGraphErrors(zVec.size(), &zVec[0], &yVec[0], &zVecErr[0], &yVecErr[0]);
+		grzy->SetMarkerStyle(8);
+		grzy->SetMarkerColor(kBlue);
+		if(opt==1)
+			return grxy;
+		if(opt==2)
+			return grzy;
+	}
+
+	TGraphErrors* PlotMuonTrackXY(lite_interface::SingleMuonTrack *smt){
+		return PlotMuonTrack(smt,1);
+	}
+
+	TGraphErrors* PlotMuonTrackZY(lite_interface::SingleMuonTrack *smt){
+		return PlotMuonTrack(smt,2);
+	}
+
+	TGraphErrors* PlotMuonTrackXY(std::vector<lite_interface::Point3D*> vecOfPoint3D){
+		return PlotMuonTrack(vecOfPoint3D,1);
+	}
+
+	TGraphErrors* PlotMuonTrackZY(std::vector<lite_interface::Point3D*> vecOfPoint3D){
+		return PlotMuonTrack(vecOfPoint3D,2);
+	}
 } /* End of lite_interface */

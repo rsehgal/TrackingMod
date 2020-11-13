@@ -99,6 +99,7 @@ void Analyzer::ReconstructMuonTrack(){
 	std::cout << "ScintVectSize : " << scintVecSize << std::endl;
 	//std::vector<SingleMuonTrack*> muonTrackVec;
 	lite_interface::SingleMuonTrack *singleMuonTrack = new lite_interface::SingleMuonTrack();
+	std::vector<lite_interface::Point3D*> *hitPointVec = new std::vector<lite_interface::Point3D*>;
 
 	//std::vector<ScintillatorBar_V2*> smt = singleMuonTrack->GetMuonTrack();
 	//SingleMuonTrack *smt=new SingleMuonTrack;
@@ -107,8 +108,10 @@ void Analyzer::ReconstructMuonTrack(){
 	unsigned int hitInAllLayersCounter = 0;
 	TFile *tracksFile = new TFile("tracks.root","RECREATE");
 	TTree *tracksTree = new TTree("TracksTree","TracksTree");
+	TTree *hitPointVecTree = new TTree("HitPointVecTree","HitPointVecTree");
 	//tracksTree->Branch("MuonTracks","MuonTracks", &smt);
 	tracksTree->Branch("MuonTracks","lite_interface::SingleMuonTrack", &singleMuonTrack);
+	hitPointVecTree->Branch("HitPointVec","std::vector<lite_interface::Point3D*>", &hitPointVec);
 	//tracksTree->Branch("MuonTracks","lite_interface::SingleMuonTrack", &smt);
 
 	singleMuonTrack->push_back(fVecOfScintillatorBar[0]);
@@ -131,12 +134,23 @@ void Analyzer::ReconstructMuonTrack(){
 			//smt = singleMuonTrack->GetMuonTrack();
 			//tracksTree->Fill();
 			if(singleMuonTrack->size() > 8){
-				count++;
+				/*count++;
 				if(count <= 4){
 					std::cout << "======== Single Muon Track Count : " << count << " =========" << std::endl;
 					singleMuonTrack->Print();
+				}*/
+
+				if(singleMuonTrack->IsClearTrack()){
+					std::vector<lite_interface::Point3D*> vec = singleMuonTrack->Get3DHitPointVector();
+					hitPointVec = &vec;
+					count++;
+					if(count <= 4){
+						std::cout << "======== Single Muon Track Count : " << count << " =========" << std::endl;
+						singleMuonTrack->Print();
+					}
+					tracksTree->Fill();
+					hitPointVecTree->Fill();
 				}
-				tracksTree->Fill();
 			//std::cout << "=====================" << std::endl;
 			//singleMuonTrack->Print();
 			}
@@ -163,6 +177,7 @@ void Analyzer::ReconstructMuonTrack(){
 	}
 
 	tracksTree->Write();
+	hitPointVecTree->Write();
 	tracksFile->Close();
 
 	std::cout

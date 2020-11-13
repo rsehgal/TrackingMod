@@ -86,6 +86,9 @@ ScintillatorBar_V2::~ScintillatorBar_V2(){
 ushort ScintillatorBar_V2::GetBarIndex()const{
 	return fBarIndex;
 }
+ushort ScintillatorBar_V2::GetLayerIndex(){
+	return  (fBarIndex/numOfBarsInEachLayer);
+}
 UInt_t ScintillatorBar_V2::GetQLongNear()const{
 	return fQlongNear;
 }
