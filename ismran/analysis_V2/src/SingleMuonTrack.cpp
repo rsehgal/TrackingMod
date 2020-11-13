@@ -7,6 +7,9 @@
 
 #include "SingleMuonTrack.h"
 #include "ScintillatorBar_V2.h"
+#include <iterator>
+#include "PsBar.h"
+#include "Point3D.h"
 
 ClassImp(lite_interface::SingleMuonTrack)
 
@@ -62,6 +65,39 @@ void SingleMuonTrack::Print(){
 
 std::vector<ScintillatorBar_V2*> SingleMuonTrack::GetMuonTrack()const{
 	return fSingleMuonTrack;
+}
+
+std::vector<unsigned short> SingleMuonTrack::GetLayersHitCountVector(){
+	std::vector<unsigned short> layerHitCountVector;
+	for(unsigned short i = 0 ; i < numOfLayers ; i++)
+		layerHitCountVector.push_back(0);
+
+	std::vector<ScintillatorBar_V2*>::iterator itr;
+	for(itr = fSingleMuonTrack.begin() ; itr != fSingleMuonTrack.end() ; itr++){
+		layerHitCountVector[(*itr)->GetLayerIndex()]++;
+	}
+	return layerHitCountVector;
+}
+
+bool SingleMuonTrack::IsClearTrack(){
+	std::vector<unsigned short> layerHitCountVector = GetLayersHitCountVector();
+	std::vector<unsigned short>::iterator itr;
+	bool clear = true;
+	for(itr = layerHitCountVector.begin() ; itr!=layerHitCountVector.end(); itr++){
+		clear &= ((*itr)==1);
+		if(!clear)
+			break;
+	}
+	return clear;
+}
+
+std::vector<lite_interface::Point3D*> SingleMuonTrack::Get3DHitPointVector(){
+	std::vector<lite_interface::Point3D*> vectorOf3DHitPoint;
+	std::vector<ScintillatorBar_V2*>::iterator itr;
+	for(itr = fSingleMuonTrack.begin() ; itr != fSingleMuonTrack.end() ; itr++){
+		vectorOf3DHitPoint.push_back((*itr)->EstimateHitPosition());
+	}
+	return vectorOf3DHitPoint;
 }
 
 } /* namespace lite_interface */

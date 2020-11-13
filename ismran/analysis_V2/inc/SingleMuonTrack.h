@@ -14,7 +14,7 @@
 namespace lite_interface {
 
 class ScintillatorBar_V2;
-
+class Point3D;
 class SingleMuonTrack {
 public:
 
@@ -38,6 +38,18 @@ public:
 
 	void Print();
 	std::vector<ScintillatorBar_V2*> GetMuonTrack()const;
+	std::vector<unsigned short> GetLayersHitCountVector();
+
+	/*
+	 * Function to detect if the track has single hit in each layer
+	 */
+	bool IsClearTrack();
+
+	/*
+	 * Function to get the hit point vector .i.e vector<Point3D>
+	 */
+	std::vector<lite_interface::Point3D*> Get3DHitPointVector();
+
 	ClassDef(SingleMuonTrack,1)
 };
 

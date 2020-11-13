@@ -17,7 +17,9 @@
 #include <TApplication.h>
 #include "Calibration.h"
 #include "HardwareNomenclature.h"
+#include <TGraphErrors.h>
 int main(int argc,char *argv[]){
+	TFile *f=new TFile("test.root","RECREATE");
 	TApplication *fApp = new TApplication("Test", NULL, NULL);
 	GenerateScintMatrixXYCenters();
 	lite_interface::SingleMuonTrack *smt = 0;
@@ -47,6 +49,20 @@ int main(int argc,char *argv[]){
 	unsigned int count = 0;
 	for (Long64_t i=0; i<nentries;i++) {
 		nbytes += trackTree->GetEntry(i);
+
+		/*
+		 * Trying to plot few tracks
+		 */
+		/*if(i<1){
+			new TCanvas();
+			TGraphErrors *grxy = lite_interface::PlotMuonTrack(smt,2);
+			grxy->SetMarkerStyle(8);
+			grxy->Draw("p");
+			//DrawGrid("Muon Track in XY plane; X axis ; Y axis", 9, 9);
+			f->cd();
+			grxy->Write();
+			f->Close();
+		}*/
 
 		//if(i < 5 )
 		{
