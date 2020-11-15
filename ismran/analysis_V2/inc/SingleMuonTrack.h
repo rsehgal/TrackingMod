@@ -50,6 +50,11 @@ public:
 	 */
 	std::vector<lite_interface::Point3D*> Get3DHitPointVector();
 
+	/*
+	 * Function to get the sum of energy deposited in different layers
+	 */
+	float GetEnergySum();
+
 	ClassDef(SingleMuonTrack,1)
 };
 
