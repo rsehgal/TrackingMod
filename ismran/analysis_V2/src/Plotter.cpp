@@ -207,4 +207,85 @@ namespace lite_interface{
 	TGraphErrors* PlotMuonTrackZY(std::vector<lite_interface::Point3D*> vecOfPoint3D){
 		return PlotMuonTrack(vecOfPoint3D,2);
 	}
+
+	TH1F* PlotEnergySum(std::vector<lite_interface::SingleMuonTrack*> smtVec){
+		TH1F *energSumHist = new TH1F("EnergySumHist","Histogram of Energy Sum",1000,0,40);
+		std::vector<lite_interface::SingleMuonTrack*>::iterator itr;
+		for(itr = smtVec.begin() ; itr!=smtVec.end() ; itr++){
+			energSumHist->Fill((*itr)->GetEnergySum());
+		}
+		energSumHist->Scale(1/energSumHist->Integral());
+		return energSumHist;
+	}
+
+	void PlotEnergyDistributionWithMultiplicity(std::vector<SingleMuonTrack*> muonTrackVec, unsigned int multiplicity){
+	std::vector<short int> multiplicityVec;
+	if(multiplicity == 0){
+		for(unsigned int i = 0 ; i < numOfLayers ; i++){
+			multiplicityVec.push_back(i+1);
+		}
+	}else{
+		multiplicityVec.push_back(multiplicity);
+	}
+
+	TCanvas *can = new TCanvas();
+	if(multiplicityVec.size()!=1){
+		float t = sqrt(multiplicityVec.size());
+		unsigned short rows = std::floor(t);
+		unsigned short cols = std::ceil(t);
+		can->Divide(cols,rows);
+
+	}
+
+	if(multiplicityVec.size()==1){
+		char *title = Form("Energy histogram for Multiplicity %d",multiplicity);
+		TH1D *histEnergyWithMultiplicity = new TH1D(title,title,500,100000,250000);
+		for(unsigned int i = 0 ; i < muonTrackVec.size() ; i ++){
+			if(muonTrackVec[i]->size() == multiplicity){
+				histEnergyWithMultiplicity->Fill(muonTrackVec[i]->GetEnergySum());
+			}
+		}
+		histEnergyWithMultiplicity->Draw();
+	}else{
+		std::vector<TH1D*> vecOfHists;
+		for(unsigned int i = 0 ; i < multiplicityVec.size() ; i++){
+			char *str = Form("Multiplicity-%d",i+1);
+			int xlow = multiplicityVec[i]*20000. - 60000;
+			int xhigh = multiplicityVec[i]*20000. + 60000;
+			xlow = 0;
+			xhigh = 240000;
+			vecOfHists.push_back(new TH1D(str,str,50,xlow,xhigh));
+			vecOfHists[i]->GetXaxis()->SetTitle("Energy sum");
+			vecOfHists[i]->GetXaxis()->CenterTitle(true);
+			vecOfHists[i]->GetYaxis()->SetTitle("Normalized Counts");
+			vecOfHists[i]->GetYaxis()->CenterTitle(true);
+		}
+		for(unsigned int i = 0 ; i < muonTrackVec.size() ; i ++){
+			//std::cout << "BREAK at Muon Track vector of size :  " << (muonTrackVec[i]->fSingleMuonTrack).size() << std::endl;
+			if(muonTrackVec[i]->size() <= numOfLayers && muonTrackVec[i]->size() > 0)
+				vecOfHists[muonTrackVec[i]->size()-1]->Fill(muonTrackVec[i]->GetEnergySum() );
+		}
+		for(unsigned int i = 0 ; i < multiplicityVec.size() ; i++){
+			can->cd(i+1);
+			vecOfHists[i]->Draw();
+		}
+
+		TLegend *legend = new TLegend();//0.1,0.7,0.48,0.9);
+	    legend->SetHeader("Multiplicity","C");
+		new TCanvas();
+
+		for(unsigned int i = 0 ; i < multiplicityVec.size() ; i++){
+			vecOfHists[i]->SetLineColor(i+1);
+			vecOfHists[i]->Scale(1/vecOfHists[i]->Integral());
+			legend->AddEntry(vecOfHists[i],Form("Multiplicity_%d",i+1),"l");
+			vecOfHists[i]->GetXaxis()->SetNdivisions(12);
+			vecOfHists[i]->Draw("same");
+		}
+		legend->Draw();
+
+	}
+
+
+	//histEnergyWithMultiplicity->Draw();
+}
 } /* End of lite_interface */

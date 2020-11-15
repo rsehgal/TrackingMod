@@ -100,4 +100,13 @@ std::vector<lite_interface::Point3D*> SingleMuonTrack::Get3DHitPointVector(){
 	return vectorOf3DHitPoint;
 }
 
+float SingleMuonTrack::GetEnergySum(){
+	float energySum = 0; 
+	std::vector<ScintillatorBar_V2*>::iterator itr;
+	for(itr = fSingleMuonTrack.begin() ; itr != fSingleMuonTrack.end() ; itr++){
+		energySum += (*itr)->GetQMeanCorrected();
+	}
+	return energySum;
+}
+
 } /* namespace lite_interface */

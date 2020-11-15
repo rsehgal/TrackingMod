@@ -44,11 +44,13 @@ int main(int argc,char *argv[]){
 
 	  std::vector<lite_interface::ScintillatorBar_V2*>::iterator itr;
 
+	  std::vector<lite_interface::SingleMuonTrack*> smtVec;
 
 
 	unsigned int count = 0;
 	for (Long64_t i=0; i<nentries;i++) {
 		nbytes += trackTree->GetEntry(i);
+		smtVec.push_back(smt);
 
 		/*
 		 * Trying to plot few tracks
@@ -121,6 +123,9 @@ int main(int argc,char *argv[]){
 	TH2F* hitPointsOnBar = PlotHitPointsOnBar(vectOfScintBars,5);
 	hitPointsOnBar->Draw();
 
+	new TCanvas();
+	TH1F *energySumHist = PlotEnergySum(smtVec);
+	energySumHist->Draw();
 	fApp->Run();
 
 	return 0;
