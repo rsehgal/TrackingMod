@@ -12,6 +12,7 @@
 #include "SingleMuonTrack.h"
 #include "Plotter.h"
 #include "TCanvas.h"
+#include "HardwareNomenclature.h"
 
 namespace lite_interface {
 
@@ -102,6 +103,7 @@ void Analyzer::ReconstructMuonTrack(){
 	//std::vector<SingleMuonTrack*> muonTrackVec;
 	lite_interface::SingleMuonTrack *singleMuonTrack = new lite_interface::SingleMuonTrack();
 	std::vector<lite_interface::Point3D*> *hitPointVec = new std::vector<lite_interface::Point3D*>;
+	std::vector<lite_interface::Point3D*> *hitPointVec_Param = new std::vector<lite_interface::Point3D*>;
 	std::vector<lite_interface::SingleMuonTrack*> smtVec;
 	double energySum = 0;
 
@@ -113,10 +115,12 @@ void Analyzer::ReconstructMuonTrack(){
 	TFile *tracksFile = new TFile("tracks.root","RECREATE");
 	TTree *tracksTree = new TTree("TracksTree","TracksTree");
 	TTree *hitPointVecTree = new TTree("HitPointVecTree","HitPointVecTree");
+	TTree *hitPointVecTree_Param = new TTree("HitPointVecTreeParam","HitPointVecTreeParam");
 	//tracksTree->Branch("MuonTracks","MuonTracks", &smt);
 	tracksTree->Branch("MuonTracks","lite_interface::SingleMuonTrack", &singleMuonTrack);
 	hitPointVecTree->Branch("HitPointVec","std::vector<lite_interface::Point3D*>", &hitPointVec);
 	hitPointVecTree->Branch("EnergySum", &energySum, "energySum/D");
+	hitPointVecTree_Param->Branch("HitPointVec","std::vector<lite_interface::Point3D*>", &hitPointVec_Param);
 
 	//tracksTree->Branch("MuonTracks","lite_interface::SingleMuonTrack", &smt);
 
@@ -134,14 +138,14 @@ void Analyzer::ReconstructMuonTrack(){
 			//Outside 20ns window, implied track ends, hence either store it in the vector of write it to the ROOT file
 
 			singleMuonTrack->Sort();
-			smtVec.push_back(singleMuonTrack);
+			//smtVec.push_back(singleMuonTrack);
 			//smt = new SingleMuonTrack(*singleMuonTrack);
 
 			//std::cout << smt <<" : " << singleMuonTrack << std::endl;
 			//muonTrackVec.push_back(singleMuonTrack);
 			//smt = singleMuonTrack->GetMuonTrack();
 			//tracksTree->Fill();
-			if(singleMuonTrack->size() > 4)
+			if(singleMuonTrack->size() > 8)
 			{
 				/*count++;
 				if(count <= 4){
@@ -151,9 +155,30 @@ void Analyzer::ReconstructMuonTrack(){
 
 				if(singleMuonTrack->IsClearTrack())
 				{
+					std::vector<std::string> barNamesVector = singleMuonTrack->GetBarNamesVector();
 					std::vector<lite_interface::Point3D*> vec = singleMuonTrack->Get3DHitPointVector();
+					if(count < 4){
+					std::cout <<"--------- Using Muon -------------" << std::endl;
+					for(unsigned short k =0 ; k < vec.size() ; k++){
+						std::cout << "BarName : " << barNamesVector[k] << " : Corrected DelT : " << (singleMuonTrack->GetMuonTrack())[k]->GetDelTCorrected() <<" : " ;
+						vec[k]->Print();
+					}
+					}
+
 					energySum = singleMuonTrack->GetEnergySum();
 					hitPointVec = &vec;
+
+
+					std::vector<lite_interface::Point3D*> vec_Param = singleMuonTrack->Get3DHitPointVector_Param();
+					if(count < 4){
+					std::cout <<"--------- Using Param -------------" << std::endl;
+					for(unsigned short k =0 ; k < vec_Param.size() ; k++){
+						std::cout << "BarName : " << barNamesVector[k] << " : ";
+						vec_Param[k]->Print();
+					}
+					}
+					hitPointVec_Param = &vec_Param;
+
 					count++;
 					if(count <= 4){
 						std::cout << "======== Single Muon Track Count : " << count << " =========" << std::endl;
@@ -161,6 +186,7 @@ void Analyzer::ReconstructMuonTrack(){
 					}
 					tracksTree->Fill();
 					hitPointVecTree->Fill();
+					hitPointVecTree_Param->Fill();
 				}
 			//std::cout << "=====================" << std::endl;
 			//singleMuonTrack->Print();
@@ -192,6 +218,7 @@ void Analyzer::ReconstructMuonTrack(){
 	//can->Write();
 	tracksTree->Write();
 	hitPointVecTree->Write();
+	hitPointVecTree_Param->Write();
 	tracksFile->Close();
 
 	std::cout

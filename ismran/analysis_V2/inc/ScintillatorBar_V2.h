@@ -55,6 +55,7 @@ public:
 	void EstimateHitPositionAlongX(Point3D *temp, Point3D *tempError);
 	void EstimateHitPositionAlongY();
 	void EstimateHitPositionAlongY(Point3D *temp, Point3D *tempError);
+	lite_interface::Point3D* EstimateHitPosition_Param();
 
 	/* 
 	 * Required Getters

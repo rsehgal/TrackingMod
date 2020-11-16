@@ -10,6 +10,7 @@
 #include <iterator>
 #include "PsBar.h"
 #include "Point3D.h"
+#include "HardwareNomenclature.h"
 
 ClassImp(lite_interface::SingleMuonTrack)
 
@@ -104,6 +105,15 @@ std::vector<lite_interface::Point3D*> SingleMuonTrack::Get3DHitPointVector(){
 	return vectorOf3DHitPoint;
 }
 
+std::vector<lite_interface::Point3D*> SingleMuonTrack::Get3DHitPointVector_Param(){
+	std::vector<lite_interface::Point3D*> vectorOf3DHitPoint;
+	std::vector<ScintillatorBar_V2*>::iterator itr;
+	for(itr = fSingleMuonTrack.begin() ; itr != fSingleMuonTrack.end() ; itr++){
+		vectorOf3DHitPoint.push_back((*itr)->EstimateHitPosition_Param());
+	}
+	return vectorOf3DHitPoint;
+}
+
 double SingleMuonTrack::GetEnergySum(){
 	double energySum = 0;
 	std::vector<ScintillatorBar_V2*>::iterator itr;
@@ -111,6 +121,15 @@ double SingleMuonTrack::GetEnergySum(){
 		energySum += (*itr)->GetQMeanCorrected();
 	}
 	return energySum;
+}
+
+std::vector<std::string> SingleMuonTrack::GetBarNamesVector(){
+	std::vector<std::string> barNamesVector;
+	std::vector<ScintillatorBar_V2*>::iterator itr;
+	for(itr = fSingleMuonTrack.begin() ; itr != fSingleMuonTrack.end() ; itr++){
+		barNamesVector.push_back(vecOfBarsNamess[(*itr)->GetBarIndex()]);
+	}
+	return barNamesVector;
 }
 
 } /* namespace lite_interface */
