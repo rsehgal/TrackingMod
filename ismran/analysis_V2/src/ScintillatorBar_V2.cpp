@@ -76,7 +76,7 @@ void ScintillatorBar_V2::EstimateHitPositionAlongY(Point3D *temp, Point3D *tempE
 //void ScintillatorBar_V2::EstimateHitPosition_V2(Calibration *fCalib);
 
 void ScintillatorBar_V2::Print(){
-	std::cout <<"BarIndex : " << fBarIndex << std::endl;
+	std::cout <<"BarIndex : " << fBarIndex <<  std::endl; // " :  Energy :  " << GetQMeanCorrected() << std::endl;
 }
 
 ScintillatorBar_V2::~ScintillatorBar_V2(){
@@ -112,6 +112,7 @@ Double_t ScintillatorBar_V2::GetQMeanCorrected(){
 
 	TF1 *enercalibFormula = Calibration::instance()->GetCalibrationDataOf(fBarIndex)->fEnergyCalibration_F;
 	Double_t ener = (enercalibFormula->Eval(fQlongMean)) ;
+
 	return ener;
 	/*TGraph *gr = Calibration::instance()->GetCalibrationDataOf(fBarIndex)->fGraphWithMuonPoint;
 	new TCanvas();

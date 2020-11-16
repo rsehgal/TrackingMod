@@ -209,16 +209,19 @@ namespace lite_interface{
 	}
 
 	TH1F* PlotEnergySum(std::vector<lite_interface::SingleMuonTrack*> smtVec){
-		TH1F *energSumHist = new TH1F("EnergySumHist","Histogram of Energy Sum",1000,0,40);
+		TH1F *energSumHist = new TH1F("EnergySumHist","Histogram of Energy Sum",1000,0,400);
 		std::vector<lite_interface::SingleMuonTrack*>::iterator itr;
+		int count=0;
 		for(itr = smtVec.begin() ; itr!=smtVec.end() ; itr++){
+			std::cout << "@@@@@@@@@@@@@@@ EVENT : " << count++ << " @@@@@@@@@@@@@@@@@@@" << std::endl;
+			(*itr)->Print();
 			energSumHist->Fill((*itr)->GetEnergySum());
 		}
-		energSumHist->Scale(1/energSumHist->Integral());
+		//energSumHist->Scale(1/energSumHist->Integral());
 		return energSumHist;
 	}
 
-	void PlotEnergyDistributionWithMultiplicity(std::vector<SingleMuonTrack*> muonTrackVec, unsigned int multiplicity){
+	TCanvas* PlotEnergyDistributionWithMultiplicity(std::vector<SingleMuonTrack*> muonTrackVec, unsigned int multiplicity){
 	std::vector<short int> multiplicityVec;
 	if(multiplicity == 0){
 		for(unsigned int i = 0 ; i < numOfLayers ; i++){
@@ -284,6 +287,8 @@ namespace lite_interface{
 		legend->Draw();
 
 	}
+
+	return can;
 
 
 	//histEnergyWithMultiplicity->Draw();

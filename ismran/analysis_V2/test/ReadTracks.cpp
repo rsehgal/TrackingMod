@@ -46,11 +46,12 @@ int main(int argc,char *argv[]){
 
 	  std::vector<lite_interface::SingleMuonTrack*> smtVec;
 
+	  std::vector<lite_interface::ScintillatorBar_V2*> scintBarVecForNewTrack;
 
 	unsigned int count = 0;
 	for (Long64_t i=0; i<nentries;i++) {
 		nbytes += trackTree->GetEntry(i);
-		smtVec.push_back(smt);
+
 
 		/*
 		 * Trying to plot few tracks
@@ -72,20 +73,21 @@ int main(int argc,char *argv[]){
 			//if((smt->GetMuonTrack()).size() > 20 )
 			//	smt->Print();
 			std::vector<lite_interface::ScintillatorBar_V2*> scintBarVecOfATrack = smt->GetMuonTrack();
+
+			scintBarVecForNewTrack.clear();
+
 			for(unsigned int j = 0 ; j < scintBarVecOfATrack.size() ; j++){
+
 				//(smt->GetMuonTrack())[j]->Print();
 				if(scintBarVecOfATrack[j]->GetBarIndex() > 81){
 					count++;
 				}
-				/*if(scintBarVecOfATrack[j]->GetBarIndex() == 5){
-					vectOfScintBars.push_back(new lite_interface::ScintillatorBar_V2(*scintBarVecOfATrack[j]));
-				}
-				if(scintBarVecOfATrack[j]->GetBarIndex() == 15){
-									vectOfScintBars2.push_back(new lite_interface::ScintillatorBar_V2(*scintBarVecOfATrack[j]));
-				}*/
+
 				//vectOfScintBarsProfile.push_back(new lite_interface::ScintillatorBar_V2(*scintBarVecOfATrack[j]));
 				vectOfScintBars.push_back(new lite_interface::ScintillatorBar_V2(*scintBarVecOfATrack[j]));
+				scintBarVecForNewTrack.push_back(new lite_interface::ScintillatorBar_V2(*scintBarVecOfATrack[j]));
 			}
+			smtVec.push_back(new lite_interface::SingleMuonTrack(scintBarVecForNewTrack));
 		}
 
 	}

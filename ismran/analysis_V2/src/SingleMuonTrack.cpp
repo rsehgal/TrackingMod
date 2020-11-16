@@ -21,6 +21,10 @@ SingleMuonTrack::SingleMuonTrack() {
 
 }
 
+SingleMuonTrack::SingleMuonTrack(std::vector<ScintillatorBar_V2*> vecOfScintBars){
+	fSingleMuonTrack = vecOfScintBars;
+}
+
 SingleMuonTrack::SingleMuonTrack(const SingleMuonTrack &smt){
 	//std::cout << "SINGLEMUONTRACK : Copy Contructor called" << std::endl;
 	//smt.GetMuonTrack()[0]->Print();
@@ -100,8 +104,8 @@ std::vector<lite_interface::Point3D*> SingleMuonTrack::Get3DHitPointVector(){
 	return vectorOf3DHitPoint;
 }
 
-float SingleMuonTrack::GetEnergySum(){
-	float energySum = 0; 
+double SingleMuonTrack::GetEnergySum(){
+	double energySum = 0;
 	std::vector<ScintillatorBar_V2*>::iterator itr;
 	for(itr = fSingleMuonTrack.begin() ; itr != fSingleMuonTrack.end() ; itr++){
 		energySum += (*itr)->GetQMeanCorrected();
