@@ -1,6 +1,7 @@
 #include "Plotter.h"
 #include <iterator>
 #include "HardwareNomenclature.h"
+#include "HelperFunctions.h"
 
 namespace lite_interface{
 
@@ -293,4 +294,64 @@ namespace lite_interface{
 
 	//histEnergyWithMultiplicity->Draw();
 }
+	std::vector<lite_interface::Point3D*> CreateFittedTrack(std::vector<lite_interface::Point3D*> vecOfPoint3D){
+		std::vector<Double_t> xVec, yVec, zVec;
+		std::vector<Double_t> xVecErr, yVecErr, zVecErr;
+		std::vector<lite_interface::Point3D*>::iterator itr;
+		for (itr = vecOfPoint3D.begin(); itr != vecOfPoint3D.end(); itr++) {
+			//std::cout <<"=================" << std::endl;
+			//(*itr)->Print();
+			xVec.push_back((*itr)->GetX());
+			xVecErr.push_back(0.);
+			yVec.push_back((*itr)->GetY());
+			yVecErr.push_back(0.);
+			zVec.push_back((*itr)->GetZ());
+			zVecErr.push_back(0.);
+		}
+		//std::cout <<"================= Trying to create the Fitted Track from Class FittedTracks ==================== : " << __FILE__ << " : " << __LINE__ << std::endl;
+		TGraphErrors *grxy = new TGraphErrors(xVec.size(), &xVec[0], &yVec[0],&xVecErr[0],&yVecErr[0]);
+		//std::cout << "++++++++++++++ Fit XY ++++++++++++++++" << std::endl;
+		std::vector<double> fittedX = GetFittedXorZ(grxy,vecOfPoint3D);
+		TGraphErrors *grzy = new TGraphErrors(zVec.size(), &zVec[0], &yVec[0], &zVecErr[0], &yVecErr[0]);
+		//std::cout << "++++++++++++++ Fit ZY ++++++++++++++++" << std::endl;
+		std::vector<double> fittedZ = GetFittedXorZ(grzy,vecOfPoint3D);
+		std::vector<Point3D*>fittedMuonTrack;
+		for (unsigned int i = 0; i < xVec.size(); i++) {
+			/*Point3D *pt = new Point3D(fittedX[i],yVec[i],fittedZ[i]);
+			std::cout << "From CreateFitted Track : " << __FILE__ <<" : " << __LINE__ ; pt->Print();
+			fittedMuonTrack.push_back(pt);*/
+			fittedMuonTrack.push_back(new Point3D(fittedX[i],yVec[i],fittedZ[i]));
+
+		}
+		return fittedMuonTrack;
+	}
+
+	std::vector<double> GetFittedXorZ(TGraphErrors *gr,std::vector<lite_interface::Point3D*> vecOfPoint3D){
+		std::vector<Double_t> xVec, yVec, zVec;
+		std::vector<Double_t> xVecErr, yVecErr, zVecErr;
+		std::vector<lite_interface::Point3D*>::iterator itr;
+		for (itr = vecOfPoint3D.begin(); itr != vecOfPoint3D.end(); itr++) {
+			//std::cout <<"=================" << std::endl;
+			//(*itr)->Print();
+			xVec.push_back((*itr)->GetX());
+			xVecErr.push_back(0.);
+			yVec.push_back((*itr)->GetY());
+			yVecErr.push_back(0.);
+			zVec.push_back((*itr)->GetZ());
+			zVecErr.push_back(0.);
+		}
+		TF1 *formula = new TF1("Formula",LinearFit,-45,45,2);
+		gr->Fit(formula,"qn");
+		//gr->Fit(formula,"r");
+		double c = formula->GetParameter(0);
+		double m = formula->GetParameter(1);
+		delete formula;
+
+		std::vector<double> vecOfEstimatedXorZ;
+		for(unsigned int i = 0 ; i < xVec.size() ; i++){
+			vecOfEstimatedXorZ.push_back( (yVec[i] - c)/m );
+		}
+		return vecOfEstimatedXorZ;
+	}
+
 } /* End of lite_interface */

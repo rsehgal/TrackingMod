@@ -65,5 +65,12 @@ namespace lite_interface{
 	extern TH1F* PlotEnergySum(std::vector<lite_interface::SingleMuonTrack*> smtVec);
 	extern TCanvas* PlotEnergyDistributionWithMultiplicity(std::vector<SingleMuonTrack*> muonTrackVec, unsigned int multiplicity = numOfLayers);
 
+	/*
+	 * Functions to get the fitted tracks
+	 *
+	 */
+	std::vector<lite_interface::Point3D*> CreateFittedTrack(std::vector<lite_interface::Point3D*> vecOfPoint3D);
+	std::vector<double> GetFittedXorZ(TGraphErrors *gr,std::vector<lite_interface::Point3D*> vecOfPoint3D);
+
 } /* End of lite_interface */
 #endif /* ISMRAN_ANALYSIS_V2_INC_PLOTTER_H_ */

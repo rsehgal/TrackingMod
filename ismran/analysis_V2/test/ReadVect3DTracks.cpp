@@ -36,7 +36,7 @@ int main(int argc,char *argv[]){
 		nbytes += hitPointVecTree->GetEntry(i);
 		if(i < 50){
 			TCanvas *can = new TCanvas();
-			can->Divide(2,1);
+			can->Divide(2,2);
 			can->cd(1);
 			DrawGrid("Muon Track in XY plane; X axis ; Y axis", 9, 9);
 			PlotMuonTrackXY(*vecOfPoint3D)->Draw("p");
@@ -44,6 +44,14 @@ int main(int argc,char *argv[]){
 			can->cd(2);
 			DrawGrid("Muon Track in ZY plane; Z axis ; Y axis", 9, 9);
 			PlotMuonTrackZY(*vecOfPoint3D)->Draw("p");
+
+			can->cd(3);
+			DrawGrid("Fitted Muon Track in XY plane; X axis ; Y axis", 9, 9);
+			PlotMuonTrackXY(CreateFittedTrack(*vecOfPoint3D))->Draw("p");
+
+			can->cd(4);
+			DrawGrid("Fitted Muon Track in ZY plane; Z axis ; Y axis", 9, 9);
+			PlotMuonTrackZY(CreateFittedTrack(*vecOfPoint3D))->Draw("p");
 		}
 	}
 
