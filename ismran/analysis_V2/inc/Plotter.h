@@ -17,6 +17,7 @@
 #include "SingleMuonTrack.h"
 #include <TGraph.h>
 #include <TGraphErrors.h>
+#include <TCanvas.h>
 namespace lite_interface{
 
 	/*
@@ -62,7 +63,7 @@ namespace lite_interface{
 	 * Histogram to plot energy sum
 	 */
 	extern TH1F* PlotEnergySum(std::vector<lite_interface::SingleMuonTrack*> smtVec);
-	extern void PlotEnergyDistributionWithMultiplicity(std::vector<SingleMuonTrack*> muonTrackVec, unsigned int multiplicity = numOfLayers);
+	extern TCanvas* PlotEnergyDistributionWithMultiplicity(std::vector<SingleMuonTrack*> muonTrackVec, unsigned int multiplicity = numOfLayers);
 
 } /* End of lite_interface */
 #endif /* ISMRAN_ANALYSIS_V2_INC_PLOTTER_H_ */

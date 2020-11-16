@@ -93,8 +93,20 @@ Calibration::Calibration(std::string fileName) {
 		//fVecOfCalibrationData.push_back(new CalibrationData( delTShift_F, temp_F ,gr,vecOfDelTFormula,enerCalibFormula,energyCalibrationFactor));
 		if(barPhyNum <= 70)
 			fVecOfCalibrationData.push_back(new CalibrationData( delTShift_F, temp_F ,gr,vecOfDelTFormula,enerCalibGraph,energyCalibrationFactor));
-		else
-			fVecOfCalibrationData.push_back(new CalibrationData( delTShift_F, temp_F ,gr,vecOfDelTFormula,enerCalibFormula,energyCalibrationFactor));
+		else{
+			//fVecOfCalibrationData.push_back(new CalibrationData( delTShift_F, temp_F ,gr,vecOfDelTFormula,enerCalibFormula,energyCalibrationFactor));
+			/*
+			 * Currently we don't have energy calibration formula for the bar > 70,
+			 * and hence using the calibration formula of first bar.
+			 *
+			 * This is done to avoid any break while running the code with full matrix.
+			 * but later this need to be fixed by generating the formula from the
+			 * calibration data.
+			 *
+			 */
+			enerCalibGraph = (TGraphErrors*)fp->Get(Form("grEneCalib_%s",vecOfBarsNamess[0].c_str()));
+			fVecOfCalibrationData.push_back(new CalibrationData( delTShift_F, temp_F ,gr,vecOfDelTFormula,enerCalibGraph,energyCalibrationFactor));
+		}
 
 		/*double offset = delTShift_F->GetParameter(1);
 		fVecOfCalibrationData.push_back(new CalibrationData( delTShift_F,offset, temp_F ,gr,energyCalibrationFactor));*/

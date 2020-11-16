@@ -21,6 +21,7 @@ public:
 	std::vector<ScintillatorBar_V2*> fSingleMuonTrack;
 public:
 	SingleMuonTrack();
+	SingleMuonTrack(std::vector<ScintillatorBar_V2*> vecOfScintBars);
 	SingleMuonTrack(const SingleMuonTrack &smt);
 	virtual ~SingleMuonTrack();
 	/*
@@ -53,7 +54,7 @@ public:
 	/*
 	 * Function to get the sum of energy deposited in different layers
 	 */
-	float GetEnergySum();
+	double GetEnergySum();
 
 	ClassDef(SingleMuonTrack,1)
 };

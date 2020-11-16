@@ -10,6 +10,8 @@
 #include "TreeEntry.h"
 #include "ScintillatorBar_V2.h"
 #include "SingleMuonTrack.h"
+#include "Plotter.h"
+#include "TCanvas.h"
 
 namespace lite_interface {
 
@@ -100,7 +102,8 @@ void Analyzer::ReconstructMuonTrack(){
 	//std::vector<SingleMuonTrack*> muonTrackVec;
 	lite_interface::SingleMuonTrack *singleMuonTrack = new lite_interface::SingleMuonTrack();
 	std::vector<lite_interface::Point3D*> *hitPointVec = new std::vector<lite_interface::Point3D*>;
-	float energySum;
+	std::vector<lite_interface::SingleMuonTrack*> smtVec;
+	double energySum = 0;
 
 	//std::vector<ScintillatorBar_V2*> smt = singleMuonTrack->GetMuonTrack();
 	//SingleMuonTrack *smt=new SingleMuonTrack;
@@ -113,7 +116,8 @@ void Analyzer::ReconstructMuonTrack(){
 	//tracksTree->Branch("MuonTracks","MuonTracks", &smt);
 	tracksTree->Branch("MuonTracks","lite_interface::SingleMuonTrack", &singleMuonTrack);
 	hitPointVecTree->Branch("HitPointVec","std::vector<lite_interface::Point3D*>", &hitPointVec);
-	hitPointVecTree->Branch("EnergySum", &energySum, "energySum/F");
+	hitPointVecTree->Branch("EnergySum", &energySum, "energySum/D");
+
 	//tracksTree->Branch("MuonTracks","lite_interface::SingleMuonTrack", &smt);
 
 	singleMuonTrack->push_back(fVecOfScintillatorBar[0]);
@@ -128,21 +132,25 @@ void Analyzer::ReconstructMuonTrack(){
 		} else {
 
 			//Outside 20ns window, implied track ends, hence either store it in the vector of write it to the ROOT file
+
 			singleMuonTrack->Sort();
+			smtVec.push_back(singleMuonTrack);
 			//smt = new SingleMuonTrack(*singleMuonTrack);
 
 			//std::cout << smt <<" : " << singleMuonTrack << std::endl;
 			//muonTrackVec.push_back(singleMuonTrack);
 			//smt = singleMuonTrack->GetMuonTrack();
 			//tracksTree->Fill();
-			if(singleMuonTrack->size() > 8){
+			if(singleMuonTrack->size() > 4)
+			{
 				/*count++;
 				if(count <= 4){
 					std::cout << "======== Single Muon Track Count : " << count << " =========" << std::endl;
 					singleMuonTrack->Print();
 				}*/
 
-				if(singleMuonTrack->IsClearTrack()){
+				if(singleMuonTrack->IsClearTrack())
+				{
 					std::vector<lite_interface::Point3D*> vec = singleMuonTrack->Get3DHitPointVector();
 					energySum = singleMuonTrack->GetEnergySum();
 					hitPointVec = &vec;
@@ -174,11 +182,14 @@ void Analyzer::ReconstructMuonTrack(){
 				}
 			}*/
 
-			singleMuonTrack->clear();
+			//singleMuonTrack->clear();
+			singleMuonTrack = new SingleMuonTrack();
 			singleMuonTrack->push_back(fVecOfScintillatorBar[i]);
 		}
 	}
 
+	//TCanvas *can=lite_interface::PlotEnergyDistributionWithMultiplicity(smtVec);
+	//can->Write();
 	tracksTree->Write();
 	hitPointVecTree->Write();
 	tracksFile->Close();

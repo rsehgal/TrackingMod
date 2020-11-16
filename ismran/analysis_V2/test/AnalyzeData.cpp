@@ -11,7 +11,7 @@ int main(){
 	GenerateScintMatrixXYCenters();
 	TApplication *fApp = new TApplication("Test", NULL, NULL);
 	//lite_interface::PairFinder pf("/home/rsehgal/BackBoneSoftwares/ismranData/ISMRAN_81bars_Th10All_CosmicRun_09hrs34mins_02Sep2020_0.root");
-	ushort barIndex = 55;
+	ushort barIndex = 5;
 	lite_interface::Calibration *calib = lite_interface::Calibration::instance("/home/rsehgal/BackBoneSoftwares/ismranData/completeCalib.root");
 	//Calibration *calib = Calibration::instance("/home/rsehgal/BackBoneSoftwares/ismranData/completeCalib.root");
 
