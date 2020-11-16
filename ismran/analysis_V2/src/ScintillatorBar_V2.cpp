@@ -55,6 +55,17 @@ lite_interface::Point3D* ScintillatorBar_V2::EstimateHitPosition(){
 						 zval));
 }
 
+lite_interface::Point3D* ScintillatorBar_V2::EstimateHitPosition_Param(){
+	//(1.0*100)/22.0) = 545454545
+	//double zval = ( 4.545454545 * ( GetDelTCorrected()/1000. + 11.)) - 50.;
+	TF1 *param = lite_interface::Calibration::instance()->GetCalibrationDataOf(fBarIndex)->fParameterization_F;
+	double zval = param->Eval(GetDelTCorrected()/1000.);
+
+	return (new lite_interface::Point3D(vecOfScintXYCenter[fBarIndex].x,
+						 vecOfScintXYCenter[fBarIndex].y,
+						 zval));
+}
+
 void ScintillatorBar_V2::EstimateHitPositionAlongX(){
 
 }
@@ -76,7 +87,8 @@ void ScintillatorBar_V2::EstimateHitPositionAlongY(Point3D *temp, Point3D *tempE
 //void ScintillatorBar_V2::EstimateHitPosition_V2(Calibration *fCalib);
 
 void ScintillatorBar_V2::Print(){
-	std::cout <<"BarIndex : " << fBarIndex <<  std::endl; // " :  Energy :  " << GetQMeanCorrected() << std::endl;
+	std::cout <<"BarIndex : " << fBarIndex <<  " :  Energy :  " << GetQMeanCorrected() << std::endl;
+
 }
 
 ScintillatorBar_V2::~ScintillatorBar_V2(){

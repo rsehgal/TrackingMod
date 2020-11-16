@@ -93,7 +93,8 @@ void GenerateScintMatrixXYCenters(){
 	for(unsigned int i = 0 ; i < numOfLayers ; i++){
 		for(unsigned int j = 0 ; j < numOfBarsInEachLayer ; j++){
 			double x = -1.*(numOfBarsInEachLayer*barWidth)/2. + barWidth/2. + (j*barWidth);
-			double y = -1.*(numOfLayers*barHeight)/2. + barHeight/2. + (i*barHeight);
+			//double y = -1.*(numOfLayers*barHeight)/2. + barHeight/2. + (i*barHeight);
+			double y = -1.*(numOfLayers*barHeight)/2. + barHeight + (i*barHeight);
 			vecOfScintXYCenter.push_back(Point2D(x,y));
 		}
 	}
