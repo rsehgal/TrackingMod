@@ -19,12 +19,13 @@ class ScintillatorBar_V2;
 
 class Analyzer {
 	std::string fDatafileName;
+	std::string fOutputfileName;
 	PairFinder *fPairFinder;
 	std::vector<ScintillatorBar_V2*> fVecOfScintillatorBar;
 
 public:
 	Analyzer();
-	Analyzer(std::string datafileName);
+	Analyzer(std::string datafileName,std::string outputfileName);
 	void CreateScintillatorVector();
 	void ReconstructMuonTrack();
 	static bool CompareTimestampScintillator(ScintillatorBar_V2 *i1, ScintillatorBar_V2 *i2);

@@ -11,6 +11,8 @@
 #include "PsBar.h"
 #include "Point3D.h"
 #include "HardwareNomenclature.h"
+#include <TVector3.h>
+#include "Plotter.h"
 
 ClassImp(lite_interface::SingleMuonTrack)
 
@@ -130,6 +132,37 @@ std::vector<std::string> SingleMuonTrack::GetBarNamesVector(){
 		barNamesVector.push_back(vecOfBarsNamess[(*itr)->GetBarIndex()]);
 	}
 	return barNamesVector;
+}
+
+std::vector<double> SingleMuonTrack::GetDepositedEnergyVector(){
+	std::vector<double> energyVec;
+	std::vector<ScintillatorBar_V2*>::iterator itr;
+	for(itr = fSingleMuonTrack.begin() ; itr != fSingleMuonTrack.end() ; itr++){
+		energyVec.push_back((*itr)->GetQMeanCorrected());
+	}
+	return energyVec;
+}
+
+double SingleMuonTrack::GetZenithAngle(std::vector<lite_interface::Point3D*> vecOfPoint3D){
+	TVector3 ref(0.,-1.,0.);
+	Point3D *startPoint = vecOfPoint3D[0];
+	Point3D *endPoint = vecOfPoint3D[vecOfPoint3D.size() - 1];
+	TVector3 muonDir(TVector3(endPoint->GetX(), endPoint->GetY(), endPoint->GetZ())	- TVector3(startPoint->GetX(), startPoint->GetY(),startPoint->GetZ()));
+	return muonDir.Angle(ref);
+}
+
+double SingleMuonTrack::GetZenithAngle(int opt){
+	if(opt == 1){
+		return GetZenithAngle(CreateFittedTrack(Get3DHitPointVector()));
+	}else{
+		return GetZenithAngle(CreateFittedTrack(Get3DHitPointVector_Param()));
+	}
+}
+double SingleMuonTrack::GetZenithAngle_Linear(){
+	return GetZenithAngle(1);
+}
+double SingleMuonTrack::GetZenithAngle_Param(){
+	return GetZenithAngle(2);
 }
 
 } /* namespace lite_interface */

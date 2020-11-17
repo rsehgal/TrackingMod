@@ -54,9 +54,22 @@ public:
 	std::vector<std::string> GetBarNamesVector();
 
 	/*
+	 * Function to get the vector of energy deposited in contributing bars
+	 */
+	std::vector<double> GetDepositedEnergyVector();
+
+	/*
 	 * Function to get the sum of energy deposited in different layers
 	 */
 	double GetEnergySum();
+
+	/*
+	 * Function to calculate the Zenith Angle
+	 */
+	double GetZenithAngle(std::vector<lite_interface::Point3D*> vecOfPoint3D);
+	double GetZenithAngle(int opt = 1);
+	double GetZenithAngle_Linear();
+	double GetZenithAngle_Param();
 
 	ClassDef(SingleMuonTrack,1)
 };

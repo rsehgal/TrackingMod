@@ -354,4 +354,94 @@ namespace lite_interface{
 		return vecOfEstimatedXorZ;
 	}
 
+	TH1F* PlotZenithAngle(std::vector<SingleMuonTrack*> muonTrackVec, int opt){
+		TVector3 ref(0.,-1.,0.);
+		int numOfBins = 100;
+		TH1F *zenithAngleHist = new TH1F("ZenithAngle", "ZenithAngle Distribution",numOfBins,0.,M_PI);
+		std::cout << "Size of Muon Track Vector : " << muonTrackVec.size() << std::endl;
+		for(unsigned int trackIndex = 0 ; trackIndex < muonTrackVec.size() ; trackIndex++){
+			if(opt == 1){
+				double angleVal = muonTrackVec[trackIndex]->GetZenithAngle_Linear();
+//				/if(angleVal < 0.96)
+					zenithAngleHist->Fill(angleVal);
+			}
+			else
+				zenithAngleHist->Fill(muonTrackVec[trackIndex]->GetZenithAngle_Param());
+		}
+		/*TF1 *formula = new TF1("Cos2ThetaFit",NewCos2ThetaFit,0.,0.96,4);
+		zenithAngleHist->Fit(formula, "r");*/
+		return zenithAngleHist;
+		//gr->Fit(formula,"r");
+//		double c = formula->GetParameter(0);
+//		double m = formula->GetParameter(1);
+//		delete formula;
+
+		/*TH1F *solidAngleCorrectedHist = new TH1F("Solid angle corrected AngularDistribution ","Solid angle corrected AngularDistribution",numOfBins,0.2,0.96);
+		solidAngleCorrectedHist->GetYaxis()->SetTitle("I_{#theta}  ( cm^{-2}sec^{-1}st^{-1})");
+		solidAngleCorrectedHist->GetXaxis()->SetTitle("#theta (radian)");
+
+		for(int i =0  ; i < numOfBins ; i++){
+		 	double binCenter = zenithAngleHist->GetXaxis()->GetBinCenter(i);
+		   	double binContent = zenithAngleHist->GetBinContent(i);
+		   	//std::cout << "binContent : " << binContent << " : binCenter : " << binCenter << std::endl;
+		   	solidAngleCorrectedHist->SetBinContent(i,binContent/(2*M_PI*std::sin(binCenter)*std::cos(binCenter)));
+		}
+		//new TCanvas();
+		TF1 *cosSqr = new TF1("cosSqr", "[0]*pow(cos(x),[1])", 0.2,0.96);
+		solidAngleCorrectedHist->Fit(cosSqr,"r");
+		//solidAngleCorrectedHist->Draw();
+
+		//
+		return solidAngleCorrectedHist;*/
+
+		//zenithAngleHist->Scale(1/zenithAngleHist->Integral());
+		/*std::cout << "@@@@@@@@@@ Fitted Parameter for ZenithAngle Histogram @@@@@@@@@" << std::endl;
+		new TCanvas();
+		TF1 *zenForm = new TF1("zenForm", "[0]*sin(x)*pow(cos(x),[1])", 0.05,M_PI/2.);
+		//TF1 *zenForm = new TF1("zenForm", "[0]*pow(cos(x),[1]+1)", 0.05,M_PI/2.);
+		zenithAngleHist->Fit(zenForm,"r");
+		zenithAngleHist->Draw();
+
+		std::cout << "@@@@@@@@@@ Fitted Parameter for SolidAngle Corrected Histogram @@@@@@@@@" << std::endl;
+		TH1F *solidAngleCorrectedHist = new TH1F("Solid angle corrected AngularDistribution ","Solid angle corrected AngularDistribution",numOfBins,0.,M_PI/2.);
+		solidAngleCorrectedHist->GetYaxis()->SetTitle("I_{#theta}  ( cm^{-2}sec^{-1}st^{-1})");
+		solidAngleCorrectedHist->GetXaxis()->SetTitle("#theta (radian)");
+
+		for(int i =0  ; i < numOfBins ; i++){
+		 	double binCenter = zenithAngleHist->GetXaxis()->GetBinCenter(i);
+		   	double binContent = zenithAngleHist->GetBinContent(i);
+		   	//std::cout << "binContent : " << binContent << " : binCenter : " << binCenter << std::endl;
+		   	solidAngleCorrectedHist->SetBinContent(i,binContent/(2*M_PI*std::sin(binCenter)*std::cos(binCenter)));
+		}
+		new TCanvas();
+		//TF1 *cosSqr = new TF1("cosSqr",Cos2ThetaFit,0,M_PI/2,2);
+		TF1 *cosSqr = new TF1("cosSqr", "[0]*pow(cos(x),[1])", 0.2,0.96);
+		solidAngleCorrectedHist->Fit(cosSqr,"r");
+		solidAngleCorrectedHist->Draw();
+
+
+		//New Histogram
+		TH1F *zenithAngle2D = new TH1F("ZenithAngle in 2D","ZenithAngle in 2D using  #frac{z_{2}-z_{1}}{#sqrt{(x_{2}-x_{1})^{2} + (y_{2}-y_{1})^{2} + (z_{2}-z_{1})^{2}}}",numOfBins,-1*M_PI/2.,M_PI/2.);
+		//zenithAngle2D->GetYaxis()->SetTitle("I_{#theta}  ( cm^{-2}sec^{-1}st^{-1})");
+		zenithAngle2D->GetXaxis()->SetTitle("#theta (radian)");
+		for(unsigned int trackIndex = 0 ; trackIndex < fittedMuonTracks.size() ; trackIndex++){
+				std::vector<Point3D*> singleMuonTrack = fittedMuonTracks[trackIndex];
+				Point3D *startPoint = singleMuonTrack[0];
+				//std::cout <<"Start Point : ";
+				//startPoint->Print();
+				Point3D *endPoint = singleMuonTrack[singleMuonTrack.size()-1];
+				//std::cout << "End Point : " ;
+				//endPoint->Print();
+				TVector3 muonDir(TVector3(endPoint->x,endPoint->y,endPoint->z)-TVector3(startPoint->x,startPoint->y,startPoint->z));
+				double angVal = asin((endPoint->z-startPoint->z)/muonDir.Mag());
+				//std::cout << "Angle Value : " << angVal << std::endl;
+				//zenithAngle2D->Fill((angVal*M_PI/180.)*1000.);
+				//if(fabs(startPoint->z) < 50. && fabs(endPoint->z) < 50.)
+				zenithAngle2D->Fill(angVal);
+		}
+		new TCanvas();
+		zenithAngle2D->Draw();
+
+*/	}
+
 } /* End of lite_interface */
