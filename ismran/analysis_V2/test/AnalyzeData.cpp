@@ -7,7 +7,7 @@
 #include "includes.hh"
 #include "HardwareNomenclature.h"
 
-int main(){
+int main(int argc, char *argv[]){
 	GenerateScintMatrixXYCenters();
 	TApplication *fApp = new TApplication("Test", NULL, NULL);
 	//lite_interface::PairFinder pf("/home/rsehgal/BackBoneSoftwares/ismranData/ISMRAN_81bars_Th10All_CosmicRun_09hrs34mins_02Sep2020_0.root");
@@ -22,7 +22,8 @@ int main(){
 	gr->SetMarkerStyle(8);
 	gr->Draw();
 	*/
-	lite_interface::Analyzer pf("/home/rsehgal/BackBoneSoftwares/ismranData/ISMRAN_81bars_Th10All_CosmicRun_09hrs34mins_02Sep2020_0.root");
+	lite_interface::Analyzer pf("/home/rsehgal/BackBoneSoftwares/ismranData/ISMRAN_81bars_Th10All_CosmicRun_09hrs34mins_02Sep2020_0.root",argv[1]);
+	//lite_interface::Analyzer pf("simulatedData.root",argv[1]);
 
 	Double_t muonPeakPosition = lite_interface::Calibration::instance()->GetCalibrationDataOf(barIndex)->fEnergyCalibrationFactor;
 	//Double_t muonPeakPosition = Calibration::instance()->GetCalibrationDataOf(barIndex)->fEnergyCalibrationFactor;

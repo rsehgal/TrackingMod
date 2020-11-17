@@ -25,7 +25,7 @@ Analyzer::Analyzer() {
 
 }
 
-Analyzer::Analyzer(std::string datafileName) : fDatafileName(datafileName){
+Analyzer::Analyzer(std::string datafileName,std::string outputfileName) : fDatafileName(datafileName), fOutputfileName(outputfileName){
 	fPairFinder =  new PairFinder(fDatafileName);
 	CreateScintillatorVector();
 	ReconstructMuonTrack();
@@ -106,21 +106,27 @@ void Analyzer::ReconstructMuonTrack(){
 	std::vector<lite_interface::Point3D*> *hitPointVec_Param = new std::vector<lite_interface::Point3D*>;
 	std::vector<lite_interface::SingleMuonTrack*> smtVec;
 	double energySum = 0;
+	std::vector<double> *energyVec = new std::vector<double>;
 
 	//std::vector<ScintillatorBar_V2*> smt = singleMuonTrack->GetMuonTrack();
 	//SingleMuonTrack *smt=new SingleMuonTrack;
 	//std::vector<ScintillatorBar_V2*> smt = singleMuonTrack->GetMuonTrack();
 
 	unsigned int hitInAllLayersCounter = 0;
-	TFile *tracksFile = new TFile("tracks.root","RECREATE");
+	//TFile *tracksFile = new TFile("tracks.root","RECREATE");
+	TFile *tracksFile = new TFile(fOutputfileName.c_str(),"RECREATE");
 	TTree *tracksTree = new TTree("TracksTree","TracksTree");
 	TTree *hitPointVecTree = new TTree("HitPointVecTree","HitPointVecTree");
-	TTree *hitPointVecTree_Param = new TTree("HitPointVecTreeParam","HitPointVecTreeParam");
+	//TTree *hitPointVecTree_Param = new TTree("HitPointVecTreeParam","HitPointVecTreeParam");
+
+
 	//tracksTree->Branch("MuonTracks","MuonTracks", &smt);
 	tracksTree->Branch("MuonTracks","lite_interface::SingleMuonTrack", &singleMuonTrack);
 	hitPointVecTree->Branch("HitPointVec","std::vector<lite_interface::Point3D*>", &hitPointVec);
+	hitPointVecTree->Branch("HitPointVecParam","std::vector<lite_interface::Point3D*>", &hitPointVec_Param);
 	hitPointVecTree->Branch("EnergySum", &energySum, "energySum/D");
-	hitPointVecTree_Param->Branch("HitPointVec","std::vector<lite_interface::Point3D*>", &hitPointVec_Param);
+	hitPointVecTree->Branch("EnergyVector","std::vector<double>", &energyVec);
+	//hitPointVecTree_Param->Branch("HitPointVec","std::vector<lite_interface::Point3D*>", &hitPointVec_Param);
 
 	//tracksTree->Branch("MuonTracks","lite_interface::SingleMuonTrack", &smt);
 
@@ -155,6 +161,8 @@ void Analyzer::ReconstructMuonTrack(){
 
 				if(singleMuonTrack->IsClearTrack())
 				{
+					std::vector<double> enVec = singleMuonTrack->GetDepositedEnergyVector();
+					energyVec = &enVec;
 					std::vector<std::string> barNamesVector = singleMuonTrack->GetBarNamesVector();
 					std::vector<lite_interface::Point3D*> vec = singleMuonTrack->Get3DHitPointVector();
 					if(count < 4){
@@ -186,7 +194,7 @@ void Analyzer::ReconstructMuonTrack(){
 					}
 					tracksTree->Fill();
 					hitPointVecTree->Fill();
-					hitPointVecTree_Param->Fill();
+					//hitPointVecTree_Param->Fill();
 				}
 			//std::cout << "=====================" << std::endl;
 			//singleMuonTrack->Print();
@@ -218,7 +226,7 @@ void Analyzer::ReconstructMuonTrack(){
 	//can->Write();
 	tracksTree->Write();
 	hitPointVecTree->Write();
-	hitPointVecTree_Param->Write();
+	//hitPointVecTree_Param->Write();
 	tracksFile->Close();
 
 	std::cout

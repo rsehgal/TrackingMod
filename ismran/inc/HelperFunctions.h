@@ -30,6 +30,7 @@ extern void GetFittedXorZ(TGraph *gr);
 extern double LinearFit(Double_t *x,Double_t *par);
 extern double Pol2(Double_t *x,Double_t *par);
 extern double Cos2ThetaFit(Double_t *x, Double_t *par);
+extern double NewCos2ThetaFit(Double_t *x, Double_t *par);
 extern void PlotFittedLine(TGraph *gr);
 
 extern std::vector<std::vector<unsigned long int>> myhist2D;

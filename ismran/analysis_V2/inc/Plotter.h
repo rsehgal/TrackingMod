@@ -69,8 +69,13 @@ namespace lite_interface{
 	 * Functions to get the fitted tracks
 	 *
 	 */
-	std::vector<lite_interface::Point3D*> CreateFittedTrack(std::vector<lite_interface::Point3D*> vecOfPoint3D);
-	std::vector<double> GetFittedXorZ(TGraphErrors *gr,std::vector<lite_interface::Point3D*> vecOfPoint3D);
+	extern std::vector<lite_interface::Point3D*> CreateFittedTrack(std::vector<lite_interface::Point3D*> vecOfPoint3D);
+	extern std::vector<double> GetFittedXorZ(TGraphErrors *gr,std::vector<lite_interface::Point3D*> vecOfPoint3D);
+
+	/*
+	 * Function to calculate the Zenith angle histograms
+	 */
+	extern TH1F* PlotZenithAngle(std::vector<SingleMuonTrack*> muonTrackVec, int opt=1);
 
 } /* End of lite_interface */
 #endif /* ISMRAN_ANALYSIS_V2_INC_PLOTTER_H_ */

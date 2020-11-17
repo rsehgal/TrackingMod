@@ -81,6 +81,12 @@ double Cos2ThetaFit(Double_t *x, Double_t *par){
 
 }
 
+double NewCos2ThetaFit(Double_t *x, Double_t *par){
+	  double fitval = par[0]+par[1]*pow(cos(par[2]*x[0]+par[3]),2);
+	  return fitval;
+
+}
+
 //std::vector<double> GetFittedXorZ(TGraph *gr){
 void PlotFittedLine(TGraph *gr){
 	TF1 *formula = new TF1("Formula",LinearFit,-45,45,2);

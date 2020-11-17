@@ -128,6 +128,15 @@ int main(int argc,char *argv[]){
 	new TCanvas();
 	TH1F *energySumHist = PlotEnergySum(smtVec);
 	energySumHist->Draw();
+
+	new TCanvas();
+	TH1F *zenithAngleHist = PlotZenithAngle(smtVec,1);
+	zenithAngleHist->Draw();
+
+	new TCanvas();
+	TH1F *zenithAngleHist_Param = PlotZenithAngle(smtVec,2);
+	zenithAngleHist_Param->Draw();
+
 	fApp->Run();
 
 	return 0;

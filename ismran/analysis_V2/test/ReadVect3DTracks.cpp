@@ -33,7 +33,11 @@ int main(int argc,char *argv[]){
 	hitPointVecTree->SetBranchAddress("EnergySum",&energySum);
 
 	std::vector<lite_interface::Point3D*> *vecOfPoint3D_Param = 0;
-	hitPointVecTree_Param->SetBranchAddress("HitPointVec",&vecOfPoint3D_Param);
+	hitPointVecTree->SetBranchAddress("HitPointVecParam",&vecOfPoint3D_Param);
+
+	std::vector<double> *energyVec = new std::vector<double>;
+	hitPointVecTree->SetBranchAddress("EnergyVector",&energyVec);
+	//hitPointVecTree_Param->SetBranchAddress("HitPointVec",&vecOfPoint3D_Param);
 
 	Long64_t nentries = hitPointVecTree->GetEntries();
 
@@ -45,11 +49,13 @@ int main(int argc,char *argv[]){
 
 
 	unsigned int count = 0;
-	TH1F *histDiff = new TH1F("EstimateDiffHist","EstimateDiffHist",100,-1.,1.);
+	TH1F *histDiff = new TH1F("EstimateDiffHist","EstimateDiffHist",100,-30.,30.);
+	TGraphErrors *gr;
 	for (Long64_t i=0; i<nentries;i++) {
+		energyVec->clear();
 		nbytes += hitPointVecTree->GetEntry(i);
 		nbytes += trackTree->GetEntry(i);
-		nbytes += hitPointVecTree_Param->GetEntry(i);
+		//nbytes += hitPointVecTree_Param->GetEntry(i);
 		histDiff->Fill((vecOfPoint3D->at(0)->GetZ() - vecOfPoint3D_Param->at(0)->GetZ()));
 		if(energySum > 400. || energySum < -400.)
 			continue;
@@ -69,6 +75,18 @@ int main(int argc,char *argv[]){
 			can->cd(2);
 			DrawGrid("Muon Track in ZY plane; Z axis ; Y axis", 9, 9);
 			PlotMuonTrackZY(*vecOfPoint3D)->Draw("p");
+			if(i==129){
+				//new TCanvas();
+				gr = PlotMuonTrackZY(*vecOfPoint3D);
+				std::cout << "===== Printing energy Information of Event : " << i << " =======" << std::endl;
+				double totalEner = 0;
+				for(unsigned short j = 0 ; j < energyVec->size() ; j++){
+					double ener = energyVec->at(j) ;
+					std::cout << ener << std::endl;
+					totalEner += ener;
+				}
+				std::cout << "EnergySum of the event : " << totalEner << std::endl;
+			}
 
 			/*
 			 * Trying to get Fitted Tracks
@@ -109,8 +127,16 @@ int main(int argc,char *argv[]){
 
 	new TCanvas();
 	histDiff->Draw();
-	fApp->Run();
 
+	new TCanvas();
+	gr->Draw("p");
+
+	TFile *fw = new TFile("test.root","RECREATE");
+	fw->cd();
+	gr->Write();
+	fw->Close();
+
+	fApp->Run();
 	return 0;
 }
 
