@@ -18,7 +18,13 @@
 #include "Calibration.h"
 #include "HardwareNomenclature.h"
 #include <TGraphErrors.h>
+#include "Analyzer.h"
 int main(int argc,char *argv[]){
+	/*
+	 * Set lite_interface::IsSimulation = true, if need to process simulated data file
+	 * else for experimental data set it to false
+	 */
+	lite_interface::IsSimulation = true;
 	TFile *f=new TFile("test.root","RECREATE");
 	TApplication *fApp = new TApplication("Test", NULL, NULL);
 	GenerateScintMatrixXYCenters();
@@ -129,11 +135,11 @@ int main(int argc,char *argv[]){
 	TH1F *energySumHist = PlotEnergySum(smtVec);
 	energySumHist->Draw();
 
-	new TCanvas();
+	new TCanvas("ZenithAngleWithLinearEstimation","Zenith Angle With Linear Estimation");
 	TH1F *zenithAngleHist = PlotZenithAngle(smtVec,1);
 	zenithAngleHist->Draw();
 
-	new TCanvas();
+	new TCanvas("ZenithAngleWithParamEstimation","Zenith Angle With Param Estimation");
 	TH1F *zenithAngleHist_Param = PlotZenithAngle(smtVec,2);
 	zenithAngleHist_Param->Draw();
 

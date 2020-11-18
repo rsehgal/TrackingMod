@@ -19,7 +19,13 @@
 #include "HardwareNomenclature.h"
 #include <TGraphErrors.h>
 #include "SingleMuonTrack.h"
+#include "Analyzer.h"
 int main(int argc,char *argv[]){
+	/*
+	 * Set lite_interface::IsSimulation = true, if need to process simulated data file
+	 * else for experimental data set it to false
+	 */
+	lite_interface::IsSimulation = true;
 	lite_interface::Calibration *calib = lite_interface::Calibration::instance("/home/rsehgal/BackBoneSoftwares/ismranData/completeCalib.root");
 
 	TApplication *fApp = new TApplication("Test", NULL, NULL);
@@ -54,6 +60,10 @@ int main(int argc,char *argv[]){
 	for (Long64_t i=0; i<nentries;i++) {
 		energyVec->clear();
 		nbytes += hitPointVecTree->GetEntry(i);
+		/*for(unsigned int j=0 ; j < vecOfPoint3D->size() ; j++){
+			vecOfPoint3D->at(j)->Print();
+		}
+		return 0;*/
 		nbytes += trackTree->GetEntry(i);
 		//nbytes += hitPointVecTree_Param->GetEntry(i);
 		histDiff->Fill((vecOfPoint3D->at(0)->GetZ() - vecOfPoint3D_Param->at(0)->GetZ()));
