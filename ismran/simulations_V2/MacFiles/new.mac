@@ -1,0 +1,22 @@
+# Macro file for example B1
+# 
+# Can be run in batch, without graphic
+# or interactively: Idle> /control/execute run1.mac
+#
+# Change the default number of workers (in multi-threading mode) 
+#/run/numberOfWorkers 4
+#
+# Initialize kernel
+/run/initialize
+#
+/control/verbose 0
+/run/verbose 0
+/event/verbose 0
+/tracking/verbose 0
+
+#Run 1 on Aluminium
+#/B2/det/setTargetMaterial G4_U
+#/B2/det/setTargetThickness {thk} cm
+/gun/particle mu+
+/gun/energy 2 GeV
+/run/beamOn 1

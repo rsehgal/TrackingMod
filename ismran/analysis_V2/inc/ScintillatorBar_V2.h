@@ -23,6 +23,7 @@ class TH1F;
 namespace lite_interface{
 
 class Point3D;
+class Calibration;
 
 class ScintillatorBar_V2 {
 
@@ -38,6 +39,9 @@ public:
 	ULong64_t fTSmallTimeStamp;
 	 //! time stamp in pico sec.
 	Long_t fDelTstamp;
+
+	//Only for Simulation
+	bool fBarHitted;
 
 
 public:
@@ -82,6 +86,9 @@ public:
 	//TH1F* GetHistQ_012(ushort opt);
 
 	virtual ~ScintillatorBar_V2();
+
+	void CalculateVariousPhysicalParameters(unsigned long muonNum, Calibration *calib);
+	void CalculateVariousPhysicalParameters(unsigned long muonNum);
 
 	ClassDef(ScintillatorBar_V2,1)
 };
