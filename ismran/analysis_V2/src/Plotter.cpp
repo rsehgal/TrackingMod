@@ -2,6 +2,7 @@
 #include <iterator>
 #include "HardwareNomenclature.h"
 #include "HelperFunctions.h"
+#include "Analyzer.h"
 
 namespace lite_interface{
 
@@ -25,13 +26,23 @@ namespace lite_interface{
 			hist = new TH1F("HistQMean","HistQMean",nbins,start,end);
 			std::vector<ScintillatorBar_V2*>::iterator itr;
 			for(itr = scintBarVec.begin() ; itr != scintBarVec.end() ; itr++){
+				if(IsSimulation){
 				if(barIndex==65535){
-					hist->Fill((*itr)->GetQLongMean()/1000.);
+					hist->Fill((*itr)->GetQLongMean());
 				}else{
 					if((*itr)->fBarIndex == barIndex){
-						hist->Fill((*itr)->GetQLongMean()/1000.);
+						hist->Fill((*itr)->GetQLongMean());
 					}
 				}
+				}else{
+					if(barIndex==65535){
+						hist->Fill((*itr)->GetQLongMean()/1000.);
+					}else{
+						if((*itr)->fBarIndex == barIndex){
+							hist->Fill((*itr)->GetQLongMean()/1000.);
+						}
+					}
+					}
 			}	
 		}
 
@@ -120,7 +131,10 @@ namespace lite_interface{
 		for(itr = scintBarVec.begin() ; itr != scintBarVec.end() ; itr++){
 			if((*itr)->fBarIndex == barIndex){
 				//std::cout << "BarIndex : " << (*itr)->fBarIndex << " : DelT : " << (*itr)->GetDelT()/1000. << std::endl;
-				hist->Fill((*itr)->GetDelT()/1000.);
+				if(IsSimulation)
+					hist->Fill((*itr)->GetDelT());
+				else
+					hist->Fill((*itr)->GetDelT()/1000.);
 			}
 		}
 		return hist;
@@ -130,8 +144,12 @@ namespace lite_interface{
 		TH1F *hist = new TH1F(barName.c_str(),barName.c_str(),200,-25,25); //Histogram with entries in nanosecond
 		std::vector<ScintillatorBar_V2*>::iterator itr;
 		for(itr = scintBarVec.begin() ; itr != scintBarVec.end() ; itr++){
-			if((*itr)->fBarIndex == barIndex)
-				hist->Fill((*itr)->GetDelTCorrected()/1000.);
+			if((*itr)->fBarIndex == barIndex){
+				if(IsSimulation)
+					hist->Fill((*itr)->GetDelTCorrected());
+				else
+					hist->Fill((*itr)->GetDelTCorrected()/1000.);
+			}
 		}
 		return hist;
 	}
@@ -175,11 +193,11 @@ namespace lite_interface{
 			//std::cout <<"=================" << std::endl;
 			//(*itr)->Print();
 			xVec.push_back((*itr)->GetX());
-			xVecErr.push_back(0.);
+			xVecErr.push_back(5);
 			yVec.push_back((*itr)->GetY());
-			yVecErr.push_back(0.);
+			yVecErr.push_back(5.);
 			zVec.push_back((*itr)->GetZ());
-			zVecErr.push_back(0.);
+			zVecErr.push_back(5.);
 		}
 		TGraphErrors *grxy = new TGraphErrors(xVec.size(), &xVec[0], &yVec[0],&xVecErr[0],&yVecErr[0]);
 		grxy->SetMarkerStyle(8);
@@ -214,8 +232,8 @@ namespace lite_interface{
 		std::vector<lite_interface::SingleMuonTrack*>::iterator itr;
 		int count=0;
 		for(itr = smtVec.begin() ; itr!=smtVec.end() ; itr++){
-			std::cout << "@@@@@@@@@@@@@@@ EVENT : " << count++ << " @@@@@@@@@@@@@@@@@@@" << std::endl;
-			(*itr)->Print();
+			//std::cout << "@@@@@@@@@@@@@@@ EVENT : " << count++ << " @@@@@@@@@@@@@@@@@@@" << std::endl;
+			//(*itr)->Print();
 			energSumHist->Fill((*itr)->GetEnergySum());
 		}
 		//energSumHist->Scale(1/energSumHist->Integral());
@@ -302,11 +320,11 @@ namespace lite_interface{
 			//std::cout <<"=================" << std::endl;
 			//(*itr)->Print();
 			xVec.push_back((*itr)->GetX());
-			xVecErr.push_back(0.);
+			xVecErr.push_back(5.);
 			yVec.push_back((*itr)->GetY());
-			yVecErr.push_back(0.);
+			yVecErr.push_back(5.);
 			zVec.push_back((*itr)->GetZ());
-			zVecErr.push_back(0.);
+			zVecErr.push_back(5.);
 		}
 		//std::cout <<"================= Trying to create the Fitted Track from Class FittedTracks ==================== : " << __FILE__ << " : " << __LINE__ << std::endl;
 		TGraphErrors *grxy = new TGraphErrors(xVec.size(), &xVec[0], &yVec[0],&xVecErr[0],&yVecErr[0]);
@@ -334,11 +352,11 @@ namespace lite_interface{
 			//std::cout <<"=================" << std::endl;
 			//(*itr)->Print();
 			xVec.push_back((*itr)->GetX());
-			xVecErr.push_back(0.);
+			xVecErr.push_back(5);
 			yVec.push_back((*itr)->GetY());
-			yVecErr.push_back(0.);
+			yVecErr.push_back(5.);
 			zVec.push_back((*itr)->GetZ());
-			zVecErr.push_back(0.);
+			zVecErr.push_back(5);
 		}
 		TF1 *formula = new TF1("Formula",LinearFit,-45,45,2);
 		gr->Fit(formula,"qn");
@@ -356,20 +374,26 @@ namespace lite_interface{
 
 	TH1F* PlotZenithAngle(std::vector<SingleMuonTrack*> muonTrackVec, int opt){
 		TVector3 ref(0.,-1.,0.);
-		int numOfBins = 100;
-		TH1F *zenithAngleHist = new TH1F("ZenithAngle", "ZenithAngle Distribution",numOfBins,0.,M_PI);
+		int numOfBins = 50;
+		TH1F *zenithAngleHist = new TH1F("ZenithAngle", "ZenithAngle Distribution",numOfBins,0.02,0.96);
 		std::cout << "Size of Muon Track Vector : " << muonTrackVec.size() << std::endl;
 		for(unsigned int trackIndex = 0 ; trackIndex < muonTrackVec.size() ; trackIndex++){
 			if(opt == 1){
 				double angleVal = muonTrackVec[trackIndex]->GetZenithAngle_Linear();
-//				/if(angleVal < 0.96)
+				if(angleVal < 0.96)
 					zenithAngleHist->Fill(angleVal);
 			}
-			else
-				zenithAngleHist->Fill(muonTrackVec[trackIndex]->GetZenithAngle_Param());
+			else{
+				double angleVal = muonTrackVec[trackIndex]->GetZenithAngle_Param();
+				if(angleVal < 0.96)
+					zenithAngleHist->Fill(angleVal);
+				//zenithAngleHist->Fill(muonTrackVec[trackIndex]->GetZenithAngle_Param());
+			}
 		}
-		/*TF1 *formula = new TF1("Cos2ThetaFit",NewCos2ThetaFit,0.,0.96,4);
-		zenithAngleHist->Fit(formula, "r");*/
+		//TF1 *formula = new TF1("Cos2ThetaFit",Cos2ThetaFit,0.02,0.96,2);
+		zenithAngleHist->Scale(1/zenithAngleHist->Integral());
+		TF1 *formula = new TF1("zenForm", "[0]*sin(x)*cos(x)*pow(cos(x),[1])", 0.05,0.96);
+		zenithAngleHist->Fit(formula, "r");
 		return zenithAngleHist;
 		//gr->Fit(formula,"r");
 //		double c = formula->GetParameter(0);

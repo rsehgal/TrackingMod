@@ -17,6 +17,8 @@ namespace lite_interface {
 class PairFinder;
 class ScintillatorBar_V2;
 
+extern bool IsSimulation;
+
 class Analyzer {
 	std::string fDatafileName;
 	std::string fOutputfileName;
@@ -25,8 +27,9 @@ class Analyzer {
 
 public:
 	Analyzer();
-	Analyzer(std::string datafileName,std::string outputfileName);
+	Analyzer(std::string datafileName,std::string outputfileName, bool simulation=false);
 	void CreateScintillatorVector();
+	void CreateScintillatorVector_FromSimulation();
 	void ReconstructMuonTrack();
 	static bool CompareTimestampScintillator(ScintillatorBar_V2 *i1, ScintillatorBar_V2 *i2);
 	virtual ~Analyzer();

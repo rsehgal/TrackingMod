@@ -2,6 +2,7 @@
 #include "Calibration.h"
 #include "HardwareNomenclature.h"
 #include "Point3D.h"
+#include "Analyzer.h"
 
 ClassImp(lite_interface::ScintillatorBar_V2);
 
@@ -23,7 +24,8 @@ ScintillatorBar_V2::ScintillatorBar_V2(unsigned int bIndex){
 
 ScintillatorBar_V2::ScintillatorBar_V2(ushort barIndex, ushort qlongNear, 
 									   ushort qlongMean,ULong64_t tstampSmall, 
-									   Long_t delTStamp):fBarIndex(barIndex),
+									   Long_t delTStamp):
+fBarIndex(barIndex),
 fQlongNear(qlongNear),
 fQlongMean(qlongMean),
 fTSmallTimeStamp(tstampSmall),
@@ -49,7 +51,11 @@ ScintillatorBar_V2::ScintillatorBar_V2(const ScintillatorBar_V2 &sbar){
 
 lite_interface::Point3D* ScintillatorBar_V2::EstimateHitPosition(){
 	//(1.0*100)/22.0) = 545454545
-	double zval = ( 4.545454545 * ( GetDelTCorrected()/1000. + 11.)) - 50.;
+	double zval = 0.;
+	if(IsSimulation)
+		zval = ( 4.545454545 * ( GetDelTCorrected() + 11.)) - 50.;
+	else
+		zval = ( 4.545454545 * ( GetDelTCorrected()/1000. + 11.)) - 50.;
 	return (new lite_interface::Point3D(vecOfScintXYCenter[fBarIndex].x,
 						 vecOfScintXYCenter[fBarIndex].y,
 						 zval));
@@ -59,7 +65,11 @@ lite_interface::Point3D* ScintillatorBar_V2::EstimateHitPosition_Param(){
 	//(1.0*100)/22.0) = 545454545
 	//double zval = ( 4.545454545 * ( GetDelTCorrected()/1000. + 11.)) - 50.;
 	TF1 *param = lite_interface::Calibration::instance()->GetCalibrationDataOf(fBarIndex)->fParameterization_F;
-	double zval = param->Eval(GetDelTCorrected()/1000.);
+	double zval = 0.;
+	if(IsSimulation)
+		zval = param->Eval(GetDelTCorrected());
+	else
+		zval = param->Eval(GetDelTCorrected()/1000.);
 
 	return (new lite_interface::Point3D(vecOfScintXYCenter[fBarIndex].x,
 						 vecOfScintXYCenter[fBarIndex].y,
@@ -87,7 +97,7 @@ void ScintillatorBar_V2::EstimateHitPositionAlongY(Point3D *temp, Point3D *tempE
 //void ScintillatorBar_V2::EstimateHitPosition_V2(Calibration *fCalib);
 
 void ScintillatorBar_V2::Print(){
-	std::cout <<"BarIndex : " << fBarIndex <<  " :  Energy :  " << GetQMeanCorrected() << std::endl;
+	std::cout <<"BarIndex : " << fBarIndex <<  " :  Energy :  " << GetQMeanCorrected() << " : DelT : " << GetDelT() << std::endl;
 
 }
 
@@ -117,15 +127,21 @@ Long_t ScintillatorBar_V2::GetDelT() const{
 	return fDelTstamp;
 }
 Long_t ScintillatorBar_V2::GetDelTCorrected(){
-	return (fDelTstamp - Calibration::instance()->GetCalibrationDataOf(fBarIndex)->fDeltaTCorr*1000);
+	if(IsSimulation)
+		return (fDelTstamp - Calibration::instance()->GetCalibrationDataOf(fBarIndex)->fDeltaTCorr);
+	else
+		return (fDelTstamp - Calibration::instance()->GetCalibrationDataOf(fBarIndex)->fDeltaTCorr*1000);
 }
 Double_t ScintillatorBar_V2::GetQMeanCorrected(){
 	//return (fQlongMean + Calibration::instance()->GetCalibrationDataOf(fBarIndex)->fEnergyCalibrationFactor);
 
-	TF1 *enercalibFormula = Calibration::instance()->GetCalibrationDataOf(fBarIndex)->fEnergyCalibration_F;
-	Double_t ener = (enercalibFormula->Eval(fQlongMean)) ;
-
-	return ener;
+	if(IsSimulation)
+		return fQlongMean;
+	else{
+		TF1 *enercalibFormula = Calibration::instance()->GetCalibrationDataOf(fBarIndex)->fEnergyCalibration_F;
+		Double_t ener = (enercalibFormula->Eval(fQlongMean)) ;
+		return ener;
+	}
 	/*TGraph *gr = Calibration::instance()->GetCalibrationDataOf(fBarIndex)->fGraphWithMuonPoint;
 	new TCanvas();
 	gr->SetMarkerStyle(8);
