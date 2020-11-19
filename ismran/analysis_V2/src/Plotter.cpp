@@ -3,12 +3,14 @@
 #include "HardwareNomenclature.h"
 #include "HelperFunctions.h"
 #include "Analyzer.h"
+#include "ScintillatorBar_V2.h"
+#include "SingleMuonTrack.h"
 
 namespace lite_interface{
 
-	TH1F* PlotQ(std::vector<ScintillatorBar_V2*> scintBarVec, ushort barIndex){
+	TH1F* PlotQ(std::vector<lite_interface::ScintillatorBar_V2*> scintBarVec, ushort barIndex){
 		TH1F *hist = new TH1F("RawHist","RawHist",40000,0,40000);
-		std::vector<ScintillatorBar_V2*>::iterator itr;
+		std::vector<lite_interface::ScintillatorBar_V2*>::iterator itr;
 		for(itr = scintBarVec.begin() ; itr != scintBarVec.end() ; itr++){
 			if((*itr)->fBarIndex == barIndex){
 				hist->Fill((*itr)->GetQLongMean());
@@ -17,14 +19,14 @@ namespace lite_interface{
 		return hist;
 	}
 
-	TH1F* PlotQ_0123(std::vector<ScintillatorBar_V2*> scintBarVec, ushort barIndex, ushort opt){
+	TH1F* PlotQ_0123(std::vector<lite_interface::ScintillatorBar_V2*> scintBarVec, ushort barIndex, ushort opt){
 		TH1F *hist;
 		unsigned int nbins = 1000;
 		unsigned int start = 0;
 		unsigned int end = 40;
 		if(opt == 0){
 			hist = new TH1F("HistQMean","HistQMean",nbins,start,end);
-			std::vector<ScintillatorBar_V2*>::iterator itr;
+			std::vector<lite_interface::ScintillatorBar_V2*>::iterator itr;
 			for(itr = scintBarVec.begin() ; itr != scintBarVec.end() ; itr++){
 				if(IsSimulation){
 				if(barIndex==65535){
@@ -48,7 +50,7 @@ namespace lite_interface{
 
 		if(opt == 1){
 			hist = new TH1F("HistQNear","HistQNear",nbins,start,end);
-			std::vector<ScintillatorBar_V2*>::iterator itr;
+			std::vector<lite_interface::ScintillatorBar_V2*>::iterator itr;
 			for(itr = scintBarVec.begin() ; itr != scintBarVec.end() ; itr++){
 				if(barIndex==65535){
 						hist->Fill((*itr)->GetQLongNear()/1000.);
@@ -62,7 +64,7 @@ namespace lite_interface{
 
 		if(opt == 2){
 			hist = new TH1F("HistQFar","HistQFar",nbins,start,end);
-			std::vector<ScintillatorBar_V2*>::iterator itr;
+			std::vector<lite_interface::ScintillatorBar_V2*>::iterator itr;
 			for(itr = scintBarVec.begin() ; itr != scintBarVec.end() ; itr++){
 				if(barIndex==65535){
 					hist->Fill((*itr)->GetQLongFar()/1000.);
@@ -75,7 +77,7 @@ namespace lite_interface{
 		}
 		if(opt == 3){
 			hist = new TH1F("HistQMeanCorrected","HistQMeanCorrected",nbins,start,end);
-			std::vector<ScintillatorBar_V2*>::iterator itr;
+			std::vector<lite_interface::ScintillatorBar_V2*>::iterator itr;
 			for(itr = scintBarVec.begin() ; itr != scintBarVec.end() ; itr++){
 				if(barIndex==65535){
 					//std::cout << (*itr)->GetBarIndex() << std::endl;
@@ -110,24 +112,24 @@ namespace lite_interface{
 		return hist;
 	}
 
-	TH1F* PlotQMeanCorrected(std::vector<ScintillatorBar_V2*> scintBarVec,ushort barIndex){
+	TH1F* PlotQMeanCorrected(std::vector<lite_interface::ScintillatorBar_V2*> scintBarVec,ushort barIndex){
 		return PlotQ_0123(scintBarVec,barIndex,3);
 	}
 
-	TH1F* PlotQMean(std::vector<ScintillatorBar_V2*> scintBarVec,ushort barIndex){
+	TH1F* PlotQMean(std::vector<lite_interface::ScintillatorBar_V2*> scintBarVec,ushort barIndex){
 		return PlotQ_0123(scintBarVec,barIndex,0);
 	}
 	
-	TH1F* PlotQNear(std::vector<ScintillatorBar_V2*> scintBarVec,ushort barIndex){
+	TH1F* PlotQNear(std::vector<lite_interface::ScintillatorBar_V2*> scintBarVec,ushort barIndex){
 		return PlotQ_0123(scintBarVec,barIndex,1);
 	}
 
-	TH1F* PlotQFar(std::vector<ScintillatorBar_V2*> scintBarVec,ushort barIndex){
+	TH1F* PlotQFar(std::vector<lite_interface::ScintillatorBar_V2*> scintBarVec,ushort barIndex){
 		return PlotQ_0123(scintBarVec,barIndex,2);
 	}
-	TH1F* PlotDelT(std::vector<ScintillatorBar_V2*> scintBarVec, ushort barIndex){
+	TH1F* PlotDelT(std::vector<lite_interface::ScintillatorBar_V2*> scintBarVec, ushort barIndex){
 		TH1F *hist = new TH1F("HistDelT","HistDelT",200,-25,25); //Histogram with entries in nanosecond
-		std::vector<ScintillatorBar_V2*>::iterator itr;
+		std::vector<lite_interface::ScintillatorBar_V2*>::iterator itr;
 		for(itr = scintBarVec.begin() ; itr != scintBarVec.end() ; itr++){
 			if((*itr)->fBarIndex == barIndex){
 				//std::cout << "BarIndex : " << (*itr)->fBarIndex << " : DelT : " << (*itr)->GetDelT()/1000. << std::endl;
@@ -139,10 +141,10 @@ namespace lite_interface{
 		}
 		return hist;
 	}
-	TH1F* PlotDelTCorrected(std::vector<ScintillatorBar_V2*> scintBarVec, ushort barIndex){
+	TH1F* PlotDelTCorrected(std::vector<lite_interface::ScintillatorBar_V2*> scintBarVec, ushort barIndex){
 		std::string barName = vecOfBarsNamess[barIndex];
 		TH1F *hist = new TH1F(barName.c_str(),barName.c_str(),200,-25,25); //Histogram with entries in nanosecond
-		std::vector<ScintillatorBar_V2*>::iterator itr;
+		std::vector<lite_interface::ScintillatorBar_V2*>::iterator itr;
 		for(itr = scintBarVec.begin() ; itr != scintBarVec.end() ; itr++){
 			if((*itr)->fBarIndex == barIndex){
 				if(IsSimulation)
@@ -154,10 +156,10 @@ namespace lite_interface{
 		return hist;
 	}
 
-	TH1F* PlotBarsProfile(std::vector<ScintillatorBar_V2*> scintBarVec) {
+	TH1F* PlotBarsProfile(std::vector<lite_interface::ScintillatorBar_V2*> scintBarVec) {
 		//std::string barName = vecOfBarsNamess[barIndex];
 		TH1F *hist = new TH1F("Bars Profile", "Bars Profile", numOfLayers*numOfBarsInEachLayer, 0, numOfLayers*numOfBarsInEachLayer); //Histogram with entries in nanosecond
-		std::vector<ScintillatorBar_V2*>::iterator itr;
+		std::vector<lite_interface::ScintillatorBar_V2*>::iterator itr;
 		for (itr = scintBarVec.begin(); itr != scintBarVec.end(); itr++) {
 
 				hist->Fill((*itr)->GetBarIndex());
@@ -165,7 +167,7 @@ namespace lite_interface{
 		return hist;
 	}
 
-	TH2F* PlotHitPointsOnBar(std::vector<ScintillatorBar_V2*> scintBarVec, ushort barIndex){
+	TH2F* PlotHitPointsOnBar(std::vector<lite_interface::ScintillatorBar_V2*> scintBarVec, ushort barIndex){
 		ushort nbinsx = 9;
 		ushort nbinsz = 10;
 		std::string name = "Hit points on "+vecOfBarsNamess[barIndex];
@@ -240,7 +242,34 @@ namespace lite_interface{
 		return energSumHist;
 	}
 
-	TCanvas* PlotEnergyDistributionWithMultiplicity(std::vector<SingleMuonTrack*> muonTrackVec, unsigned int multiplicity){
+	std::vector<TH1D*> PlotEnergyDistributionWithMultiplicity(std::vector<SingleMuonTrack*> muonTrackVec){
+
+		std::vector<TH1D*> vecOfHists;
+				    for(unsigned int i = 0 ; i < numOfLayers ; i++){
+				    	std::cout << "Inserting histogram for layer : " << i << std::endl;
+				    	std::string title = "layer-"+std::to_string(i);
+				    	vecOfHists.push_back(new TH1D(title.c_str(),title.c_str(),500,10,250));
+				    	vecOfHists[i]->SetLineColor(i+1);
+				    }
+
+				    std::cout << "Szie of MuonTrcke Vector : " << muonTrackVec.size()  << std::endl;
+
+				    for(unsigned int i = 0 ; i < muonTrackVec.size() ; i ++){
+				    	if(muonTrackVec[i]->size() > 0 && muonTrackVec[i]->size() <= numOfLayers){
+				    		std::cout << "Size : " << muonTrackVec[i]->size() <<" : EnergySum : " << muonTrackVec[i]->GetEnergySum() << std::endl;
+				    		vecOfHists[muonTrackVec[i]->size()-1]->Fill(muonTrackVec[i]->GetEnergySum());
+				    	}
+
+				    }
+
+				    for(unsigned int i = 0 ; i < vecOfHists.size() ; i++){
+				    	vecOfHists[i]->Scale(1/vecOfHists[i]->Integral());
+				    }
+				    return vecOfHists;
+	}
+	//TCanvas* PlotEnergyDistributionWithMultiplicity(std::vector<SingleMuonTrack*> muonTrackVec, unsigned int multiplicity){
+	 std::vector<TH1D*> PlotEnergyDistributionWithMultiplicity_Old(std::vector<SingleMuonTrack*> muonTrackVec, unsigned int multiplicity){
+
 	std::vector<short int> multiplicityVec;
 	if(multiplicity == 0){
 		for(unsigned int i = 0 ; i < numOfLayers ; i++){
@@ -305,9 +334,11 @@ namespace lite_interface{
 		}
 		legend->Draw();
 
+		return vecOfHists;
+
 	}
 
-	return can;
+	//return can;
 
 
 	//histEnergyWithMultiplicity->Draw();

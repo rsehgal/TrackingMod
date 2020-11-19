@@ -120,6 +120,8 @@ void Analyzer::CreateScintillatorVector_FromSimulation(){
 	   Long64_t        deltaTstamp;
 	   //Long64_t        deltaTstampCorrected;
 	   UShort_t        barIndex;
+
+	   Point3D *hitPoint;
 	   //UShort_t        layerIndex;
 	   //Double_t        hitX;
 	   //Double_t        hitY;
@@ -136,6 +138,8 @@ void Analyzer::CreateScintillatorVector_FromSimulation(){
 	   ftree->SetBranchAddress("deltaTstamp",&deltaTstamp);
 	   //ftree->SetBranchAddress("deltaTstampCorrected",&deltaTstampCorrected);
 	   ftree->SetBranchAddress("barIndex",&barIndex);
+
+	   ftree->SetBranchAddress("hitPoint",&hitPoint);
 	   //ftree->SetBranchAddress("layerIndex",&layerIndex);
 	   //ftree->SetBranchAddress("hitX",&hitX);
 	   //ftree->SetBranchAddress("hitY",&hitY);

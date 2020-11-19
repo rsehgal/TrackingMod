@@ -28,10 +28,18 @@ public:
 	double GetZ()const{return fZ;}
 	Point3D(double x, double y, double z);
 	void SetZero();
+	void SetXYZ(double x, double y, double z);
+	void Divide(int n);
 	double Distance(Point3D p2);
 	void Print();
 	virtual ~Point3D();
+
+	//Point3D operator += (Point3D obj);
+	//Point3D* operator += (Point3D *obj);
+	//Point3D operator /= (int n);
+#ifndef FOR_SIMULATION
 	ClassDef(Point3D,1)
+#endif
 };
 
 } /* namespace lite_interface */

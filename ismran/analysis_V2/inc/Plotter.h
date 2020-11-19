@@ -63,7 +63,9 @@ namespace lite_interface{
 	 * Histogram to plot energy sum
 	 */
 	extern TH1F* PlotEnergySum(std::vector<lite_interface::SingleMuonTrack*> smtVec);
-	extern TCanvas* PlotEnergyDistributionWithMultiplicity(std::vector<SingleMuonTrack*> muonTrackVec, unsigned int multiplicity = numOfLayers);
+	//extern TCanvas* PlotEnergyDistributionWithMultiplicity(std::vector<SingleMuonTrack*> muonTrackVec, unsigned int multiplicity = numOfLayers);
+	extern std::vector<TH1D*> PlotEnergyDistributionWithMultiplicity(std::vector<SingleMuonTrack*> muonTrackVec);
+	extern std::vector<TH1D*> PlotEnergyDistributionWithMultiplicity_Old(std::vector<SingleMuonTrack*> muonTrackVec, unsigned int multiplicity = numOfLayers);
 
 	/*
 	 * Functions to get the fitted tracks

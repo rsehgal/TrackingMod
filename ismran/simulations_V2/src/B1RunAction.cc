@@ -16,14 +16,15 @@
 #include "B1RunAction.hh"
 #include "TH1F.h"
 #include "TApplication.h"
-#include "Analyzer_V2.h"
+#include "Analyzer.h"
 #include "base/Global.h"
 #include "Calibration.h"
 #include "DataTree.h"
+#include "Plotter.h"
 
 using namespace std;
 
-Calibration* B1RunAction::fCalib;
+lite_interface::Calibration* B1RunAction::fCalib;
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
@@ -53,27 +54,29 @@ void B1RunAction::BeginOfRunAction(const G4Run*)
 {
   G4RunManager::GetRunManager()->SetRandomNumberStore(false);
   fApp = new TApplication("Test", NULL, NULL);
-  energyHist = new TH1F("EnergyHist","EnergyHist",1000,0,250000);
+  energyHist = new TH1F("EnergyHist","EnergyHist",100,0,50);
   Tomography::EventBreak::instance()->fEffEvNo = 0;
 
-  fDataTree = new DataTree();
-  fCalib = new Calibration("/home/rsehgal/BackBoneSoftwares/ismranData/completeCalib.root");
+  fDataTree = new lite_interface::DataTree();
+  fCalib = new lite_interface::Calibration("/home/rsehgal/BackBoneSoftwares/ismranData/completeCalib.root");
 }
 
 void B1RunAction::WriteData(){
   for(unsigned int i = 0 ; i < MySD::muonTrackVec.size() ; i++){
-    SingleMuonTrack *singleMuonTrack = MySD::muonTrackVec[i];
+    lite_interface::SingleMuonTrack *singleMuonTrack = MySD::muonTrackVec[i];
     for(unsigned int j = 0 ; j < singleMuonTrack->size() ; j++){
-      ScintillatorBar_V2 *scint = (singleMuonTrack->fSingleMuonTrack)[j];
+      lite_interface::ScintillatorBar_V2 *scint = (singleMuonTrack->fSingleMuonTrack)[j];
+
       /*fDataTree->Fill((scint->scintName).c_str(),scint->qlongNear,scint->qlongFar,scint->qlongMean,
                       scint->qlongMeanCorrected,scint->tstampNear, scint->tstampFar,
                       scint->tsmallTimeStamp,scint->deltaTstamp,scint->deltaTstampCorrected,
                       scint->barIndex,scint->layerIndex);*/
 
-      fDataTree->Fill((scint->scintName).c_str(),scint->qlongNear,scint->qlongFar,scint->qlongMean,
+     /* fDataTree->Fill((scint->scintName).c_str(),scint->qlongNear,scint->qlongFar,scint->qlongMean,
                        scint->qlongMeanCorrected,scint->tstampNear, scint->tstampFar,
                        scint->tsmallTimeStamp,scint->deltaTstamp,scint->deltaTstampCorrected,
-                       scint->barIndex,scint->layerIndex,(scint->meanHitPosition).x,(scint->meanHitPosition).y,(scint->meanHitPosition).z);
+                       scint->barIndex,scint->layerIndex,(scint->meanHitPosition).x,(scint->meanHitPosition).y,(scint->meanHitPosition).z);*/
+      fDataTree->Fill(scint->fQlongNear,scint->fQlongMean,scint->fTSmallTimeStamp,scint->fDelTstamp,scint->fBarIndex, scint->fMeanHitPosition);
 
       /*void Fill(char *scintname,UInt_t qlongnear,UInt_t qlongfar, Double_t qlongmean,
           Double_t qlongmeancorrected, ULong64_t tstampnear, ULong64_t tstampfar,
@@ -102,14 +105,25 @@ void B1RunAction::EndOfRunAction(const G4Run* run)
   //Creating energy histogram of Scintillator bar with index 0
   for(unsigned int i = 0 ; i < MySD::eventsVec.size() ; i++){
   	for(unsigned int j =0 ; j < MySD::eventsVec[i].size() ; j++)
-  	if(MySD::eventsVec[i][j]->barIndex==0){
-  		energyHist->Fill(MySD::eventsVec[i][j]->qlongMean*1000.);
+  	if(MySD::eventsVec[i][j]->fBarIndex==0){
+  		energyHist->Fill(MySD::eventsVec[i][j]->fQlongMean);
   	}
   }
   energyHist->Draw();
   MySD::Print();
   //PrintPsBarVector();
 
+  TH1F *energySum = lite_interface::PlotEnergySum(MySD::muonTrackVec);
+  new TCanvas();
+  energySum->Draw();
+
+  std::vector<TH1D*> vecHist = lite_interface::PlotEnergyDistributionWithMultiplicity(MySD::muonTrackVec);
+  new TCanvas("Energy with multiplicity..","Energy with multiplicity..");
+  for(unsigned int i = 0; i < vecHist.size();  i++){
+
+		  vecHist[i]->Draw("same");
+  }
+#if(0)
   //Doing the processing of muon tracks vector using Analyzer.
   Analyzer_V2 v;
   v.CalculateTotalEnergyDepositionForMuonTracks(MySD::muonTrackVec);
@@ -141,8 +155,11 @@ void B1RunAction::EndOfRunAction(const G4Run* run)
   CryGeantInterface::energyHist->Draw();
 #endif
 
-  WriteData();
+ // WriteData();
 
+
+#endif
+  WriteData();
   fApp->Run();
 }
 

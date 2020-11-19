@@ -70,8 +70,9 @@ public:
 	double GetZenithAngle(int opt = 1);
 	double GetZenithAngle_Linear();
 	double GetZenithAngle_Param();
-
+#ifndef FOR_SIMULATION
 	ClassDef(SingleMuonTrack,1)
+#endif
 };
 
 } /* namespace lite_interface */

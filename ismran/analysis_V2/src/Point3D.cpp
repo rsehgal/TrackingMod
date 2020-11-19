@@ -8,9 +8,9 @@
 #include "Point3D.h"
 #include <iostream>
 #include <cmath>
-
+#ifndef FOR_SIMULATION
 ClassImp(lite_interface::Point3D);
-
+#endif
 namespace lite_interface {
 
 Point3D::Point3D() {
@@ -23,6 +23,17 @@ Point3D::~Point3D() {
 	// TODO Auto-generated destructor stub
 }
 
+void Point3D::SetXYZ(double x, double y, double z){
+	fX = x;
+	fY = y;
+	fZ = z;
+}
+
+void Point3D::Divide(int n){
+	fX /= n;
+	fY /= n;
+	fZ /= n;
+}
 
 Point3D::Point3D(double x, double y, double z) : fX(x), fY(y), fZ(z){
 }
@@ -41,4 +52,23 @@ void Point3D::SetZero(){
 		fZ = 0;
 }
 
+/*
+Point3D Point3D::operator += (Point3D obj){
+	this->fX += obj.fX;
+	this->fY += obj.fY;
+	this->fZ += obj.fZ;
+}
+*/
+
+/*Point3D* Point3D::operator += (Point3D *obj){
+	this->fX += obj->fX;
+	this->fY += obj->fY;
+	this->fZ += obj->fZ;
+}*/
+
+/*Point3D Point3D::operator /= (int n){
+	this->fX /= n;
+	this->fY /= n;
+	this->fZ /= n;
+}*/
 } /* namespace lite_interface */

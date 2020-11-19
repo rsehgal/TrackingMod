@@ -17,12 +17,12 @@
 //class Calibration;
 #pragma once
 #include <TROOT.h>
-
+#include "Point3D.h"
 class TH1F;
 
 namespace lite_interface{
 
-class Point3D;
+//class Point3D;
 class Calibration;
 
 class ScintillatorBar_V2 {
@@ -40,8 +40,6 @@ public:
 	 //! time stamp in pico sec.
 	Long_t fDelTstamp;
 
-	//Only for Simulation
-	bool fBarHitted;
 
 
 public:
@@ -87,10 +85,20 @@ public:
 
 	virtual ~ScintillatorBar_V2();
 
+#ifdef FOR_SIMULATION
+	//Only for Simulation
+	bool fBarHitted;
+	std::vector<lite_interface::Point3D*> hitsVectorInAnEventInABar;
+	Point3D *fMeanHitPosition;
+
 	void CalculateVariousPhysicalParameters(unsigned long muonNum, Calibration *calib);
 	void CalculateVariousPhysicalParameters(unsigned long muonNum);
+#endif
 
+#ifndef FOR_SIMULATION
 	ClassDef(ScintillatorBar_V2,1)
+#endif
+
 };
 } /* End of lite_interface namespace */
 #endif /* ISMRAN_ANALYSIS_V2_INC_SCINTILLATORBAR_V2_H_ */

@@ -19,6 +19,7 @@
 #include "FTFP_BERT.hh"
 
 #include "includes.hh"
+#include "Analyzer.h"
 ///#include "PsBar.h"
 
 //#include "PhysicsList.h"
@@ -31,6 +32,7 @@
 */
 
 //#include "GeantVisualizer.h"
+#include "Calibration.h"
 
 
 #include "Randomize.hh"
@@ -38,7 +40,9 @@
 
 int main(int argc, char *argv[]){
 
-  
+	lite_interface::IsSimulation = true;
+
+	lite_interface::Calibration *calib = lite_interface::Calibration::instance("/home/rsehgal/BackBoneSoftwares/ismranData/completeCalib.root");
 
   G4RunManager *runManager = new G4RunManager;
   //G4VUserPhysicsList* phyList = new MyPhysics;

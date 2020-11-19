@@ -13,9 +13,9 @@
 #include "HardwareNomenclature.h"
 #include <TVector3.h>
 #include "Plotter.h"
-
+#ifndef FOR_SIMULATION
 ClassImp(lite_interface::SingleMuonTrack)
-
+#endif
 namespace lite_interface {
 
 SingleMuonTrack::SingleMuonTrack() {
@@ -122,6 +122,7 @@ double SingleMuonTrack::GetEnergySum(){
 	for(itr = fSingleMuonTrack.begin() ; itr != fSingleMuonTrack.end() ; itr++){
 		energySum += (*itr)->GetQMeanCorrected();
 	}
+	std::cout << "Energy Sum : " << energySum << std::endl;
 	return energySum;
 }
 
