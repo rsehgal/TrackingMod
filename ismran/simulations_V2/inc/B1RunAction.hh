@@ -12,8 +12,10 @@ class G4Run;
 class G4LogicalVolume;
 class TH1F;
 class TApplication;
-class DataTree;
-class Calibration;
+//class DataTree;
+#include "DataTree_V2.h"
+//class Calibration;
+#include "Calibration.h"
 
 
 /// Run action class
@@ -29,7 +31,7 @@ class B1RunAction : public G4UserRunAction
    //static ofstream *myfile;
     //static ofstream GetEnergyFile(){return myfile;}
 
-	static Calibration *fCalib;
+	static lite_interface::Calibration *fCalib;
 
     B1RunAction();
     virtual ~B1RunAction();
@@ -43,7 +45,7 @@ class B1RunAction : public G4UserRunAction
    	TApplication *fApp;
    	TH1F *energyHist;
 
-    DataTree *fDataTree;
+    lite_interface::DataTree *fDataTree;
     
 };
 

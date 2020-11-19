@@ -295,7 +295,8 @@ ${CMAKE_SOURCE_DIR}/inc
 ${CMAKE_SOURCE_DIR}
 ${CMAKE_SOURCE_DIR}/CryGeantInterface
 ${CMAKE_SOURCE_DIR}/base
-${CMAKE_SOURCE_DIR}/ismran/analysis/inc
+${CMAKE_SOURCE_DIR}/ismran/analysis_V2/inc
+#${CMAKE_SOURCE_DIR}/ismran/analysis/inc
 #${CMAKE_SOURCE_DIR}/ismran/inc
 )
 
@@ -331,7 +332,7 @@ ${CMAKE_SOURCE_DIR}/CoordinateGenerator/src
 ${CMAKE_SOURCE_DIR}/TemplatizedInterface/src
 ${CMAKE_SOURCE_DIR}/src
 ${CMAKE_SOURCE_DIR}/ismran/inc
-${CMAKE_SOURCE_DIR}/ismran/analysis/src
+#${CMAKE_SOURCE_DIR}/ismran/analysis/src
 )
 
 macro(collect_sources SOURCES)
@@ -559,7 +560,8 @@ if(GEANT4)
 #add_subdirectory(Simulations/MST)
 add_subdirectory(Simulation2)
 add_subdirectory(ismran/simulations)
-add_subdirectory(ismran/analysis)
+add_subdirectory(ismran/simulations_V2)
+#add_subdirectory(ismran/analysis)
 add_subdirectory(SimulationBasic)
 endif(GEANT4)
 #Copying the test geom.root file to build directory for visualization testing

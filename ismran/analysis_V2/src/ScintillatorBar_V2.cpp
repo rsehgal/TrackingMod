@@ -3,9 +3,10 @@
 #include "HardwareNomenclature.h"
 #include "Point3D.h"
 #include "Analyzer.h"
-
+#define cm 10
+#ifndef FOR_SIMULATION
 ClassImp(lite_interface::ScintillatorBar_V2);
-
+#endif
 namespace lite_interface{
 
 ScintillatorBar_V2::ScintillatorBar_V2(){
@@ -20,11 +21,14 @@ ScintillatorBar_V2::ScintillatorBar_V2(){
 
 ScintillatorBar_V2::ScintillatorBar_V2(unsigned int bIndex):
 		fBarIndex(bIndex),
-		fBarHitted(false),
 		fQlongNear(0),
 		fQlongMean(0),
 		fTSmallTimeStamp(0),
-		fDelTstamp(0){
+		fDelTstamp(0)
+#ifdef FOR_SIMULATION
+		,fBarHitted(false)
+#endif
+		{
 
 
 }
@@ -50,6 +54,8 @@ ScintillatorBar_V2::ScintillatorBar_V2(const ScintillatorBar_V2 &sbar){
 			fQlongMean = sbar.fQlongMean;
 			fTSmallTimeStamp = sbar.fTSmallTimeStamp;
 			fDelTstamp = sbar.fDelTstamp;
+			fBarHitted = sbar.fBarHitted;
+			hitsVectorInAnEventInABar = sbar.hitsVectorInAnEventInABar;
 
 }
 
@@ -159,7 +165,8 @@ Double_t ScintillatorBar_V2::GetQMeanCorrected(){
 
 
 }
-
+#ifdef FOR_SIMULATION
+#if(0)
 void ScintillatorBar_V2::CalculateVariousPhysicalParameters(unsigned long muonNum, Calibration *calib){
 	qlongMeanCorrected = qlongMean*1000.;
 		meanHitPosition.x = 0.;
@@ -206,33 +213,60 @@ void ScintillatorBar_V2::CalculateVariousPhysicalParameters(unsigned long muonNu
 
 
 }
+#endif
+
   void ScintillatorBar_V2::CalculateVariousPhysicalParameters(unsigned long muonNum){
 
-	qlongMeanCorrected = qlongMean*1000.;
-	meanHitPosition.x = 0.;
-	meanHitPosition.y = 0.;
-	meanHitPosition.z = 0.;
+	//qlongMeanCorrected = qlongMean*1000.;
+	fMeanHitPosition = new Point3D();
+	fMeanHitPosition->SetZero();
 	for(unsigned int i = 0 ; i < hitsVectorInAnEventInABar.size() ; i++){
 		//std::cout << "Hit point Vec from ScintillatorBar_V2 : "; hitsVectorInAnEventInABar[i]->Print();
-		meanHitPosition.x += hitsVectorInAnEventInABar[i]->x;
-		meanHitPosition.y += hitsVectorInAnEventInABar[i]->y;
-		meanHitPosition.z += hitsVectorInAnEventInABar[i]->z;
+		/*fMeanHitPosition.x += hitsVectorInAnEventInABar[i]->x;
+		fMmeanHitPosition.y += hitsVectorInAnEventInABar[i]->y;
+		meanHitPosition.z += hitsVectorInAnEventInABar[i]->z;*/
+		lite_interface::Point3D *hitpt = hitsVectorInAnEventInABar[i];
+		//(*fMeanHitPosition) += (*hitpt);
+		fMeanHitPosition->SetXYZ((fMeanHitPosition->GetX() + hitpt->GetX()),
+								 (fMeanHitPosition->GetY() + hitpt->GetY()),
+								 fMeanHitPosition->GetZ() + hitpt->GetZ());
+
 	}
-	meanHitPosition.x /= hitsVectorInAnEventInABar.size();
+	/*meanHitPosition.x /= hitsVectorInAnEventInABar.size();
 	meanHitPosition.y /= hitsVectorInAnEventInABar.size();
-	meanHitPosition.z /= hitsVectorInAnEventInABar.size();
+	meanHitPosition.z /= hitsVectorInAnEventInABar.size();*/
+	int n = hitsVectorInAnEventInABar.size();
+	//(*fMeanHitPosition) /= n;
+	fMeanHitPosition->Divide(n);
+
+	/*unsigned long int startTime =0;
+	if(n > 0){
+	std::cout <<"N : " << n << " :: Mean Hit Position : "; fMeanHitPosition->Print();
+
+	startTime = muonNum*timeBetweenTwoMuonTracks;
+	std::cout << "Muon Number : " << muonNum << " : startTime : " << startTime << " : " << __FILE__ <<" : " << __LINE__ << std::endl;
+	}*/
 
 	unsigned long int startTime = muonNum*timeBetweenTwoMuonTracks;
-	//std::cout << "Muon Number : " << muonNum << " : startTime : " << startTime << " : " << __FILE__ <<" : " << __LINE__ << std::endl;
 	//std::cout << "hitsVector.size() : " << hitsVectorInAnEventInABar.size() << std::endl;
 	//meanHitPosition.Print();
 
-	tstampNear = startTime + ((barLength/2. * cm + meanHitPosition.z)/(barLength*cm))*timeDiffNearFar;
+	/*tstampNear = startTime + ((barLength/2. * cm + meanHitPosition.z)/(barLength*cm))*timeDiffNearFar;
 	tstampFar = startTime + ((barLength/2. * cm - meanHitPosition.z)/(barLength*cm))*timeDiffNearFar;
 	//std::cout << "TimeStampNear : " << tstampNear <<" : TimeStampFar : " << tstampFar << std::endl;
 	tsmallTimeStamp = (tstampNear < tstampFar) ? tstampNear : tstampFar;
 	deltaTstamp = tstampNear-tstampFar;
-	deltaTstampCorrected = deltaTstamp;
+	deltaTstampCorrected = deltaTstamp;*/
+
+	ULong64_t tstampNear = startTime + ((barLength/2. * cm + fMeanHitPosition->GetZ())/(barLength*cm))*timeDiffNearFar;
+	ULong64_t tstampFar = startTime + ((barLength/2. * cm - fMeanHitPosition->GetZ())/(barLength*cm))*timeDiffNearFar;
+	if(n > 0){
+	//std::cout << "TimeStampNear : " << tstampNear <<" : TimeStampFar : " << tstampFar << std::endl;
+	}
+	fTSmallTimeStamp = (tstampNear < tstampFar) ? tstampNear : tstampFar;
+	fDelTstamp = tstampNear-tstampFar;
+	//deltaTstampCorrected = deltaTstamp;
 
 }
+#endif
 } /* End of lite_interface */

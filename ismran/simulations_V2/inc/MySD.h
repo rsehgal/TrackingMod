@@ -14,13 +14,12 @@
 #include "includes.hh"
 #include "PsBar.h"
 #include "SingleMuonTrack.h"
-//#include "ScintillatorBar_V2.h"
+#include "ScintillatorBar_V2.h"
 
 
 class G4Step;
 class G4HCofThisEvent;
 class TTree;
-class lite_interface::ScintillatorBar_V2;
 
 
 class MySD : public G4VSensitiveDetector {
@@ -52,7 +51,7 @@ public:
 	// static std::vector<ScintillatorBar*> eventsVec2;
 
 	//As per the new functions
-	static std::vector< SingleMuonTrack* > muonTrackVec;
+	static std::vector< lite_interface::SingleMuonTrack* > muonTrackVec;
 
 	static void Print();
 	/*{
