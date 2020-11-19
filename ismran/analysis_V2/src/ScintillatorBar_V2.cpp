@@ -54,8 +54,10 @@ ScintillatorBar_V2::ScintillatorBar_V2(const ScintillatorBar_V2 &sbar){
 			fQlongMean = sbar.fQlongMean;
 			fTSmallTimeStamp = sbar.fTSmallTimeStamp;
 			fDelTstamp = sbar.fDelTstamp;
+#ifdef FOR_SIMULATION
 			fBarHitted = sbar.fBarHitted;
 			hitsVectorInAnEventInABar = sbar.hitsVectorInAnEventInABar;
+#endif
 
 }
 
