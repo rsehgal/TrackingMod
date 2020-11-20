@@ -76,6 +76,7 @@ void B1RunAction::WriteData(){
                        scint->qlongMeanCorrected,scint->tstampNear, scint->tstampFar,
                        scint->tsmallTimeStamp,scint->deltaTstamp,scint->deltaTstampCorrected,
                        scint->barIndex,scint->layerIndex,(scint->meanHitPosition).x,(scint->meanHitPosition).y,(scint->meanHitPosition).z);*/
+      scint->fMeanHitPosition->Divide(10);
       fDataTree->Fill(scint->fQlongNear,scint->fQlongMean,scint->fTSmallTimeStamp,scint->fDelTstamp,scint->fBarIndex, scint->fMeanHitPosition);
 
       /*void Fill(char *scintname,UInt_t qlongnear,UInt_t qlongfar, Double_t qlongmean,

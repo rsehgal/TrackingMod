@@ -21,7 +21,7 @@ std::vector<unsigned int> vecOfdeltaTMax;
 int qstart = 3000;
 int qend = 25000;
 int nbins = 1000;
-int timeDiffNearFar = 25000 ; //ps
+int timeDiffNearFar = 12000 ; //ps
 unsigned long int timeBetweenTwoMuonTracks = 3e+9;;
 int muonEnergyPeak = 21000;
 int minEnergyDepositedByMuonTrack = 170000;

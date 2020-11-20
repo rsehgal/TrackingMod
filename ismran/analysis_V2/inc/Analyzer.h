@@ -27,9 +27,12 @@ class Analyzer {
 
 public:
 	Analyzer();
-	Analyzer(std::string datafileName,std::string outputfileName, bool simulation=false);
+	//Analyzer(std::string datafileName,std::string outputfileName, bool simulation=false);
+	Analyzer(std::string datafileName,std::string outputfileName);
 	void CreateScintillatorVector();
+#ifdef USE_FOR_SIMULATION
 	void CreateScintillatorVector_FromSimulation();
+#endif
 	void ReconstructMuonTrack();
 	static bool CompareTimestampScintillator(ScintillatorBar_V2 *i1, ScintillatorBar_V2 *i2);
 	virtual ~Analyzer();

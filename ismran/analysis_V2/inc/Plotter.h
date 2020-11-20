@@ -78,6 +78,8 @@ namespace lite_interface{
 	 * Function to calculate the Zenith angle histograms
 	 */
 	extern TH1F* PlotZenithAngle(std::vector<SingleMuonTrack*> muonTrackVec, int opt=1);
+	extern double GetZenithAngle(std::vector<lite_interface::Point3D*> vecOfPoint3D);
+	extern TH1F* PlotZenithAngle(std::vector<double> zenithAngleVect,int opt);
 
 } /* End of lite_interface */
 #endif /* ISMRAN_ANALYSIS_V2_INC_PLOTTER_H_ */

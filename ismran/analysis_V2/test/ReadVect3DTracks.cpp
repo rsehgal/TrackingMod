@@ -32,7 +32,7 @@ int main(int argc,char *argv[]){
 	std::string outputFileName=argv[1];
 	TFile *hitPointFile = new TFile(outputFileName.c_str(),"READ");
 	TTree *hitPointVecTree = (TTree*)hitPointFile->Get("HitPointVecTree");
-	TTree *hitPointVecTree_Param = (TTree*)hitPointFile->Get("HitPointVecTreeParam");
+	//TTree *hitPointVecTree_Param = (TTree*)hitPointFile->Get("HitPointVecTreeParam");
 	std::vector<lite_interface::Point3D*> *vecOfPoint3D = 0;
 	double energySum = 0;
 	hitPointVecTree->SetBranchAddress("HitPointVec",&vecOfPoint3D);
@@ -44,6 +44,9 @@ int main(int argc,char *argv[]){
 	std::vector<double> *energyVec = new std::vector<double>;
 	hitPointVecTree->SetBranchAddress("EnergyVector",&energyVec);
 	//hitPointVecTree_Param->SetBranchAddress("HitPointVec",&vecOfPoint3D_Param);
+
+	std::vector<lite_interface::Point3D*> *vecOfPoint3D_MeanHit = 0;
+	hitPointVecTree->SetBranchAddress("MeanHitPointVec",&vecOfPoint3D_MeanHit);
 
 	Long64_t nentries = hitPointVecTree->GetEntries();
 
@@ -57,6 +60,13 @@ int main(int argc,char *argv[]){
 	unsigned int count = 0;
 	TH1F *histDiff = new TH1F("EstimateDiffHist","EstimateDiffHist",100,-30.,30.);
 	TGraphErrors *gr;
+
+	std::vector<double> vecOfZenithAngle_Linear;
+	std::vector<double> vecOfZenithAngle_Param;
+#ifdef USE_FOR_SIMULATION
+		std::vector<double> vecOfZenithAngle_MeanHit;
+#endif
+
 	for (Long64_t i=0; i<nentries;i++) {
 		energyVec->clear();
 		nbytes += hitPointVecTree->GetEntry(i);
@@ -69,11 +79,24 @@ int main(int argc,char *argv[]){
 		histDiff->Fill((vecOfPoint3D->at(0)->GetZ() - vecOfPoint3D_Param->at(0)->GetZ()));
 		if(energySum > 400. || energySum < -400.)
 			continue;
+
+
+		//return GetZenithAngle(CreateFittedTrack(Get3DHitPointVector()));
+		vecOfZenithAngle_Linear.push_back(GetZenithAngle(CreateFittedTrack(*vecOfPoint3D)));
+		vecOfZenithAngle_Param.push_back(GetZenithAngle(CreateFittedTrack(*vecOfPoint3D_Param)));
+#ifdef USE_FOR_SIMULATION
+		vecOfZenithAngle_MeanHit.push_back(GetZenithAngle(CreateFittedTrack(*vecOfPoint3D_MeanHit)));
+#endif
+
 		if(i >90 && i < 130){
 
 			std::cout << "------------ Event Num : " << i << " --------------------" << std::endl;
 			std::cout << "Energy sum : "  << energySum << std::endl;
 			smt->Print();
+			for(unsigned int k = 0 ; k < vecOfPoint3D_MeanHit->size() ; k++){
+				vecOfPoint3D_MeanHit->at(k)->Print();
+			}
+
 			std::string title = "Event Num : "+std::to_string(i)+" : EnergySum : "+std::to_string(energySum);
 			TCanvas *can = new TCanvas(title.c_str(),title.c_str());
 			//TCanvas *can = new TCanvas();
@@ -145,6 +168,18 @@ int main(int argc,char *argv[]){
 	fw->cd();
 	gr->Write();
 	fw->Close();
+
+	new TCanvas();
+	TH1F *histLinear=lite_interface::PlotZenithAngle(vecOfZenithAngle_Linear,1);
+	histLinear->Draw();
+
+	new TCanvas();
+	TH1F *histParam=lite_interface::PlotZenithAngle(vecOfZenithAngle_Param,2);
+	histParam->Draw();
+
+	new TCanvas();
+	TH1F *histMeanHit=lite_interface::PlotZenithAngle(vecOfZenithAngle_MeanHit,3);
+	histMeanHit->Draw();
 
 	fApp->Run();
 	return 0;

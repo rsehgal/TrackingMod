@@ -21,6 +21,8 @@ endif()
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${PROJECT_SOURCE_DIR}/cmake/modules)
 
 option(CRY "Enable CRY library for cosmic event generation" OFF)
+option(USE_CALIBRATION "Use Calibration data for Sampling of time" OFF)
+option(USE_FOR_SIMULATION "Use Analyzer for simulated data" OFF)
 
 option(WITH_GEANT4_UIVIS "Build example with Geant4 UI and Vis drivers" ON)
 if(WITH_GEANT4_UIVIS)
@@ -29,11 +31,19 @@ else()
   find_package(Geant4 REQUIRED)
 endif()
 
-#----------------------------------------------------------------------------
 if(CRY)
 add_definitions(-DUSE_CRY)
 endif(CRY)
 
+if(USE_FOR_SIMULATION)
+add_definitions(-DUSE_FOR_SIMULATION)
+endif(USE_FOR_SIMULATION)
+
+if(USE_CALIBRATION)
+add_definitions(-DUSE_CALIBRATION)
+endif(USE_CALIBRATION)
+
+#----------------------------------------------------------------------------
 find_package(ROOT REQUIRED)
 include_directories(${ROOT_INCLUDE_DIR})
 

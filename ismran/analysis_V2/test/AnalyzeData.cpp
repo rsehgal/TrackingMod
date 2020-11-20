@@ -12,7 +12,7 @@ int main(int argc, char *argv[]){
 	GenerateScintMatrixXYCenters();
 	TApplication *fApp = new TApplication("Test", NULL, NULL);
 	//lite_interface::PairFinder pf("/home/rsehgal/BackBoneSoftwares/ismranData/ISMRAN_81bars_Th10All_CosmicRun_09hrs34mins_02Sep2020_0.root");
-	ushort barIndex = 5;
+	ushort barIndex = 25;
 	lite_interface::Calibration *calib = lite_interface::Calibration::instance("/home/rsehgal/BackBoneSoftwares/ismranData/completeCalib.root");
 	//Calibration *calib = Calibration::instance("/home/rsehgal/BackBoneSoftwares/ismranData/completeCalib.root");
 
@@ -24,8 +24,10 @@ int main(int argc, char *argv[]){
 	gr->Draw();
 	*/
 	//lite_interface::Analyzer pf("/media/rsehgal/CMSSW/September2020/ISMRAN_81bars_Th10All_CosmicRun_15hrs34mins_02Sep2020_2.root",argv[1]);
-	lite_interface::Analyzer pf("/media/rsehgal/CMSSW/September2020/ISMRAN_81bars_Th10All_CosmicRun_09hrs55mins_07Sep2020_0.root",argv[1]);
+	//lite_interface::Analyzer pf("/media/rsehgal/CMSSW/September2020/ISMRAN_81bars_Th10All_CosmicRun_09hrs55mins_07Sep2020_0.root",argv[1]);
+	//lite_interface::Analyzer pf("simulatedDataCalib.root",argv[1],true);
 	//lite_interface::Analyzer pf("simulatedData.root",argv[1],true);
+	lite_interface::Analyzer pf(argv[1],argv[2]);
 
 	Double_t muonPeakPosition = lite_interface::Calibration::instance()->GetCalibrationDataOf(barIndex)->fEnergyCalibrationFactor;
 	//Double_t muonPeakPosition = Calibration::instance()->GetCalibrationDataOf(barIndex)->fEnergyCalibrationFactor;

@@ -53,6 +53,10 @@ public:
 	std::vector<lite_interface::Point3D*> Get3DHitPointVector_Param();
 	std::vector<std::string> GetBarNamesVector();
 
+#ifdef USE_FOR_SIMULATION
+	std::vector<lite_interface::Point3D*>  GetMean3DHitPointVector();
+#endif
+
 	/*
 	 * Function to get the vector of energy deposited in contributing bars
 	 */
@@ -70,6 +74,10 @@ public:
 	double GetZenithAngle(int opt = 1);
 	double GetZenithAngle_Linear();
 	double GetZenithAngle_Param();
+#ifdef USE_FOR_SIMULATION
+	double GetZenithAngle_MeanHitPoint();
+#endif
+
 #ifndef FOR_SIMULATION
 	ClassDef(SingleMuonTrack,1)
 #endif
