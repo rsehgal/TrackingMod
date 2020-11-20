@@ -218,7 +218,11 @@ void MySD::EndOfEvent(G4HCofThisEvent*)
         	onlyHittedBarVec.push_back(scintBar);
 
         	//std::cout << "@@@@@@@@@@ Printing ScintBar : " ; scintBar->Print();
-          scintBar->CalculateVariousPhysicalParameters(muonNum);
+#ifdef USE_CALIBRATION
+       	scintBar->CalculateVariousPhysicalParameters(muonNum,B1RunAction::fCalib);
+#else
+        scintBar->CalculateVariousPhysicalParameters(muonNum);
+#endif
           //scintBar->CalculateVariousPhysicalParameters(muonNum,B1RunAction::fCalib);
         }
         if(onlyHittedBarVec.size() > 0){

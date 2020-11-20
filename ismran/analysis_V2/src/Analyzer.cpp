@@ -27,17 +27,18 @@ Analyzer::Analyzer() {
 
 }
 
-Analyzer::Analyzer(std::string datafileName,std::string outputfileName, bool simulation) : fDatafileName(datafileName), fOutputfileName(outputfileName){
+//Analyzer::Analyzer(std::string datafileName,std::string outputfileName, bool simulation) : fDatafileName(datafileName), fOutputfileName(outputfileName){
+Analyzer::Analyzer(std::string datafileName,std::string outputfileName ): fDatafileName(datafileName), fOutputfileName(outputfileName){
 
-	if(simulation){
+
+#ifdef USE_FOR_SIMULATION
 		IsSimulation = true;
 		std::cout << "Going to create vector of Scintillator Bar from Simulated Data..."  << std::endl;
 		CreateScintillatorVector_FromSimulation();
-	}
-	else{
+#else
 		fPairFinder =  new PairFinder(fDatafileName);
 		CreateScintillatorVector();
-	}
+#endif
 	ReconstructMuonTrack();
 }
 
@@ -104,6 +105,7 @@ void Analyzer::CreateScintillatorVector(){
 #endif
 }
 
+#ifdef USE_FOR_SIMULATION
 void Analyzer::CreateScintillatorVector_FromSimulation(){
 	std::cout << "Inside CreateScintillatorVector_FromSimulation............" << std::endl;
 	TFile *f = new TFile(fDatafileName.c_str(),"READ");
@@ -114,7 +116,7 @@ void Analyzer::CreateScintillatorVector_FromSimulation(){
 	   //UInt_t          qlongFar;
 	   Double_t        qlongMean;
 	   //Double_t        qlongMeanCorrected;
-	   ULong64_t       tstampNear;
+	   //ULong64_t       tstampNear;
 	   //ULong64_t       tstampFar;
 	   ULong64_t       tsmallTimeStamp;
 	   Long64_t        deltaTstamp;
@@ -123,27 +125,27 @@ void Analyzer::CreateScintillatorVector_FromSimulation(){
 
 	   Point3D *hitPoint;
 	   //UShort_t        layerIndex;
-	   //Double_t        hitX;
-	   //Double_t        hitY;
-	   //Double_t        hitZ;
+	   Double_t        hitX;
+	   Double_t        hitY;
+	   Double_t        hitZ;
 
 	   // Set branch addresses.
 	   ftree->SetBranchAddress("qlongNear",&qlongNear);
 	   //ftree->SetBranchAddress("qlongFar",&qlongFar);
 	   ftree->SetBranchAddress("qlongMean",&qlongMean);
 	   //ftree->SetBranchAddress("qlongMeanCorrected",&qlongMeanCorrected);
-	   ftree->SetBranchAddress("tstampNear",&tstampNear);
+	   //ftree->SetBranchAddress("tstampNear",&tstampNear);
 	   //ftree->SetBranchAddress("tstampFar",&tstampFar);
 	   ftree->SetBranchAddress("tsmallTimeStamp",&tsmallTimeStamp);
 	   ftree->SetBranchAddress("deltaTstamp",&deltaTstamp);
 	   //ftree->SetBranchAddress("deltaTstampCorrected",&deltaTstampCorrected);
 	   ftree->SetBranchAddress("barIndex",&barIndex);
 
-	   ftree->SetBranchAddress("hitPoint",&hitPoint);
+	   //ftree->SetBranchAddress("hitPoint",&hitPoint);
 	   //ftree->SetBranchAddress("layerIndex",&layerIndex);
-	   //ftree->SetBranchAddress("hitX",&hitX);
-	   //ftree->SetBranchAddress("hitY",&hitY);
-	   //ftree->SetBranchAddress("hitZ",&hitZ);
+	   ftree->SetBranchAddress("hitX",&hitX);
+	   ftree->SetBranchAddress("hitY",&hitY);
+	   ftree->SetBranchAddress("hitZ",&hitZ);
 
 	   Long64_t nentries = ftree->GetEntries();
 
@@ -152,8 +154,9 @@ void Analyzer::CreateScintillatorVector_FromSimulation(){
     	  nbytes += ftree->GetEntry(i);
     	  if(!(i%100000))
     		  std::cout << "Processed : " << i << " events....." << std::endl;
-    	  ScintillatorBar_V2 *scint = new ScintillatorBar_V2(barIndex,qlongNear,qlongMean,tsmallTimeStamp,deltaTstamp);
+    	  ScintillatorBar_V2 *scint = new ScintillatorBar_V2(barIndex,qlongNear,qlongMean,tsmallTimeStamp,deltaTstamp, hitX, hitY, hitZ);
     	  fVecOfScintillatorBar.push_back(scint);
+    	  //fVecOfScintillatorBar[i]->Print();
 
 	  }
 
@@ -199,6 +202,7 @@ void Analyzer::CreateScintillatorVector_FromSimulation(){
 	std::cout << "Size of Scintillator Vector : " << fVecOfScintillatorBar.size() << std::endl;
 
 }
+#endif
 
 void Analyzer::ReconstructMuonTrack(){
 	//TTree::SetMaxTreeSize(100000000);
@@ -230,6 +234,11 @@ void Analyzer::ReconstructMuonTrack(){
 	tracksTree->Branch("MuonTracks","lite_interface::SingleMuonTrack", &singleMuonTrack);
 	hitPointVecTree->Branch("HitPointVec","std::vector<lite_interface::Point3D*>", &hitPointVec);
 	hitPointVecTree->Branch("HitPointVecParam","std::vector<lite_interface::Point3D*>", &hitPointVec_Param);
+
+#ifdef USE_FOR_SIMULATION
+	std::vector<lite_interface::Point3D*> *meanHitPointVec = new std::vector<lite_interface::Point3D*>;
+	hitPointVecTree->Branch("MeanHitPointVec","std::vector<lite_interface::Point3D*>", &meanHitPointVec);
+#endif
 	hitPointVecTree->Branch("EnergySum", &energySum, "energySum/D");
 	hitPointVecTree->Branch("EnergyVector","std::vector<double>", &energyVec);
 	//hitPointVecTree_Param->Branch("HitPointVec","std::vector<lite_interface::Point3D*>", &hitPointVec_Param);
@@ -245,6 +254,7 @@ void Analyzer::ReconstructMuonTrack(){
 		if ((fVecOfScintillatorBar[i]->fTSmallTimeStamp - fVecOfScintillatorBar[i - 1]->fTSmallTimeStamp) < 20000) {
 			//Within 20ns window
 			singleMuonTrack->push_back(fVecOfScintillatorBar[i]);
+			//std::cout << __FILE__ << " : " << __LINE__ << " : ";		fVecOfScintillatorBar[i]->Print();
 		} else {
 
 			//Outside 20ns window, implied track ends, hence either store it in the vector of write it to the ROOT file
@@ -292,6 +302,18 @@ void Analyzer::ReconstructMuonTrack(){
 					}
 					}
 					hitPointVec_Param = &vec_Param;
+
+#ifdef USE_FOR_SIMULATION
+					std::vector<lite_interface::Point3D*> vec_meanHitPoint = singleMuonTrack->GetMean3DHitPointVector();
+					if(count < 4){
+							std::cout <<"--------- Using MeanHit Point -------------" << std::endl;
+							for(unsigned short k =0 ; k < vec_meanHitPoint.size() ; k++){
+								std::cout << "BarName : " << barNamesVector[k] << " : ";
+								vec_meanHitPoint[k]->Print();
+							}
+					}
+					meanHitPointVec = &vec_meanHitPoint;
+#endif
 
 					count++;
 					if(count <= 4){

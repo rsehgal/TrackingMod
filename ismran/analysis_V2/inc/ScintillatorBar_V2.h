@@ -12,6 +12,7 @@
 
 //#include "PsBar.h"
 #include "Point3D.h"
+#include "Calibration.h"
 //#include "HitPositionAndError.h"
 
 //class Calibration;
@@ -23,7 +24,7 @@ class TH1F;
 namespace lite_interface{
 
 //class Point3D;
-class Calibration;
+//class Calibration;
 
 class ScintillatorBar_V2 {
 
@@ -48,6 +49,8 @@ public:
 	ScintillatorBar_V2(const ScintillatorBar_V2 &sbar);
 	ScintillatorBar_V2(ushort barIndex, ushort qlongNear, ushort qlongMean,
 						ULong64_t tstampSmall, Long_t delTStamp);
+
+
 	//ScintillatorBar_V2(const ScintillatorBar_V2 &sbar);
 	//void EstimateHitPosition(Calibration *fCalib);
 
@@ -85,13 +88,21 @@ public:
 
 	virtual ~ScintillatorBar_V2();
 
-#ifdef FOR_SIMULATION
+#if defined(FOR_SIMULATION) || defined(USE_FOR_SIMULATION)
 	//Only for Simulation
 	bool fBarHitted;
 	std::vector<lite_interface::Point3D*> hitsVectorInAnEventInABar;
+	double hitX;
+	double hitY;
+	double hitZ;
 	Point3D *fMeanHitPosition;
-
-	void CalculateVariousPhysicalParameters(unsigned long muonNum, Calibration *calib);
+	ScintillatorBar_V2(ushort barIndex, ushort qlongNear, ushort qlongMean,
+								ULong64_t tstampSmall, Long_t delTStamp,
+								double hitx, double hity, double hitz);
+	lite_interface::Point3D* GetMeanHitPosition();
+#ifdef USE_CALIBRATION
+	void CalculateVariousPhysicalParameters(unsigned long muonNum, lite_interface::Calibration *calib);
+#endif
 	void CalculateVariousPhysicalParameters(unsigned long muonNum);
 #endif
 

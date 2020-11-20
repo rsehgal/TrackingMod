@@ -134,7 +134,7 @@ namespace lite_interface{
 			if((*itr)->fBarIndex == barIndex){
 				//std::cout << "BarIndex : " << (*itr)->fBarIndex << " : DelT : " << (*itr)->GetDelT()/1000. << std::endl;
 				if(IsSimulation)
-					hist->Fill((*itr)->GetDelT());
+					hist->Fill((*itr)->GetDelT()/1000.);
 				else
 					hist->Fill((*itr)->GetDelT()/1000.);
 			}
@@ -148,7 +148,7 @@ namespace lite_interface{
 		for(itr = scintBarVec.begin() ; itr != scintBarVec.end() ; itr++){
 			if((*itr)->fBarIndex == barIndex){
 				if(IsSimulation)
-					hist->Fill((*itr)->GetDelTCorrected());
+					hist->Fill((*itr)->GetDelTCorrected()/1000.);
 				else
 					hist->Fill((*itr)->GetDelTCorrected()/1000.);
 			}
@@ -176,7 +176,7 @@ namespace lite_interface{
 		for(itr = scintBarVec.begin() ; itr != scintBarVec.end() ; itr++){
 			if((*itr)->fBarIndex == barIndex){
 				lite_interface::Point3D *hitPt = (*itr)->EstimateHitPosition();
-//				/hitPt->Print();
+				//hitPt->Print();
 				hist->Fill(hitPt->GetX(),hitPt->GetZ());
 			}
 		}
@@ -403,10 +403,46 @@ namespace lite_interface{
 		return vecOfEstimatedXorZ;
 	}
 
+
+	double GetZenithAngle(std::vector<lite_interface::Point3D*> vecOfPoint3D){
+		TVector3 ref(0.,-1.,0.);
+		Point3D *startPoint = vecOfPoint3D[0];
+		Point3D *endPoint = vecOfPoint3D[vecOfPoint3D.size() - 1];
+		TVector3 muonDir(TVector3(endPoint->GetX(), endPoint->GetY(), endPoint->GetZ())	- TVector3(startPoint->GetX(), startPoint->GetY(),startPoint->GetZ()));
+		return muonDir.Angle(ref);
+	}
+
+	TH1F* PlotZenithAngle(std::vector<double> zenithAngleVect,int opt){
+		int numOfBins = 50;
+		std::string title="";
+		if(opt==1)
+			title = "ZenithAngleLinear";
+		if(opt==2)
+			title = "ZenithAngleParam";
+		if(opt==3)
+			title = "ZenithAngleMeanHitPoint";
+		TH1F *zenithAngleHist = new TH1F(title.c_str(), title.c_str(),numOfBins,0.02,0.96);
+		for (unsigned int i = 0 ; i < zenithAngleVect.size();  i++){
+			if(zenithAngleVect[i] < 0.96)
+				zenithAngleHist->Fill(zenithAngleVect[i]);
+		}
+		zenithAngleHist->Scale(1/zenithAngleHist->Integral());
+		TF1 *formula = new TF1("zenForm", "[0]*sin(x)*cos(x)*pow(cos(x),[1])", 0.05,0.96);
+		zenithAngleHist->Fit(formula, "r");
+		return zenithAngleHist;
+	}
+
 	TH1F* PlotZenithAngle(std::vector<SingleMuonTrack*> muonTrackVec, int opt){
 		TVector3 ref(0.,-1.,0.);
 		int numOfBins = 50;
-		TH1F *zenithAngleHist = new TH1F("ZenithAngle", "ZenithAngle Distribution",numOfBins,0.02,0.96);
+		std::string title="";
+		if(opt==1)
+			title = "ZenithAngleLinear";
+		if(opt==2)
+			title = "ZenithAngleParam";
+		if(opt==3)
+			title = "ZenithAngleMeanHitPoint";
+		TH1F *zenithAngleHist = new TH1F(title.c_str(), title.c_str(),numOfBins,0.02,0.96);
 		std::cout << "Size of Muon Track Vector : " << muonTrackVec.size() << std::endl;
 		for(unsigned int trackIndex = 0 ; trackIndex < muonTrackVec.size() ; trackIndex++){
 			if(opt == 1){
@@ -414,12 +450,21 @@ namespace lite_interface{
 				if(angleVal < 0.96)
 					zenithAngleHist->Fill(angleVal);
 			}
-			else{
+			if(opt == 2){
 				double angleVal = muonTrackVec[trackIndex]->GetZenithAngle_Param();
 				if(angleVal < 0.96)
 					zenithAngleHist->Fill(angleVal);
 				//zenithAngleHist->Fill(muonTrackVec[trackIndex]->GetZenithAngle_Param());
 			}
+#ifdef USE_FOR_SIMULATION
+			if(opt == 3){
+				double angleVal = muonTrackVec[trackIndex]->GetZenithAngle_MeanHitPoint();
+				//std::cout << "Angle Value : " << angleVal << std::endl;
+				if(angleVal < 0.96)
+					zenithAngleHist->Fill(angleVal);
+				//zenithAngleHist->Fill(muonTrackVec[trackIndex]->GetZenithAngle_Param());
+			}
+#endif
 		}
 		//TF1 *formula = new TF1("Cos2ThetaFit",Cos2ThetaFit,0.02,0.96,2);
 		zenithAngleHist->Scale(1/zenithAngleHist->Integral());

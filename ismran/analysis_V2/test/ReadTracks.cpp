@@ -25,10 +25,12 @@ int main(int argc,char *argv[]){
 	 * else for experimental data set it to false
 	 */
 	lite_interface::IsSimulation = true;
-	TFile *f=new TFile("test.root","RECREATE");
+
+	//TFile *f=new TFile(argv[2],"RECREATE");
+
 	TApplication *fApp = new TApplication("Test", NULL, NULL);
 	GenerateScintMatrixXYCenters();
-	lite_interface::SingleMuonTrack *smt = 0;
+	lite_interface::SingleMuonTrack *smt = new lite_interface::SingleMuonTrack;
 	//std::vector<lite_interface::ScintillatorBar_V2*> *smt = new std::vector<lite_interface::ScintillatorBar_V2*>;
 	lite_interface::Calibration *calib = lite_interface::Calibration::instance("/home/rsehgal/BackBoneSoftwares/ismranData/completeCalib.root");
 	std::string outputFileName=argv[1];
@@ -55,6 +57,7 @@ int main(int argc,char *argv[]){
 	  std::vector<lite_interface::ScintillatorBar_V2*> scintBarVecForNewTrack;
 
 	unsigned int count = 0;
+	unsigned int count2 = 0;
 	for (Long64_t i=0; i<nentries;i++) {
 		nbytes += trackTree->GetEntry(i);
 
@@ -79,6 +82,10 @@ int main(int argc,char *argv[]){
 			//if((smt->GetMuonTrack()).size() > 20 )
 			//	smt->Print();
 			std::vector<lite_interface::ScintillatorBar_V2*> scintBarVecOfATrack = smt->GetMuonTrack();
+			std::cout << "============ Printing from REad Tracks =============" << std::endl;
+			for(unsigned int j = 0 ; j < scintBarVecOfATrack.size() ; j++){
+				scintBarVecOfATrack[j]->Print();
+			}
 
 			scintBarVecForNewTrack.clear();
 
@@ -87,6 +94,7 @@ int main(int argc,char *argv[]){
 				//(smt->GetMuonTrack())[j]->Print();
 				if(scintBarVecOfATrack[j]->GetBarIndex() > 81){
 					count++;
+
 				}
 
 				//vectOfScintBarsProfile.push_back(new lite_interface::ScintillatorBar_V2(*scintBarVecOfATrack[j]));
@@ -107,6 +115,8 @@ int main(int argc,char *argv[]){
 			//std::cout << vectOfScintBars[i]->GetBarIndex() << std::endl;
 		}
 	}
+
+	//f->cd();
 
 	TH1F *histQmeanCorrected = PlotQMeanCorrected(vectOfScintBars,5);
 	histQmeanCorrected->SetLineColor(kGreen);
@@ -138,11 +148,20 @@ int main(int argc,char *argv[]){
 	new TCanvas("ZenithAngleWithLinearEstimation","Zenith Angle With Linear Estimation");
 	TH1F *zenithAngleHist = PlotZenithAngle(smtVec,1);
 	zenithAngleHist->Draw();
+	//zenithAngleHist->Write();
+
 
 	new TCanvas("ZenithAngleWithParamEstimation","Zenith Angle With Param Estimation");
 	TH1F *zenithAngleHist_Param = PlotZenithAngle(smtVec,2);
 	zenithAngleHist_Param->Draw();
+	//zenithAngleHist_Param->Write();
 
+	new TCanvas("ZenithAngleWithMeanHitPoint","Zenith Angle With Mean Hit Point");
+	TH1F *zenithAngleHist_MeanHitPoint = PlotZenithAngle(smtVec,3);
+	zenithAngleHist_MeanHitPoint->Draw();
+	//zenithAngleHist_MeanHitPoint->Write();
+
+	//f->Close();
 	fApp->Run();
 
 	return 0;
