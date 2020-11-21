@@ -16,6 +16,9 @@ ScintillatorBar_V2::ScintillatorBar_V2(){
 		fQlongMean = 0;
 		fTSmallTimeStamp = 0;
 		fDelTstamp = 0;
+		hitX = 0.;
+		hitY = 0.;
+		hitZ = 0.;
 
 }
 
@@ -24,7 +27,11 @@ ScintillatorBar_V2::ScintillatorBar_V2(unsigned int bIndex):
 		fQlongNear(0),
 		fQlongMean(0),
 		fTSmallTimeStamp(0),
-		fDelTstamp(0)
+		fDelTstamp(0),
+		hitX(0.),
+		hitY(0.),
+		hitZ(0.)
+
 #ifdef FOR_SIMULATION
 		,fBarHitted(false)
 #endif
@@ -40,7 +47,10 @@ fBarIndex(barIndex),
 fQlongNear(qlongNear),
 fQlongMean(qlongMean),
 fTSmallTimeStamp(tstampSmall),
-fDelTstamp(delTStamp){
+fDelTstamp(delTStamp),
+hitX(0.),
+hitY(0.),
+hitZ(0.){
 
 
 }
