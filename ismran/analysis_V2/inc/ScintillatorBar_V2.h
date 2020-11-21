@@ -41,6 +41,18 @@ public:
 	 //! time stamp in pico sec.
 	Long_t fDelTstamp;
 
+//#if defined(FOR_SIMULATION) || defined(USE_FOR_SIMULATION)
+	//Only for Simulation
+	double hitX;
+	double hitY;
+	double hitZ;
+
+#ifdef USE_FOR_SIMULATION
+	bool fBarHitted;
+	std::vector<lite_interface::Point3D*> hitsVectorInAnEventInABar;
+	Point3D *fMeanHitPosition;
+#endif
+
 
 
 public:
@@ -90,12 +102,6 @@ public:
 
 #if defined(FOR_SIMULATION) || defined(USE_FOR_SIMULATION)
 	//Only for Simulation
-	bool fBarHitted;
-	std::vector<lite_interface::Point3D*> hitsVectorInAnEventInABar;
-	double hitX;
-	double hitY;
-	double hitZ;
-	Point3D *fMeanHitPosition;
 	ScintillatorBar_V2(ushort barIndex, ushort qlongNear, ushort qlongMean,
 								ULong64_t tstampSmall, Long_t delTStamp,
 								double hitx, double hity, double hitz);
