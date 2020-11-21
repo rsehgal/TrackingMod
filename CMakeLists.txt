@@ -480,6 +480,17 @@ file(GLOB cryg4interfaceheaders ${cryg4interfaceheaders} CryGeantInterface/*.h C
 file(GLOB cryg4interfacesources ${cryg4interfacesources} CryGeantInterface/*.cpp CryGeantInterface/*.cc)
 add_library(cryg4interface SHARED ${cryg4interfaceheaders} ${cryg4interfacesources})
 
+#set_target_properties(cry_manual_interface PROPERTIES LINKER_LANGUAGE CXX)
+add_library(cry_manual_interface SHARED CRY_Manual_Interface/cry_manual_interface.cpp)
+
+if(CRY_BUILT_IN)
+target_link_libraries(cry_manual_interface cry ${ROOT_LIBRARIES})
+else()
+find_package(CRY REQUIRED)
+include_directories(${CRY_INCLUDE_DIR})
+target_link_libraries(cry_manual_interface  ${CRY_LIBRARIES} ${ROOT_LIBRARIES})
+endif(CRY_BUILT_IN)
+
 if(CRY_BUILT_IN)
 target_link_libraries(cryg4interface ${Geant4_LIBRARIES} cry)
 else()
