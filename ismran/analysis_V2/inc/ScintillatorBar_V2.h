@@ -41,13 +41,12 @@ public:
 	 //! time stamp in pico sec.
 	Long_t fDelTstamp;
 
-//#if defined(FOR_SIMULATION) || defined(USE_FOR_SIMULATION)
 	//Only for Simulation
 	double hitX;
 	double hitY;
 	double hitZ;
 
-#ifdef USE_FOR_SIMULATION
+#if defined(FOR_SIMULATION) || defined(USE_FOR_SIMULATION)
 	bool fBarHitted;
 	std::vector<lite_interface::Point3D*> hitsVectorInAnEventInABar;
 	Point3D *fMeanHitPosition;
