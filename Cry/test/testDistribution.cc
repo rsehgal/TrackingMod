@@ -93,7 +93,7 @@ int main( int argc, const char *argv[]) {
   TH1F *solidAngleHist = new TH1F("AngularDistribution From CRY","AngularDistribution From CRY",numOfBins,0.,M_PI/2.);
   solidAngleHist->GetYaxis()->SetTitle("#frac{dN}{d#theta}");
   solidAngleHist->GetXaxis()->SetTitle("#theta (radian)");
-  TVector3 ref(0.,0.,-1.);
+  TVector3 ref(0.,-1.,0.);
 
   // Generate the events
   std::vector<CRYParticle*> *ev=new std::vector<CRYParticle*>;
@@ -115,7 +115,7 @@ int main( int argc, const char *argv[]) {
                 << " (m)"
                 << "\n";
       if(std::string(CRYUtils::partName(p->id())) == "muon")
-    	  solidAngleHist->Fill(TVector3(p->u(),p->v(),p->w()).Angle(ref));
+    	  solidAngleHist->Fill(TVector3(p->u(),p->w(),p->v()).Angle(ref));
 
       delete (*ev)[j];
     }
