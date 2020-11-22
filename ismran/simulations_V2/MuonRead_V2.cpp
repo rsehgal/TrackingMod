@@ -14,32 +14,17 @@
 #include <string>
 #include <cstring>
 #include "cry_manual_interface.h"
-
+#include "MuonReader.h"
 int main(int argc, char *argv[]){
 	TApplication *fApp = new TApplication("Test", NULL, NULL);
 	std::string inputfileName = argv[1];// std::string(argv[1]);
-	TFile *muonFile = new TFile(inputfileName.c_str(),"READ");
-	TTree *muonTree = (TTree*)muonFile->Get("MuonTree");
 
-	double anglex = 0 ;
-	double angley = 0 ;
-	double anglez = 0 ;
-	double energy = 0 ;
-
-	muonTree->SetBranchAddress("u",&anglex);
-	muonTree->SetBranchAddress("v",&angley);
-	muonTree->SetBranchAddress("w",&anglez);
-	muonTree->SetBranchAddress("e",&energy);
-
-	Long64_t nentries = muonTree->GetEntries();
-
-	Long64_t nbytes = 0;
+	lite_interface::MuonReader::instance(inputfileName);
 	std::vector<Muon*> muonVec;
-	for (Long64_t i=0; i<nentries;i++) {
-
-		nbytes += muonTree->GetEntry(i);
-		muonVec.push_back(new Muon(anglex,angley,anglez,energy));
-
+	for(unsigned int i = 0 ; i < std::atoi(argv[2]) ; i++){
+		Muon *muon = new Muon(*lite_interface::MuonReader::instance()->GetMuon());
+		//std::cout << "From MuonReader_V2 : " ;muon->Print();
+		muonVec.push_back(muon);
 	}
 
 	new TCanvas("MuonAngularDistribution","CRY Muon angular distribution");
@@ -49,5 +34,3 @@ int main(int argc, char *argv[]){
 	fApp->Run();
 	return 0;
 }
-
-
