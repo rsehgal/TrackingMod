@@ -1,0 +1,4 @@
+/run/initialize
+/gun/particle mu-
+/gun/energy 2 GeV
+/run/beamOn 3 
