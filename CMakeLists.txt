@@ -481,7 +481,7 @@ file(GLOB cryg4interfacesources ${cryg4interfacesources} CryGeantInterface/*.cpp
 add_library(cryg4interface SHARED ${cryg4interfaceheaders} ${cryg4interfacesources})
 
 #set_target_properties(cry_manual_interface PROPERTIES LINKER_LANGUAGE CXX)
-add_library(cry_manual_interface SHARED CRY_Manual_Interface/cry_manual_interface.cpp)
+add_library(cry_manual_interface SHARED CRY_Manual_Interface/cry_manual_interface.cpp CRY_Manual_Interface/MuonReader.cpp )
 
 if(CRY_BUILT_IN)
 target_link_libraries(cry_manual_interface cry ${ROOT_LIBRARIES})

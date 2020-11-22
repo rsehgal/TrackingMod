@@ -5,10 +5,6 @@
  *      Author: rsehgal
  */
 
-#ifndef CRY_MANUAL_INTERFACE_CRY_MANUAL_INTERFACE_CPP_
-#define CRY_MANUAL_INTERFACE_CRY_MANUAL_INTERFACE_CPP_
-
-
 #include "CRYGenerator.h"
 #include "CRYSetup.h"
 
@@ -24,30 +20,17 @@
 #include <TF1.h>
 #include <TTree.h>
 #include <TFile.h>
-struct Muon{
-	double angleX, angleY, angleZ;
-	double energy;
+#include "cry_manual_interface.h"
 
-	Muon(double anglex, double angley, double anglez, double ener){
-		angleX = anglex;
-		angleY = angley;
-		angleZ = anglez;
-		energy = ener;
-
-	}
-
-	void Print(){
-		std::cout << "(" << angleX << " , " << angleY << " , " << angleZ << ") : Energy : " << energy << std::endl;
-	}
-
-};
 
 TH1F* GetDistribution(std::vector<Muon*> muonVec){
 		int numbins = 40;
 		TH1F *angHist = new TH1F("MuonAngularDistribution", "CRY Muons angular distribution",numbins,0,M_PI/2.);
 		TVector3 ref(0.,-1.,0.);
 		for(unsigned int i = 0 ; i < muonVec.size() ; i++){
-			angHist->Fill(TVector3(muonVec[i]->angleX,muonVec[i]->angleY,muonVec[i]->angleZ).Angle(ref));
+			double angle = TVector3(muonVec[i]->angleX,muonVec[i]->angleY,muonVec[i]->angleZ).Angle(ref); 
+			//std::cout << "Angle : " << angle << std::endl;
+			angHist->Fill(angle);
 		}
 		/*new TCanvas();
 		angHist->Draw();*/
@@ -119,4 +102,4 @@ std::vector<Muon*> SampleMuonParticle(int n){
 }
 
 
-#endif /* CRY_MANUAL_INTERFACE_CRY_MANUAL_INTERFACE_CPP_ */
+
