@@ -42,7 +42,7 @@ int main(int argc, char *argv[]){
 
 	lite_interface::IsSimulation = true;
 
-	lite_interface::Calibration *calib = lite_interface::Calibration::instance("completeCalib.root");
+	lite_interface::Calibration *calib = lite_interface::Calibration::instance("/home/rsehgal/BackBoneSoftwares/ismranData/completeCalib.root");
 
   G4RunManager *runManager = new G4RunManager;
   //G4VUserPhysicsList* phyList = new MyPhysics;

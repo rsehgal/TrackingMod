@@ -29,6 +29,7 @@ using namespace std;
 
 lite_interface::Calibration* B1RunAction::fCalib;
 std::vector<double> B1RunAction::fAngleVec;
+unsigned long B1RunAction::fEvNo = 0;
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
@@ -63,12 +64,14 @@ void B1RunAction::BeginOfRunAction(const G4Run*)
   //Tomography::EventBreak::instance()->fEffEvNo = 0;
 
   fDataTree = new lite_interface::DataTree();
-  fCalib = new lite_interface::Calibration("completeCalib.root");
+  fCalib = new lite_interface::Calibration("/home/rsehgal/BackBoneSoftwares/ismranData/completeCalib.root");
 }
 
 void B1RunAction::WriteData(){
   for(unsigned int i = 0 ; i < MySD::muonTrackVec.size() ; i++){
     lite_interface::SingleMuonTrack *singleMuonTrack = MySD::muonTrackVec[i];
+    std::cout << "================= Track Id : " << i << " ================" << std::endl;
+    singleMuonTrack->Print();
     for(unsigned int j = 0 ; j < singleMuonTrack->size() ; j++){
       lite_interface::ScintillatorBar_V2 *scint = (singleMuonTrack->fSingleMuonTrack)[j];
 
@@ -132,6 +135,11 @@ void B1RunAction::EndOfRunAction(const G4Run* run)
 
   new TCanvas();
   lite_interface::PlotZenithAngle(fAngleVec,4)->Draw();
+
+  /*for(unsigned int  i = 0 ; i < MySD::muonTrackVec.size() ; i++){
+	  std::cout << "============ Muon Track : " << i <<" ==========" << std::endl;
+	  MySD::muonTrackVec[i]->Print();
+  }*/
 #if(0)
   //Doing the processing of muon tracks vector using Analyzer.
   Analyzer_V2 v;
@@ -156,6 +164,8 @@ void B1RunAction::EndOfRunAction(const G4Run* run)
   new TCanvas();
   globalMultiplicityHist->Draw();
   globalMultiplicityHist->Write();
+
+
 
   std::cout << "Total Num of Stopped particles : " << MySD::numOfStoppedParticles << std::endl;
   //std::cout << ((1.0*MySD::numOfStoppedParticles/Tomography::EventBreak::instance()->fEffEvNo)*100)<<" % of Number of particles that reaches the Sensitive detector region" << std::endl;
