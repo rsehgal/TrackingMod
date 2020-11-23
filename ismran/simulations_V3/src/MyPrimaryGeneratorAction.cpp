@@ -40,6 +40,9 @@ void MyPrimaryGeneratorAction::GeneratePrimaries(G4Event *event) {
    //fParticleGun->GeneratePrimaryVertex(event);
   double gunZ = 60*cm;
   Muon *muon = new Muon(*lite_interface::MuonReader::instance()->GetMuon());
+  B1RunAction::fEvNo++;
+  if(!(B1RunAction::fEvNo % 10000))
+	  std::cout << "Processed : " << B1RunAction::fEvNo << " events..." << std::endl;
    Vector3D<double> pt1(Tracking::Global::GenRandomDet(-45.*cm,45.*cm),
                         gunZ,
                         Tracking::Global::GenRandomDet(-50.*cm,50.*cm));

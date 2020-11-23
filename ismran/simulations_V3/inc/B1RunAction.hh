@@ -49,6 +49,7 @@ class B1RunAction : public G4UserRunAction
 
    public:
     static std::vector<double> fAngleVec;
+    static unsigned long fEvNo;
 
     
 };
