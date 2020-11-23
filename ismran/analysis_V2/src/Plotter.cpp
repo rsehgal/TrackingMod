@@ -421,6 +421,8 @@ namespace lite_interface{
 			title = "ZenithAngleParam";
 		if(opt==3)
 			title = "ZenithAngleMeanHitPoint";
+		if(opt==3)
+			title = "ZenithAngleCRY";
 		TH1F *zenithAngleHist = new TH1F(title.c_str(), title.c_str(),numOfBins,0.02,0.96);
 		for (unsigned int i = 0 ; i < zenithAngleVect.size();  i++){
 			if(zenithAngleVect[i] < 0.96)
