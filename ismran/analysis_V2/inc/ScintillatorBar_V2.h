@@ -46,6 +46,14 @@ public:
 	double hitY;
 	double hitZ;
 
+
+#ifdef USE_FOR_SIMULATION
+	Point3D *fittedMean;
+	lite_interface::Point3D *fittedLinear;
+	Point3D *fittedParam;
+#endif
+
+
 #if defined(FOR_SIMULATION) || defined(USE_FOR_SIMULATION)
 	bool fBarHitted;
 	std::vector<lite_interface::Point3D*> hitsVectorInAnEventInABar;

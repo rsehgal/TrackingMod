@@ -140,8 +140,33 @@ void ScintillatorBar_V2::EstimateHitPositionAlongY(Point3D *temp, Point3D *tempE
 //void ScintillatorBar_V2::EstimateHitPosition_V2(Calibration *fCalib);
 
 void ScintillatorBar_V2::Print(){
+	std::cout <<"-----------------------------------------------" << std::endl;
 	std::cout <<"BarIndex : " << fBarIndex <<  " :  Energy :  " << GetQMeanCorrected() << " : DelT : " << GetDelT() << std::endl;
+#ifdef USE_FOR_SIMULATION
 	std::cout << "Mean Hit Position : " << hitX <<" , " << hitY << " , " << hitZ << std::endl;
+	std::cout << "Fitted Mean Hit position : " ; fittedMean->Print();
+#else
+#ifdef FOR_SIMULATION
+	std::cout << "Mean Hit Position : " ; fMeanHitPosition->Print();
+#endif
+
+#endif
+
+	std::cout << "Estimated Hit Position Linear : " ; EstimateHitPosition()->Print();
+#ifdef USE_FOR_SIMULATION
+	std::cout << "Fitted Linear Hit position : " ; fittedLinear->Print();
+#endif
+
+	std::cout << "Estimated Hit Position Param : " ; EstimateHitPosition_Param()->Print();
+#ifdef USE_FOR_SIMULATION
+	std::cout << "Fitted Param Hit position : " ; fittedParam->Print();
+#endif
+
+#if defined(FOR_SIMULATION) || defined(USE_FOR_SIMULATION)
+	for(unsigned int i = 0 ; i < hitsVectorInAnEventInABar.size() ; i++){
+		hitsVectorInAnEventInABar[i]->Print();
+	}
+#endif
 
 }
 
@@ -285,6 +310,12 @@ void ScintillatorBar_V2::CalculateVariousPhysicalParameters(unsigned long muonNu
 	fMeanHitPosition->SetZero();
 	for(unsigned int i = 0 ; i < hitsVectorInAnEventInABar.size() ; i++){
 		lite_interface::Point3D *hitpt = hitsVectorInAnEventInABar[i];
+		//if(i==(hitsVectorInAnEventInABar.size()-1)){
+//		if(i==0){
+//			std::cout << "================ Bar Index : " << fBarIndex << " =========================" << std::endl;
+//			//std::cout << "First Hit : " ; hitpt->Print() ;
+//		}
+//		hitpt->Print();
 		fMeanHitPosition->SetXYZ((fMeanHitPosition->GetX() + hitpt->GetX()),
 								 (fMeanHitPosition->GetY() + hitpt->GetY()),
 								 fMeanHitPosition->GetZ() + hitpt->GetZ());
@@ -292,6 +323,7 @@ void ScintillatorBar_V2::CalculateVariousPhysicalParameters(unsigned long muonNu
 	}
 	int n = hitsVectorInAnEventInABar.size();
 	fMeanHitPosition->Divide(n);
+	//std::cout << "Mean Hit : " ; fMeanHitPosition->Print();
 
 	unsigned long int startTime = muonNum*timeBetweenTwoMuonTracks;
 
