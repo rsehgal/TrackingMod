@@ -177,9 +177,11 @@ int main(int argc,char *argv[]){
 	TH1F *histParam=lite_interface::PlotZenithAngle(vecOfZenithAngle_Param,2);
 	histParam->Draw();
 
+#ifdef USE_FOR_SIMULATION
 	new TCanvas();
 	TH1F *histMeanHit=lite_interface::PlotZenithAngle(vecOfZenithAngle_MeanHit,3);
 	histMeanHit->Draw();
+#endif
 
 	fApp->Run();
 	return 0;

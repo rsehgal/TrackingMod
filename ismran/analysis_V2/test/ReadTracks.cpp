@@ -81,9 +81,23 @@ int main(int argc,char *argv[]){
 			//std::cout << "==============================" << std::endl;
 			//if((smt->GetMuonTrack()).size() > 20 )
 			//	smt->Print();
+
+			std::vector<lite_interface::Point3D*> fittedLinearTrack = CreateFittedTrack(smt->Get3DHitPointVector());
+			std::vector<lite_interface::Point3D*> fittedParamTrack = CreateFittedTrack(smt->Get3DHitPointVector_Param());
+#ifdef USE_FOR_SIMULATION
+			std::vector<lite_interface::Point3D*> fittedMeanTrack = CreateFittedTrack(smt->GetMean3DHitPointVector());
+#endif
+
+
+
 			std::vector<lite_interface::ScintillatorBar_V2*> scintBarVecOfATrack = smt->GetMuonTrack();
 			std::cout << "============ Printing from REad Tracks =============" << std::endl;
 			for(unsigned int j = 0 ; j < scintBarVecOfATrack.size() ; j++){
+#ifdef USE_FOR_SIMULATION
+				scintBarVecOfATrack[j]->fittedMean = fittedMeanTrack[j];
+#endif
+				//scintBarVecOfATrack[j]->fittedLinear = fittedLinearTrack[j];
+				//scintBarVecOfATrack[j]->fittedParam = fittedParamTrack[j];
 				scintBarVecOfATrack[j]->Print();
 			}
 
