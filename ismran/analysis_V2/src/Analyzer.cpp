@@ -210,7 +210,7 @@ void Analyzer::ReconstructMuonTrack(){
 
 	unsigned int scintVecSize = fVecOfScintillatorBar.size();
 	std::cout << "ScintVectSize : " << scintVecSize << std::endl;
-	//std::vector<SingleMuonTrack*> muonTrackVec;
+
 	lite_interface::SingleMuonTrack *singleMuonTrack = new lite_interface::SingleMuonTrack();
 	std::vector<lite_interface::Point3D*> *hitPointVec = new std::vector<lite_interface::Point3D*>;
 	std::vector<lite_interface::Point3D*> *hitPointVec_Param = new std::vector<lite_interface::Point3D*>;
@@ -218,19 +218,11 @@ void Analyzer::ReconstructMuonTrack(){
 	double energySum = 0;
 	std::vector<double> *energyVec = new std::vector<double>;
 
-	//std::vector<ScintillatorBar_V2*> smt = singleMuonTrack->GetMuonTrack();
-	//SingleMuonTrack *smt=new SingleMuonTrack;
-	//std::vector<ScintillatorBar_V2*> smt = singleMuonTrack->GetMuonTrack();
-
 	unsigned int hitInAllLayersCounter = 0;
 	//TFile *tracksFile = new TFile("tracks.root","RECREATE");
 	TFile *tracksFile = new TFile(fOutputfileName.c_str(),"RECREATE");
 	TTree *tracksTree = new TTree("TracksTree","TracksTree");
 	TTree *hitPointVecTree = new TTree("HitPointVecTree","HitPointVecTree");
-	//TTree *hitPointVecTree_Param = new TTree("HitPointVecTreeParam","HitPointVecTreeParam");
-
-
-	//tracksTree->Branch("MuonTracks","MuonTracks", &smt);
 	tracksTree->Branch("MuonTracks","lite_interface::SingleMuonTrack", &singleMuonTrack);
 	hitPointVecTree->Branch("HitPointVec","std::vector<lite_interface::Point3D*>", &hitPointVec);
 	hitPointVecTree->Branch("HitPointVecParam","std::vector<lite_interface::Point3D*>", &hitPointVec_Param);
@@ -241,9 +233,6 @@ void Analyzer::ReconstructMuonTrack(){
 #endif
 	hitPointVecTree->Branch("EnergySum", &energySum, "energySum/D");
 	hitPointVecTree->Branch("EnergyVector","std::vector<double>", &energyVec);
-	//hitPointVecTree_Param->Branch("HitPointVec","std::vector<lite_interface::Point3D*>", &hitPointVec_Param);
-
-	//tracksTree->Branch("MuonTracks","lite_interface::SingleMuonTrack", &smt);
 
 	singleMuonTrack->push_back(fVecOfScintillatorBar[0]);
 	unsigned int count=0;
@@ -256,24 +245,10 @@ void Analyzer::ReconstructMuonTrack(){
 			singleMuonTrack->push_back(fVecOfScintillatorBar[i]);
 			//std::cout << __FILE__ << " : " << __LINE__ << " : ";		fVecOfScintillatorBar[i]->Print();
 		} else {
-
 			//Outside 20ns window, implied track ends, hence either store it in the vector of write it to the ROOT file
-
 			singleMuonTrack->Sort();
-			//smtVec.push_back(singleMuonTrack);
-			//smt = new SingleMuonTrack(*singleMuonTrack);
-
-			//std::cout << smt <<" : " << singleMuonTrack << std::endl;
-			//muonTrackVec.push_back(singleMuonTrack);
-			//smt = singleMuonTrack->GetMuonTrack();
-			//tracksTree->Fill();
 			if(singleMuonTrack->size() > 8)
 			{
-				/*count++;
-				if(count <= 4){
-					std::cout << "======== Single Muon Track Count : " << count << " =========" << std::endl;
-					singleMuonTrack->Print();
-				}*/
 
 				if(singleMuonTrack->IsClearTrack())
 				{
@@ -344,8 +319,8 @@ void Analyzer::ReconstructMuonTrack(){
 				}
 			}*/
 
-			//singleMuonTrack->clear();
-			singleMuonTrack = new SingleMuonTrack();
+			singleMuonTrack->clear();
+			//singleMuonTrack = new SingleMuonTrack();
 			singleMuonTrack->push_back(fVecOfScintillatorBar[i]);
 		}
 	}

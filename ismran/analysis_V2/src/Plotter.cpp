@@ -256,7 +256,7 @@ namespace lite_interface{
 
 				    for(unsigned int i = 0 ; i < muonTrackVec.size() ; i ++){
 				    	if(muonTrackVec[i]->size() > 0 && muonTrackVec[i]->size() <= numOfLayers){
-				    		std::cout << "Size : " << muonTrackVec[i]->size() <<" : EnergySum : " << muonTrackVec[i]->GetEnergySum() << std::endl;
+				    		//std::cout << "Size : " << muonTrackVec[i]->size() <<" : EnergySum : " << muonTrackVec[i]->GetEnergySum() << std::endl;
 				    		vecOfHists[muonTrackVec[i]->size()-1]->Fill(muonTrackVec[i]->GetEnergySum());
 				    	}
 
