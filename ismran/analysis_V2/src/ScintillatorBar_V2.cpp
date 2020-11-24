@@ -153,14 +153,14 @@ void ScintillatorBar_V2::Print(){
 #endif
 
 	std::cout << "Estimated Hit Position Linear : " ; EstimateHitPosition()->Print();
-#ifdef USE_FOR_SIMULATION
+//#ifdef USE_FOR_SIMULATION
 	std::cout << "Fitted Linear Hit position : " ; fittedLinear->Print();
-#endif
+//#endif
 
 	std::cout << "Estimated Hit Position Param : " ; EstimateHitPosition_Param()->Print();
-#ifdef USE_FOR_SIMULATION
+//#ifdef USE_FOR_SIMULATION
 	std::cout << "Fitted Param Hit position : " ; fittedParam->Print();
-#endif
+//#endif
 
 #if defined(FOR_SIMULATION) || defined(USE_FOR_SIMULATION)
 	for(unsigned int i = 0 ; i < hitsVectorInAnEventInABar.size() ; i++){

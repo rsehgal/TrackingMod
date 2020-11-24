@@ -131,6 +131,38 @@ std::vector<lite_interface::Point3D*> SingleMuonTrack::Get3DHitPointVector_Param
 	return vectorOf3DHitPoint;
 }
 
+void SingleMuonTrack::SetFittedMembers(int opt){
+	std::vector<lite_interface::Point3D*> fittedTrack;
+	if(opt == 0){
+		//For Linear
+		fittedTrack = lite_interface::CreateFittedTrack(Get3DHitPointVector());
+		for(unsigned int i = 0 ; i < size() ; i++){
+			fSingleMuonTrack[i]->fittedLinear = fittedTrack[i];
+		}
+	}
+	if(opt == 1){
+		//For Param
+		fittedTrack = lite_interface::CreateFittedTrack(Get3DHitPointVector_Param());
+		for(unsigned int i = 0 ; i < size() ; i++){
+			fSingleMuonTrack[i]->fittedParam = fittedTrack[i];
+		}
+	}
+#ifdef USE_FOR_SIMULATION
+	if(opt == 2){
+		//For Mean
+		fittedTrack = lite_interface::CreateFittedTrack(GetMean3DHitPointVector());
+		for(unsigned int i = 0 ; i < size() ; i++){
+			fSingleMuonTrack[i]->fittedMean = fittedTrack[i];
+		}
+	}
+#endif
+
+
+}
+
+
+
+
 double SingleMuonTrack::GetEnergySum(){
 	double energySum = 0;
 	std::vector<ScintillatorBar_V2*>::iterator itr;
