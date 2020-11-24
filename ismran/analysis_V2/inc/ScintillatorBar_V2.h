@@ -47,10 +47,11 @@ public:
 	double hitZ;
 
 
-#ifdef USE_FOR_SIMULATION
-	Point3D *fittedMean;
+
 	lite_interface::Point3D *fittedLinear;
-	Point3D *fittedParam;
+	lite_interface::Point3D *fittedParam;
+#ifdef USE_FOR_SIMULATION
+	lite_interface::Point3D *fittedMean;
 #endif
 
 

@@ -291,10 +291,18 @@ void Analyzer::ReconstructMuonTrack(){
 #endif
 
 					count++;
+					singleMuonTrack->SetFittedMembers(0);
+					singleMuonTrack->SetFittedMembers(1);
+#ifdef USE_FOR_SIMULATION
+					singleMuonTrack->SetFittedMembers(2);
+#endif
 					if(count <= 4){
 						std::cout << "======== Single Muon Track Count : " << count << " =========" << std::endl;
 						singleMuonTrack->Print();
 					}
+
+
+
 					tracksTree->Fill();
 					hitPointVecTree->Fill();
 					//hitPointVecTree_Param->Fill();
