@@ -56,7 +56,7 @@ public:
 	/*
 	 * Function to set the fitted parameters in the scintillators
 	 */
-	void SetFittedMembers(int opt);
+	std::vector<lite_interface::Point3D*> GetFittedTrack(int opt);
 
 #ifdef USE_FOR_SIMULATION
 	std::vector<lite_interface::Point3D*>  GetMean3DHitPointVector();

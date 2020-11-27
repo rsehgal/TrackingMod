@@ -53,6 +53,10 @@ hitY(0.),
 hitZ(0.){
 
 
+	//fittedLinear = new lite_interface::Point3D();
+	//fittedParam = new lite_interface::Point3D();
+	//fittedMean = new lite_interface::Point3D();
+
 }
 
 #if defined(FOR_SIMULATION) || defined(USE_FOR_SIMULATION)
@@ -66,6 +70,11 @@ fTSmallTimeStamp(tstampSmall),
 fDelTstamp(delTStamp),
 hitX(hitx), hitY(hity), hitZ(hitz){
 
+/*
+	fittedLinear = new lite_interface::Point3D();
+	fittedParam = new lite_interface::Point3D();
+	fittedMean = new lite_interface::Point3D();
+*/
 //Print();
 }
 #endif
@@ -79,7 +88,11 @@ ScintillatorBar_V2::ScintillatorBar_V2(const ScintillatorBar_V2 &sbar){
 			fQlongMean = sbar.fQlongMean;
 			fTSmallTimeStamp = sbar.fTSmallTimeStamp;
 			fDelTstamp = sbar.fDelTstamp;
+			//fittedLinear = sbar.fittedLinear;
+			//fittedParam = sbar.fittedParam;
 #if defined(FOR_SIMULATION) || defined(USE_FOR_SIMULATION)
+
+			//fittedMean = sbar.fittedMean;
 			fBarHitted = sbar.fBarHitted;
 			hitsVectorInAnEventInABar = sbar.hitsVectorInAnEventInABar;
 			hitX = sbar.hitX;
@@ -144,7 +157,7 @@ void ScintillatorBar_V2::Print(){
 	std::cout <<"BarIndex : " << fBarIndex <<  " :  Energy :  " << GetQMeanCorrected() << " : DelT : " << GetDelT() << std::endl;
 #ifdef USE_FOR_SIMULATION
 	std::cout << "Mean Hit Position : " << hitX <<" , " << hitY << " , " << hitZ << std::endl;
-	std::cout << "Fitted Mean Hit position : " ; fittedMean->Print();
+	//std::cout << "Fitted Mean Hit position : " ; fittedMean->Print();
 #else
 #ifdef FOR_SIMULATION
 	std::cout << "Mean Hit Position : " ; fMeanHitPosition->Print();
@@ -154,12 +167,12 @@ void ScintillatorBar_V2::Print(){
 
 	std::cout << "Estimated Hit Position Linear : " ; EstimateHitPosition()->Print();
 //#ifdef USE_FOR_SIMULATION
-	std::cout << "Fitted Linear Hit position : " ; fittedLinear->Print();
+	//std::cout << "Fitted Linear Hit position : " ; fittedLinear->Print();
 //#endif
 
 	std::cout << "Estimated Hit Position Param : " ; EstimateHitPosition_Param()->Print();
 //#ifdef USE_FOR_SIMULATION
-	std::cout << "Fitted Param Hit position : " ; fittedParam->Print();
+	//std::cout << "Fitted Param Hit position : " ; fittedParam->Print();
 //#endif
 
 #if defined(FOR_SIMULATION) || defined(USE_FOR_SIMULATION)

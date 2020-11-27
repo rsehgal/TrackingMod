@@ -291,10 +291,13 @@ void Analyzer::ReconstructMuonTrack(){
 #endif
 
 					count++;
-					singleMuonTrack->SetFittedMembers(0);
-					singleMuonTrack->SetFittedMembers(1);
+
+					//singleMuonTrack->GetFittedTrack(0);
+					//singleMuonTrack->GetFittedTrack(1);
+
 #ifdef USE_FOR_SIMULATION
-					singleMuonTrack->SetFittedMembers(2);
+
+					//singleMuonTrack->GetFittedTrack(2);
 #endif
 					if(count <= 4){
 						std::cout << "======== Single Muon Track Count : " << count << " =========" << std::endl;

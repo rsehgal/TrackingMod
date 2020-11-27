@@ -48,17 +48,21 @@ public:
 
 
 
-	lite_interface::Point3D *fittedLinear;
-	lite_interface::Point3D *fittedParam;
-#ifdef USE_FOR_SIMULATION
-	lite_interface::Point3D *fittedMean;
-#endif
 
+//#ifdef USE_FOR_SIMULATION
+//lite_interface::Point3D *fittedMean;
+//#endif
+
+	//lite_interface::Point3D *fittedLinear;
+	//lite_interface::Point3D *fittedParam;
 
 #if defined(FOR_SIMULATION) || defined(USE_FOR_SIMULATION)
 	bool fBarHitted;
 	std::vector<lite_interface::Point3D*> hitsVectorInAnEventInABar;
 	Point3D *fMeanHitPosition;
+	//lite_interface::Point3D *fittedLinear;
+
+	//lite_interface::Point3D *fittedMean;
 #endif
 
 

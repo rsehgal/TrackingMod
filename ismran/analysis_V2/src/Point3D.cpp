@@ -19,6 +19,13 @@ Point3D::Point3D() {
 
 }
 
+Point3D::Point3D(const Point3D &pt){
+	fX = pt.fX;
+	fY = pt.fY;
+	fZ = pt.fZ;
+
+}
+
 Point3D::~Point3D() {
 	// TODO Auto-generated destructor stub
 }

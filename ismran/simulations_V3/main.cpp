@@ -20,6 +20,7 @@
 
 #include "includes.hh"
 #include "Analyzer.h"
+#include "HardwareNomenclature.h"
 ///#include "PsBar.h"
 
 //#include "PhysicsList.h"
@@ -40,6 +41,7 @@
 
 int main(int argc, char *argv[]){
 
+	GenerateScintMatrixXYCenters();
 	lite_interface::IsSimulation = true;
 
 	lite_interface::Calibration *calib = lite_interface::Calibration::instance("/home/rsehgal/BackBoneSoftwares/ismranData/completeCalib.root");

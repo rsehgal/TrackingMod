@@ -70,8 +70,11 @@ void B1RunAction::BeginOfRunAction(const G4Run*)
 void B1RunAction::WriteData(){
   for(unsigned int i = 0 ; i < MySD::muonTrackVec.size() ; i++){
     lite_interface::SingleMuonTrack *singleMuonTrack = MySD::muonTrackVec[i];
-    std::cout << "================= Track Id : " << i << " ================" << std::endl;
-    singleMuonTrack->Print();
+    singleMuonTrack->SetFittedMembers(0);
+    singleMuonTrack->SetFittedMembers(1);
+    singleMuonTrack->SetFittedMembers(2);
+    //std::cout << "================= Track Id : " << i << " ================" << std::endl;
+    //singleMuonTrack->Print();
     for(unsigned int j = 0 ; j < singleMuonTrack->size() ; j++){
       lite_interface::ScintillatorBar_V2 *scint = (singleMuonTrack->fSingleMuonTrack)[j];
 
