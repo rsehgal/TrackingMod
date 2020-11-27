@@ -63,7 +63,7 @@ unsigned long int SingleMuonTrack::size(){
 }
 
 void SingleMuonTrack::Print(){
-	std::cout << "==== Print from SingleMuonTrack =====" << std::endl;
+	std::cout << "==== Print from SingleMuonTrack  : size : " << fSingleMuonTrack.size() << "  =====" << std::endl;
 	for(unsigned int j = 0 ; j < fSingleMuonTrack.size() ; j++){
 		fSingleMuonTrack[j]->Print();
 	}
@@ -131,22 +131,27 @@ std::vector<lite_interface::Point3D*> SingleMuonTrack::Get3DHitPointVector_Param
 	return vectorOf3DHitPoint;
 }
 
-void SingleMuonTrack::SetFittedMembers(int opt){
+std::vector<lite_interface::Point3D*> SingleMuonTrack::GetFittedTrack(int opt){
 	std::vector<lite_interface::Point3D*> fittedTrack;
 	if(opt == 0){
 		//For Linear
 		fittedTrack = lite_interface::CreateFittedTrack(Get3DHitPointVector());
-		for(unsigned int i = 0 ; i < size() ; i++){
+//#ifdef USE_FOR_SIMULATION
+		/*for(unsigned int i = 0 ; i < size() ; i++){
 			fSingleMuonTrack[i]->fittedLinear = fittedTrack[i];
-		}
+		}*/
+///#endif
 	}
 	if(opt == 1){
 		//For Param
 		fittedTrack = lite_interface::CreateFittedTrack(Get3DHitPointVector_Param());
-		for(unsigned int i = 0 ; i < size() ; i++){
+//#ifdef USE_FOR_SIMULATION
+		/*for(unsigned int i = 0 ; i < size() ; i++){
 			fSingleMuonTrack[i]->fittedParam = fittedTrack[i];
-		}
+		}*/
+//#endif
 	}
+/*
 #ifdef USE_FOR_SIMULATION
 	if(opt == 2){
 		//For Mean
@@ -156,7 +161,8 @@ void SingleMuonTrack::SetFittedMembers(int opt){
 		}
 	}
 #endif
-
+*/
+	return fittedTrack;
 
 }
 

@@ -23,6 +23,7 @@ public:
 
 public:
 	Point3D();
+	Point3D(const Point3D &pt);
 	double GetX()const{return fX;}
 	double GetY()const{return fY;}
 	double GetZ()const{return fZ;}

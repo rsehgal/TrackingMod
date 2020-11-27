@@ -40,6 +40,9 @@ namespace lite_interface{
 	 */
 	extern TH1F* PlotDelT(std::vector<ScintillatorBar_V2*> scintBarVec, ushort barIndex);
 	extern TH1F* PlotDelTCorrected(std::vector<ScintillatorBar_V2*> scintBarVec, ushort barIndex);
+#ifdef USE_FOR_SIMULATION
+	extern TGraph* PlotDelTvsZ(std::vector<lite_interface::ScintillatorBar_V2*> scintBarVec, ushort barIndex);
+#endif
 
 	/*
 	 * Histogram for Bar Profile

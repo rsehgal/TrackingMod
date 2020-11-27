@@ -59,6 +59,7 @@ int main(int argc,char *argv[]){
 	unsigned int count = 0;
 	unsigned int count2 = 0;
 	for (Long64_t i=0; i<nentries;i++) {
+		std::cout << "Fetching Entry : " << i << std::endl;
 		nbytes += trackTree->GetEntry(i);
 
 
@@ -94,7 +95,7 @@ int main(int argc,char *argv[]){
 			std::cout << "============ Printing from REad Tracks =============" << std::endl;
 			for(unsigned int j = 0 ; j < scintBarVecOfATrack.size() ; j++){
 #ifdef USE_FOR_SIMULATION
-				scintBarVecOfATrack[j]->fittedMean = fittedMeanTrack[j];
+				//scintBarVecOfATrack[j]->fittedMean = fittedMeanTrack[j];
 #endif
 				//scintBarVecOfATrack[j]->fittedLinear = fittedLinearTrack[j];
 				//scintBarVecOfATrack[j]->fittedParam = fittedParamTrack[j];
@@ -170,11 +171,17 @@ int main(int argc,char *argv[]){
 	zenithAngleHist_Param->Draw();
 	//zenithAngleHist_Param->Write();
 
+#ifdef USE_FOR_SIMULATION
 	new TCanvas("ZenithAngleWithMeanHitPoint","Zenith Angle With Mean Hit Point");
 	TH1F *zenithAngleHist_MeanHitPoint = PlotZenithAngle(smtVec,3);
 	zenithAngleHist_MeanHitPoint->Draw();
 	//zenithAngleHist_MeanHitPoint->Write();
 
+
+	new TCanvas("DelT Vs Z","DelT Vs Z");
+	TGraph *delTvsZ = PlotDelTvsZ(vectOfScintBars,5);
+	delTvsZ->Draw("ap");
+#endif
 	//f->Close();
 	fApp->Run();
 
