@@ -22,6 +22,11 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${PROJECT_SOURCE_DIR}/cmake/modules)
 
 option(CRY "Enable CRY library for cosmic event generation" OFF)
 option(USE_CALIBRATION "Use Calibration data for Sampling of time" OFF)
+option(CROSS_GEOMETRY "Simulation with Cross geometry" OFF)
+
+if(CROSS_GEOMETRY)
+add_definitions(-DCROSS_GEOMETRY)
+endif(CROSS_GEOMETRY)
 
 option(WITH_GEANT4_UIVIS "Build example with Geant4 UI and Vis drivers" ON)
 if(WITH_GEANT4_UIVIS)

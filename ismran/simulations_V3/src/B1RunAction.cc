@@ -70,9 +70,12 @@ void B1RunAction::BeginOfRunAction(const G4Run*)
 void B1RunAction::WriteData(){
   for(unsigned int i = 0 ; i < MySD::muonTrackVec.size() ; i++){
     lite_interface::SingleMuonTrack *singleMuonTrack = MySD::muonTrackVec[i];
-    singleMuonTrack->SetFittedMembers(0);
+    /*singleMuonTrack->SetFittedMembers(0);
     singleMuonTrack->SetFittedMembers(1);
-    singleMuonTrack->SetFittedMembers(2);
+    singleMuonTrack->SetFittedMembers(2);*/
+    singleMuonTrack->GetFittedTrack(0);
+        singleMuonTrack->GetFittedTrack(1);
+        singleMuonTrack->GetFittedTrack(2);
     //std::cout << "================= Track Id : " << i << " ================" << std::endl;
     //singleMuonTrack->Print();
     for(unsigned int j = 0 ; j < singleMuonTrack->size() ; j++){
