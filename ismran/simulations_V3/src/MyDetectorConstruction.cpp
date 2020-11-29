@@ -17,6 +17,7 @@
 #include "G4SDManager.hh"
 #include "MySD.h"
 #include <G4GDMLParser.hh>
+#include <G4RotationMatrix.hh>
 
 MyDetectorConstruction::MyDetectorConstruction(){
 
@@ -117,12 +118,27 @@ G4VPhysicalVolume* MyDetectorConstruction::Construct(){
   double ystart=-1.*barsInY*halfYOneBar;
   std::cout <<"XStart : " << xstart <<" : YStart : " << ystart << std::endl;
   int counter=0;
+  G4RotationMatrix *yRot = new G4RotationMatrix; // Rotates X and Z axes only
+  //yRot-­>rotateY(M_PI/2.*rad);
+  yRot->rotateY(M_PI/2. * rad);
+
   for(unsigned int yindex = 0 ; yindex < barsInY ; yindex++ ){
     double yval = ystart + (2*yindex+1)*halfYOneBar;
     for(unsigned int xindex = 0 ; xindex < barsInX ; xindex++ ){
       double xval = xstart + (2*xindex+1)*halfXOneBar;
       std::cout <<xval<<","<<yval<<","<<zval<<std::endl;
+#ifndef CROSS_GEOMETRY
       new G4PVPlacement(0,
+                                        G4ThreeVector(xval,yval,zval),
+                                        logicalPsBar,
+                                        "PhysicalPsBar-"+std::to_string(xindex)+"-"+std::to_string(yindex),
+                                        logicWorld,
+                                        false,
+                                        counter,
+                                        checkOverlaps);
+#else
+      if(!(yindex%2) )//&& yindex == 1)
+    	  new G4PVPlacement(0,
                                   G4ThreeVector(xval,yval,zval),
                                   logicalPsBar,
                                   "PhysicalPsBar-"+std::to_string(xindex)+"-"+std::to_string(yindex),
@@ -130,6 +146,18 @@ G4VPhysicalVolume* MyDetectorConstruction::Construct(){
                                   false,
                                   counter,
                                   checkOverlaps);
+      else
+      { //  if(yindex == 4)
+    	  new G4PVPlacement(yRot,
+    	                                    G4ThreeVector(zval,yval,xval),
+    	                                    logicalPsBar,
+    	                                    "PhysicalPsBar-"+std::to_string(xindex)+"-"+std::to_string(yindex),
+    	                                    logicWorld,
+    	                                    false,
+    	                                    counter,
+    	                                    checkOverlaps);
+      }
+#endif
       counter++;
     }
   }
