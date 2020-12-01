@@ -53,6 +53,8 @@ public:
 	//As per the new functions
 	static std::vector< lite_interface::SingleMuonTrack* > muonTrackVec;
 
+	static std::vector<G4ThreeVector> exactHitVector;
+
 	static void Print();
 	/*{
 		std::cout << "888888 Printing eventsVec2 888888888" << std::endl;

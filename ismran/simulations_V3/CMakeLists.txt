@@ -94,4 +94,6 @@ target_link_libraries(MuonRead cry_manual_interface ${ROOT_LIBRARIES})
 add_executable(MuonRead_V2 MuonRead_V2.cpp)
 target_link_libraries(MuonRead_V2 cry_manual_interface ${ROOT_LIBRARIES})
 
+add_executable(ExactHitRead ExactHitRead.cpp)
+target_link_libraries(ExactHitRead ${ROOT_LIBRARIES})
 #target_link_libraries(main ${Geant4_LIBRARIES} Tomo)

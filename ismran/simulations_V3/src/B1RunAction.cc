@@ -30,6 +30,11 @@ using namespace std;
 lite_interface::Calibration* B1RunAction::fCalib;
 std::vector<double> B1RunAction::fAngleVec;
 unsigned long B1RunAction::fEvNo = 0;
+/*TTree* B1RunAction::fExactHitTree;
+std::vector<double> B1RunAction::xVec;
+std::vector<double> B1RunAction::yVec;
+std::vector<double> B1RunAction::zVec;*/
+lite_interface::ExactHitDataTree* B1RunAction::fExactHitDataTree;
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
@@ -57,6 +62,14 @@ G4Run* B1RunAction::GenerateRun()
 
 void B1RunAction::BeginOfRunAction(const G4Run*)
 {
+
+	B1RunAction::fExactHitDataTree  = new lite_interface::ExactHitDataTree;
+	/*fExactHitTree = new TTree("ExactHitTree","ExactHitTree");
+
+	fExactHitTree->Branch("xVec",&xVec);//,"xVec/D");
+	fExactHitTree->Branch("yVec",&yVec);//,"yVec/D");
+	fExactHitTree->Branch("zVec",&zVec);//,"zVec/D");*/
+
   lite_interface::MuonReader::instance("Muons-50L.root");
   G4RunManager::GetRunManager()->SetRandomNumberStore(false);
   fApp = new TApplication("Test", NULL, NULL);
@@ -102,6 +115,9 @@ void B1RunAction::WriteData(){
   fDataTree->Write();
   energyHist->Write();
   fDataTree->Close();
+  fExactHitDataTree->Write();
+  fExactHitDataTree->Close();
+
 }
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
