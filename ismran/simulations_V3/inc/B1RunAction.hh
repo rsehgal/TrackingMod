@@ -16,6 +16,8 @@ class TApplication;
 #include "DataTree_V2.h"
 //class Calibration;
 #include "Calibration.h"
+#include <TTree.h>
+#include "ExactHitDataTree.h"
 
 
 /// Run action class
@@ -47,9 +49,18 @@ class B1RunAction : public G4UserRunAction
 
     lite_interface::DataTree *fDataTree;
 
+
+
    public:
     static std::vector<double> fAngleVec;
     static unsigned long fEvNo;
+
+    static lite_interface::ExactHitDataTree* fExactHitDataTree;
+
+   /* static TTree* fExactHitTree;
+    static std::vector<double> xVec;
+    static std::vector<double> yVec;
+    static std::vector<double> zVec;*/
 
     
 };

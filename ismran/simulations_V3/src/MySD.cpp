@@ -31,6 +31,8 @@ std::vector< lite_interface::SingleMuonTrack* > MySD::muonTrackVec;
 unsigned int MySD::numOfStoppedParticles = 0;
 //std::vector<ScintillatorBar_V2*> MySD::psBarVec;
 unsigned long int MySD::muonNum = -1;
+std::vector<G4ThreeVector> MySD::exactHitVector;
+
 
 bool verbose = false;
 // std::vector<ScintillatorBar*> MySD::eventsVec2;
@@ -70,6 +72,7 @@ void MySD::PrintVectorOfPsBars(){
 }
 
 void MySD::InitializeVectorOfPsBars(){
+
 	if(verbose)
 		std::cout << "Initializing Vector of Scintillator Bars for the current event........." << std::endl;
     if(psBarVec.size()){
@@ -97,7 +100,9 @@ void MySD::Initialize(G4HCofThisEvent* hce)
 {
   // Create hits collection
   //muonNum++;
-	if(verbose){
+	//if(verbose){
+	exactHitVector.clear();
+	if(true){
 		std::cout <<" @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@" << std::endl;
 		std::cout <<"Processing Ev No : " << evNo << std::endl;
 		std::cout<<"RAMAN Entered Initialize Of SD" << std::endl;
@@ -143,6 +148,14 @@ G4bool MySD::ProcessHits(G4Step* aStep,
   newHit->SetName(touchable->GetVolume(0)->GetName());
   newHit->SetCopyNum(touchable->GetVolume(0)->GetCopyNo());
   G4String particleName=track->GetDefinition()->GetParticleName() ;
+
+  if(aStep->GetPreStepPoint()->GetStepStatus()==fGeomBoundary){
+	  G4ThreeVector hitPt = aStep->GetPreStepPoint()->GetPosition();
+	  exactHitVector.push_back(hitPt);
+	  std::cout <<  hitPt << std::endl;
+
+  }
+
   if(verbose)
 	  std::cout << particleName << "  " << std::endl;
   if(verbose)
@@ -254,6 +267,25 @@ void MySD::EndOfEvent(G4HCofThisEvent*)
     }*/
 
   }
+
+  std::vector<double> xvec;
+  std::vector<double> yvec;
+  std::vector<double> zvec;
+  for(unsigned int i = 0 ; i < exactHitVector.size(); i++){
+	  xvec.push_back(exactHitVector[i].getX());
+	  yvec.push_back(exactHitVector[i].getY());
+	  zvec.push_back(exactHitVector[i].getZ());
+
+	  /*B1RunAction::xVec.push_back(exactHitVector[i].getX());
+	  B1RunAction::yVec.push_back(exactHitVector[i].getY());
+	  B1RunAction::zVec.push_back(exactHitVector[i].getZ());*/
+
+	  B1RunAction::fExactHitDataTree->Fill(xvec,yvec,zvec);
+  }
+
+
+
+
   //delete fHitsCollection;
   //if(reachedSensitiveRegion)
   //Tomography::EventBreak::instance()->fEffEvNo++;
