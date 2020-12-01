@@ -19,6 +19,7 @@
 #include "HardwareNomenclature.h"
 #include <TGraphErrors.h>
 #include "Analyzer.h"
+#include <TF1.h>
 int main(int argc,char *argv[]){
 	/*
 	 * Set lite_interface::IsSimulation = true, if need to process simulated data file
@@ -58,9 +59,12 @@ int main(int argc,char *argv[]){
 
 	unsigned int count = 0;
 	unsigned int count2 = 0;
+	std::cout << "Total number of Entries : " << nentries << std::endl;
 	for (Long64_t i=0; i<nentries;i++) {
-		std::cout << "Fetching Entry : " << i << std::endl;
+		//std::cout << "Fetching Entry : " << i << std::endl;
 		nbytes += trackTree->GetEntry(i);
+		if(!(i % 10000) && i!=0)
+			std::cout << "Processed : " << i << " entries........" << std::endl;
 
 
 		/*
@@ -92,14 +96,15 @@ int main(int argc,char *argv[]){
 
 
 			std::vector<lite_interface::ScintillatorBar_V2*> scintBarVecOfATrack = smt->GetMuonTrack();
-			std::cout << "============ Printing from REad Tracks =============" << std::endl;
+			//std::cout << "============ Printing from REad Tracks =============" << std::endl;
 			for(unsigned int j = 0 ; j < scintBarVecOfATrack.size() ; j++){
 #ifdef USE_FOR_SIMULATION
 				//scintBarVecOfATrack[j]->fittedMean = fittedMeanTrack[j];
 #endif
 				//scintBarVecOfATrack[j]->fittedLinear = fittedLinearTrack[j];
 				//scintBarVecOfATrack[j]->fittedParam = fittedParamTrack[j];
-				scintBarVecOfATrack[j]->Print();
+
+				//scintBarVecOfATrack[j]->Print();
 			}
 
 			scintBarVecForNewTrack.clear();
@@ -176,12 +181,19 @@ int main(int argc,char *argv[]){
 	TH1F *zenithAngleHist_MeanHitPoint = PlotZenithAngle(smtVec,3);
 	zenithAngleHist_MeanHitPoint->Draw();
 	//zenithAngleHist_MeanHitPoint->Write();
-
+#endif
 
 	new TCanvas("DelT Vs Z","DelT Vs Z");
 	TGraph *delTvsZ = PlotDelTvsZ(vectOfScintBars,5);
 	delTvsZ->Draw("ap");
-#endif
+	TF1 *formula = calib->GetCalibrationDataOf(5)->fParameterization_F;
+	formula->SetLineColor(2);
+	formula->Draw("same");
+	TGraph *delTvsZ_Linear = PlotDelTvsZ(vectOfScintBars,5,true);
+	delTvsZ_Linear->SetLineColor(4);
+	delTvsZ_Linear->Draw("same");
+
+
 	//f->Close();
 	fApp->Run();
 
