@@ -182,8 +182,8 @@ namespace lite_interface{
 		}
 		return hist;
 	}
-#ifdef USE_FOR_SIMULATION
-	TGraph* PlotDelTvsZ(std::vector<lite_interface::ScintillatorBar_V2*> scintBarVec, ushort barIndex){
+//#ifdef USE_FOR_SIMULATION
+	TGraph* PlotDelTvsZ(std::vector<lite_interface::ScintillatorBar_V2*> scintBarVec, ushort barIndex, bool linear){
 		ushort nbinsx = 9;
 		ushort nbinsz = 10;
 		std::string name = "DelT Vs Z : "+vecOfBarsNamess[barIndex];
@@ -193,14 +193,22 @@ namespace lite_interface{
 		std::vector<double> delTVec;
 		for(itr = scintBarVec.begin() ; itr != scintBarVec.end() ; itr++){
 			if((*itr)->fBarIndex == barIndex){
-				zVec.push_back((*itr)->fMeanHitPosition->GetZ());
-				delTVec.push_back((*itr)->fDelTstamp);
+#ifdef USE_FOR_SIMULATION
+				zVec.push_back((*itr)->hitZ);
+#else
+				if(linear)
+					zVec.push_back((*itr)->EstimateHitPosition()->GetZ());
+				else
+					zVec.push_back((*itr)->EstimateHitPosition_Param()->GetZ());
+#endif
+				delTVec.push_back((*itr)->fDelTstamp/1000. );
+
 			}
 		}
 		TGraph *delTvsZ = new TGraph(delTVec.size(),&delTVec[0],&zVec[0]);
 		return delTvsZ;
 	}
-#endif
+//#endif
 
 	TGraphErrors* PlotMuonTrack(lite_interface::SingleMuonTrack *smt,int opt){
 		return PlotMuonTrack(smt->Get3DHitPointVector(),opt);
