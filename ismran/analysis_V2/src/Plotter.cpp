@@ -228,16 +228,39 @@ namespace lite_interface{
 			zVec.push_back((*itr)->GetZ());
 			zVecErr.push_back(5.);
 		}
-		TGraphErrors *grxy = new TGraphErrors(xVec.size(), &xVec[0], &yVec[0],&xVecErr[0],&yVecErr[0]);
+		/*TGraphErrors *grxy = new TGraphErrors(xVec.size(), &xVec[0], &yVec[0],&xVecErr[0],&yVecErr[0]);
 		grxy->SetMarkerStyle(8);
 		grxy->SetMarkerColor(kMagenta);
 		TGraphErrors *grzy = new TGraphErrors(zVec.size(), &zVec[0], &yVec[0], &zVecErr[0], &yVecErr[0]);
 		grzy->SetMarkerStyle(8);
 		grzy->SetMarkerColor(kBlue);
-		if(opt==1)
+		*/
+		if(opt==1){
+			TGraphErrors *grxy = PlotMuonTrack(xVec,yVec);
+			grxy->SetMarkerColor(kMagenta);
 			return grxy;
-		if(opt==2)
+		}
+		if(opt==2){
+			TGraphErrors *grzy = PlotMuonTrack(zVec,yVec);
+			grzy->SetMarkerColor(kBlue);
 			return grzy;
+		}
+	}
+
+	TGraphErrors* PlotMuonTrack(std::vector<Double_t> xVec, std::vector<Double_t> yVec){
+		std::vector<Double_t> xVecErr, yVecErr;//, zVecErr;
+
+		for(unsigned int i = 0 ; i < xVec.size() ; i++){
+			xVecErr.push_back(5);
+			yVecErr.push_back(5.);
+			//zVecErr.push_back(5.);
+		}
+
+		TGraphErrors *grxy = new TGraphErrors(xVec.size(), &xVec[0], &yVec[0],&xVecErr[0],&yVecErr[0]);
+		grxy->SetMarkerStyle(8);
+
+		return grxy;
+
 	}
 
 	TGraphErrors* PlotMuonTrackXY(lite_interface::SingleMuonTrack *smt){

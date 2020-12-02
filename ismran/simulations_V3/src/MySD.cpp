@@ -22,6 +22,7 @@
 #include "HardwareNomenclature.h"
 #include "B1RunAction.hh"
 #include "ScintillatorBar_V2.h"
+#include "G4SystemOfUnits.hh"
 
 int MySD::stepNum = 0;
 int MySD::numOfParticlesReached = 0;
@@ -32,6 +33,8 @@ unsigned int MySD::numOfStoppedParticles = 0;
 //std::vector<ScintillatorBar_V2*> MySD::psBarVec;
 unsigned long int MySD::muonNum = -1;
 std::vector<G4ThreeVector> MySD::exactHitVector;
+double MySD::initialEnergy = 0;
+double MySD::depositedEnergy = 0;
 
 
 bool verbose = false;
@@ -102,7 +105,10 @@ void MySD::Initialize(G4HCofThisEvent* hce)
   //muonNum++;
 	//if(verbose){
 	exactHitVector.clear();
-	if(true){
+	initialEnergy = 0.;
+	depositedEnergy = 0.;
+
+	if(false){
 		std::cout <<" @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@" << std::endl;
 		std::cout <<"Processing Ev No : " << evNo << std::endl;
 		std::cout<<"RAMAN Entered Initialize Of SD" << std::endl;
@@ -138,13 +144,24 @@ G4bool MySD::ProcessHits(G4Step* aStep,
   MyHit* newHit = new MyHit();
 
   G4Track* track = aStep->GetTrack();
+  initialEnergy = track->GetVertexKineticEnergy();
+  //initialEnergy = track->GetTotalEnergy();
   bool isPrimary = (track->GetParentID() == 0 );
 
   G4TouchableHandle touchable;
+  G4TouchableHandle touchable1;
   if(isPrimary){
 
   newHit->SetPosition(aStep->GetPostStepPoint()->GetPosition());
   touchable= aStep->GetPreStepPoint()->GetTouchableHandle();
+  touchable1= aStep->GetPostStepPoint()->GetTouchableHandle();
+  std::string psBar = std::string(touchable1->GetVolume(0)->GetName());
+  std::string psSubBarName = psBar.substr(0,13);
+  std::cout << "SUBSTR : " << psSubBarName << " : " << touchable->GetVolume(0)->GetName() << std::endl;
+  //if(std::string(touchable->GetVolume(0)->GetName()) ==  "World" && psSubBarName=="PhysicalPsBar"){
+  if(psSubBarName=="PhysicalPsBar"){
+	  std::cout << "================== Entering in Top layer.............. ===============  : Prestep is at " << touchable->GetVolume(0)->GetName() << std::endl;
+  }
   newHit->SetName(touchable->GetVolume(0)->GetName());
   newHit->SetCopyNum(touchable->GetVolume(0)->GetCopyNo());
   G4String particleName=track->GetDefinition()->GetParticleName() ;
@@ -152,16 +169,18 @@ G4bool MySD::ProcessHits(G4Step* aStep,
   if(aStep->GetPreStepPoint()->GetStepStatus()==fGeomBoundary){
 	  G4ThreeVector hitPt = aStep->GetPreStepPoint()->GetPosition();
 	  exactHitVector.push_back(hitPt);
-	  std::cout <<  hitPt << std::endl;
+//	 / std::cout <<  hitPt << std::endl;
 
   }
 
   if(verbose)
-	  std::cout << particleName << "  " << std::endl;
-  if(verbose)
-  std::cout << "Energy deposited in current step in : "
-            << touchable->GetVolume(0)->GetName()
-            << " : " << aStep->GetTotalEnergyDeposit() << " : Current Energy : " << track->GetKineticEnergy() <<std::endl;
+  //if(evNo < 20)
+	  std::cout << particleName << "  : MeV : " << MeV << " : KeV : " << keV << " : GeV : " << GeV << std::endl;
+  //if(verbose)
+  if(evNo < 20)
+	  std::cout << "Energy deposited in current step in : "
+	  	  	  << touchable->GetVolume(0)->GetName()
+			  << " : " << aStep->GetTotalEnergyDeposit() << " : Current Energy : " << track->GetKineticEnergy() <<std::endl;
   newHit->SetEnergyDeposited(aStep->GetTotalEnergyDeposit());
   fHitsCollection->insert( newHit );
 
@@ -257,6 +276,7 @@ void MySD::EndOfEvent(G4HCofThisEvent*)
     }
     eventsVec.push_back(onlyHittedBarVec);
     lite_interface::SingleMuonTrack *smt = new lite_interface::SingleMuonTrack(onlyHittedBarVec);
+    depositedEnergy = smt->GetEnergySum();
     //std::cout << "Size of Muon Track : " << (smt->fSingleMuonTrack).size() << std::endl;
     if(reachedSensitiveRegion)
     	muonTrackVec.push_back(smt);
@@ -280,8 +300,13 @@ void MySD::EndOfEvent(G4HCofThisEvent*)
 	  B1RunAction::yVec.push_back(exactHitVector[i].getY());
 	  B1RunAction::zVec.push_back(exactHitVector[i].getZ());*/
 
-	  B1RunAction::fExactHitDataTree->Fill(xvec,yvec,zvec);
   }
+  //B1RunAction::fExactHitDataTree->Fill(xvec,yvec,zvec);
+  //B1RunAction::fExactHitDataTree->Fill(xvec,yvec,zvec,initialEnergy,depositedEnergy);
+  if(evNo < 20.){
+	  std::cout << "EvNo. : " << evNo <<" : Injected Energy : " << initialEnergy << std::endl;
+  }
+  B1RunAction::fExactHitDataTree->Fill(xvec,yvec,zvec,initialEnergy,depositedEnergy,evNo);
 
 
 

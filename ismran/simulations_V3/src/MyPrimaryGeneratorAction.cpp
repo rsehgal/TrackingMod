@@ -14,6 +14,7 @@
 #include "base/Vector3D.h"
 #include "MuonReader.h"
 #include "B1RunAction.hh"
+#include "MySD.h"
 using Tracking::Vector3D;
 
 MyPrimaryGeneratorAction::MyPrimaryGeneratorAction() {
@@ -55,5 +56,9 @@ void MyPrimaryGeneratorAction::GeneratePrimaries(G4Event *event) {
    B1RunAction::fAngleVec.push_back(angle);
    fParticleGun->SetParticleMomentumDirection(dir);
    fParticleGun->SetParticleEnergy(muon->energy * MeV);
+   /*if(MySD::GetEvNo()  <20){
+	   std::cout << "EvNo : " << MySD::GetEvNo() << std::endl;
+	   std::cout << "Injected Energy : " << (muon->energy * MeV) << std::endl;
+   }*/
    fParticleGun->GeneratePrimaryVertex(event);
 }

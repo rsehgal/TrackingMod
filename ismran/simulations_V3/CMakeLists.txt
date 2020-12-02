@@ -78,7 +78,7 @@ target_link_libraries(cry_manual_interface cry ${ROOT_LIBRARIES})
 
 file(GLOB sources ${PROJECT_SOURCE_DIR}/src/*.cpp ${PROJECT_SOURCE_DIR}/src/*.cc ../inc/*.cpp)
 file(GLOB headers ${PROJECT_SOURCE_DIR}/inc/*.h ${PROJECT_SOURCE_DIR}/inc/*.hh ../../base/Vector3D.h) 
-file(GLOB sourcesAnalysis_V2 ../analysis_V2/src/*.cpp)
+file(GLOB sourcesAnalysis_V2 ../analysis_V2/src/*.cpp ../inc/*.cpp)
 add_library(Analysis_V2 SHARED ${sourcesAnalysis_V2})
 target_link_libraries(Analysis_V2 ${ROOT_LIBRARIES})
 
@@ -95,5 +95,5 @@ add_executable(MuonRead_V2 MuonRead_V2.cpp)
 target_link_libraries(MuonRead_V2 cry_manual_interface ${ROOT_LIBRARIES})
 
 add_executable(ExactHitRead ExactHitRead.cpp)
-target_link_libraries(ExactHitRead ${ROOT_LIBRARIES})
+target_link_libraries(ExactHitRead ${ROOT_LIBRARIES} Analysis_V2)
 #target_link_libraries(main ${Geant4_LIBRARIES} Tomo)
