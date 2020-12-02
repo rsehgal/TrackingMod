@@ -81,6 +81,9 @@ private:
 public:
 	    static unsigned int numOfStoppedParticles;
 	    static unsigned long int muonNum;
+	    static double initialEnergy;
+	    static double depositedEnergy;
+	    static unsigned int GetEvNo() {return evNo;}
 	    
 
 

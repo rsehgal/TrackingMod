@@ -19,6 +19,9 @@ ExactHitDataTree::ExactHitDataTree() {
    	fTree->Branch("xVec",&fXVec);
    	fTree->Branch("yVec",&fYVec);
    	fTree->Branch("zVec",&fZVec);
+   	fTree->Branch("InitialEnergy",&fInitialEnergy);
+   	fTree->Branch("DepositedEnergy", &fDepositedEnergy);
+   	fTree->Branch("EvNo", &fEvNo);
 
 }
 
@@ -36,6 +39,26 @@ void ExactHitDataTree::Fill(std::vector<double> xvec, std::vector<double> yvec, 
 	fTree->Fill();
 
 }
+
+void ExactHitDataTree::Fill(std::vector<double> xvec, std::vector<double> yvec, std::vector<double> zvec, double initialEnergy, double depositedEnergy){
+	fXVec = xvec;
+	fYVec = yvec;
+	fZVec = zvec;
+	fInitialEnergy = initialEnergy;
+	fDepositedEnergy = depositedEnergy;
+	fTree->Fill();
+}
+
+void ExactHitDataTree::Fill(std::vector<double> xvec, std::vector<double> yvec, std::vector<double> zvec, double initialEnergy, double depositedEnergy,unsigned int evNo){
+	fXVec = xvec;
+	fYVec = yvec;
+	fZVec = zvec;
+	fInitialEnergy = initialEnergy;
+	fDepositedEnergy = depositedEnergy;
+	fEvNo = evNo;
+	fTree->Fill();
+}
+
 void ExactHitDataTree::Write(){
 	fp->cd();
 	fTree->Write();

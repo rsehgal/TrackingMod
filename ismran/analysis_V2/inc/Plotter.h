@@ -61,6 +61,7 @@ namespace lite_interface{
 	extern TGraphErrors* PlotMuonTrack(std::vector<lite_interface::Point3D*> vecOfPoint3D, int opt=1);
 	extern TGraphErrors* PlotMuonTrackXY(std::vector<lite_interface::Point3D*> vecOfPoint3D);
 	extern TGraphErrors* PlotMuonTrackZY(std::vector<lite_interface::Point3D*> vecOfPoint3D);
+	extern TGraphErrors* PlotMuonTrack(std::vector<Double_t> xVec, std::vector<Double_t> yVec);
 
 	/*
 	 * Histogram to plot energy sum
