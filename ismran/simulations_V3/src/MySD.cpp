@@ -35,6 +35,7 @@ unsigned long int MySD::muonNum = -1;
 std::vector<G4ThreeVector> MySD::exactHitVector;
 double MySD::initialEnergy = 0;
 double MySD::depositedEnergy = 0;
+bool MySD::enteredMatrix = false;
 
 
 bool verbose = false;
@@ -107,6 +108,7 @@ void MySD::Initialize(G4HCofThisEvent* hce)
 	exactHitVector.clear();
 	initialEnergy = 0.;
 	depositedEnergy = 0.;
+	enteredMatrix = false;
 
 	if(false){
 		std::cout <<" @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@" << std::endl;
@@ -138,13 +140,14 @@ G4bool MySD::ProcessHits(G4Step* aStep,
 //	std::cout<<"SEHGAL Entered ProcessHits Of SD" << std::endl;
   // energy deposit
 
+	//std::cout << "EvNo. : " << evNo <<" : Injected Energy : " << initialEnergy << std::endl;
 
   //if (edep==0.) return false;
 
   MyHit* newHit = new MyHit();
 
   G4Track* track = aStep->GetTrack();
-  initialEnergy = track->GetVertexKineticEnergy();
+  //initialEnergy = track->GetVertexKineticEnergy();
   //initialEnergy = track->GetTotalEnergy();
   bool isPrimary = (track->GetParentID() == 0 );
 
@@ -157,10 +160,21 @@ G4bool MySD::ProcessHits(G4Step* aStep,
   touchable1= aStep->GetPostStepPoint()->GetTouchableHandle();
   std::string psBar = std::string(touchable1->GetVolume(0)->GetName());
   std::string psSubBarName = psBar.substr(0,13);
-  std::cout << "SUBSTR : " << psSubBarName << " : " << touchable->GetVolume(0)->GetName() << std::endl;
+
+  if(0){
+	  std::cout <<" @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@" << std::endl;
+	  std::cout <<" @@@@@@ RAMAN Processing Ev No : " << evNo << " @@@@@@@@@@" << std::endl;
+	  std::cout <<" @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@" << std::endl;
+	  std::cout << "SUBSTR : " << psSubBarName << " : " << touchable->GetVolume(0)->GetName() << std::endl;
+  }
+
+
   //if(std::string(touchable->GetVolume(0)->GetName()) ==  "World" && psSubBarName=="PhysicalPsBar"){
   if(psSubBarName=="PhysicalPsBar"){
-	  std::cout << "================== Entering in Top layer.............. ===============  : Prestep is at " << touchable->GetVolume(0)->GetName() << std::endl;
+	  if(!enteredMatrix)
+		  //std::cout << "================== Entering in Top layer.............. With Energy : " << track->GetKineticEnergy() <<  " : ===============  : Prestep is at " << touchable->GetVolume(0)->GetName() << std::endl;
+	  	  initialEnergy = track->GetKineticEnergy();
+	  	  enteredMatrix = true;
   }
   newHit->SetName(touchable->GetVolume(0)->GetName());
   newHit->SetCopyNum(touchable->GetVolume(0)->GetCopyNo());

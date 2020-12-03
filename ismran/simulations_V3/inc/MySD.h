@@ -84,6 +84,7 @@ public:
 	    static double initialEnergy;
 	    static double depositedEnergy;
 	    static unsigned int GetEvNo() {return evNo;}
+	    static bool enteredMatrix;
 	    
 
 
