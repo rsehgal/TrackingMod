@@ -49,6 +49,7 @@ public:
 	/*
 	 * Function to get the hit point vector .i.e vector<Point3D>
 	 */
+	std::vector<lite_interface::Point3D*>  GetExact3DHitPointVector();
 	std::vector<lite_interface::Point3D*> Get3DHitPointVector();
 	std::vector<lite_interface::Point3D*> Get3DHitPointVector_Param();
 	std::vector<std::string> GetBarNamesVector();
@@ -81,6 +82,7 @@ public:
 	double GetZenithAngle_Param();
 #ifdef USE_FOR_SIMULATION
 	double GetZenithAngle_MeanHitPoint();
+	double GetZenithAngle_ExactHitPoint();
 #endif
 
 #ifndef FOR_SIMULATION

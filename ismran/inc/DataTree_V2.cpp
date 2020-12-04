@@ -34,6 +34,10 @@ DataTree::DataTree() {
    	fTree->Branch("hitY",&hitY,"hitY/d");
    	fTree->Branch("hitZ",&hitZ,"hitZ/d");
    	
+   	fTree->Branch("exactHitX",&exactHitX,"exactHitX/d");
+   	fTree->Branch("exactHitY",&exactHitY,"exactHitY/d");
+   	fTree->Branch("exactHitZ",&exactHitZ,"exactHitZ/d");
+
 }
 #if(0)
 DataTree::DataTree(std::string filename) {
@@ -108,6 +112,33 @@ void DataTree::Fill(
 	hitX = hitPt->GetX();
 	hitY = hitPt->GetY();
 	hitZ = hitPt->GetZ();
+	//std::cout << "Going to fill ROOT TTree...." << std::endl;
+	fTree->Fill();
+}
+
+void DataTree::Fill(
+					UInt_t qlongnear, Double_t qlongmean,
+					 ULong64_t tsmalltimestamp,	 Long64_t deltatstamp,
+					 unsigned short barindex, lite_interface::Point3D* hitPt, lite_interface::Point3D* exactHitPt ){
+
+	//std::cout << "Fill function called........" << std::endl;
+
+	//std::cout << "ScintName : " << scintName << std::endl;
+	qlongNear = qlongnear;
+	qlongMean = qlongmean;
+	//tstampNear = tstampnear;
+	tsmallTimeStamp = tsmalltimestamp;
+	deltaTstamp = deltatstamp;
+	barIndex = barindex;
+	//hitPoint = hitPt;
+	hitX = hitPt->GetX();
+	hitY = hitPt->GetY();
+	hitZ = hitPt->GetZ();
+
+	//std::cout << "@@@@@@@@@ Printing Exact Hit Point : " ; exactHitPt->Print();
+	exactHitX = exactHitPt->GetX();
+	exactHitY = exactHitPt->GetY();
+	exactHitZ = exactHitPt->GetZ();
 	//std::cout << "Going to fill ROOT TTree...." << std::endl;
 	fTree->Fill();
 }

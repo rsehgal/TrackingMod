@@ -313,7 +313,9 @@ namespace lite_interface{
 				    }
 
 				    for(unsigned int i = 0 ; i < vecOfHists.size() ; i++){
-				    	vecOfHists[i]->Scale(1/vecOfHists[i]->Integral());
+				    	std::cout <<"NEntries in hist : " << i << " : " << vecOfHists[i]->GetEntries() << std::endl;
+				    	if(vecOfHists[i]->GetEntries() > 2)
+				    		vecOfHists[i]->Scale(1/vecOfHists[i]->Integral());
 				    }
 				    return vecOfHists;
 	}
@@ -497,6 +499,7 @@ namespace lite_interface{
 		TH1F *zenithAngleHist = new TH1F(title.c_str(), title.c_str(),numOfBins,0.02,0.96);
 		std::cout << "Size of Muon Track Vector : " << muonTrackVec.size() << std::endl;
 		for(unsigned int trackIndex = 0 ; trackIndex < muonTrackVec.size() ; trackIndex++){
+			if(muonTrackVec[trackIndex]->size() > 5){
 			if(opt == 1){
 				double angleVal = muonTrackVec[trackIndex]->GetZenithAngle_Linear();
 				if(angleVal < 0.96)
@@ -516,7 +519,15 @@ namespace lite_interface{
 					zenithAngleHist->Fill(angleVal);
 				//zenithAngleHist->Fill(muonTrackVec[trackIndex]->GetZenithAngle_Param());
 			}
+			if(opt == 4){
+				double angleVal = muonTrackVec[trackIndex]->GetZenithAngle_ExactHitPoint();
+				//std::cout << "Angle Value : " << angleVal << std::endl;
+				if(angleVal < 0.96)
+					zenithAngleHist->Fill(angleVal);
+				//zenithAngleHist->Fill(muonTrackVec[trackIndex]->GetZenithAngle_Param());
+			}
 #endif
+		}
 		}
 		//TF1 *formula = new TF1("Cos2ThetaFit",Cos2ThetaFit,0.02,0.96,2);
 		zenithAngleHist->Scale(1/zenithAngleHist->Integral());

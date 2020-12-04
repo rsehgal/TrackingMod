@@ -15,10 +15,12 @@
 
 bool verbose = false;
 TH1F* CryGeantInterface::energyHist;
+TH1F* CryGeantInterface::angularDistribution;
 
 CryGeantInterface::CryGeantInterface() {
 	// TODO Auto-generated constructor stub
 	energyHist = new TH1F("CosmicMuonEnergyDistribution","CosmicMuonEnergyDistribution",4000,0,4000);
+	angularDistribution = new TH1F("AngularDistributionOfCRYMuons","Angular Distribution Of CRY Muons", 1000, 0. ,M_PI/2);
 
 }
 
@@ -74,17 +76,22 @@ void CryGeantInterface::GeneratePrimariesForCry(G4Event *anEvent, bool tm){
 
         double solidAngleIncoming = CommonFunc::Functions::instance()->
                       GetAngleInRadian(Tracking::Vector3D<double>((*vect)[j]->u(),
-                                                                  (*vect)[j]->v(),
-                                                                  (*vect)[j]->w()).Unit(),
-                                                          Tracking::Vector3D<double>(0.,0.,-1.));
+                                                                  (*vect)[j]->w(),
+                                                                  (*vect)[j]->v()).Unit(),
+                                                          Tracking::Vector3D<double>(0.,-1.,0.));
         double energy = (*vect)[j]->ke()*MeV;
         energyHist->Fill(energy);
+        //std::cout << "Angle : " << solidAngleIncoming << std::endl;
+
         //if(verbose)
-        //	std::cout <<"=========== ParticleName : " << particleName << " =============" << std::endl;
+        	//std::cout <<"=========== ParticleName : " << particleName << " =============" << std::endl;
         if(particleName == "muon")
         {
-        	if(tm)
-        		Tomography::Files::instance()->Write("StatsFromGenerator.txt",3,1., solidAngleIncoming,energy);
+        	angularDistribution->Fill(solidAngleIncoming);
+        	if(tm){
+        		//std::cout << "Storing Info to file......." << std::endl;
+        		//Tomography::Files::instance()->Write("StatsFromGenerator.txt",3,1., solidAngleIncoming,energy);
+        	}
 
         //_____________________________________________________________________________________
 		  	  //Logic use to store real incoming muon angles in a vector of angle in Run

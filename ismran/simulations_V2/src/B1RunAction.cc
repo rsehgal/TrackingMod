@@ -21,6 +21,7 @@
 #include "Calibration.h"
 #include "DataTree.h"
 #include "Plotter.h"
+#include <TF1.h>
 
 using namespace std;
 
@@ -77,7 +78,8 @@ void B1RunAction::WriteData(){
                        scint->tsmallTimeStamp,scint->deltaTstamp,scint->deltaTstampCorrected,
                        scint->barIndex,scint->layerIndex,(scint->meanHitPosition).x,(scint->meanHitPosition).y,(scint->meanHitPosition).z);*/
       scint->fMeanHitPosition->Divide(10);
-      fDataTree->Fill(scint->fQlongNear,scint->fQlongMean,scint->fTSmallTimeStamp,scint->fDelTstamp,scint->fBarIndex, scint->fMeanHitPosition);
+      //fDataTree->Fill(scint->fQlongNear,scint->fQlongMean,scint->fTSmallTimeStamp,scint->fDelTstamp,scint->fBarIndex, scint->fMeanHitPosition);
+      fDataTree->Fill(scint->fQlongNear,scint->fQlongMean,scint->fTSmallTimeStamp,scint->fDelTstamp,scint->fBarIndex, scint->fMeanHitPosition,scint->fExactHitPosition);
 
       /*void Fill(char *scintname,UInt_t qlongnear,UInt_t qlongfar, Double_t qlongmean,
           Double_t qlongmeancorrected, ULong64_t tstampnear, ULong64_t tstampfar,
@@ -124,6 +126,16 @@ void B1RunAction::EndOfRunAction(const G4Run* run)
 
 		  vecHist[i]->Draw("same");
   }
+#ifdef USE_CRY
+  new TCanvas("EnergyHistogram","Energy Histogram of CRY Muons");
+  CryGeantInterface::energyHist->Draw();
+
+  new TCanvas("AngularHistogram","Angular Distribution of CRY Muons");
+  TF1 *formula = new TF1("zenForm", "[0]*sin(x)*cos(x)*pow(cos(x),[1])", 0.,M_PI);
+  CryGeantInterface::angularDistribution->Fit(formula, "r");
+  CryGeantInterface::angularDistribution->Draw();
+
+#endif
 #if(0)
   //Doing the processing of muon tracks vector using Analyzer.
   Analyzer_V2 v;

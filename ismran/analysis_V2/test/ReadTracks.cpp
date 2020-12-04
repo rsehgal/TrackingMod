@@ -181,6 +181,11 @@ int main(int argc,char *argv[]){
 	TH1F *zenithAngleHist_MeanHitPoint = PlotZenithAngle(smtVec,3);
 	zenithAngleHist_MeanHitPoint->Draw();
 	//zenithAngleHist_MeanHitPoint->Write();
+
+
+	new TCanvas("ZenithAngleWithExactHitPoint","Zenith Angle With Exact Hit Point");
+	TH1F *zenithAngleHist_ExactHitPoint = PlotZenithAngle(smtVec,4);
+	zenithAngleHist_ExactHitPoint->Draw();
 #endif
 
 	new TCanvas("DelT Vs Z","DelT Vs Z");
@@ -193,6 +198,11 @@ int main(int argc,char *argv[]){
 	delTvsZ_Linear->SetLineColor(4);
 	delTvsZ_Linear->Draw("same");
 
+	std::vector<TH1D*> vecHist = lite_interface::PlotEnergyDistributionWithMultiplicity(smtVec);
+	new TCanvas("Energy with multiplicity..","Energy with multiplicity..");
+	for(unsigned int i = 0; i < vecHist.size();  i++){
+		vecHist[i]->Draw("same");
+	}
 
 	//f->Close();
 	fApp->Run();

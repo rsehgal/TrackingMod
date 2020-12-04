@@ -46,6 +46,14 @@ public:
 	double hitY;
 	double hitZ;
 
+#if defined(FOR_SIMULATION) || defined(USE_FOR_SIMULATION)
+	double exactHitX;
+	double exactHitY;
+	double exactHitZ;
+#endif
+
+
+
 
 
 
@@ -60,6 +68,7 @@ public:
 	bool fBarHitted;
 	std::vector<lite_interface::Point3D*> hitsVectorInAnEventInABar;
 	Point3D *fMeanHitPosition;
+	Point3D *fExactHitPosition;
 	//lite_interface::Point3D *fittedLinear;
 
 	//lite_interface::Point3D *fittedMean;
@@ -117,7 +126,12 @@ public:
 	ScintillatorBar_V2(ushort barIndex, ushort qlongNear, ushort qlongMean,
 								ULong64_t tstampSmall, Long_t delTStamp,
 								double hitx, double hity, double hitz);
+	ScintillatorBar_V2(ushort barIndex, ushort qlongNear, ushort qlongMean,
+									ULong64_t tstampSmall, Long_t delTStamp,
+									double hitx, double hity, double hitz,
+									double exactHitX,double exactHity,double exactHitZ);
 	lite_interface::Point3D* GetMeanHitPosition();
+	lite_interface::Point3D* GetExactHitPosition();
 #ifdef USE_CALIBRATION
 	void CalculateVariousPhysicalParameters(unsigned long muonNum, lite_interface::Calibration *calib);
 #endif
