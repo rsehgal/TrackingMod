@@ -34,6 +34,7 @@ public:
 	void CreateScintillatorVector_FromSimulation();
 #endif
 	void ReconstructMuonTrack();
+	//std::vector< lite_interface::SingleMuonTrack* > ReconstructMuonTrack();
 	static bool CompareTimestampScintillator(ScintillatorBar_V2 *i1, ScintillatorBar_V2 *i2);
 	virtual ~Analyzer();
 

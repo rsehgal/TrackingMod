@@ -23,6 +23,8 @@
 #include "B1RunAction.hh"
 #include "ScintillatorBar_V2.h"
 #include "G4SystemOfUnits.hh"
+#include <iostream>
+#include <utility>
 
 int MySD::stepNum = 0;
 int MySD::numOfParticlesReached = 0;
@@ -36,7 +38,15 @@ std::vector<G4ThreeVector> MySD::exactHitVector;
 double MySD::initialEnergy = 0;
 double MySD::depositedEnergy = 0;
 bool MySD::enteredMatrix = false;
+std::vector<std::pair<std::string,G4ThreeVector>> MySD::vecOfPairs;
 
+G4ThreeVector FindExactHitPoint(std::string barName){
+	for(unsigned short i = 0 ; i < MySD::vecOfPairs.size() ; i++){
+		if(MySD::vecOfPairs[i].first == barName){
+			return MySD::vecOfPairs[i].second;
+		}
+	}
+}
 
 bool verbose = false;
 // std::vector<ScintillatorBar*> MySD::eventsVec2;
@@ -183,6 +193,7 @@ G4bool MySD::ProcessHits(G4Step* aStep,
   if(aStep->GetPreStepPoint()->GetStepStatus()==fGeomBoundary){
 	  G4ThreeVector hitPt = aStep->GetPreStepPoint()->GetPosition();
 	  exactHitVector.push_back(hitPt);
+	  vecOfPairs.push_back(std::pair<std::string,G4ThreeVector>(std::string(touchable->GetVolume(0)->GetName()),hitPt));
 //	 / std::cout <<  hitPt << std::endl;
 
   }
@@ -224,6 +235,14 @@ void MySD::EndOfEvent(G4HCofThisEvent*)
      for ( G4int i=0; i<nofHits; i++ ) {
       (*fHitsCollection)[i]->Print();
       psBarVec[(*fHitsCollection)[i]->GetCopyNum()]->fBarHitted=true;
+
+
+      G4ThreeVector firstExactEntryHit =  FindExactHitPoint(std::string((*fHitsCollection)[i]->GetName()));
+      /*psBarVec[(*fHitsCollection)[i]->GetCopyNum()]->exactHitX = firstExactEntryHit.getX();
+      psBarVec[(*fHitsCollection)[i]->GetCopyNum()]->exactHitY = firstExactEntryHit.getY();
+      psBarVec[(*fHitsCollection)[i]->GetCopyNum()]->exactHitZ = firstExactEntryHit.getZ();*/
+      psBarVec[(*fHitsCollection)[i]->GetCopyNum()]->fExactHitPosition->SetXYZ(firstExactEntryHit.getX(),firstExactEntryHit.getY(),firstExactEntryHit.getZ());
+
       psBarVec[(*fHitsCollection)[i]->GetCopyNum()]->fQlongMean += (*fHitsCollection)[i]->GetEnergyDeposited();
       G4ThreeVector hitPosition = (*fHitsCollection)[i]->GetPosition();
       //G4cout << "MuonNum : " << muonNum<< " : BarName : " << vecOfBarsNamess[(*fHitsCollection)[i]->GetCopyNum()]
@@ -260,7 +279,10 @@ void MySD::EndOfEvent(G4HCofThisEvent*)
          * tHIS GIVES SIMILAR MULTIPLICITY PICTURES AS WE ARE GETTING FROM DATA
          */
         //if(scintBar->qlongMeanCorrected > 10000 && scintBar->qlongMeanCorrected < 35000){
-        if(scintBar->GetQMeanCorrected() > 10 && scintBar->GetQMeanCorrected() < 35){
+
+        //DO WE REALLY NEED BELOW MENTIONED IF CONDITION, OR IT SHOULD BE HANDLED AT ANALYSIS LEVEL
+        //if(scintBar->GetQMeanCorrected() > 10 && scintBar->GetQMeanCorrected() < 35)
+        {
         	onlyHittedBarVec.push_back(scintBar);
 
         	//std::cout << "@@@@@@@@@@ Printing ScintBar : " ; scintBar->Print();

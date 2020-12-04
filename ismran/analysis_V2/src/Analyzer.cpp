@@ -129,6 +129,10 @@ void Analyzer::CreateScintillatorVector_FromSimulation(){
 	   Double_t        hitY;
 	   Double_t        hitZ;
 
+	   Double_t        exactHitX;
+	   Double_t        exactHitY;
+	   Double_t        exactHitZ;
+
 	   // Set branch addresses.
 	   ftree->SetBranchAddress("qlongNear",&qlongNear);
 	   //ftree->SetBranchAddress("qlongFar",&qlongFar);
@@ -147,6 +151,10 @@ void Analyzer::CreateScintillatorVector_FromSimulation(){
 	   ftree->SetBranchAddress("hitY",&hitY);
 	   ftree->SetBranchAddress("hitZ",&hitZ);
 
+	   ftree->SetBranchAddress("exactHitX",&exactHitX);
+	   ftree->SetBranchAddress("exactHitY",&exactHitY);
+	   ftree->SetBranchAddress("exactHitZ",&exactHitZ);
+
 	   Long64_t nentries = ftree->GetEntries();
 
       Long64_t nbytes = 0;
@@ -154,7 +162,8 @@ void Analyzer::CreateScintillatorVector_FromSimulation(){
     	  nbytes += ftree->GetEntry(i);
     	  if(!(i%100000))
     		  std::cout << "Processed : " << i << " events....." << std::endl;
-    	  ScintillatorBar_V2 *scint = new ScintillatorBar_V2(barIndex,qlongNear,qlongMean,tsmallTimeStamp,deltaTstamp, hitX, hitY, hitZ);
+    	  //ScintillatorBar_V2 *scint = new ScintillatorBar_V2(barIndex,qlongNear,qlongMean,tsmallTimeStamp,deltaTstamp, hitX, hitY, hitZ);
+    	  ScintillatorBar_V2 *scint = new ScintillatorBar_V2(barIndex,qlongNear,qlongMean,tsmallTimeStamp,deltaTstamp, hitX, hitY, hitZ,exactHitX,exactHitY,exactHitZ);
     	  fVecOfScintillatorBar.push_back(scint);
     	  //fVecOfScintillatorBar[i]->Print();
 
@@ -205,6 +214,7 @@ void Analyzer::CreateScintillatorVector_FromSimulation(){
 #endif
 
 void Analyzer::ReconstructMuonTrack(){
+//std::vector< lite_interface::SingleMuonTrack* > Analyzer::ReconstructMuonTrack(){
 	//TTree::SetMaxTreeSize(100000000);
 	std::sort(fVecOfScintillatorBar.begin(), fVecOfScintillatorBar.end(),CompareTimestampScintillator);
 
@@ -247,7 +257,7 @@ void Analyzer::ReconstructMuonTrack(){
 		} else {
 			//Outside 20ns window, implied track ends, hence either store it in the vector of write it to the ROOT file
 			singleMuonTrack->Sort();
-			if(singleMuonTrack->size() > 8)
+			if(singleMuonTrack->size() > 1)
 			{
 
 				if(singleMuonTrack->IsClearTrack())

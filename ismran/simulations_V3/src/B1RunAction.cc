@@ -81,6 +81,7 @@ void B1RunAction::BeginOfRunAction(const G4Run*)
 }
 
 void B1RunAction::WriteData(){
+	std::cout <<"SIZE OF MUON TRACK VECTOR going to be written in ROOT File : " << MySD::muonTrackVec.size() << std::endl;
   for(unsigned int i = 0 ; i < MySD::muonTrackVec.size() ; i++){
     lite_interface::SingleMuonTrack *singleMuonTrack = MySD::muonTrackVec[i];
     /*singleMuonTrack->SetFittedMembers(0);
@@ -104,7 +105,8 @@ void B1RunAction::WriteData(){
                        scint->tsmallTimeStamp,scint->deltaTstamp,scint->deltaTstampCorrected,
                        scint->barIndex,scint->layerIndex,(scint->meanHitPosition).x,(scint->meanHitPosition).y,(scint->meanHitPosition).z);*/
       scint->fMeanHitPosition->Divide(10);
-      fDataTree->Fill(scint->fQlongNear,scint->fQlongMean,scint->fTSmallTimeStamp,scint->fDelTstamp,scint->fBarIndex, scint->fMeanHitPosition);
+      //fDataTree->Fill(scint->fQlongNear,scint->fQlongMean,scint->fTSmallTimeStamp,scint->fDelTstamp,scint->fBarIndex, scint->fMeanHitPosition);
+      fDataTree->Fill(scint->fQlongNear,scint->fQlongMean,scint->fTSmallTimeStamp,scint->fDelTstamp,scint->fBarIndex, scint->fMeanHitPosition, scint->fExactHitPosition);
 
       /*void Fill(char *scintname,UInt_t qlongnear,UInt_t qlongfar, Double_t qlongmean,
           Double_t qlongmeancorrected, ULong64_t tstampnear, ULong64_t tstampfar,

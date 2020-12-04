@@ -49,6 +49,7 @@ private:
 	    PrimaryGeneratorMessenger* gunMessenger;
 public:
 	    static TH1F* energyHist;
+	    static TH1F* angularDistribution;
 
 };
 

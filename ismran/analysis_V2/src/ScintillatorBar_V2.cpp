@@ -32,11 +32,15 @@ ScintillatorBar_V2::ScintillatorBar_V2(unsigned int bIndex):
 		hitY(0.),
 		hitZ(0.)
 
+
 #ifdef FOR_SIMULATION
 		,fBarHitted(false)
+		,exactHitX(0.)
+		,exactHitY(0.)
+		,exactHitZ(0.)
 #endif
 		{
-
+	fExactHitPosition = new Point3D();
 
 }
 
@@ -77,6 +81,26 @@ hitX(hitx), hitY(hity), hitZ(hitz){
 */
 //Print();
 }
+
+ScintillatorBar_V2::ScintillatorBar_V2(ushort barIndex, ushort qlongNear,
+									   ushort qlongMean,ULong64_t tstampSmall,
+									   Long_t delTStamp, double hitx, double hity, double hitz,
+									   double exacthitX,double exacthitY, double exacthitZ):
+fBarIndex(barIndex),
+fQlongNear(qlongNear),
+fQlongMean(qlongMean),
+fTSmallTimeStamp(tstampSmall),
+fDelTstamp(delTStamp),
+hitX(hitx), hitY(hity), hitZ(hitz),
+exactHitX(exacthitX),exactHitY(exacthitY),exactHitZ(exacthitZ){
+
+/*
+	fittedLinear = new lite_interface::Point3D();
+	fittedParam = new lite_interface::Point3D();
+	fittedMean = new lite_interface::Point3D();
+*/
+//Print();
+}
 #endif
 
 ScintillatorBar_V2::ScintillatorBar_V2(const ScintillatorBar_V2 &sbar){
@@ -98,6 +122,10 @@ ScintillatorBar_V2::ScintillatorBar_V2(const ScintillatorBar_V2 &sbar){
 			hitX = sbar.hitX;
 			hitY = sbar.hitY;
 			hitZ = sbar.hitZ;
+			exactHitX = sbar.exactHitX;
+			exactHitY = sbar.exactHitY;
+			exactHitZ = sbar.exactHitZ;
+			fExactHitPosition = sbar.fExactHitPosition;
 #endif
 
 }
@@ -244,6 +272,10 @@ Double_t ScintillatorBar_V2::GetQMeanCorrected(){
 lite_interface::Point3D* ScintillatorBar_V2::GetMeanHitPosition(){
 	return (new lite_interface::Point3D(hitX, hitY, hitZ));
 }
+
+lite_interface::Point3D* ScintillatorBar_V2::GetExactHitPosition(){
+	return (new lite_interface::Point3D(exactHitX, exactHitY, exactHitZ));
+}
 #endif
 
 #ifdef USE_CALIBRATION
@@ -320,6 +352,7 @@ void ScintillatorBar_V2::CalculateVariousPhysicalParameters(unsigned long muonNu
   void ScintillatorBar_V2::CalculateVariousPhysicalParameters(unsigned long muonNum){
 
 	fMeanHitPosition = new Point3D();
+
 	fMeanHitPosition->SetZero();
 	for(unsigned int i = 0 ; i < hitsVectorInAnEventInABar.size() ; i++){
 		lite_interface::Point3D *hitpt = hitsVectorInAnEventInABar[i];

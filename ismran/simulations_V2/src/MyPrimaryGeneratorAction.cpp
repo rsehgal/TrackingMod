@@ -2,6 +2,8 @@
 
 #include "G4Box.hh"
 #include "G4Electron.hh"
+#include "G4MuonPlus.hh"
+#include "G4MuonMinus.hh"
 #include "G4LogicalVolume.hh"
 #include "G4LogicalVolumeStore.hh"
 #include "G4ParticleDefinition.hh"
@@ -18,12 +20,13 @@ using Tracking::Vector3D;
 MyPrimaryGeneratorAction::MyPrimaryGeneratorAction() {
   G4int n_particle = 1;
   fParticleGun = new G4ParticleGun(n_particle);
-  fParticleGun->SetParticleDefinition(G4Electron::ElectronDefinition());
+  //fParticleGun->SetParticleDefinition(G4Electron::ElectronDefinition());
+  fParticleGun->SetParticleDefinition(G4MuonPlus::MuonPlusDefinition());
 
   // Set the kinetic energy of the protons to 50 keV
   // and tell the gun to emit them along the x-axis
   fParticleGun->SetParticleEnergy(50. * keV);
-  fParticleGun->SetParticlePosition(G4ThreeVector(0.*cm, 80.*cm, 0 * cm ));
+  fParticleGun->SetParticlePosition(G4ThreeVector(0.*cm, 60.*cm, 0 * cm ));
   fParticleGun->SetParticleMomentumDirection(G4ThreeVector(0., -1, 0));
 }
 
@@ -45,7 +48,7 @@ void MyPrimaryGeneratorAction::GeneratePrimaries(G4Event *event) {
    if(Tomography::EventBreak::instance()->BreakSimulation())
          return;
         //std::cout << "Generating Event using CRY @@@@@@@@@@@@@@@@@@@@ " << std::endl;
-        cryG4Interface->GeneratePrimariesForCry(event,false);
+        cryG4Interface->GeneratePrimariesForCry(event,true);
    #else  
 
         Vector3D<double> pt1(Tracking::Global::GenRandomDet(-45.*cm,45.*cm),

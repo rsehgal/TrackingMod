@@ -15,7 +15,8 @@
 #include "PsBar.h"
 #include "SingleMuonTrack.h"
 #include "ScintillatorBar_V2.h"
-
+#include <iostream>
+#include <utility>
 
 class G4Step;
 class G4HCofThisEvent;
@@ -85,6 +86,7 @@ public:
 	    static double depositedEnergy;
 	    static unsigned int GetEvNo() {return evNo;}
 	    static bool enteredMatrix;
+	    static std::vector<std::pair<std::string,G4ThreeVector>> vecOfPairs;
 	    
 
 
