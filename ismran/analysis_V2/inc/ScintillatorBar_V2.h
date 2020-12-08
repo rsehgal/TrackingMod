@@ -46,10 +46,12 @@ public:
 	double hitY;
 	double hitZ;
 
-#if defined(FOR_SIMULATION) || defined(USE_FOR_SIMULATION)
 	double exactHitX;
 	double exactHitY;
 	double exactHitZ;
+
+#if defined(FOR_SIMULATION) || defined(USE_FOR_SIMULATION)
+
 #endif
 
 

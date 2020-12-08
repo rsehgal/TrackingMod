@@ -60,6 +60,11 @@ int main(int argc,char *argv[]){
 	unsigned int count = 0;
 	unsigned int count2 = 0;
 	std::cout << "Total number of Entries : " << nentries << std::endl;
+
+	unsigned int countVisTracks = 0;
+
+	//nentries = 100;
+
 	for (Long64_t i=0; i<nentries;i++) {
 		//std::cout << "Fetching Entry : " << i << std::endl;
 		nbytes += trackTree->GetEntry(i);
@@ -91,6 +96,44 @@ int main(int argc,char *argv[]){
 			std::vector<lite_interface::Point3D*> fittedParamTrack = CreateFittedTrack(smt->Get3DHitPointVector_Param());
 #ifdef USE_FOR_SIMULATION
 			std::vector<lite_interface::Point3D*> fittedMeanTrack = CreateFittedTrack(smt->GetMean3DHitPointVector());
+
+			double zenithAngleMean = smt->GetZenithAngle(3);
+			double zenithAngleExact = smt->GetZenithAngle(4);
+
+			if(smt->size() > 6 && countVisTracks < 20){
+				std::string title="Track : "+std::to_string(countVisTracks)+" : ZenithAngleMean : "+std::to_string(zenithAngleMean)+" : ZenithAngleExact : "+std::to_string(zenithAngleExact);
+				TCanvas *can = new TCanvas(title.c_str(),title.c_str());
+				can->Divide(2,3);
+				can->cd(1);
+				DrawGrid("Muon Track in XY plane; X axis ; Y axis", 9, 9);
+				//PlotMuonTrackXY(CreateFittedTrack(smt->GetExact3DHitPointVector()))->Draw("p");
+				PlotMuonTrackXY(smt->GetExact3DHitPointVector())->Draw("p");
+				can->cd(2);
+				DrawGrid("Muon Track in ZY plane; Z axis ; Y axis", 9, 9);
+				//PlotMuonTrackZY(CreateFittedTrack(smt->GetExact3DHitPointVector()))->Draw("p");
+				PlotMuonTrackZY(smt->GetExact3DHitPointVector())->Draw("p");
+
+
+				can->cd(3);
+				DrawGrid("Mean Muon Track in XY plane; X axis ; Y axis", 9, 9);
+				//PlotMuonTrackXY(CreateFittedTrack(smt->GetExact3DHitPointVector()))->Draw("p");
+				PlotMuonTrackXY(smt->GetMean3DHitPointVector())->Draw("p");
+				can->cd(4);
+				DrawGrid("Mean Muon Track in ZY plane; Z axis ; Y axis", 9, 9);
+				//PlotMuonTrackZY(CreateFittedTrack(smt->GetExact3DHitPointVector()))->Draw("p");
+				PlotMuonTrackZY(smt->GetMean3DHitPointVector())->Draw("p");
+
+				can->cd(5);
+				DrawGrid("Linear Muon Track in XY plane; X axis ; Y axis", 9, 9);
+				//PlotMuonTrackXY(CreateFittedTrack(smt->GetExact3DHitPointVector()))->Draw("p");
+				PlotMuonTrackXY(smt->Get3DHitPointVector())->Draw("p");
+				can->cd(6);
+				DrawGrid("Linear Muon Track in ZY plane; Z axis ; Y axis", 9, 9);
+				//PlotMuonTrackZY(CreateFittedTrack(smt->GetExact3DHitPointVector()))->Draw("p");
+				PlotMuonTrackZY(smt->Get3DHitPointVector())->Draw("p");
+
+				countVisTracks++;
+			}
 #endif
 
 
@@ -122,6 +165,8 @@ int main(int argc,char *argv[]){
 				scintBarVecForNewTrack.push_back(new lite_interface::ScintillatorBar_V2(*scintBarVecOfATrack[j]));
 			}
 			smtVec.push_back(new lite_interface::SingleMuonTrack(scintBarVecForNewTrack));
+			//std::cout << "============== Printing Muon Tracks after reading from testSim.root ================" << std::endl;
+			//smtVec[i]->Print();
 		}
 
 	}
@@ -204,6 +249,7 @@ int main(int argc,char *argv[]){
 		vecHist[i]->Draw("same");
 	}
 
+	std::cout << "@@@@@@@@ Wrong track Counter : " << lite_interface::SingleMuonTrack::wrongTrackCounter << std::endl;
 	//f->Close();
 	fApp->Run();
 

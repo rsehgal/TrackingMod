@@ -22,6 +22,12 @@ ExactHitDataTree::ExactHitDataTree() {
    	fTree->Branch("InitialEnergy",&fInitialEnergy);
    	fTree->Branch("DepositedEnergy", &fDepositedEnergy);
    	fTree->Branch("EvNo", &fEvNo);
+   	fTree->Branch("angleCRY", &fAngleCRY);
+   	fTree->Branch("angleMean", &fAngleReconsMean);
+   	fTree->Branch("angleExact", &fAngleReconsExact);
+   	fTree->Branch("angleLinear", &fAngleReconsLinear);
+   	fTree->Branch("angleParam", &fAngleReconsParam);
+
 
 }
 
@@ -46,6 +52,22 @@ void ExactHitDataTree::Fill(std::vector<double> xvec, std::vector<double> yvec, 
 	fZVec = zvec;
 	fInitialEnergy = initialEnergy;
 	fDepositedEnergy = depositedEnergy;
+	fTree->Fill();
+}
+
+void ExactHitDataTree::Fill(std::vector<double> xvec, std::vector<double> yvec, std::vector<double> zvec, double initialEnergy, double depositedEnergy,unsigned int evNo
+			  ,double anglecry, double anglereconsLinear, double anglereconsParam, double anglereconsMean, double anglereconsExact){
+	fXVec = xvec;
+	fYVec = yvec;
+	fZVec = zvec;
+	fEvNo = evNo;
+	fInitialEnergy = initialEnergy;
+	fDepositedEnergy = depositedEnergy;
+	fAngleCRY = anglecry;
+	fAngleReconsLinear = anglereconsLinear;
+	fAngleReconsParam = anglereconsParam;
+	fAngleReconsMean = anglereconsMean;
+	fAngleReconsExact = anglereconsExact;
 	fTree->Fill();
 }
 

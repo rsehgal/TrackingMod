@@ -29,12 +29,23 @@ class ExactHitDataTree {
 	TFile *fp;
 	TTree *fTree;
 
+	/*
+	 * Various angle that we want to store
+	 */
+	double fAngleCRY = 0.;
+	double fAngleReconsLinear = 0.;
+	double fAngleReconsParam = 0.;
+	double fAngleReconsMean = 0.;
+	double fAngleReconsExact = 0;
+
 public:
 	ExactHitDataTree();
 	virtual ~ExactHitDataTree();
 	void Fill(std::vector<double> xvec, std::vector<double> yvec, std::vector<double> zvec);
 	void Fill(std::vector<double> xvec, std::vector<double> yvec, std::vector<double> zvec, double initialEnergy, double depositedEnergy);
 	void Fill(std::vector<double> xvec, std::vector<double> yvec, std::vector<double> zvec, double initialEnergy, double depositedEnergy,unsigned int evNo);
+	void Fill(std::vector<double> xvec, std::vector<double> yvec, std::vector<double> zvec, double initialEnergy, double depositedEnergy,unsigned int evNo
+			  ,double anglecry, double anglereconsLinear, double anglereconsParam, double anglereconsMean, double anglereconsExact);
 	void Write();
 	void Close();
 	void GetEntry(unsigned int entry);

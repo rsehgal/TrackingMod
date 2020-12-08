@@ -54,6 +54,7 @@ void MyPrimaryGeneratorAction::GeneratePrimaries(G4Event *event) {
    G4ThreeVector ref(0.,-1.,0.);
    double angle = dir.angle(ref);
    B1RunAction::fAngleVec.push_back(angle);
+   MySD::angle = angle;
    fParticleGun->SetParticleMomentumDirection(dir);
    fParticleGun->SetParticleEnergy(muon->energy * MeV);
    /*if(MySD::GetEvNo()  <20){

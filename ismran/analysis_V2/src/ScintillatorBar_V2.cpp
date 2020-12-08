@@ -185,10 +185,12 @@ void ScintillatorBar_V2::Print(){
 	std::cout <<"BarIndex : " << fBarIndex <<  " :  Energy :  " << GetQMeanCorrected() << " : DelT : " << GetDelT() << std::endl;
 #ifdef USE_FOR_SIMULATION
 	std::cout << "Mean Hit Position : " << hitX <<" , " << hitY << " , " << hitZ << std::endl;
+	std::cout << "Exact Hit Position individual : " << exactHitX <<" , " << exactHitY << " , " << exactHitZ << std::endl;
 	//std::cout << "Fitted Mean Hit position : " ; fittedMean->Print();
 #else
 #ifdef FOR_SIMULATION
 	std::cout << "Mean Hit Position : " ; fMeanHitPosition->Print();
+	std::cout << "Exact Hit Position : " ; fExactHitPosition->Print();
 #endif
 
 #endif
@@ -266,17 +268,31 @@ Double_t ScintillatorBar_V2::GetQMeanCorrected(){
 
 
 }
-#ifdef USE_FOR_SIMULATION
-
+//#ifdef USE_FOR_SIMULATION
+//#if defined(USE_FOR_SIMULATION) || defined(FOR_SIMULATION)
 
 lite_interface::Point3D* ScintillatorBar_V2::GetMeanHitPosition(){
+#ifdef USE_FOR_SIMULATION
 	return (new lite_interface::Point3D(hitX, hitY, hitZ));
+#endif
+
+#ifdef FOR_SIMULATION
+	//fMeanHitPosition->Print();
+	return fMeanHitPosition;
+#endif
 }
 
 lite_interface::Point3D* ScintillatorBar_V2::GetExactHitPosition(){
+	//std::cout <<"X : " << exactHitX <<" : Y : " << exactHitX <<" : Z : " << exactHitZ << std::endl;
+#ifdef USE_FOR_SIMULATION
 	return (new lite_interface::Point3D(exactHitX, exactHitY, exactHitZ));
-}
 #endif
+#ifdef FOR_SIMULATION
+	//fMeanHitPosition->Print();
+	return fExactHitPosition;
+#endif
+}
+//#endif
 
 #ifdef USE_CALIBRATION
 
