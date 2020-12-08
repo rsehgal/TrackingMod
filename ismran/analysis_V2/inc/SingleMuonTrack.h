@@ -19,6 +19,7 @@ class SingleMuonTrack {
 public:
 
 	std::vector<ScintillatorBar_V2*> fSingleMuonTrack;
+	static unsigned long int wrongTrackCounter;
 public:
 	SingleMuonTrack();
 	SingleMuonTrack(std::vector<ScintillatorBar_V2*> vecOfScintBars);
@@ -59,7 +60,8 @@ public:
 	 */
 	std::vector<lite_interface::Point3D*> GetFittedTrack(int opt);
 
-#ifdef USE_FOR_SIMULATION
+//#ifdef USE_FOR_SIMULATION
+#if defined(USE_FOR_SIMULATION) || defined(FOR_SIMULATION)
 	std::vector<lite_interface::Point3D*>  GetMean3DHitPointVector();
 #endif
 
@@ -67,6 +69,11 @@ public:
 	 * Function to get the vector of energy deposited in contributing bars
 	 */
 	std::vector<double> GetDepositedEnergyVector();
+
+	/*
+	 * Function to detect if the track is detected by top layer and botter layer
+	 */
+	bool IsThroughTrack();
 
 	/*
 	 * Function to get the sum of energy deposited in different layers
@@ -80,7 +87,8 @@ public:
 	double GetZenithAngle(int opt = 1);
 	double GetZenithAngle_Linear();
 	double GetZenithAngle_Param();
-#ifdef USE_FOR_SIMULATION
+//#ifdef USE_FOR_SIMULATION
+#if defined(USE_FOR_SIMULATION) || defined(FOR_SIMULATION)
 	double GetZenithAngle_MeanHitPoint();
 	double GetZenithAngle_ExactHitPoint();
 #endif

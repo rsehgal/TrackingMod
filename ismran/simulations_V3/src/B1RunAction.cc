@@ -84,6 +84,7 @@ void B1RunAction::WriteData(){
 	std::cout <<"SIZE OF MUON TRACK VECTOR going to be written in ROOT File : " << MySD::muonTrackVec.size() << std::endl;
   for(unsigned int i = 0 ; i < MySD::muonTrackVec.size() ; i++){
     lite_interface::SingleMuonTrack *singleMuonTrack = MySD::muonTrackVec[i];
+
     /*singleMuonTrack->SetFittedMembers(0);
     singleMuonTrack->SetFittedMembers(1);
     singleMuonTrack->SetFittedMembers(2);*/
@@ -92,6 +93,9 @@ void B1RunAction::WriteData(){
         singleMuonTrack->GetFittedTrack(2);
     //std::cout << "================= Track Id : " << i << " ================" << std::endl;
     //singleMuonTrack->Print();
+
+    //if(singleMuonTrack->IsThroughTrack())
+    {
     for(unsigned int j = 0 ; j < singleMuonTrack->size() ; j++){
       lite_interface::ScintillatorBar_V2 *scint = (singleMuonTrack->fSingleMuonTrack)[j];
 
@@ -113,6 +117,8 @@ void B1RunAction::WriteData(){
           ULong64_t tsmalltimestamp, Long64_t deltatstamp, Long64_t deltatstampcorrected,
           unsigned short barindex, unsigned short layerindex);*/
     }
+  }
+
   }
   fDataTree->Write();
   energyHist->Write();

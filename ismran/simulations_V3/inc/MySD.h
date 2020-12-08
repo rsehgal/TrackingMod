@@ -87,6 +87,7 @@ public:
 	    static unsigned int GetEvNo() {return evNo;}
 	    static bool enteredMatrix;
 	    static std::vector<std::pair<std::string,G4ThreeVector>> vecOfPairs;
+	    static double angle;
 	    
 
 

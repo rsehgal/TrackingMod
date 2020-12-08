@@ -155,6 +155,12 @@ void Analyzer::CreateScintillatorVector_FromSimulation(){
 	   ftree->SetBranchAddress("exactHitY",&exactHitY);
 	   ftree->SetBranchAddress("exactHitZ",&exactHitZ);
 
+/*
+	   exactHitX /= 10.;
+	   exactHitY /= 10.;
+	   exactHitZ /= 10.;
+*/
+
 	   Long64_t nentries = ftree->GetEntries();
 
       Long64_t nbytes = 0;
@@ -163,6 +169,7 @@ void Analyzer::CreateScintillatorVector_FromSimulation(){
     	  if(!(i%100000))
     		  std::cout << "Processed : " << i << " events....." << std::endl;
     	  //ScintillatorBar_V2 *scint = new ScintillatorBar_V2(barIndex,qlongNear,qlongMean,tsmallTimeStamp,deltaTstamp, hitX, hitY, hitZ);
+    	  //std::cout << " exactHitX,exactHitY,exactHitZ : " << exactHitX << "," << exactHitY << "," << exactHitZ << std::endl;
     	  ScintillatorBar_V2 *scint = new ScintillatorBar_V2(barIndex,qlongNear,qlongMean,tsmallTimeStamp,deltaTstamp, hitX, hitY, hitZ,exactHitX,exactHitY,exactHitZ);
     	  fVecOfScintillatorBar.push_back(scint);
     	  //fVecOfScintillatorBar[i]->Print();
@@ -260,17 +267,17 @@ void Analyzer::ReconstructMuonTrack(){
 			if(singleMuonTrack->size() > 1)
 			{
 
-				if(singleMuonTrack->IsClearTrack())
+				//if(singleMuonTrack->IsClearTrack())
 				{
 					std::vector<double> enVec = singleMuonTrack->GetDepositedEnergyVector();
 					energyVec = &enVec;
 					std::vector<std::string> barNamesVector = singleMuonTrack->GetBarNamesVector();
 					std::vector<lite_interface::Point3D*> vec = singleMuonTrack->Get3DHitPointVector();
 					if(count < 4){
-					std::cout <<"--------- Using Muon -------------" << std::endl;
+					//std::cout <<"--------- Using Muon -------------" << std::endl;
 					for(unsigned short k =0 ; k < vec.size() ; k++){
 						std::cout << "BarName : " << barNamesVector[k] << " : Corrected DelT : " << (singleMuonTrack->GetMuonTrack())[k]->GetDelTCorrected() <<" : " ;
-						vec[k]->Print();
+						//vec[k]->Print();
 					}
 					}
 
@@ -280,10 +287,10 @@ void Analyzer::ReconstructMuonTrack(){
 
 					std::vector<lite_interface::Point3D*> vec_Param = singleMuonTrack->Get3DHitPointVector_Param();
 					if(count < 4){
-					std::cout <<"--------- Using Param -------------" << std::endl;
+					//std::cout <<"--------- Using Param -------------" << std::endl;
 					for(unsigned short k =0 ; k < vec_Param.size() ; k++){
 						std::cout << "BarName : " << barNamesVector[k] << " : ";
-						vec_Param[k]->Print();
+						//vec_Param[k]->Print();
 					}
 					}
 					hitPointVec_Param = &vec_Param;
@@ -291,10 +298,10 @@ void Analyzer::ReconstructMuonTrack(){
 #ifdef USE_FOR_SIMULATION
 					std::vector<lite_interface::Point3D*> vec_meanHitPoint = singleMuonTrack->GetMean3DHitPointVector();
 					if(count < 4){
-							std::cout <<"--------- Using MeanHit Point -------------" << std::endl;
+							//std::cout <<"--------- Using MeanHit Point -------------" << std::endl;
 							for(unsigned short k =0 ; k < vec_meanHitPoint.size() ; k++){
 								std::cout << "BarName : " << barNamesVector[k] << " : ";
-								vec_meanHitPoint[k]->Print();
+								//vec_meanHitPoint[k]->Print();
 							}
 					}
 					meanHitPointVec = &vec_meanHitPoint;
@@ -310,8 +317,8 @@ void Analyzer::ReconstructMuonTrack(){
 					//singleMuonTrack->GetFittedTrack(2);
 #endif
 					if(count <= 4){
-						std::cout << "======== Single Muon Track Count : " << count << " =========" << std::endl;
-						singleMuonTrack->Print();
+						//std::cout << "======== Single Muon Track Count : " << count << " =========" << std::endl;
+						//singleMuonTrack->Print();
 					}
 
 
@@ -340,6 +347,8 @@ void Analyzer::ReconstructMuonTrack(){
 				}
 			}*/
 
+			//std::cout <<"@@@@@ PRINTING SMT BEFORE FILLING IN TREE @@@@@@@@@" << std::endl;
+			//singleMuonTrack->Print();
 			singleMuonTrack->clear();
 			//singleMuonTrack = new SingleMuonTrack();
 			singleMuonTrack->push_back(fVecOfScintillatorBar[i]);

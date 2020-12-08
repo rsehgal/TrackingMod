@@ -39,6 +39,7 @@ double MySD::initialEnergy = 0;
 double MySD::depositedEnergy = 0;
 bool MySD::enteredMatrix = false;
 std::vector<std::pair<std::string,G4ThreeVector>> MySD::vecOfPairs;
+double MySD::angle = 0.;
 
 G4ThreeVector FindExactHitPoint(std::string barName){
 	for(unsigned short i = 0 ; i < MySD::vecOfPairs.size() ; i++){
@@ -194,6 +195,8 @@ G4bool MySD::ProcessHits(G4Step* aStep,
 	  G4ThreeVector hitPt = aStep->GetPreStepPoint()->GetPosition();
 	  exactHitVector.push_back(hitPt);
 	  vecOfPairs.push_back(std::pair<std::string,G4ThreeVector>(std::string(touchable->GetVolume(0)->GetName()),hitPt));
+	  psBarVec[touchable->GetCopyNumber()]->fExactHitPosition->SetXYZ(hitPt.getX()/10.,hitPt.getY()/10.,hitPt.getZ()/10.);
+	  //std::cout << "Copy No. of Touchable : " << touchable->GetCopyNumber() << std::endl;
 //	 / std::cout <<  hitPt << std::endl;
 
   }
@@ -202,10 +205,12 @@ G4bool MySD::ProcessHits(G4Step* aStep,
   //if(evNo < 20)
 	  std::cout << particleName << "  : MeV : " << MeV << " : KeV : " << keV << " : GeV : " << GeV << std::endl;
   //if(verbose)
-  if(evNo < 20)
+
+
+  /*if(evNo < 20)
 	  std::cout << "Energy deposited in current step in : "
 	  	  	  << touchable->GetVolume(0)->GetName()
-			  << " : " << aStep->GetTotalEnergyDeposit() << " : Current Energy : " << track->GetKineticEnergy() <<std::endl;
+			  << " : " << aStep->GetTotalEnergyDeposit() << " : Current Energy : " << track->GetKineticEnergy() <<std::endl;*/
   newHit->SetEnergyDeposited(aStep->GetTotalEnergyDeposit());
   fHitsCollection->insert( newHit );
 
@@ -220,6 +225,18 @@ G4bool MySD::ProcessHits(G4Step* aStep,
 
 void MySD::EndOfEvent(G4HCofThisEvent*)
 {
+	/*
+	 * Angles that we want to store in Root file
+	 */
+	double angleCRY = 0.;
+	double angleReconsLinear = 0.;
+	double angleReconsParam = 0.;
+	double angleReconsMean = 0.;
+	double angleReconsExact = 0;
+
+	angleCRY = angle;
+
+
 	if(verbose){
   std::cout <<"++++"<<std::endl;
   std::cout << "No of Hits : " << fHitsCollection->entries() << std::endl;
@@ -232,17 +249,22 @@ void MySD::EndOfEvent(G4HCofThisEvent*)
      G4cout << G4endl
             << "-------->Hits Collection: in this event there are " << nofHits
             << " hits  " << G4endl;
+
+     //std::cout << "No of Hits in Event num : " << evNo << " : " << nofHits << std::endl;
+     //std::cout << "Dissecting event no " << evNo << " : with num of hits : " << nofHits << " : Angle : " << angle << " .................." << std::endl;
      for ( G4int i=0; i<nofHits; i++ ) {
       (*fHitsCollection)[i]->Print();
       psBarVec[(*fHitsCollection)[i]->GetCopyNum()]->fBarHitted=true;
 
-
-      G4ThreeVector firstExactEntryHit =  FindExactHitPoint(std::string((*fHitsCollection)[i]->GetName()));
-      /*psBarVec[(*fHitsCollection)[i]->GetCopyNum()]->exactHitX = firstExactEntryHit.getX();
-      psBarVec[(*fHitsCollection)[i]->GetCopyNum()]->exactHitY = firstExactEntryHit.getY();
-      psBarVec[(*fHitsCollection)[i]->GetCopyNum()]->exactHitZ = firstExactEntryHit.getZ();*/
-      psBarVec[(*fHitsCollection)[i]->GetCopyNum()]->fExactHitPosition->SetXYZ(firstExactEntryHit.getX(),firstExactEntryHit.getY(),firstExactEntryHit.getZ());
-
+      /*G4ThreeVector firstExactEntryHit =  FindExactHitPoint(std::string((*fHitsCollection)[i]->GetName()));
+      //std::cout << (*fHitsCollection)[i]->GetName() << " : " << firstExactEntryHit << std::endl;
+      std::cout << "Volume Name : " << (*fHitsCollection)[i]->GetName()
+    		    << " : Copy Num : " << (*fHitsCollection)[i]->GetCopyNum()
+				<< " : Exact Hit Point : " << firstExactEntryHit
+				<< std::endl;
+      //std::cout << (*fHitsCollection)[i]->GetName() << " : " << firstExactEntryHit << std::endl;
+      psBarVec[(*fHitsCollection)[i]->GetCopyNum()]->fExactHitPosition->SetXYZ(firstExactEntryHit.getX()/10.,firstExactEntryHit.getY()/10.,firstExactEntryHit.getZ()/10.);
+       */
       psBarVec[(*fHitsCollection)[i]->GetCopyNum()]->fQlongMean += (*fHitsCollection)[i]->GetEnergyDeposited();
       G4ThreeVector hitPosition = (*fHitsCollection)[i]->GetPosition();
       //G4cout << "MuonNum : " << muonNum<< " : BarName : " << vecOfBarsNamess[(*fHitsCollection)[i]->GetCopyNum()]
@@ -283,7 +305,7 @@ void MySD::EndOfEvent(G4HCofThisEvent*)
         //DO WE REALLY NEED BELOW MENTIONED IF CONDITION, OR IT SHOULD BE HANDLED AT ANALYSIS LEVEL
         //if(scintBar->GetQMeanCorrected() > 10 && scintBar->GetQMeanCorrected() < 35)
         {
-        	onlyHittedBarVec.push_back(scintBar);
+        	//onlyHittedBarVec.push_back(scintBar);
 
         	//std::cout << "@@@@@@@@@@ Printing ScintBar : " ; scintBar->Print();
 #ifdef USE_CALIBRATION
@@ -291,6 +313,7 @@ void MySD::EndOfEvent(G4HCofThisEvent*)
 #else
         scintBar->CalculateVariousPhysicalParameters(muonNum);
 #endif
+        onlyHittedBarVec.push_back(scintBar);
           //scintBar->CalculateVariousPhysicalParameters(muonNum,B1RunAction::fCalib);
         }
         if(onlyHittedBarVec.size() > 0){
@@ -303,6 +326,7 @@ void MySD::EndOfEvent(G4HCofThisEvent*)
     //std::cout <<"++++++++++++++++++++++++++++++++++++++++++++++++++++++++++" << std::endl;
     //verbose = true;
     if(verbose){
+    //if(true){
     std::cout<< "********** Printing onlyHittedBarVec ***********" << std::endl;
     for(unsigned int i = 0 ; i < onlyHittedBarVec.size() ; i++){
       onlyHittedBarVec[i]->Print();
@@ -313,6 +337,17 @@ void MySD::EndOfEvent(G4HCofThisEvent*)
     eventsVec.push_back(onlyHittedBarVec);
     lite_interface::SingleMuonTrack *smt = new lite_interface::SingleMuonTrack(onlyHittedBarVec);
     depositedEnergy = smt->GetEnergySum();
+    angleReconsExact = 3.14159-smt->GetZenithAngle_ExactHitPoint();
+
+    //smt->GetMean3DHitPointVector()
+    angleReconsMean = 3.14159 - smt->GetZenithAngle_MeanHitPoint();
+    angleReconsLinear = 3.14159 - smt->GetZenithAngle_Linear();
+    angleReconsParam = 3.14159 - smt->GetZenithAngle_Param();
+    //angleReconsLinear = smt->GetZenithAngle_Linear();
+    /*
+    angleReconsParam = smt->GetZenithAngle_Param();
+    angleReconsMean = smt->GetZenithAngle_MeanHitPoint();
+    angleReconsExact = smt->GetZenithAngle_ExactHitPoint();*/
     //std::cout << "Size of Muon Track : " << (smt->fSingleMuonTrack).size() << std::endl;
     if(reachedSensitiveRegion)
     	muonTrackVec.push_back(smt);
@@ -339,10 +374,11 @@ void MySD::EndOfEvent(G4HCofThisEvent*)
   }
   //B1RunAction::fExactHitDataTree->Fill(xvec,yvec,zvec);
   //B1RunAction::fExactHitDataTree->Fill(xvec,yvec,zvec,initialEnergy,depositedEnergy);
-  if(evNo < 20.){
+  /*if(evNo < 20.){
 	  std::cout << "EvNo. : " << evNo <<" : Injected Energy : " << initialEnergy << std::endl;
-  }
-  B1RunAction::fExactHitDataTree->Fill(xvec,yvec,zvec,initialEnergy,depositedEnergy,evNo);
+  }*/
+  //B1RunAction::fExactHitDataTree->Fill(xvec,yvec,zvec,initialEnergy,depositedEnergy,evNo);
+  B1RunAction::fExactHitDataTree->Fill(xvec,yvec,zvec,initialEnergy,depositedEnergy,evNo,angleCRY,angleReconsLinear, angleReconsParam, angleReconsMean, angleReconsExact);
 
 
 

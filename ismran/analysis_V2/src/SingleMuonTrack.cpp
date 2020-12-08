@@ -18,6 +18,8 @@ ClassImp(lite_interface::SingleMuonTrack)
 #endif
 namespace lite_interface {
 
+unsigned long int SingleMuonTrack::wrongTrackCounter = 0;
+
 SingleMuonTrack::SingleMuonTrack() {
 	// TODO Auto-generated constructor stub
 	//std::cout << "SINGLEMUONTRACK : DEfault Contructor called" << std::endl;
@@ -63,7 +65,7 @@ unsigned long int SingleMuonTrack::size(){
 }
 
 void SingleMuonTrack::Print(){
-	std::cout << "==== Print from SingleMuonTrack  : size : " << fSingleMuonTrack.size() << "  =====" << std::endl;
+	std::cout << "==== Print from SingleMuonTrack  : size : " << fSingleMuonTrack.size() << " : Zenith Angle : " << GetZenithAngle(4) <<"  =====" << std::endl;
 	for(unsigned int j = 0 ; j < fSingleMuonTrack.size() ; j++){
 		fSingleMuonTrack[j]->Print();
 	}
@@ -98,7 +100,8 @@ bool SingleMuonTrack::IsClearTrack(){
 	return clear;
 }
 
-#ifdef USE_FOR_SIMULATION
+//#ifdef USE_FOR_SIMULATION
+#if defined(USE_FOR_SIMULATION) || defined(FOR_SIMULATION)
 std::vector<lite_interface::Point3D*>  SingleMuonTrack::GetMean3DHitPointVector(){
 	std::vector<lite_interface::Point3D*> vectorOf3DHitPoint;
 	std::vector<ScintillatorBar_V2*>::iterator itr;
@@ -217,14 +220,31 @@ double SingleMuonTrack::GetZenithAngle(std::vector<lite_interface::Point3D*> vec
 	return muonDir.Angle(ref);
 }
 
+bool SingleMuonTrack::IsThroughTrack(){
+
+	if( (fSingleMuonTrack[0]->GetLayerIndex() == (numOfLayers-1)) && (fSingleMuonTrack[size()-1]->GetLayerIndex() == 0) )
+		return true;
+}
+
 double SingleMuonTrack::GetZenithAngle(int opt){
 	if(opt == 1){
-		return GetZenithAngle(CreateFittedTrack(Get3DHitPointVector()));
+		std::vector<lite_interface::Point3D*> pt3DVec = Get3DHitPointVector();
+		//return GetZenithAngle(CreateFittedTrack(Get3DHitPointVector()));
+		if(pt3DVec.size() > 2)
+			return GetZenithAngle(CreateFittedTrack(pt3DVec));
+		else
+			return -1.;
 	}
 	if(opt == 2){
-		return GetZenithAngle(CreateFittedTrack(Get3DHitPointVector_Param()));
+		std::vector<lite_interface::Point3D*> pt3DVec = Get3DHitPointVector_Param();
+		//return GetZenithAngle(CreateFittedTrack(Get3DHitPointVector_Param()));
+		if(pt3DVec.size() > 2)
+			return GetZenithAngle(CreateFittedTrack(pt3DVec));
+		else
+			return -1.;
 	}
-#ifdef USE_FOR_SIMULATION
+//#ifdef USE_FOR_SIMULATION
+#if defined(USE_FOR_SIMULATION) || defined(FOR_SIMULATION)
 	if(opt == 3){
 		std::vector<lite_interface::Point3D*> pt3DVec = GetMean3DHitPointVector();
 		/*std::cout << "========= Mean Hit Points of a track ========== " << std::endl;
@@ -232,12 +252,39 @@ double SingleMuonTrack::GetZenithAngle(int opt){
 			pt3DVec[j]->Print();
 		}*/
 
-		return GetZenithAngle(CreateFittedTrack(pt3DVec));
+		//std::cout << "Printing just before the calculation of Zenith angle using Mean hit point............" << std::endl;
+		if(pt3DVec.size() > 2)
+			return GetZenithAngle(CreateFittedTrack(pt3DVec));
+		else
+			return -1.;
 	}
 
 	if(opt == 4){
+		int count = 0;
 		std::vector<lite_interface::Point3D*> pt3DVec = GetExact3DHitPointVector();
-		return GetZenithAngle(CreateFittedTrack(pt3DVec));
+		if(pt3DVec.size() > 2){
+
+			/*std::cout << "========= Exact Hit Points of a track ========== " << std::endl;
+			for(unsigned int j = 0 ; j < pt3DVec.size() ; j++){
+				pt3DVec[j]->Print();
+			}*/
+
+			/*if(pt3DVec[0]->GetY() < pt3DVec[pt3DVec.size()-1]->GetY()){
+				std::cout << "WRONG TRACK ...." << std::endl;
+				wrongTrackCounter++;
+				return -1.;
+			}*/
+		}
+		/*std::cout <<"================== Printing Vector of Exact Hit point ===== : Size : " << pt3DVec.size() << "  ==========" << std::endl;
+		for(unsigned int i = 0 ; i < pt3DVec.size() ; i++){
+			pt3DVec[i]->Print();
+		}*/
+			//std::cout << "Printing just before the calculation of Zenith angle using Exact hit point............" << std::endl;
+			if(pt3DVec.size() > 2)
+				return GetZenithAngle(CreateFittedTrack(pt3DVec));
+			else
+				return -1.;
+		//return GetZenithAngle(pt3DVec);
 	}
 #endif
 }
@@ -247,7 +294,8 @@ double SingleMuonTrack::GetZenithAngle_Linear(){
 double SingleMuonTrack::GetZenithAngle_Param(){
 	return GetZenithAngle(2);
 }
-#ifdef USE_FOR_SIMULATION
+//#ifdef USE_FOR_SIMULATION
+#if defined(USE_FOR_SIMULATION) || defined(FOR_SIMULATION)
 double SingleMuonTrack::GetZenithAngle_MeanHitPoint(){
 	return GetZenithAngle(3);
 }

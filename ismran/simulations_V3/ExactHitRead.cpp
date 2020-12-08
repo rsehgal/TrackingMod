@@ -19,7 +19,7 @@
 #include "PsBar.h"
 #include "TApplication.h"
 int main(){
-	//TFile *fp = new TFile("TestExactHit.root","RECREATE");
+	TFile *fp = new TFile("TestExactHit.root","RECREATE");
 	TApplication *fApp = new TApplication("Test", NULL, NULL);
 	std::vector<double> *xVec = new std::vector<double>;
 	std::vector<double> *yVec = new std::vector<double>;
@@ -27,6 +27,16 @@ int main(){
 	double initialEnergy = 0.;
 	double depositedEnergy  = 0.;
 	unsigned int evNo = 0;
+
+	/*
+	 * Variables to read stored angles
+	 */
+	double fAngleCRY = 0.;
+	double fAngleReconsLinear = 0.;
+	double fAngleReconsParam = 0.;
+	double fAngleReconsMean = 0.;
+	double fAngleReconsExact = 0;
+
 	TFile *exactHitFile = new TFile("exactHitData.root","READ");
 	TTree *exactHitTree = (TTree*)exactHitFile->Get("ExactHitTree");
 	exactHitTree->SetBranchAddress("xVec",&xVec);
@@ -36,13 +46,35 @@ int main(){
 	exactHitTree->SetBranchAddress("DepositedEnergy", &depositedEnergy);
 	exactHitTree->SetBranchAddress("EvNo", &evNo);
 
+	exactHitTree->SetBranchAddress("angleCRY", &fAngleCRY);
+	exactHitTree->SetBranchAddress("angleMean", &fAngleReconsMean);
+	exactHitTree->SetBranchAddress("angleExact", &fAngleReconsExact);
+	exactHitTree->SetBranchAddress("angleLinear", &fAngleReconsLinear);
+	exactHitTree->SetBranchAddress("angleParam", &fAngleReconsParam);
+
+
 	Long64_t nentries = exactHitTree->GetEntries();
 	std::cout << "Num of Entries : " << nentries << std::endl;
 	Long64_t nbytes = 0;
 	std::vector<lite_interface::Point3D*> vecOfPoint3D;
+
+	TH1F *histExact = new TH1F("ExactAngularDistribution","Exact AngularDistribution",50,0.05, 0.96);
+	TH1F *histCRY = new TH1F("CRYAngularDistribution","CRY AngularDistribution",50,0.05, 0.96);
+	TH1F *histCRYAll = new TH1F("CRYAllAngularDistribution","CRY All AngularDistribution",50,0.05, 0.96);
+
+	std::cout << "Total Num of Entries : " << nentries << std::endl;
 	for(unsigned int i = 0 ; i < nentries ; i++){
 		vecOfPoint3D.clear();
 		nbytes += exactHitTree->GetEntry(i);
+
+		if(std::fabs(fAngleCRY-fAngleReconsExact) < 0.01){
+			//std::cout << "Angle Exact : " << fAngleReconsExact << std::endl;
+			histExact->Fill(fAngleReconsExact);
+			histCRY->Fill(fAngleCRY);
+		}
+
+		histCRYAll->Fill(fAngleCRY);
+
 		//if(i<20){
 		if(evNo<20){
 				std::cout << "===== i : " << i <<" ========= Size : " << xVec->size() << " =======================" << std::endl;
@@ -77,10 +109,29 @@ int main(){
 
 	}
 
-	//fp->Close();
+	TF1 *formula = new TF1("zenForm", "[0]*sin(x)*cos(x)*pow(cos(x),[1])", 0.05,0.96);
+	histExact->Fit(formula, "r");
+	histCRY->Fit(formula, "r");
+	histCRYAll->Fit(formula, "r");
+
+	std::cout << std::endl << "HistExact : " << histExact->GetEntries() << "  :: histCRY : " << histCRY->GetEntries() << " :: histCRYAll : " << histCRYAll->GetEntries() <<std::endl;
+
+	std::cout <<"@@@@@@@@@@@ Processed : " << nentries << " entries @@@@@@@@" << std::endl;
+	new TCanvas("Angular Distribution", "Angular Distribution");
+	histExact->Draw();
+	histCRY->Draw();
+	histCRYAll->Draw();
+
+	fp->cd();
+	histExact->Write();
+	histCRY->Write();
+	histCRYAll->Write();
+	fp->Close();
+
 	exactHitFile->Close();
 	fApp->Run();
 	return 0;
 
 }
+
 

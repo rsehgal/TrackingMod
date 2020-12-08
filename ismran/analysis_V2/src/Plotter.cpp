@@ -530,7 +530,7 @@ namespace lite_interface{
 		}
 		}
 		//TF1 *formula = new TF1("Cos2ThetaFit",Cos2ThetaFit,0.02,0.96,2);
-		zenithAngleHist->Scale(1/zenithAngleHist->Integral());
+		//zenithAngleHist->Scale(1/zenithAngleHist->Integral());
 		TF1 *formula = new TF1("zenForm", "[0]*sin(x)*cos(x)*pow(cos(x),[1])", 0.05,0.96);
 		zenithAngleHist->Fit(formula, "r");
 		return zenithAngleHist;
