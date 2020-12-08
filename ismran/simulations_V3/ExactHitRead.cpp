@@ -58,19 +58,33 @@ int main(){
 	Long64_t nbytes = 0;
 	std::vector<lite_interface::Point3D*> vecOfPoint3D;
 
-	TH1F *histExact = new TH1F("ExactAngularDistribution","Exact AngularDistribution",50,0.05, 0.96);
-	TH1F *histCRY = new TH1F("CRYAngularDistribution","CRY AngularDistribution",50,0.05, 0.96);
-	TH1F *histCRYAll = new TH1F("CRYAllAngularDistribution","CRY All AngularDistribution",50,0.05, 0.96);
+	int nbins = 100;
+	TH1F *histExact = new TH1F("ExactAngularDistribution","Exact AngularDistribution",nbins,0.05, 0.96);
+	TH1F *histCRY = new TH1F("CRYAngularDistribution","CRY AngularDistribution",nbins,0.05, 0.96);
+	TH1F *histCRYAll = new TH1F("CRYAllAngularDistribution","CRY All AngularDistribution",nbins,0.05, 0.96);
+	TH1F *histIniEnergy = new TH1F("InitialEnergy","InitialEnergy",100,0,15000);
+	TH1F *histDepoEnergy = new TH1F("DepositedEnergy","DepositedEnergy",100,0,500);
+	TH1F *histEnergyBasedAngularDist = new TH1F("EnergyBasedAngularDist","EnergyBasedAngularDist",nbins,0.05,0.96);
+	TH1F *histEnergyBasedAngularDistCRY = new TH1F("EnergyBasedAngularDistCRY","EnergyBasedAngularDistCRY",nbins,0.05,0.96);
+	TH1F *histEnergyBasedAngularDistLinear = new TH1F("AngularDistributionLinear","AngularDistributionLinear",nbins,0.05, 0.96);
 
 	std::cout << "Total Num of Entries : " << nentries << std::endl;
 	for(unsigned int i = 0 ; i < nentries ; i++){
 		vecOfPoint3D.clear();
 		nbytes += exactHitTree->GetEntry(i);
 
-		if(std::fabs(fAngleCRY-fAngleReconsExact) < 0.01){
+		if(std::fabs(fAngleCRY-fAngleReconsExact) < 0.001){
 			//std::cout << "Angle Exact : " << fAngleReconsExact << std::endl;
 			histExact->Fill(fAngleReconsExact);
 			histCRY->Fill(fAngleCRY);
+			histIniEnergy->Fill(initialEnergy);
+			histDepoEnergy->Fill(depositedEnergy);
+		}
+
+		if(depositedEnergy > 180 && depositedEnergy < 250){
+			histEnergyBasedAngularDist->Fill(fAngleReconsExact);
+			histEnergyBasedAngularDistCRY->Fill(fAngleCRY);
+			histEnergyBasedAngularDistLinear->Fill(fAngleReconsLinear);
 		}
 
 		histCRYAll->Fill(fAngleCRY);
@@ -113,6 +127,9 @@ int main(){
 	histExact->Fit(formula, "r");
 	histCRY->Fit(formula, "r");
 	histCRYAll->Fit(formula, "r");
+	histEnergyBasedAngularDist->Fit(formula, "r");
+	histEnergyBasedAngularDistCRY->Fit(formula, "r");
+	histEnergyBasedAngularDistLinear->Fit(formula, "r");
 
 	std::cout << std::endl << "HistExact : " << histExact->GetEntries() << "  :: histCRY : " << histCRY->GetEntries() << " :: histCRYAll : " << histCRYAll->GetEntries() <<std::endl;
 
@@ -126,6 +143,11 @@ int main(){
 	histExact->Write();
 	histCRY->Write();
 	histCRYAll->Write();
+	histIniEnergy->Write();
+	histDepoEnergy->Write();
+	histEnergyBasedAngularDist->Write();
+	histEnergyBasedAngularDistCRY->Write();
+	histEnergyBasedAngularDistLinear->Write();
 	fp->Close();
 
 	exactHitFile->Close();
