@@ -123,6 +123,9 @@ public:
 
 	virtual ~ScintillatorBar_V2();
 
+	lite_interface::Point3D* GetMeanHitPosition();
+	lite_interface::Point3D* GetExactHitPosition();
+
 #if defined(FOR_SIMULATION) || defined(USE_FOR_SIMULATION)
 	//Only for Simulation
 	ScintillatorBar_V2(ushort barIndex, ushort qlongNear, ushort qlongMean,
@@ -132,8 +135,8 @@ public:
 									ULong64_t tstampSmall, Long_t delTStamp,
 									double hitx, double hity, double hitz,
 									double exactHitX,double exactHity,double exactHitZ);
-	lite_interface::Point3D* GetMeanHitPosition();
-	lite_interface::Point3D* GetExactHitPosition();
+	/*lite_interface::Point3D* GetMeanHitPosition();
+	lite_interface::Point3D* GetExactHitPosition();*/
 #ifdef USE_CALIBRATION
 	void CalculateVariousPhysicalParameters(unsigned long muonNum, lite_interface::Calibration *calib);
 #endif

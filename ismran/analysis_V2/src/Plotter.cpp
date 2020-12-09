@@ -314,7 +314,7 @@ namespace lite_interface{
 
 				    for(unsigned int i = 0 ; i < vecOfHists.size() ; i++){
 				    	std::cout <<"NEntries in hist : " << i << " : " << vecOfHists[i]->GetEntries() << std::endl;
-				    	if(vecOfHists[i]->GetEntries() > 2)
+				    	if(vecOfHists[i]->GetEntries() > 0)
 				    		vecOfHists[i]->Scale(1/vecOfHists[i]->Integral());
 				    }
 				    return vecOfHists;

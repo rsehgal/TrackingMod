@@ -40,7 +40,9 @@ ScintillatorBar_V2::ScintillatorBar_V2(unsigned int bIndex):
 		,exactHitZ(0.)
 #endif
 		{
+#ifdef FOR_SIMULATION
 	fExactHitPosition = new Point3D();
+#endif
 
 }
 
