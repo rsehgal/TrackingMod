@@ -21,6 +21,7 @@
 #include "SingleMuonTrack.h"
 #include "Analyzer.h"
 int main(int argc,char *argv[]){
+	GenerateScintMatrixXYCenters();
 	/*
 	 * Set lite_interface::IsSimulation = true, if need to process simulated data file
 	 * else for experimental data set it to false
@@ -44,10 +45,10 @@ int main(int argc,char *argv[]){
 	std::vector<double> *energyVec = new std::vector<double>;
 	hitPointVecTree->SetBranchAddress("EnergyVector",&energyVec);
 	//hitPointVecTree_Param->SetBranchAddress("HitPointVec",&vecOfPoint3D_Param);
-
+#ifdef USE_FOR_SIMULATION
 	std::vector<lite_interface::Point3D*> *vecOfPoint3D_MeanHit = 0;
 	hitPointVecTree->SetBranchAddress("MeanHitPointVec",&vecOfPoint3D_MeanHit);
-
+#endif
 	Long64_t nentries = hitPointVecTree->GetEntries();
 
 	Long64_t nbytes = 0;
@@ -67,7 +68,15 @@ int main(int argc,char *argv[]){
 		std::vector<double> vecOfZenithAngle_MeanHit;
 #endif
 
+
+		std::vector<lite_interface::SingleMuonTrack*> smtVec;
+		TH1F *enerSumHist = new TH1F("EnergySumHist","EnergySumHist",100,100,300);
+
 	for (Long64_t i=0; i<nentries;i++) {
+
+		if(!(i%50000))
+			std::cout << "Processed  : " << i <<" / " << nentries<< " events" << std::endl;
+
 		energyVec->clear();
 		nbytes += hitPointVecTree->GetEntry(i);
 		/*for(unsigned int j=0 ; j < vecOfPoint3D->size() ; j++){
@@ -75,6 +84,8 @@ int main(int argc,char *argv[]){
 		}
 		return 0;*/
 		nbytes += trackTree->GetEntry(i);
+
+		smtVec.push_back(new lite_interface::SingleMuonTrack(*smt));
 		//nbytes += hitPointVecTree_Param->GetEntry(i);
 		histDiff->Fill((vecOfPoint3D->at(0)->GetZ() - vecOfPoint3D_Param->at(0)->GetZ()));
 		if(energySum > 400. || energySum < -400.)
@@ -84,6 +95,10 @@ int main(int argc,char *argv[]){
 		//return GetZenithAngle(CreateFittedTrack(Get3DHitPointVector()));
 		vecOfZenithAngle_Linear.push_back(GetZenithAngle(CreateFittedTrack(*vecOfPoint3D)));
 		vecOfZenithAngle_Param.push_back(GetZenithAngle(CreateFittedTrack(*vecOfPoint3D_Param)));
+
+
+		enerSumHist->Fill(energySum);
+
 #ifdef USE_FOR_SIMULATION
 		vecOfZenithAngle_MeanHit.push_back(GetZenithAngle(CreateFittedTrack(*vecOfPoint3D_MeanHit)));
 #endif
@@ -93,10 +108,11 @@ int main(int argc,char *argv[]){
 			std::cout << "------------ Event Num : " << i << " --------------------" << std::endl;
 			std::cout << "Energy sum : "  << energySum << std::endl;
 			smt->Print();
+#ifdef USE_FOR_SIMULATION
 			for(unsigned int k = 0 ; k < vecOfPoint3D_MeanHit->size() ; k++){
 				vecOfPoint3D_MeanHit->at(k)->Print();
 			}
-
+#endif
 			std::string title = "Event Num : "+std::to_string(i)+" : EnergySum : "+std::to_string(energySum);
 			TCanvas *can = new TCanvas(title.c_str(),title.c_str());
 			//TCanvas *can = new TCanvas();
@@ -159,6 +175,9 @@ int main(int argc,char *argv[]){
 	}
 
 	new TCanvas();
+	enerSumHist->Draw();
+
+	new TCanvas();
 	histDiff->Draw();
 
 	new TCanvas();
@@ -169,19 +188,33 @@ int main(int argc,char *argv[]){
 	gr->Write();
 	fw->Close();
 
+	std::cout << "Determining zenith angle distribution using Linear function........." << std::endl;
 	new TCanvas();
 	TH1F *histLinear=lite_interface::PlotZenithAngle(vecOfZenithAngle_Linear,1);
 	histLinear->Draw();
 
+	std::cout << "Determining zenith angle distribution using Parameterized function........." << std::endl;
 	new TCanvas();
 	TH1F *histParam=lite_interface::PlotZenithAngle(vecOfZenithAngle_Param,2);
 	histParam->Draw();
 
 #ifdef USE_FOR_SIMULATION
+	std::cout << "Determining zenith angle distribution from CRY using Mean Hit Point........." << std::endl;
 	new TCanvas();
 	TH1F *histMeanHit=lite_interface::PlotZenithAngle(vecOfZenithAngle_MeanHit,3);
 	histMeanHit->Draw();
 #endif
+
+	new TCanvas();
+	std::vector<TH1D*> vecHist = lite_interface::PlotEnergyDistributionWithMultiplicity(smtVec);
+	new TCanvas("Energy with multiplicity..","Energy with multiplicity..");
+	for(unsigned int i = 0; i < vecHist.size();  i++){
+		if(vecHist[i]->GetEntries() > 10){
+			vecHist[i]->Scale(1/vecHist[i]->Integral());
+			//new TCanvas();
+			vecHist[i]->Draw("same");
+		}
+	}
 
 	fApp->Run();
 	return 0;

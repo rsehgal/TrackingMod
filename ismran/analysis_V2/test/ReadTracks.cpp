@@ -246,7 +246,11 @@ int main(int argc,char *argv[]){
 	std::vector<TH1D*> vecHist = lite_interface::PlotEnergyDistributionWithMultiplicity(smtVec);
 	new TCanvas("Energy with multiplicity..","Energy with multiplicity..");
 	for(unsigned int i = 0; i < vecHist.size();  i++){
-		vecHist[i]->Draw("same");
+		if(vecHist[i]->GetEntries() > 10){
+			//vecHist[i]->Scale(1/vecHist[i]->Integral());
+			new TCanvas();
+			vecHist[i]->Draw();
+		}
 	}
 
 	std::cout << "@@@@@@@@ Wrong track Counter : " << lite_interface::SingleMuonTrack::wrongTrackCounter << std::endl;

@@ -233,6 +233,8 @@ void Analyzer::ReconstructMuonTrack(){
 	std::vector<lite_interface::Point3D*> *hitPointVec_Param = new std::vector<lite_interface::Point3D*>;
 	std::vector<lite_interface::SingleMuonTrack*> smtVec;
 	double energySum = 0;
+	double zenithAngleLinear = 0;
+	double zenithAngleParam = 0;
 	std::vector<double> *energyVec = new std::vector<double>;
 
 	unsigned int hitInAllLayersCounter = 0;
@@ -248,6 +250,8 @@ void Analyzer::ReconstructMuonTrack(){
 	std::vector<lite_interface::Point3D*> *meanHitPointVec = new std::vector<lite_interface::Point3D*>;
 	hitPointVecTree->Branch("MeanHitPointVec","std::vector<lite_interface::Point3D*>", &meanHitPointVec);
 #endif
+	hitPointVecTree->Branch("zenithAngleLinear", &zenithAngleLinear, "zenithAngleLinear/D");
+	hitPointVecTree->Branch("zenithAngleParam", &zenithAngleParam, "zenithAngleParam/D");
 	hitPointVecTree->Branch("EnergySum", &energySum, "energySum/D");
 	hitPointVecTree->Branch("EnergyVector","std::vector<double>", &energyVec);
 
@@ -264,7 +268,7 @@ void Analyzer::ReconstructMuonTrack(){
 		} else {
 			//Outside 20ns window, implied track ends, hence either store it in the vector of write it to the ROOT file
 			singleMuonTrack->Sort();
-			if(singleMuonTrack->size() > 1)
+			if(singleMuonTrack->size() > 4)
 			{
 
 				//if(singleMuonTrack->IsClearTrack())
@@ -282,6 +286,8 @@ void Analyzer::ReconstructMuonTrack(){
 					}
 
 					energySum = singleMuonTrack->GetEnergySum();
+					zenithAngleLinear = singleMuonTrack->GetZenithAngle_Linear();
+					zenithAngleParam = singleMuonTrack->GetZenithAngle_Param();
 					hitPointVec = &vec;
 
 

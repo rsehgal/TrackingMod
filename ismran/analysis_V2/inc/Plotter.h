@@ -70,7 +70,7 @@ namespace lite_interface{
 	//extern TCanvas* PlotEnergyDistributionWithMultiplicity(std::vector<SingleMuonTrack*> muonTrackVec, unsigned int multiplicity = numOfLayers);
 	extern std::vector<TH1D*> PlotEnergyDistributionWithMultiplicity(std::vector<SingleMuonTrack*> muonTrackVec);
 	extern std::vector<TH1D*> PlotEnergyDistributionWithMultiplicity_Old(std::vector<SingleMuonTrack*> muonTrackVec, unsigned int multiplicity = numOfLayers);
-
+	extern std::vector<TH1D*> PlotEnergyDistributionWithMultiplicity(std::vector<unsigned int> sizeVector, std::vector<double> energySumVector);
 	/*
 	 * Functions to get the fitted tracks
 	 *
@@ -84,6 +84,8 @@ namespace lite_interface{
 	extern TH1F* PlotZenithAngle(std::vector<SingleMuonTrack*> muonTrackVec, int opt=1);
 	extern double GetZenithAngle(std::vector<lite_interface::Point3D*> vecOfPoint3D);
 	extern TH1F* PlotZenithAngle(std::vector<double> zenithAngleVect,int opt);
+	extern TH1F* Plot_Acc_Corr_ZenithAngle(std::vector<double> zenithAngleVect,int opt);
+	extern int GetBinNumber(int nbins,double start,double end);
 
 } /* End of lite_interface */
 #endif /* ISMRAN_ANALYSIS_V2_INC_PLOTTER_H_ */
