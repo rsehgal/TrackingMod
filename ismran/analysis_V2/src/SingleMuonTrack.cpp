@@ -187,8 +187,12 @@ std::vector<lite_interface::Point3D*> SingleMuonTrack::GetFittedTrack(int opt){
 double SingleMuonTrack::GetEnergySum(){
 	double energySum = 0;
 	std::vector<ScintillatorBar_V2*>::iterator itr;
+	//std::cout << "Size of SingleMuon Track : " << size() << std::endl;
+	//std::cout <<"==================================" << std::endl;
 	for(itr = fSingleMuonTrack.begin() ; itr != fSingleMuonTrack.end() ; itr++){
-		energySum += (*itr)->GetQMeanCorrected();
+		double ener = (*itr)->GetQMeanCorrected();
+		//std::cout << "Energy :  "<< ener << std::endl;
+		energySum += ener;
 	}
 	//std::cout << "Energy Sum : " << energySum << std::endl;
 	return energySum;

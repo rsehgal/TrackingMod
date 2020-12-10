@@ -292,6 +292,35 @@ namespace lite_interface{
 		return energSumHist;
 	}
 
+	std::vector<TH1D*> PlotEnergyDistributionWithMultiplicity(std::vector<unsigned int> sizeVector, std::vector<double> energySumVector){
+
+		std::vector<TH1D*> vecOfHists;
+				    for(unsigned int i = 0 ; i < numOfLayers ; i++){
+				    	std::cout << "Inserting histogram for layer : " << i << std::endl;
+				    	std::string title = "layer-"+std::to_string(i);
+				    	vecOfHists.push_back(new TH1D(title.c_str(),title.c_str(),500,10,250));
+				    	vecOfHists[i]->SetLineColor(i+1);
+				    }
+
+				    std::cout << "Szie of MuonTrcke Vector : " << sizeVector.size()  << std::endl;
+
+				    for(unsigned int i = 0 ; i < sizeVector.size() ; i ++){
+				    	if(sizeVector[i] > 0 && sizeVector[i] <= numOfLayers){
+							if(energySumVector[i] > 0. && energySumVector[i] < 400.)
+								vecOfHists[sizeVector[i]-1]->Fill(energySumVector[i]);
+				    	}
+
+				    }
+
+				    for(unsigned int i = 0 ; i < vecOfHists.size() ; i++){
+				    	std::cout <<"NEntries in hist : " << i << " : " << vecOfHists[i]->GetEntries() << std::endl;
+				    	//if(vecOfHists[i]->GetEntries() > 0)
+				    		//vecOfHists[i]->Scale(1/vecOfHists[i]->Integral());
+				    }
+				    return vecOfHists;
+	}
+
+
 	std::vector<TH1D*> PlotEnergyDistributionWithMultiplicity(std::vector<SingleMuonTrack*> muonTrackVec){
 
 		std::vector<TH1D*> vecOfHists;
@@ -307,15 +336,24 @@ namespace lite_interface{
 				    for(unsigned int i = 0 ; i < muonTrackVec.size() ; i ++){
 				    	if(muonTrackVec[i]->size() > 0 && muonTrackVec[i]->size() <= numOfLayers){
 				    		//std::cout << "Size : " << muonTrackVec[i]->size() <<" : EnergySum : " << muonTrackVec[i]->GetEnergySum() << std::endl;
-				    		vecOfHists[muonTrackVec[i]->size()-1]->Fill(muonTrackVec[i]->GetEnergySum());
+				    		double energySum = 0.;
+#ifdef USE_FOR_SIMULATION
+				    		//vecOfHists[muonTrackVec[i]->size()-1]->Fill(muonTrackVec[i]->GetEnergySum());
+							energySum = muonTrackVec[i]->GetEnergySum();
+#else
+				    		//vecOfHists[muonTrackVec[i]->size()-1]->Fill(muonTrackVec[i]->GetEnergySum()/1000.);
+							energySum = muonTrackVec[i]->GetEnergySum()/1000.;
+#endif
+							if(energySum > 0. && energySum < 400.)
+								vecOfHists[muonTrackVec[i]->size()-1]->Fill(energySum);
 				    	}
 
 				    }
 
 				    for(unsigned int i = 0 ; i < vecOfHists.size() ; i++){
 				    	std::cout <<"NEntries in hist : " << i << " : " << vecOfHists[i]->GetEntries() << std::endl;
-				    	if(vecOfHists[i]->GetEntries() > 0)
-				    		vecOfHists[i]->Scale(1/vecOfHists[i]->Integral());
+				    	/*if(vecOfHists[i]->GetEntries() > 0)
+				    		vecOfHists[i]->Scale(1/vecOfHists[i]->Integral());*/
 				    }
 				    return vecOfHists;
 	}
@@ -464,6 +502,62 @@ namespace lite_interface{
 		return muonDir.Angle(ref);
 	}
 
+	int GetBinNumber(int nbins,double start,double end , double val){
+		double binwidth = (end - start)/nbins;
+		return (int)(val/binwidth);
+	}
+
+	TH1F* Plot_Acc_Corr_ZenithAngle(std::vector<double> zenithAngleVect,int opt){
+		int numOfBins = 50;
+		double startangle = 0.02;
+		double endangle = 1.5;
+
+		std::string title="";
+		if(opt==1)
+			title = "ZenithAngleLinear";
+		if(opt==2)
+			title = "ZenithAngleParam";
+		if(opt==3)
+			title = "ZenithAngleMeanHitPoint";
+		if(opt==3)
+			title = "ZenithAngleCRY";
+		TH1F *zenithAngleHist = new TH1F(title.c_str(), title.c_str(),numOfBins,startangle,endangle);
+		//TH1F *zenithAngleHist = new TH1F(title.c_str(), title.c_str(),numOfBins,0.02,1.5);
+		for (unsigned int i = 0 ; i < zenithAngleVect.size();  i++){
+			//if(zenithAngleVect[i] < 0.96)
+			if(zenithAngleVect[i] < endangle)
+				zenithAngleHist->Fill(zenithAngleVect[i]);
+		}
+
+		int startAcceptanceBinNum = GetBinNumber(numOfBins,startangle,endangle,M_PI/4.);
+		std::cout << "BIN CENTER : " << zenithAngleHist->GetBinCenter(startAcceptanceBinNum) << std::endl;
+		/*long int denoBinContent = 0;
+		for(unsigned int i = startAcceptanceBinNum ; i < zenithAngleHist->GetNbinsX(); i++){
+			denoBinContent += zenithAngleHist->GetBinContent(i);
+		}
+
+		std::cout << "DenoContent : " << denoBinContent << std::endl;
+		 */
+		long int startBinContent = zenithAngleHist->GetBinContent(startAcceptanceBinNum);
+		//long int startBinContent = denoBinContent;
+		for(unsigned int i = startAcceptanceBinNum ; i < zenithAngleHist->GetNbinsX(); i++){
+			long int initialContent = zenithAngleHist->GetBinContent(i);
+			double weightFactor = ( 1.0*initialContent / startBinContent );
+			std::cout << "WeightFactor : " << weightFactor << std::endl;
+			long int contentToSet = (weightFactor * initialContent);
+			std::cout << "CONTENT TO SET : " << contentToSet << std::endl;
+			zenithAngleHist->SetBinContent(i,contentToSet);
+			std::cout << "Initial Bin Content : " << initialContent << " : Acc corr Bin Content : " << zenithAngleHist->GetBinContent(i) << std::endl;
+		}
+
+
+		zenithAngleHist->Scale(1/zenithAngleHist->Integral());
+		//TF1 *formula = new TF1("zenForm", "[0]*sin(x)*cos(x)*pow(cos(x),[1])", 0.05,0.96);
+		TF1 *formula = new TF1("zenForm", "[0]*sin(x)*cos(x)*pow(cos(x),[1])", startangle,endangle);
+		zenithAngleHist->Fit(formula, "r");
+		return zenithAngleHist;
+	}
+
 	TH1F* PlotZenithAngle(std::vector<double> zenithAngleVect,int opt){
 		int numOfBins = 50;
 		std::string title="";
@@ -476,15 +570,19 @@ namespace lite_interface{
 		if(opt==3)
 			title = "ZenithAngleCRY";
 		TH1F *zenithAngleHist = new TH1F(title.c_str(), title.c_str(),numOfBins,0.02,0.96);
+		//TH1F *zenithAngleHist = new TH1F(title.c_str(), title.c_str(),numOfBins,0.02,1.5);
 		for (unsigned int i = 0 ; i < zenithAngleVect.size();  i++){
 			if(zenithAngleVect[i] < 0.96)
+			//if(zenithAngleVect[i] < 1.5)
 				zenithAngleHist->Fill(zenithAngleVect[i]);
 		}
 		zenithAngleHist->Scale(1/zenithAngleHist->Integral());
 		TF1 *formula = new TF1("zenForm", "[0]*sin(x)*cos(x)*pow(cos(x),[1])", 0.05,0.96);
+		//TF1 *formula = new TF1("zenForm", "[0]*sin(x)*cos(x)*pow(cos(x),[1])", 0.05,1.5);
 		zenithAngleHist->Fit(formula, "r");
 		return zenithAngleHist;
 	}
+
 
 	TH1F* PlotZenithAngle(std::vector<SingleMuonTrack*> muonTrackVec, int opt){
 		TVector3 ref(0.,-1.,0.);
@@ -496,18 +594,18 @@ namespace lite_interface{
 			title = "ZenithAngleParam";
 		if(opt==3)
 			title = "ZenithAngleMeanHitPoint";
-		TH1F *zenithAngleHist = new TH1F(title.c_str(), title.c_str(),numOfBins,0.02,0.96);
+		TH1F *zenithAngleHist = new TH1F(title.c_str(), title.c_str(),numOfBins,0.02,1.5);
 		std::cout << "Size of Muon Track Vector : " << muonTrackVec.size() << std::endl;
 		for(unsigned int trackIndex = 0 ; trackIndex < muonTrackVec.size() ; trackIndex++){
 			if(muonTrackVec[trackIndex]->size() > 5){
 			if(opt == 1){
 				double angleVal = muonTrackVec[trackIndex]->GetZenithAngle_Linear();
-				if(angleVal < 0.96)
+				//if(angleVal < 0.96)
 					zenithAngleHist->Fill(angleVal);
 			}
 			if(opt == 2){
 				double angleVal = muonTrackVec[trackIndex]->GetZenithAngle_Param();
-				if(angleVal < 0.96)
+				//if(angleVal < 0.96)
 					zenithAngleHist->Fill(angleVal);
 				//zenithAngleHist->Fill(muonTrackVec[trackIndex]->GetZenithAngle_Param());
 			}
@@ -531,7 +629,7 @@ namespace lite_interface{
 		}
 		//TF1 *formula = new TF1("Cos2ThetaFit",Cos2ThetaFit,0.02,0.96,2);
 		//zenithAngleHist->Scale(1/zenithAngleHist->Integral());
-		TF1 *formula = new TF1("zenForm", "[0]*sin(x)*cos(x)*pow(cos(x),[1])", 0.05,0.96);
+		TF1 *formula = new TF1("zenForm", "[0]*sin(x)*cos(x)*pow(cos(x),[1])", 0.05,1.5);
 		zenithAngleHist->Fit(formula, "r");
 		return zenithAngleHist;
 		//gr->Fit(formula,"r");
