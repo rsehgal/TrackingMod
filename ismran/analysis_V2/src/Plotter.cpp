@@ -558,8 +558,25 @@ namespace lite_interface{
 		return zenithAngleHist;
 	}
 
+	TH1F* GetSolidAngleCorrectedHist(TH1F* solidAngleHist){
+
+		int nbins = 100;
+		TH1F *solidAngleCorrectedHist = new TH1F(Form("Solid angle corrected %s",solidAngleHist->GetName()),
+												 Form("Solid angle corrected %s",solidAngleHist->GetName()),
+												 nbins,0.05,M_PI/2.);
+			solidAngleCorrectedHist->GetYaxis()->SetTitle("I_{#theta}  ( cm^{-2}sec^{-1}st^{-1})");
+			solidAngleCorrectedHist->GetXaxis()->SetTitle("#theta (radian)");
+		      for(int i =0  ; i < nbins ; i++){
+		      	double binCenter = solidAngleHist->GetXaxis()->GetBinCenter(i);
+		      	double binContent = solidAngleHist->GetBinContent(i);
+		      	//std::cout << "binContent : " << binContent << " : binCenter : " << binCenter << std::endl;
+		      	solidAngleCorrectedHist->SetBinContent(i,binContent/(2*M_PI*std::sin(binCenter)*std::cos(binCenter)));
+		      }
+		    return solidAngleCorrectedHist;
+	}
+
 	TH1F* PlotZenithAngle(std::vector<double> zenithAngleVect,int opt){
-		int numOfBins = 50;
+		int numOfBins = 100;
 		std::string title="";
 		if(opt==1)
 			title = "ZenithAngleLinear";
@@ -569,19 +586,20 @@ namespace lite_interface{
 			title = "ZenithAngleMeanHitPoint";
 		if(opt==3)
 			title = "ZenithAngleCRY";
-		TH1F *zenithAngleHist = new TH1F(title.c_str(), title.c_str(),numOfBins,0.02,0.96);
+		TH1F *zenithAngleHist = new TH1F(title.c_str(), title.c_str(),numOfBins,0.05,M_PI/2.);
 		//TH1F *zenithAngleHist = new TH1F(title.c_str(), title.c_str(),numOfBins,0.02,1.5);
 		for (unsigned int i = 0 ; i < zenithAngleVect.size();  i++){
 			if(zenithAngleVect[i] < 0.96)
 			//if(zenithAngleVect[i] < 1.5)
 				zenithAngleHist->Fill(zenithAngleVect[i]);
 		}
-		zenithAngleHist->Scale(1/zenithAngleHist->Integral());
-		TF1 *formula = new TF1("zenForm", "[0]*sin(x)*cos(x)*pow(cos(x),[1])", 0.05,0.96);
+		//zenithAngleHist->Scale(1/zenithAngleHist->Integral());
+		TF1 *formula = new TF1("zenForm", "[0]*sin(x)*cos(x)*pow(cos(x),[1])", 0.05,M_PI/2.);
 		//TF1 *formula = new TF1("zenForm", "[0]*sin(x)*cos(x)*pow(cos(x),[1])", 0.05,1.5);
 		zenithAngleHist->Fit(formula, "r");
 		return zenithAngleHist;
 	}
+
 
 
 	TH1F* PlotZenithAngle(std::vector<SingleMuonTrack*> muonTrackVec, int opt){

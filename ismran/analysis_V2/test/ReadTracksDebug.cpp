@@ -22,12 +22,13 @@
 int main(int argc,char *argv[]){
 	lite_interface::IsSimulation = true;
 	TApplication *fApp = new TApplication("Test", NULL, NULL);
+	TH1F *hist = new TH1F("Hist","Hist",90,0, M_PI/2.);
 	GenerateScintMatrixXYCenters();
 	lite_interface::SingleMuonTrack *smt = new lite_interface::SingleMuonTrack;
 	//std::vector<lite_interface::ScintillatorBar_V2*> fSingleMuonTrack;
 
 	//std::vector<lite_interface::ScintillatorBar_V2*> *smt = new std::vector<lite_interface::ScintillatorBar_V2*>;
-	//lite_interface::Calibration *calib = lite_interface::Calibration::instance("/home/rsehgal/BackBoneSoftwares/ismranData/completeCalib.root");
+	lite_interface::Calibration *calib = lite_interface::Calibration::instance("/home/rsehgal/BackBoneSoftwares/ismranData/completeCalib.root");
 	std::string inputFileName=argv[1];
 	TFile *trackFile = new TFile(inputFileName.c_str(),"READ");
 	TTree *trackTree = (TTree*)trackFile->Get("TracksTree");
@@ -40,14 +41,21 @@ int main(int argc,char *argv[]){
 
 	Long64_t nbytes = 0;
 	for (Long64_t i=0; i<nentries;i++) {
-		std::cout << "===============================" << std::endl;
+		//std::cout << "===============================" << std::endl;
 			nbytes += trackTree->GetEntry(i);
-			smt->Print();
+			if(!(i%10000) && i!=0)
+				std::cout << "Processed : " << i <<" reconstructed muon tracks...." << std::endl;
+			//smt->Print();
+			hist->Fill(smt->GetZenithAngle());
 			/*std::cout << "===============================" << std::endl;
 			for(unsigned int j = 0 ; j < fSingleMuonTrack.size() ; j++){
 				fSingleMuonTrack[j]->Print();
 			}*/
 	}
+
+	hist->Draw();
+
+	fApp->Run();
 
 	return 0;
 

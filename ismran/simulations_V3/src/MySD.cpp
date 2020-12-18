@@ -39,7 +39,7 @@ double MySD::initialEnergy = 0;
 double MySD::depositedEnergy = 0;
 bool MySD::enteredMatrix = false;
 std::vector<std::pair<std::string,G4ThreeVector>> MySD::vecOfPairs;
-double MySD::angle = 0.;
+double MySD::angle = -1.50;
 
 G4ThreeVector FindExactHitPoint(std::string barName){
 	for(unsigned short i = 0 ; i < MySD::vecOfPairs.size() ; i++){
@@ -228,14 +228,16 @@ void MySD::EndOfEvent(G4HCofThisEvent*)
 	/*
 	 * Angles that we want to store in Root file
 	 */
-	double angleCRY = 0.;
-	double angleReconsLinear = 0.;
+	double angleCRY = -1.;
+	double angleReconsLinear = -1.;
 	double angleReconsParam = 0.;
 	double angleReconsMean = 0.;
 	double angleReconsExact = 0;
 
+	//COMMENTING FOR THE TIME BEING
 	angleCRY = angle;
 
+	//[p0]*sin(x)*cos(x)*pow(cos(x),[p1])
 
 	if(verbose){
   std::cout <<"++++"<<std::endl;
@@ -337,11 +339,17 @@ void MySD::EndOfEvent(G4HCofThisEvent*)
     eventsVec.push_back(onlyHittedBarVec);
     lite_interface::SingleMuonTrack *smt = new lite_interface::SingleMuonTrack(onlyHittedBarVec);
     depositedEnergy = smt->GetEnergySum();
-    angleReconsExact = 3.14159-smt->GetZenithAngle_ExactHitPoint();
+    double exactHitZenithAngle = smt->GetZenithAngle_ExactHitPoint();
+    angleReconsExact = 3.14159-exactHitZenithAngle;
+    /*if(exactHitZenithAngle > 0){
+    	angleCRY = angle;
+    }*/
+
 
     //smt->GetMean3DHitPointVector()
     angleReconsMean = 3.14159 - smt->GetZenithAngle_MeanHitPoint();
-    angleReconsLinear = 3.14159 - smt->GetZenithAngle_Linear();
+    if(smt->size() > 8)
+    	angleReconsLinear = 3.14159 - smt->GetZenithAngle_Linear();
     angleReconsParam = 3.14159 - smt->GetZenithAngle_Param();
     //angleReconsLinear = smt->GetZenithAngle_Linear();
     /*

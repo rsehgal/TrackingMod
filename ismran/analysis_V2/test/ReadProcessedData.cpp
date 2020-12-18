@@ -48,8 +48,9 @@ int main(int argc,char *argv[]){
 	std::vector<double> *energyVec = new std::vector<double>;
 	hitPointVecTree->SetBranchAddress("EnergyVector",&energyVec);
 
+	int nbins = 100;
 
-	TH1F *enerSumHist = new TH1F("EnergySumHist","EnergySumHist",100,0,300);
+	TH1F *enerSumHist = new TH1F("EnergySumHist","EnergySumHist",nbins,0,300);
 
 
 		std::cout <<"Total entries to be processed : " << nentries << std::endl;
@@ -59,6 +60,10 @@ int main(int argc,char *argv[]){
 
 	std::vector<double> zenithAngleVectorLinear;
 	std::vector<double> zenithAngleVectorParam;
+
+
+
+	TH1F *histZen = new TH1F("NewZenHist","NewZenHist",nbins,0.05,M_PI/2.);
 
 	for (Long64_t i=0; i<nentries;i++) {
 
@@ -79,6 +84,8 @@ int main(int argc,char *argv[]){
 		zenithAngleVectorLinear.push_back(zenithAngleLinear);
 		zenithAngleVectorParam.push_back(zenithAngleParam);
 
+		histZen->Fill(zenithAngleLinear);
+
 
 	} //end of Event loop
 
@@ -86,10 +93,11 @@ int main(int argc,char *argv[]){
 	enerSumHist->Draw();
 
 	new TCanvas();
-	lite_interface::PlotZenithAngle(zenithAngleVectorLinear,1)->Draw();
+	TH1F *zenithAngleLinearHist = lite_interface::GetSolidAngleCorrectedHist(lite_interface::PlotZenithAngle(zenithAngleVectorLinear,1));
+	zenithAngleLinearHist->Draw();
 
 	new TCanvas();
-	lite_interface::PlotZenithAngle(zenithAngleVectorParam,2)->Draw();
+	lite_interface::GetSolidAngleCorrectedHist(lite_interface::PlotZenithAngle(zenithAngleVectorParam,2))->Draw();
 
 	/*new TCanvas();
 	lite_interface::Plot_Acc_Corr_ZenithAngle(zenithAngleVectorLinear,1)->Draw();
@@ -110,6 +118,26 @@ int main(int argc,char *argv[]){
 		}
 	}
 
+
+	TFile *fp = new TFile("acceptance.root","READ");
+	TH1F *acceptanceHist = (TH1F*)fp->Get("AcceptanceHist");
+	TH1F *newHist = new TH1F("AcceptanceAppliedHist","AcceptanceAppliedHist",nbins,0.05,M_PI/2.);
+	//double startBinVal = acceptanceHist->GetBinContent(0);
+	for(unsigned int i = 0 ; i < zenithAngleLinearHist->GetNbinsX() ; i++){
+		int currentVal = zenithAngleLinearHist->GetBinContent(i);
+		//int refVal = acceptanceHist->GetBinContent(i);
+		//double weightFactor = (1.0*currentVal) / (1.0*refVal);
+		double weightFactor = acceptanceHist->GetBinContent(i);
+
+		//int currZenVal = histZen->GetBinContent(i);
+		//if(weightFactor > 0.)
+		//newHist->SetBinContent(i,currZenVal*weightFactor);
+		if(weightFactor > 0.)
+			newHist->SetBinContent(i,currentVal/weightFactor);
+	}
+
+	new TCanvas("Acceptance applied hist");
+	newHist->Draw();
 
 	fApp->Run();
 	return 0;

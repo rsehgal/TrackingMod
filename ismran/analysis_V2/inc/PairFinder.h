@@ -27,6 +27,13 @@ public:
 	std::vector<TreeEntry*> GetVectorOfPairedTreeEntries() const;
 	virtual ~PairFinder();
 
+
+	/*
+	 * Variable for Shots mechanism
+	 */
+	static unsigned int numOfShots;
+	static unsigned int shotNo;
+
 };
 }/* End of lite_interface namespace */
 

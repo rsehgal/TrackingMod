@@ -83,6 +83,9 @@ target_link_libraries(ReadVect3DTracks ${ROOT_LIBRARIES} Tracklib)
 add_executable(ReadProcessedData test/ReadProcessedData.cpp ${sources} ${headers})
 target_link_libraries(ReadProcessedData ${ROOT_LIBRARIES} Tracklib)
 
+add_executable(ReadExactHitData test/ReadExactHitData.cpp ${sources} ${headers})
+target_link_libraries(ReadExactHitData ${ROOT_LIBRARIES} Tracklib)
+
 #add_executable(ReadTracks_V2 test/ReadTracks_V2.cpp ${sources} ${headers})
 #target_link_libraries(ReadTracks_V2 ${ROOT_LIBRARIES}  Tracklib)
 
