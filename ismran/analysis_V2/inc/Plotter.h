@@ -87,5 +87,8 @@ namespace lite_interface{
 	extern TH1F* Plot_Acc_Corr_ZenithAngle(std::vector<double> zenithAngleVect,int opt);
 	extern int GetBinNumber(int nbins,double start,double end);
 
+
+	extern TH1F* GetSolidAngleCorrectedHist(TH1F* solidAngleHist);
+
 } /* End of lite_interface */
 #endif /* ISMRAN_ANALYSIS_V2_INC_PLOTTER_H_ */

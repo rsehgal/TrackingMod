@@ -43,6 +43,13 @@ public:
 	 */
 	PairFinder* GetPairFinder()const;
 	std::vector<ScintillatorBar_V2*> GetVectorOfScintillators()const;
+
+
+	/*
+	 * variable for Shots mechanism
+	 */
+	static int numOfShots;
+	static int shotNo;
 };
 
 } /* namespace lite_interface */

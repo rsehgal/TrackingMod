@@ -4,6 +4,9 @@
 
 namespace lite_interface{
 
+unsigned int PairFinder::numOfShots = 0;
+unsigned int PairFinder::shotNo = 0;
+
 PairFinder::PairFinder(){
 
 }
@@ -37,7 +40,10 @@ void PairFinder::LoadDataAndSort() {
 
 	Long64_t nb = 0;
 
-	for (Long64_t iev = 0; iev < nEntries; iev++) {
+	unsigned long int numOfEventsInOneShot = nEntries/numOfShots;
+
+	//for (Long64_t iev = 0; iev < nEntries; iev++) {
+	for (Long64_t iev = (shotNo-1)*numOfEventsInOneShot; iev < shotNo*numOfEventsInOneShot; iev++) {
 			nb += tr->GetEntry(iev);
 			if (0)
 				std::cout << brch << " , " << qlong << " , " << tstamp << " , " << time << std::endl;

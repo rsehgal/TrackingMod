@@ -17,6 +17,8 @@
 namespace lite_interface {
 
 bool IsSimulation = false;
+int Analyzer::numOfShots = 0;
+int Analyzer::shotNo = 0;
 
 bool Analyzer::CompareTimestampScintillator(ScintillatorBar_V2 *i1, ScintillatorBar_V2 *i2){
 	return (i1->fTSmallTimeStamp < i2->fTSmallTimeStamp);
@@ -56,9 +58,11 @@ std::vector<ScintillatorBar_V2*> Analyzer::GetVectorOfScintillators()const{
 
 void Analyzer::CreateScintillatorVector(){
 	std::vector<TreeEntry*> vectorOfPairedTreeEntries = fPairFinder->GetVectorOfPairedTreeEntries();
+	//unsigned long int numOfPairsInOneShot = vectorOfPairedTreeEntries.size()/numOfShots;
 	std::cout << "TRYING TO CREATE VECTOR OF SCINTILLATORS>>......................... : Size : " << vectorOfPairedTreeEntries.size() << std::endl;
 #if(1)
 	for(unsigned long int i = 0 ; i < vectorOfPairedTreeEntries.size(); ){
+	//for(unsigned long int i = (shotNo-1)*numOfPairsInOneShot ; i < shotNo*numOfPairsInOneShot; ){
 		Double_t qmean = sqrt(vectorOfPairedTreeEntries[i]->qlong * vectorOfPairedTreeEntries[i+1]->qlong);
 		ULong64_t tstampSmall = (vectorOfPairedTreeEntries[i]->tstamp < vectorOfPairedTreeEntries[i+1]->tstamp) ?
 								 vectorOfPairedTreeEntries[i]->tstamp : vectorOfPairedTreeEntries[i+1]->tstamp;
@@ -268,7 +272,7 @@ void Analyzer::ReconstructMuonTrack(){
 		} else {
 			//Outside 20ns window, implied track ends, hence either store it in the vector of write it to the ROOT file
 			singleMuonTrack->Sort();
-			if(singleMuonTrack->size() > 4)
+			if(singleMuonTrack->size() > 8)
 			{
 
 				//if(singleMuonTrack->IsClearTrack())
