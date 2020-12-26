@@ -152,14 +152,29 @@ lite_interface::Point3D* ScintillatorBar_V2::EstimateHitPosition_Param(){
 	//double zval = ( 4.545454545 * ( GetDelTCorrected()/1000. + 11.)) - 50.;
 	TF1 *param = lite_interface::Calibration::instance()->GetCalibrationDataOf(fBarIndex)->fParameterization_F;
 	double zval = 0.;
-	if(IsSimulation)
-		zval = param->Eval(GetDelTCorrected()/1000.);
-	else
-		zval = param->Eval(GetDelTCorrected()/1000.);
+	double xOrZval = 0.;
 
+	if(IsSimulation)
+		xOrZval = param->Eval(GetDelTCorrected()/1000.);
+	else
+		xOrZval = param->Eval(GetDelTCorrected()/1000.);
+
+#ifdef STAGGERED_GEOM
+	if(GetLayerIndex()%2){
+		return (new lite_interface::Point3D(xOrZval,
+						 vecOfScintXYCenter[fBarIndex].y,
+						 vecOfScintXYCenter[fBarIndex].x));
+	}else{
+		return (new lite_interface::Point3D(vecOfScintXYCenter[fBarIndex].x,
+								 vecOfScintXYCenter[fBarIndex].y,
+								 xOrZval));
+	}
+
+#else
 	return (new lite_interface::Point3D(vecOfScintXYCenter[fBarIndex].x,
 						 vecOfScintXYCenter[fBarIndex].y,
-						 zval));
+						 xOrZval));
+#endif
 }
 
 void ScintillatorBar_V2::EstimateHitPositionAlongX(){

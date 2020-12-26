@@ -29,6 +29,7 @@ public:
 	Analyzer();
 	//Analyzer(std::string datafileName,std::string outputfileName, bool simulation=false);
 	Analyzer(std::string datafileName,std::string outputfileName);
+	Analyzer(std::string datafileName );
 	void CreateScintillatorVector();
 #ifdef USE_FOR_SIMULATION
 	void CreateScintillatorVector_FromSimulation();

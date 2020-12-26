@@ -27,7 +27,7 @@ int main(int argc,char *argv[]){
 	 * else for experimental data set it to false
 	 */
 	lite_interface::IsSimulation = true;
-	lite_interface::Calibration *calib = lite_interface::Calibration::instance("/home/rsehgal/BackBoneSoftwares/ismranData/completeCalib.root");
+	lite_interface::Calibration *calib = lite_interface::Calibration::instance("/home/rsehgal/BackBoneSoftwares/ismranData/completeCalib2.root");
 
 	TApplication *fApp = new TApplication("Test", NULL, NULL);
 	std::string outputFileName=argv[1];

@@ -23,6 +23,7 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${PROJECT_SOURCE_DIR}/cmake/modules)
 option(CRY "Enable CRY library for cosmic event generation" OFF)
 option(USE_CALIBRATION "Use Calibration data for Sampling of time" OFF)
 option(USE_FOR_SIMULATION "Use Analyzer for simulated data" OFF)
+option(STAGGERED_GEOM "Use Scattered geometry configurtion" OFF)
 
 option(WITH_GEANT4_UIVIS "Build example with Geant4 UI and Vis drivers" ON)
 if(WITH_GEANT4_UIVIS)
@@ -30,6 +31,10 @@ if(WITH_GEANT4_UIVIS)
 else()
   find_package(Geant4 REQUIRED)
 endif()
+
+if(STAGGERED_GEOM)
+add_definitions(-DSTAGGERED_GEOM)
+endif(STAGGERED_GEOM)
 
 if(CRY)
 add_definitions(-DUSE_CRY)
@@ -89,6 +94,14 @@ target_link_libraries(ReadExactHitData ${ROOT_LIBRARIES} Tracklib)
 #add_executable(ReadTracks_V2 test/ReadTracks_V2.cpp ${sources} ${headers})
 #target_link_libraries(ReadTracks_V2 ${ROOT_LIBRARIES}  Tracklib)
 
+add_executable(readCalibrationFormulaFile test/readCalibrationFormulaFile.cpp ${sources} ${headers})
+target_link_libraries(readCalibrationFormulaFile ${ROOT_LIBRARIES} Tracklib)
+
+add_executable(GenerateMuonSinglePointCalibration test/GenerateMuonSinglePointCalibration.cpp ${sources} ${headers})
+target_link_libraries(GenerateMuonSinglePointCalibration ${ROOT_LIBRARIES} Tracklib)
+
+add_executable(TestMuonEnergyCalib test/TestMuonEnergyCalib.cpp ${sources} ${headers})
+target_link_libraries(TestMuonEnergyCalib ${ROOT_LIBRARIES} Tracklib)
 
 add_executable(TestWritingVecOfStruct test/TestWritingVecOfStruct.cpp ${sources} ${headers})
 target_link_libraries(TestWritingVecOfStruct ${ROOT_LIBRARIES} Tracklib)

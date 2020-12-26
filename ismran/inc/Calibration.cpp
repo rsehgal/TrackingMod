@@ -61,11 +61,17 @@ Calibration::Calibration(std::string fileName) {
 			paramertization_F->SetParameter(ip,temp_F->GetParameter(ip));
 		}
 
+		std::cout << "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@" << std::endl;
+		std::cout << "Processing Bar : " << vecOfBarsNamess[barIndex] << std::endl;
+		std::cout << "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@" << std::endl;
+
 		TH1D *histEner = ((TH1D*)fp->Get((vecOfBarsNamess[barIndex]+"-QMean").c_str()));
 		int binmax = histEner->GetMaximumBin();
 		double bin = histEner->GetXaxis()->GetBinCenter(binmax);
 		int revBin = histEner->GetXaxis()->FindBin(bin);
 		double energyCalibrationFactor = bin;// (1.0*muonEnergyPeak) - bin;
+
+		//double energyCalibrationFactor = 1.;
 		TF1 *enerCalibFormula = (TF1*)fp->Get(Form("fecalib_%s",vecOfBarsNamess[barIndex].c_str()));
 		TGraphErrors *enerCalibGraph = (TGraphErrors*)fp->Get(Form("grEneCalib_%s",vecOfBarsNamess[barIndex].c_str()));
 
@@ -115,6 +121,7 @@ Calibration::Calibration(std::string fileName) {
 }
 
 CalibrationData* Calibration::GetCalibrationDataOf(int barNo){
+	//std::cout <<" @@@@@@2 BAR NO : " << barNo << std::endl;
 	return fVecOfCalibrationData[barNo];
 }
 

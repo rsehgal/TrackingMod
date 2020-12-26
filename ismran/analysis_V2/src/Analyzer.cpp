@@ -29,6 +29,23 @@ Analyzer::Analyzer() {
 
 }
 
+
+//Analyzer::Analyzer(std::string datafileName,std::string outputfileName, bool simulation) : fDatafileName(datafileName), fOutputfileName(outputfileName){
+Analyzer::Analyzer(std::string datafileName ): fDatafileName(datafileName){
+
+
+#ifdef USE_FOR_SIMULATION
+		IsSimulation = true;
+		std::cout << "Going to create vector of Scintillator Bar from Simulated Data..."  << std::endl;
+		CreateScintillatorVector_FromSimulation();
+#else
+		fPairFinder =  new PairFinder(fDatafileName);
+		CreateScintillatorVector();
+#endif
+	//ReconstructMuonTrack();
+}
+
+
 //Analyzer::Analyzer(std::string datafileName,std::string outputfileName, bool simulation) : fDatafileName(datafileName), fOutputfileName(outputfileName){
 Analyzer::Analyzer(std::string datafileName,std::string outputfileName ): fDatafileName(datafileName), fOutputfileName(outputfileName){
 
