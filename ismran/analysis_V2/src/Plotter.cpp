@@ -76,7 +76,9 @@ namespace lite_interface{
 			}
 		}
 		if(opt == 3){
-			hist = new TH1F("HistQMeanCorrected","HistQMeanCorrected",nbins,start,end);
+			std::string barName = vecOfBarsNamess[barIndex].substr(0,4)+"_QMean"+"_Corr";
+			//hist = new TH1F("HistQMeanCorrected","HistQMeanCorrected",nbins,start,end);
+			hist = new TH1F(barName.c_str(),barName.c_str(),nbins,start,end);
 			std::vector<lite_interface::ScintillatorBar_V2*>::iterator itr;
 			for(itr = scintBarVec.begin() ; itr != scintBarVec.end() ; itr++){
 				if(barIndex==65535){
@@ -128,7 +130,9 @@ namespace lite_interface{
 		return PlotQ_0123(scintBarVec,barIndex,2);
 	}
 	TH1F* PlotDelT(std::vector<lite_interface::ScintillatorBar_V2*> scintBarVec, ushort barIndex){
-		TH1F *hist = new TH1F("HistDelT","HistDelT",200,-25,25); //Histogram with entries in nanosecond
+		std::string barName = vecOfBarsNamess[barIndex].substr(0,4)+"_DelT";
+		//TH1F *hist = new TH1F("HistDelT","HistDelT",200,-25,25); //Histogram with entries in nanosecond
+		TH1F *hist = new TH1F(barName.c_str(),barName.c_str(),200,-25,25); //Histogram with entries in nanosecond
 		std::vector<lite_interface::ScintillatorBar_V2*>::iterator itr;
 		for(itr = scintBarVec.begin() ; itr != scintBarVec.end() ; itr++){
 			if((*itr)->fBarIndex == barIndex){
@@ -142,7 +146,8 @@ namespace lite_interface{
 		return hist;
 	}
 	TH1F* PlotDelTCorrected(std::vector<lite_interface::ScintillatorBar_V2*> scintBarVec, ushort barIndex){
-		std::string barName = vecOfBarsNamess[barIndex];
+		std::string barName = vecOfBarsNamess[barIndex].substr(0,4)+"_DelT"+"_Corr";
+
 		TH1F *hist = new TH1F(barName.c_str(),barName.c_str(),200,-25,25); //Histogram with entries in nanosecond
 		std::vector<lite_interface::ScintillatorBar_V2*>::iterator itr;
 		for(itr = scintBarVec.begin() ; itr != scintBarVec.end() ; itr++){
@@ -182,12 +187,33 @@ namespace lite_interface{
 		}
 		return hist;
 	}
+
+	TH1F* CalculateZResolution(std::vector<lite_interface::ScintillatorBar_V2*> scintBarVec, ushort barIndex){
+
+			TF1 *param = lite_interface::Calibration::instance()->GetCalibrationDataOf(barIndex)->fParameterization_F;
+
+			std::string barName = vecOfBarsNamess[barIndex].substr(0,4)+"_Resolution";
+			TH1F *hist = new TH1F(barName.c_str(),barName.c_str(),100,-50,50);
+			std::vector<lite_interface::ScintillatorBar_V2*>::iterator itr;
+			for(itr = scintBarVec.begin() ; itr != scintBarVec.end() ; itr++){
+
+				if((*itr)->fBarIndex == barIndex){
+					double delT_NS=(*itr)->GetDelTCorrected()/1000.;
+					//if(delT_NS > -2 && delT_NS < 2)
+					{
+						double estZ = param->Eval(delT_NS);
+						hist->Fill(estZ);
+					}
+				}
+			}
+			return hist;
+		}
 //#ifdef USE_FOR_SIMULATION
 	TGraph* PlotDelTvsZ(std::vector<lite_interface::ScintillatorBar_V2*> scintBarVec, ushort barIndex, bool linear){
 		ushort nbinsx = 9;
 		ushort nbinsz = 10;
-		std::string name = "DelT Vs Z : "+vecOfBarsNamess[barIndex];
-
+		//std::string name = "DelT Vs Z : "+vecOfBarsNamess[barIndex];
+		std::string barName = vecOfBarsNamess[barIndex].substr(0,4)+"_DelTvsZ";
 		std::vector<lite_interface::ScintillatorBar_V2*>::iterator itr;
 		std::vector<double> zVec;
 		std::vector<double> delTVec;
@@ -206,6 +232,7 @@ namespace lite_interface{
 			}
 		}
 		TGraph *delTvsZ = new TGraph(delTVec.size(),&delTVec[0],&zVec[0]);
+		delTvsZ->SetTitle(barName.c_str());
 		return delTvsZ;
 	}
 //#endif
@@ -570,7 +597,8 @@ namespace lite_interface{
 		      	double binCenter = solidAngleHist->GetXaxis()->GetBinCenter(i);
 		      	double binContent = solidAngleHist->GetBinContent(i);
 		      	//std::cout << "binContent : " << binContent << " : binCenter : " << binCenter << std::endl;
-		      	solidAngleCorrectedHist->SetBinContent(i,binContent/(2*M_PI*std::sin(binCenter)*std::cos(binCenter)));
+		      	//solidAngleCorrectedHist->SetBinContent(i,binContent/(2*M_PI*std::sin(binCenter)*std::cos(binCenter)));
+		      	solidAngleCorrectedHist->SetBinContent(i,binContent/(2*M_PI*std::sin(binCenter)));
 		      }
 		    return solidAngleCorrectedHist;
 	}

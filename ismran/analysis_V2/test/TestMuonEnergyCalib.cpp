@@ -29,16 +29,35 @@ int main(int argc, char *argv[]){
 
 	TFile *fp = new TFile("QMean.root","RECREATE");
 	//(new TCanvas("QMean","QMean"))->SetLogy();
+	numOfBars = 10;
 	for(unsigned short int barIndex = 0 ; barIndex < numOfBars ; barIndex++ ){
 		std::string barName = vecOfBarsNamess[barIndex];
-		(new TCanvas(barName.c_str(),barName.c_str()))->SetLogy();
+		//(new TCanvas(barName.c_str(),barName.c_str()))->SetLogy();
 		TH1F *histQmeanCorrected = PlotQMeanCorrected(vecOfScintillatorBars,barIndex);
 		histQmeanCorrected->SetLineColor(kGreen);
+		TH1F *histDelT = PlotDelT(vecOfScintillatorBars,barIndex);
+		histDelT->SetLineColor(4);
+		TH1F *histDelTCorr = PlotDelTCorrected(vecOfScintillatorBars,barIndex);
+		histDelTCorr->SetLineColor(6);
+
+		TGraph* grDelTvsZ = PlotDelTvsZ(vecOfScintillatorBars,barIndex);
+		grDelTvsZ->Draw("ap");
 		//histQmeanCorrected->Draw();
 		histQmeanCorrected->Write();
+		histDelTCorr->Write();
+		histDelT->Write();
+		grDelTvsZ->Write();
 	}
 
+
+
+	TH1F *histRes = CalculateZResolution(vecOfScintillatorBars,78);
+	histRes->Write();
+
 	fp->Close();
+
+
+	std::cout << "Output file closed........." << std::endl;
 
 
 	/*std::vector<Histograms*> histogramsVec;
