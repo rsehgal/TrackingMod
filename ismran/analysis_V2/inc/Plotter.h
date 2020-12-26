@@ -90,5 +90,9 @@ namespace lite_interface{
 
 	extern TH1F* GetSolidAngleCorrectedHist(TH1F* solidAngleHist);
 
+
+	//Resolution calculation
+	TH1F* CalculateZResolution(std::vector<lite_interface::ScintillatorBar_V2*> scintBarVec, ushort barIndex);
+
 } /* End of lite_interface */
 #endif /* ISMRAN_ANALYSIS_V2_INC_PLOTTER_H_ */
