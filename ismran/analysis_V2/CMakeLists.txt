@@ -88,6 +88,9 @@ target_link_libraries(ReadVect3DTracks ${ROOT_LIBRARIES} Tracklib)
 add_executable(ReadProcessedData test/ReadProcessedData.cpp ${sources} ${headers})
 target_link_libraries(ReadProcessedData ${ROOT_LIBRARIES} Tracklib)
 
+add_executable(ReadProcessedData2 test/ReadProcessedData2.cpp ${sources} ${headers})
+target_link_libraries(ReadProcessedData2 ${ROOT_LIBRARIES} Tracklib)
+
 add_executable(ReadExactHitData test/ReadExactHitData.cpp ${sources} ${headers})
 target_link_libraries(ReadExactHitData ${ROOT_LIBRARIES} Tracklib)
 
@@ -102,6 +105,15 @@ target_link_libraries(GenerateMuonSinglePointCalibration ${ROOT_LIBRARIES} Track
 
 add_executable(TestMuonEnergyCalib test/TestMuonEnergyCalib.cpp ${sources} ${headers})
 target_link_libraries(TestMuonEnergyCalib ${ROOT_LIBRARIES} Tracklib)
+
+add_executable(ReadCalibData test/ReadCalibData.cpp ${sources} ${headers})
+target_link_libraries(ReadCalibData ${ROOT_LIBRARIES} Tracklib)
+
+add_executable(ReadCalibData2 test/ReadCalibData2.cpp ${sources} ${headers})
+target_link_libraries(ReadCalibData2 ${ROOT_LIBRARIES} Tracklib)
+
+add_executable(ReadCalibData3 test/ReadCalibData3.cpp ${sources} ${headers})
+target_link_libraries(ReadCalibData3 ${ROOT_LIBRARIES} Tracklib)
 
 add_executable(TestWritingVecOfStruct test/TestWritingVecOfStruct.cpp ${sources} ${headers})
 target_link_libraries(TestWritingVecOfStruct ${ROOT_LIBRARIES} Tracklib)

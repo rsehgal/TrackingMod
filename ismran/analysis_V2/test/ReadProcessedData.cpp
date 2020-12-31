@@ -22,6 +22,7 @@
 #include "Analyzer.h"
 int main(int argc,char *argv[]){
 	GenerateScintMatrixXYCenters();
+	gStyle->SetOptStat(0);
 	/*
 	 * Set lite_interface::IsSimulation = true, if need to process simulated data file
 	 * else for experimental data set it to false
@@ -92,12 +93,23 @@ int main(int argc,char *argv[]){
 	new TCanvas();
 	enerSumHist->Draw();
 
+
+	TH1F *zenithAngleLinearHist_SolidCorr = lite_interface::GetSolidAngleCorrectedHist(lite_interface::PlotZenithAngle(zenithAngleVectorLinear,1));
+	TH1F *zenithAngleLinearHist = lite_interface::PlotZenithAngle(zenithAngleVectorLinear,1);
 	new TCanvas();
-	TH1F *zenithAngleLinearHist = lite_interface::GetSolidAngleCorrectedHist(lite_interface::PlotZenithAngle(zenithAngleVectorLinear,1));
+	zenithAngleLinearHist_SolidCorr->Draw();
+	new TCanvas();
 	zenithAngleLinearHist->Draw();
 
+
+
+	TH1F *zenithAngleParamHist_SolidCorr = lite_interface::GetSolidAngleCorrectedHist(lite_interface::PlotZenithAngle(zenithAngleVectorParam,2));
+	TH1F *zenithAngleParamHist = lite_interface::PlotZenithAngle(zenithAngleVectorParam,2);
+	//zenithAngleParamHist->Scale(1/zenithAngleParamHist->Integral());
 	new TCanvas();
-	lite_interface::GetSolidAngleCorrectedHist(lite_interface::PlotZenithAngle(zenithAngleVectorParam,2))->Draw();
+	zenithAngleParamHist_SolidCorr->Draw();
+	new TCanvas();
+	zenithAngleParamHist->Draw();
 
 	/*new TCanvas();
 	lite_interface::Plot_Acc_Corr_ZenithAngle(zenithAngleVectorLinear,1)->Draw();
