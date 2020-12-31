@@ -28,6 +28,9 @@ int main(int argc, char *argv[]){
 	//lite_interface::Analyzer pf("/media/rsehgal/CMSSW/September2020/ISMRAN_81bars_Th10All_CosmicRun_15hrs34mins_02Sep2020_2.root",argv[1]);
 	//lite_interface::Analyzer pf("/media/rsehgal/CMSSW/September2020/ISMRAN_81bars_Th10All_CosmicRun_09hrs55mins_07Sep2020_0.root",argv[1]);
 	///ite_interface::Analyzer pf("/media/rsehgal/CMSSW/September2020/ISMRAN_81bars_Th10All_CosmicRun_12hrs34mins_02Sep2020_1.root",argv[1]);
+
+	//ISMRAN_90bars_GW48ns_CFD2_NewB_Th8_OldBTh10_CosmicRun_09hrs55mins_28Sep2020_0.root
+
 	//lite_interface::Analyzer pf("simulatedDataCalib.root",argv[1],true);
 	//lite_interface::Analyzer pf("simulatedData.root",argv[1],true);
 

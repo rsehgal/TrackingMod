@@ -77,7 +77,8 @@ void B1RunAction::BeginOfRunAction(const G4Run*)
   //Tomography::EventBreak::instance()->fEffEvNo = 0;
 
   fDataTree = new lite_interface::DataTree();
-  fCalib = new lite_interface::Calibration("/home/rsehgal/BackBoneSoftwares/ismranData/completeCalib.root");
+  //fCalib = new lite_interface::Calibration("/home/rsehgal/BackBoneSoftwares/ismranData/completeCalib.root");
+  fCalib = new lite_interface::Calibration("/home/rsehgal/BackBoneSoftwares/ismranData/completeCalib2.root");
 }
 
 void B1RunAction::WriteData(){

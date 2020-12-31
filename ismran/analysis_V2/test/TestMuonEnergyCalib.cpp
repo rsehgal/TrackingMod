@@ -33,8 +33,29 @@ int main(int argc, char *argv[]){
 	for(unsigned short int barIndex = 0 ; barIndex < numOfBars ; barIndex++ ){
 		std::string barName = vecOfBarsNamess[barIndex];
 		//(new TCanvas(barName.c_str(),barName.c_str()))->SetLogy();
+		TH1F *histQnear = PlotQNear(pf.GetVectorOfScintillators(),barIndex);
+		histQnear->SetLineColor(kBlue);
+		histQnear->GetXaxis()->SetTitle("Energy (MeV)");
+		histQnear->GetYaxis()->SetTitle("Counts on log scale");
+		TLegend *legend=new TLegend();
+		legend->AddEntry(histQnear);
+
+		TH1F *histQfar = PlotQFar(pf.GetVectorOfScintillators(),barIndex);
+		histQfar->SetLineColor(kMagenta);
+		histQfar->GetXaxis()->SetTitle("Energy (MeV)");
+		histQfar->GetYaxis()->SetTitle("Counts on log scale");
+		legend->AddEntry(histQfar);
+
+		TH1F *histQmean = PlotQMean(pf.GetVectorOfScintillators(),barIndex);
+		histQmean->SetLineColor(kBlack);
+		histQmean->GetXaxis()->SetTitle("Energy (MeV)");
+		histQmean->GetYaxis()->SetTitle("Counts on log scale");
+		legend->AddEntry(histQmean);
+
 		TH1F *histQmeanCorrected = PlotQMeanCorrected(vecOfScintillatorBars,barIndex);
 		histQmeanCorrected->SetLineColor(kGreen);
+		histQmeanCorrected->GetXaxis()->SetTitle("Energy (MeV)");
+		histQmeanCorrected->GetYaxis()->SetTitle("Counts on log scale");
 		TH1F *histDelT = PlotDelT(vecOfScintillatorBars,barIndex);
 		histDelT->SetLineColor(4);
 		TH1F *histDelTCorr = PlotDelTCorrected(vecOfScintillatorBars,barIndex);
@@ -44,6 +65,10 @@ int main(int argc, char *argv[]){
 		grDelTvsZ->Draw("ap");
 		//histQmeanCorrected->Draw();
 		histQmeanCorrected->Write();
+		legend->Write();
+		histQmean->Write();
+		histQnear->Write();
+		histQfar->Write();
 		histDelTCorr->Write();
 		histDelT->Write();
 		grDelTvsZ->Write();

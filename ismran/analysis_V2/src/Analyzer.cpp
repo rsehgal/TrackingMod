@@ -191,8 +191,10 @@ void Analyzer::CreateScintillatorVector_FromSimulation(){
     		  std::cout << "Processed : " << i << " events....." << std::endl;
     	  //ScintillatorBar_V2 *scint = new ScintillatorBar_V2(barIndex,qlongNear,qlongMean,tsmallTimeStamp,deltaTstamp, hitX, hitY, hitZ);
     	  //std::cout << " exactHitX,exactHitY,exactHitZ : " << exactHitX << "," << exactHitY << "," << exactHitZ << std::endl;
-    	  ScintillatorBar_V2 *scint = new ScintillatorBar_V2(barIndex,qlongNear,qlongMean,tsmallTimeStamp,deltaTstamp, hitX, hitY, hitZ,exactHitX,exactHitY,exactHitZ);
-    	  fVecOfScintillatorBar.push_back(scint);
+    	  if(qlongMean > 10 && qlongMean < 35){
+    		  ScintillatorBar_V2 *scint = new ScintillatorBar_V2(barIndex,qlongNear,qlongMean,tsmallTimeStamp,deltaTstamp, hitX, hitY, hitZ,exactHitX,exactHitY,exactHitZ);
+    		  fVecOfScintillatorBar.push_back(scint);
+    	  }
     	  //fVecOfScintillatorBar[i]->Print();
 
 	  }
@@ -289,7 +291,7 @@ void Analyzer::ReconstructMuonTrack(){
 		} else {
 			//Outside 20ns window, implied track ends, hence either store it in the vector of write it to the ROOT file
 			singleMuonTrack->Sort();
-			if(singleMuonTrack->size() > 8)
+			if(singleMuonTrack->size() >= 8)
 			{
 
 				//if(singleMuonTrack->IsClearTrack())

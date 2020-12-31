@@ -25,7 +25,9 @@ namespace lite_interface{
 		unsigned int start = 0;
 		unsigned int end = 40;
 		if(opt == 0){
-			hist = new TH1F("HistQMean","HistQMean",nbins,start,end);
+			std::string barName = vecOfBarsNamess[barIndex].substr(0,4)+"_QMean";
+			//hist = new TH1F("HistQMean","HistQMean",nbins,start,end);
+			hist = new TH1F(barName.c_str(),barName.c_str(),nbins,start,end);
 			std::vector<lite_interface::ScintillatorBar_V2*>::iterator itr;
 			for(itr = scintBarVec.begin() ; itr != scintBarVec.end() ; itr++){
 				if(IsSimulation){
@@ -49,7 +51,9 @@ namespace lite_interface{
 		}
 
 		if(opt == 1){
-			hist = new TH1F("HistQNear","HistQNear",nbins,start,end);
+			std::string barName = vecOfBarsNamess[barIndex].substr(0,4)+"_QNear";
+			//hist = new TH1F("HistQNear","HistQNear",nbins,start,end);
+			hist = new TH1F(barName.c_str(),barName.c_str(),nbins,start,end);
 			std::vector<lite_interface::ScintillatorBar_V2*>::iterator itr;
 			for(itr = scintBarVec.begin() ; itr != scintBarVec.end() ; itr++){
 				if(barIndex==65535){
@@ -63,7 +67,9 @@ namespace lite_interface{
 		}
 
 		if(opt == 2){
-			hist = new TH1F("HistQFar","HistQFar",nbins,start,end);
+			std::string barName = vecOfBarsNamess[barIndex].substr(0,4)+"_QFar";
+			//hist = new TH1F("HistQFar","HistQFar",nbins,start,end);
+			hist = new TH1F(barName.c_str(),barName.c_str(),nbins,start,end);
 			std::vector<lite_interface::ScintillatorBar_V2*>::iterator itr;
 			for(itr = scintBarVec.begin() ; itr != scintBarVec.end() ; itr++){
 				if(barIndex==65535){
@@ -598,13 +604,15 @@ namespace lite_interface{
 		      	double binContent = solidAngleHist->GetBinContent(i);
 		      	//std::cout << "binContent : " << binContent << " : binCenter : " << binCenter << std::endl;
 		      	//solidAngleCorrectedHist->SetBinContent(i,binContent/(2*M_PI*std::sin(binCenter)*std::cos(binCenter)));
-		      	solidAngleCorrectedHist->SetBinContent(i,binContent/(2*M_PI*std::sin(binCenter)));
+		      	solidAngleCorrectedHist->SetBinContent(i,binContent/(2*M_PI*std::sin(binCenter)*std::cos(binCenter)));
 		      }
 		    return solidAngleCorrectedHist;
 	}
 
 	TH1F* PlotZenithAngle(std::vector<double> zenithAngleVect,int opt){
 		int numOfBins = 100;
+		double startangle = 0.05;
+		double endangle = 0.96;//M_PI/2.;
 		std::string title="";
 		if(opt==1)
 			title = "ZenithAngleLinear";
@@ -614,17 +622,32 @@ namespace lite_interface{
 			title = "ZenithAngleMeanHitPoint";
 		if(opt==3)
 			title = "ZenithAngleCRY";
-		TH1F *zenithAngleHist = new TH1F(title.c_str(), title.c_str(),numOfBins,0.05,M_PI/2.);
+		//TH1F *zenithAngleHist = new TH1F(title.c_str(), title.c_str(),numOfBins,0.05,M_PI/2.);
+		TH1F *zenithAngleHist = new TH1F(title.c_str(), title.c_str(),numOfBins,startangle,endangle);
+
 		//TH1F *zenithAngleHist = new TH1F(title.c_str(), title.c_str(),numOfBins,0.02,1.5);
 		for (unsigned int i = 0 ; i < zenithAngleVect.size();  i++){
-			if(zenithAngleVect[i] < 0.96)
+			//if(zenithAngleVect[i] < 0.96)
 			//if(zenithAngleVect[i] < 1.5)
 				zenithAngleHist->Fill(zenithAngleVect[i]);
 		}
 		//zenithAngleHist->Scale(1/zenithAngleHist->Integral());
-		TF1 *formula = new TF1("zenForm", "[0]*sin(x)*cos(x)*pow(cos(x),[1])", 0.05,M_PI/2.);
+		//TF1 *formula = new TF1("zenForm", "[0]*sin(x)*cos(x)*pow(cos(x),[1])", 0.05,M_PI/2.);
+		//TF1 *formula = new TF1("zenForm", "[0]*sin(x)*cos(x)*pow(cos(x),[1])", startangle,endangle);
+		TF1 *formula = new TF1("zenForm", "[0]*sin(x)*pow(cos(x),[1])", startangle,endangle);
+
 		//TF1 *formula = new TF1("zenForm", "[0]*sin(x)*cos(x)*pow(cos(x),[1])", 0.05,1.5);
 		zenithAngleHist->Fit(formula, "r");
+
+		TLegend *legend = new TLegend();
+		legend->AddEntry(zenithAngleHist,"Data");
+
+		double n = formula->GetParameter(2);
+		std::cout << "Fit N : " << n << std::endl;
+		//std::string fittext = "#splitline{Fitting with mcos^{n}#theta}{and n comes out to be"+std::to_string(n)+"}";
+		std::string fittext = "Fitting with mcos^{n}#theta";
+		legend->AddEntry(formula,fittext.c_str());
+		legend->Draw();
 		return zenithAngleHist;
 	}
 
