@@ -50,11 +50,15 @@ int main(int argc,char *argv[]){
 
 	unsigned int barIndex = 5;
 	std::vector<lite_interface::ScintillatorBar_V2*> vectOfScintBars;
-    std::vector<lite_interface::ScintillatorBar_V2*>::iterator itr;
+	//std::vector<lite_interface::ScintillatorBar_V2*> vectOfScintBars2;
+	//std::vector<lite_interface::ScintillatorBar_V2*> vectOfScintBarsProfile;
+	//vectOfScintBars.reserve(nentries);
 
-	std::vector<lite_interface::SingleMuonTrack*> smtVec;
+	  std::vector<lite_interface::ScintillatorBar_V2*>::iterator itr;
 
-	std::vector<lite_interface::ScintillatorBar_V2*> scintBarVecForNewTrack;
+	  std::vector<lite_interface::SingleMuonTrack*> smtVec;
+
+	  std::vector<lite_interface::ScintillatorBar_V2*> scintBarVecForNewTrack;
 
 	unsigned int count = 0;
 	unsigned int count2 = 0;
@@ -70,6 +74,22 @@ int main(int argc,char *argv[]){
 		if(!(i % 10000) && i!=0)
 			std::cout << "Processed : " << i << " entries........" << std::endl;
 
+
+		/*
+		 * Trying to plot few tracks
+		 */
+		/*if(i<1){
+			new TCanvas();
+			TGraphErrors *grxy = lite_interface::PlotMuonTrack(smt,2);
+			grxy->SetMarkerStyle(8);
+			grxy->Draw("p");
+			//DrawGrid("Muon Track in XY plane; X axis ; Y axis", 9, 9);
+			f->cd();
+			grxy->Write();
+			f->Close();
+		}*/
+
+		//if(i < 5 )
 		{
 			//std::cout << "==============================" << std::endl;
 			//if((smt->GetMuonTrack()).size() > 20 )
@@ -155,6 +175,14 @@ int main(int argc,char *argv[]){
 	}
 
 	std::cout << "Number of Scintillators with wrong BarIndex : " << count << std::endl;
+
+
+	/*unsigned int countNew = 0 ;
+	std::vector<unsigned int> vecOfScintId = {50,59,68,77};
+	for(unsigned int i = 0 ; i < smtVec.size() ; i++){
+		if(smtVec[i]->CheckTrackForRequiredScintillators(vecOfScintId))
+			countNew++;
+	}*/
 
 	std::vector<float> vecOfMeanDelT;
 	std::vector<float> vecOfMeanZ;
@@ -276,6 +304,21 @@ int main(int argc,char *argv[]){
 			}
 		}
 
+
+/*		new TCanvas();
+			histDelT->SetLineColor(2);
+			histDelT->Draw();
+			histDelTCorr->Draw("same");
+
+			std::cout << "Number of Confined muon tracks : " << countConfinedMuons << std::endl;
+				new TCanvas();
+				//confineHistZ->Scale(1/confineHistZ->Integral());
+				confineHistZ->Draw();
+
+				new TCanvas();
+				confineHistZFitted->SetLineColor(6);
+				//confineHistZFitted->Scale(1/confineHistZFitted->Integral());
+				confineHistZFitted->Draw();*/
 #if(0)
 	TGraph *delTvsZ = lite_interface::PlotDelTvsZ(barIndex,delTVec,zVec);
 	std::cout << "Total number of Muons with required scint pattern : " << countNew << std::endl;
@@ -366,6 +409,40 @@ int main(int argc,char *argv[]){
 
 	meanZvsDelTFitted_Err->Fit(formPoly3,"r");
 
+#if(0)
+	/*
+	 * Processing calibration data again, to get Z hist using parameterization from muons
+	 */
+	//TFile *formulaFile=new TFile("completeCalib2.root","READ");
+	char *form = Form("fzparam_%s",calib->GetCalibrationDataOf(58)->fParameterization_F);
+		TF1 *param = (TF1*)formulaFile->Get(form.c_str());
+
+	std::string filename="/home/rsehgal/BackBoneSoftwares/ismranData/PS89_Cs137/Cs137_PS89_SF873_Couples_N1862V_Th12_F1821V_Th12_+0cm.root";
+	TFile *fp = new TFile(filename.c_str(), "r");
+			TTree *tr = (TTree*) fp->Get("ftree");
+
+			int delt;
+
+			tr->SetBranchAddress("fDelt", &delt);
+			Long64_t nEntries = tr->GetEntries();
+			Long64_t nb = 0;
+			const int offset=0;
+			std::string locationZ=location+"_Z";
+			std::string locationT=location+"_T";
+			TH1F *delTHist = new TH1F(locationT.c_str(),locationT.c_str(),100,-20,20);
+			TH1F *zHist = new TH1F(locationZ.c_str(),locationZ.c_str(),50,-50,50);
+			for (Long64_t iev = 0; iev < nEntries; iev++) {
+				nb += tr->GetEntry(iev);
+
+				double delT_Corr =  1.0*delt/1000. + 0.698;
+				float zval = param->Eval(delT_Corr);
+				if(zval!=0.){
+					delTHist->Fill(delT_Corr);
+					zHist->Fill(zval);
+				}
+			}
+
+#endif
 
 	TH1F *histZ_param = new TH1F("ZHist_Param","ZHist_Param",100,-100,100);
 	TH1F *histZ_param_new = new TH1F("ZHist_Param_New","ZHist_Param_New",100,-100,100);

@@ -151,6 +151,9 @@ namespace lite_interface{
 		}
 		return hist;
 	}
+
+
+
 	TH1F* PlotDelTCorrected(std::vector<lite_interface::ScintillatorBar_V2*> scintBarVec, ushort barIndex){
 		std::string barName = vecOfBarsNamess[barIndex].substr(0,4)+"_DelT"+"_Corr";
 
@@ -214,6 +217,14 @@ namespace lite_interface{
 			}
 			return hist;
 		}
+
+	TGraph* PlotDelTvsZ(unsigned int barIndex,std::vector<float> delTVec, std::vector<float> zVec){
+		std::string barName = vecOfBarsNamess[barIndex].substr(0,4)+"_DelTvsZ";
+		TGraph *delTvsZ = new TGraph(delTVec.size(),&delTVec[0],&zVec[0]);
+		delTvsZ->SetTitle(barName.c_str());
+		return delTvsZ;
+	}
+
 //#ifdef USE_FOR_SIMULATION
 	TGraph* PlotDelTvsZ(std::vector<lite_interface::ScintillatorBar_V2*> scintBarVec, ushort barIndex, bool linear){
 		ushort nbinsx = 9;

@@ -93,6 +93,8 @@ public:
 	double GetZenithAngle_ExactHitPoint();
 #endif
 
+	bool CheckTrackForRequiredScintillators(std::vector<unsigned int> vecOfScintBarIndex);
+
 #ifndef FOR_SIMULATION
 	ClassDef(SingleMuonTrack,1)
 #endif

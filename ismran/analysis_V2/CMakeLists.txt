@@ -79,6 +79,9 @@ target_link_libraries(AnalyzeData ${ROOT_LIBRARIES} ${TOMOLIB} Tracklib)
 add_executable(ReadTracks test/ReadTracks.cpp ${sources} ${headers})
 target_link_libraries(ReadTracks ${ROOT_LIBRARIES}  Tracklib)
 
+add_executable(ReadTracks2 test/ReadTracks2.cpp ${sources} ${headers})
+target_link_libraries(ReadTracks2 ${ROOT_LIBRARIES}  Tracklib)
+
 add_executable(ReadTracksDebug test/ReadTracksDebug.cpp ${sources} ${headers})
 target_link_libraries(ReadTracksDebug ${ROOT_LIBRARIES}  Tracklib)
 

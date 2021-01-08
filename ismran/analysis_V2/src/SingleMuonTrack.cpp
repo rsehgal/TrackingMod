@@ -298,6 +298,21 @@ double SingleMuonTrack::GetZenithAngle_Linear(){
 double SingleMuonTrack::GetZenithAngle_Param(){
 	return GetZenithAngle(2);
 }
+
+
+bool SingleMuonTrack::CheckTrackForRequiredScintillators(std::vector<unsigned int> vecOfScintBarIndex){
+	bool exist = true;
+	for(unsigned int barIdIndex = 0 ; barIdIndex < vecOfScintBarIndex.size() ; barIdIndex++){
+		bool existLocal = false;
+		for(unsigned int index = 0 ; index < size() ; index++){
+			existLocal |= (fSingleMuonTrack[index]->GetBarIndex() == vecOfScintBarIndex[barIdIndex]);
+			if(existLocal)
+				break;
+		}
+		exist &= existLocal;
+	}
+	return exist;
+}
 //#ifdef USE_FOR_SIMULATION
 #if defined(USE_FOR_SIMULATION) || defined(FOR_SIMULATION)
 double SingleMuonTrack::GetZenithAngle_MeanHitPoint(){
