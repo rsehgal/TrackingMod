@@ -34,6 +34,7 @@ public:
 	double Distance(Point3D p2);
 	void Print();
 	virtual ~Point3D();
+	unsigned int GetLayer();
 
 	//Point3D operator += (Point3D obj);
 	//Point3D* operator += (Point3D *obj);

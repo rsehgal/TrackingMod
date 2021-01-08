@@ -8,6 +8,7 @@
 #include "Point3D.h"
 #include <iostream>
 #include <cmath>
+#include "PsBar.h"
 #ifndef FOR_SIMULATION
 ClassImp(lite_interface::Point3D);
 #endif
@@ -59,6 +60,10 @@ void Point3D::SetZero(){
 		fZ = 0;
 }
 
+unsigned int Point3D::GetLayer(){
+	int tempY = (int)(fY+(numOfLayers*barHeight/2));
+	return tempY/(int)barHeight;
+}
 /*
 Point3D Point3D::operator += (Point3D obj){
 	this->fX += obj.fX;

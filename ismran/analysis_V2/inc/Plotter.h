@@ -42,6 +42,7 @@ namespace lite_interface{
 	extern TH1F* PlotDelTCorrected(std::vector<ScintillatorBar_V2*> scintBarVec, ushort barIndex);
 //#ifdef USE_FOR_SIMULATION
 	extern TGraph* PlotDelTvsZ(std::vector<lite_interface::ScintillatorBar_V2*> scintBarVec, ushort barIndex, bool linear=false);
+	extern TGraph* PlotDelTvsZ(unsigned int barIndex,std::vector<float> delTVec, std::vector<float> zVec);
 //#endif
 
 	/*
@@ -93,6 +94,8 @@ namespace lite_interface{
 
 	//Resolution calculation
 	TH1F* CalculateZResolution(std::vector<lite_interface::ScintillatorBar_V2*> scintBarVec, ushort barIndex);
+
+	//Function to get the layer index from Point3D
 
 } /* End of lite_interface */
 #endif /* ISMRAN_ANALYSIS_V2_INC_PLOTTER_H_ */

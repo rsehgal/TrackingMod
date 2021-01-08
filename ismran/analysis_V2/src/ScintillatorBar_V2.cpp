@@ -256,14 +256,18 @@ Long_t ScintillatorBar_V2::GetDelT() const{
 	return fDelTstamp;
 }
 Long_t ScintillatorBar_V2::GetDelTCorrected(){
-	if(IsSimulation)
+	if(IsSimulation){
+		std::cout << "FROM IF : IS_SIMULATION SET TO TRUE : " << __FILE__ <<" : " << __LINE__ << std::endl;
 #ifdef USE_CALIBRATION
 		return (fDelTstamp - Calibration::instance()->GetCalibrationDataOf(fBarIndex)->fDeltaTCorr*1000);
 #else
 		return fDelTstamp;
 #endif
-	else
+	}
+	else{
+		//std::cout << "FROM ELSE : " << Calibration::instance()->GetCalibrationDataOf(fBarIndex)->fDeltaTCorr*1000 << " : __FILE__ : " << __LINE__ << std::endl;
 		return (fDelTstamp - Calibration::instance()->GetCalibrationDataOf(fBarIndex)->fDeltaTCorr*1000);
+	}
 }
 Double_t ScintillatorBar_V2::GetQMeanCorrected(){
 	//return (fQlongMean + Calibration::instance()->GetCalibrationDataOf(fBarIndex)->fEnergyCalibrationFactor);
