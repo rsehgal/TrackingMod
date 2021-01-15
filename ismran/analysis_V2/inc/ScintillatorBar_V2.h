@@ -106,6 +106,12 @@ public:
 	UInt_t GetQLongFar();
 	Double_t GetQLongMean() const;
 	ULong64_t GetTSmallTimestamp() const;
+	ULong64_t GetTNearCorr() ;
+	ULong64_t GetTFarCorr() ;
+	ULong64_t GetTNear();
+	ULong64_t GetTFar();
+	double GetOffsetCorrection();
+	ULong64_t GetTAverage() ;
 	Long_t GetDelT() const;
 	Long_t GetDelTCorrected();
 	Double_t GetQMeanCorrected();

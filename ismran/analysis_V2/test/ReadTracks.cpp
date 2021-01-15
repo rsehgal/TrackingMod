@@ -366,7 +366,60 @@ int main(int argc,char *argv[]){
 
 	meanZvsDelTFitted_Err->Fit(formPoly3,"r");
 
+	trackFile->Close();
 
+	{
+		unsigned int mCount=0;
+		std::cout << "============ READ DAta back ===============" << std::endl;
+		float tHalfStart = -2;
+		float tHalfEnd = 2;
+		TH1F *histZ_param = new TH1F("ZHist_Param","ZHist_Param",100,-100,100);
+		TH1F *histZ_param_new = new TH1F("ZHist_Param_New","ZHist_Param_New",100,-100,100);
+		TH1F *delt_new = new TH1F("Corr_DelT","Corr_DelT",100,-20,20);
+		TFile *trackFile = new TFile(outputFileName.c_str(),"READ");
+		TF1 *param = calib->GetCalibrationDataOf(barIndex)->fParameterization_F;
+			TTree *trackTree = (TTree*)trackFile->Get("TracksTree");
+			trackTree->SetBranchAddress("MuonTracks",&smt);
+			Long64_t nentries = trackTree->GetEntries();
+			std::cout << "Total tracks : " << nentries << std::endl;
+			Long64_t nbytes = 0;
+			for (Long64_t i=0; i<nentries;i++) {
+				//std::cout << "Fetching Entry : " << i << std::endl;
+				nbytes += trackTree->GetEntry(i);
+				for(unsigned int j = 0  ; j < smt->size() ; j++){
+					lite_interface::ScintillatorBar_V2 *scint = smt->fSingleMuonTrack[j];
+					if(scint->fBarIndex == barIndex){
+						mCount++;
+						double deltTCorr = scint->GetDelTCorrected();
+						deltTCorr /= 1000.;
+						//if(deltTCorr < tHalf && deltTCorr > -1.*tHalf)
+						if(deltTCorr < tHalfEnd && deltTCorr > tHalfStart)
+						{
+							float zval = formPoly3->Eval(deltTCorr);
+							if(std::fabs(zval) > 50){
+								std::cout << "DelTCorr  :" << deltTCorr <<" : Z : " << zval << std::endl;
+							}
+							histZ_param_new->Fill(zval);
+							delt_new->Fill(deltTCorr);
+
+							float z_param = param->Eval(deltTCorr);
+							histZ_param->Fill(z_param);
+						}
+					}
+				}
+			}
+			std::cout << "Total number of muon tracks that hit the bar : " << barIndex << " : " << mCount << std::endl;
+			trackFile->Close();
+			new TCanvas();
+			histZ_param_new->Draw();
+			new TCanvas();
+			histZ_param->Draw();
+			new TCanvas();
+			delt_new->Draw();
+
+	}
+#if(0)
+	//Uisng Source data
 	TH1F *histZ_param = new TH1F("ZHist_Param","ZHist_Param",100,-100,100);
 	TH1F *histZ_param_new = new TH1F("ZHist_Param_New","ZHist_Param_New",100,-100,100);
 	//std::vector<float> zvec;
@@ -402,6 +455,8 @@ int main(int argc,char *argv[]){
 	param->Draw();
 	formPoly3->SetLineColor(2);
 	formPoly3->Draw("same");
+#endif
+
 
 
 	fApp->Run();
