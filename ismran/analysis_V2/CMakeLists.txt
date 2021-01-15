@@ -82,6 +82,9 @@ target_link_libraries(ReadTracks ${ROOT_LIBRARIES}  Tracklib)
 add_executable(ReadTracks2 test/ReadTracks2.cpp ${sources} ${headers})
 target_link_libraries(ReadTracks2 ${ROOT_LIBRARIES}  Tracklib)
 
+add_executable(ReadTracks3 test/ReadTracks3.cpp ${sources} ${headers})
+target_link_libraries(ReadTracks3 ${ROOT_LIBRARIES}  Tracklib)
+
 add_executable(ReadTracksDebug test/ReadTracksDebug.cpp ${sources} ${headers})
 target_link_libraries(ReadTracksDebug ${ROOT_LIBRARIES}  Tracklib)
 

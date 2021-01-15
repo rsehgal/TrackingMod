@@ -252,9 +252,45 @@ Double_t ScintillatorBar_V2::GetQLongMean() const{
 ULong64_t ScintillatorBar_V2::GetTSmallTimestamp() const{
 	return fTSmallTimeStamp;
 }
+
+ULong64_t ScintillatorBar_V2::GetTAverage() {
+	/*if(fDelTstamp < 0.)
+		return (2*fTSmallTimeStamp-fDelTstamp)/2.;
+	else
+		return (2*fTSmallTimeStamp+fDelTstamp)/2.;*/
+	return (GetTNearCorr()/2. + GetTFarCorr()/2.);
+}
+
+ULong64_t ScintillatorBar_V2::GetTNearCorr(){
+	return GetTNear()-GetOffsetCorrection()/2.;
+}
+
+ULong64_t ScintillatorBar_V2::GetTFarCorr(){
+	return GetTFar()+GetOffsetCorrection()/2.;
+}
+
+ULong64_t ScintillatorBar_V2::GetTNear(){
+	if(fDelTstamp < 0.)
+		return fTSmallTimeStamp;
+	else
+		return (fDelTstamp+fTSmallTimeStamp);
+}
+
+ULong64_t ScintillatorBar_V2::GetTFar(){
+	if(fDelTstamp > 0.)
+			return fTSmallTimeStamp;
+	else
+		return (fTSmallTimeStamp-fDelTstamp);
+}
+
 Long_t ScintillatorBar_V2::GetDelT() const{
 	return fDelTstamp;
 }
+
+double ScintillatorBar_V2::GetOffsetCorrection(){
+	return Calibration::instance()->GetCalibrationDataOf(fBarIndex)->fDeltaTCorr*1000;
+}
+
 Long_t ScintillatorBar_V2::GetDelTCorrected(){
 	if(IsSimulation){
 		std::cout << "FROM IF : IS_SIMULATION SET TO TRUE : " << __FILE__ <<" : " << __LINE__ << std::endl;
