@@ -22,6 +22,8 @@
 #include <TF1.h>
 #include "PsBar.h"
 struct ScintData{
+	ULong64_t sNear;
+	ULong64_t sFar;
 	ULong64_t sTAvg;
 	float sZ;
 	Long_t sDelT;
@@ -31,6 +33,15 @@ struct ScintData{
 		sZ = z;
 		sDelT = delt;
 	}
+
+	ScintData(ULong64_t tnear, ULong64_t tfar,ULong64_t tavg,float z,Long_t delt){
+		sNear = tnear;
+		sFar = tfar;
+                sTAvg = tavg;
+                sZ = z;
+                sDelT = delt;
+        }
+
 
 	ScintData(float z,Long_t delt){
 		sTAvg = 0.;
@@ -82,7 +93,7 @@ int main(int argc,char *argv[]){
 	TApplication *fApp = new TApplication("Test", NULL, NULL);
 	GenerateScintMatrixXYCenters();
 	lite_interface::SingleMuonTrack *smt = new lite_interface::SingleMuonTrack;
-	lite_interface::Calibration *calib = lite_interface::Calibration::instance("/home/rsehgal/BackBoneSoftwares/ismranData/completeCalib2.root");
+	lite_interface::Calibration *calib = lite_interface::Calibration::instance("../completeCalib2.root");
 	std::string outputFileName=argv[1];
 	TFile *trackFile = new TFile(outputFileName.c_str(),"READ");
 	TTree *trackTree = (TTree*)trackFile->Get("TracksTree");
@@ -174,6 +185,9 @@ int main(int argc,char *argv[]){
 		TH1F *delT_20 = new TH1F("DelT_20","DelT_31",100,-10000.,10000.);
 
 		std::vector<TH1F*> interBarHistVec;
+
+		TH1F *delTFirst = new TH1F("DelT_First","DelT_First",100,-10000.,10000.);
+		TH1F *delTFirstSecond = new TH1F("DelT_FirstSecond","DelT_FirstSecond",100,-10000.,10000.);
 		for( unsigned int tIndex = 0 ; tIndex < bins ; tIndex++)
 		{
 			TH1F *histInterBarDelT = new TH1F(("TIndex_"+std::to_string(tIndex)).c_str(),("TIndex_"+std::to_string(tIndex)).c_str(),100,-10000.,10000.);
@@ -198,7 +212,10 @@ int main(int argc,char *argv[]){
 						for(unsigned int m = 0 ; m < vecOfScintId.size() ; m++){
 							exist = ((smtVec[i]->GetMuonTrack())[j]->GetBarIndex() == vecOfScintId[m]);
 							if(exist){
-								vecOfScintData.push_back(new ScintData((smtVec[i]->GetMuonTrack())[j]->GetTAverage(),
+								vecOfScintData.push_back(new ScintData(
+											 						  (smtVec[i]->GetMuonTrack())[j]->GetTNearCorr(),
+																	  (smtVec[i]->GetMuonTrack())[j]->GetTFarCorr(),
+																	  (smtVec[i]->GetMuonTrack())[j]->GetTAverage(),
 																	   (smtVec[i]->GetMuonTrack())[j]->EstimateHitPosition_Param()->GetZ(),
 																	   (smtVec[i]->GetMuonTrack())[j]->GetDelTCorrected() ) );
 								break;
@@ -229,6 +246,10 @@ int main(int argc,char *argv[]){
 						histInterBarDelT->Fill(diff);
 
 						if(tIndex == (bins/2)){
+
+							delTFirst->Fill(vecOfScintData[0]->sDelT);
+							Long64_t interT = vecOfScintData[0]->sNear-vecOfScintData[1]->sFar;
+							delTFirstSecond->Fill(interT);
 
 							Long_t diff = (vecOfScintData[0]->sTAvg - vecOfScintData[1]->sTAvg);
 							//std::cout << "DiffVal : " << diff  << std::endl;
@@ -295,6 +316,12 @@ int main(int argc,char *argv[]){
 		gr->SetMarkerSize(0.8);
 		gr->Draw("ap");
 		param->Draw("same");
+
+		new TCanvas();
+		delTFirst->Draw();
+		delTFirstSecond->SetLineColor(6);
+		delTFirstSecond->Draw("same");
+
 #if(0)
 		for(unsigned int i = 0 ; i < smtVec.size() ; i++){
 
