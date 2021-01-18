@@ -25,8 +25,11 @@ struct ScintData{
 	ULong64_t sNear;
 	ULong64_t sFar;
 	ULong64_t sTAvg;
+	ULong64_t sTSmall;
 	float sZ;
 	Long_t sDelT;
+	float sEstimatedZ;
+
 
 	ScintData(ULong64_t tavg,float z,Long_t delt){
 		sTAvg = tavg;
@@ -37,10 +40,15 @@ struct ScintData{
 	ScintData(ULong64_t tnear, ULong64_t tfar,ULong64_t tavg,float z,Long_t delt){
 		sNear = tnear;
 		sFar = tfar;
-                sTAvg = tavg;
-                sZ = z;
-                sDelT = delt;
-        }
+		sTAvg = tavg;
+        sZ = z;
+        sDelT = delt;
+
+        if(sNear < sFar)
+        	sTSmall = sNear;
+        else
+        	sTSmall = sFar;
+    }
 
 
 	ScintData(float z,Long_t delt){
@@ -73,10 +81,12 @@ struct Hist{
 	TH1F *sDelTHist;
 	TH1F *sZHist;
 	TH1F *sTAvHist;
+	//TH1F *energyHist;
 
 	Hist(std::string name){
 		sDelTHist = new TH1F((name+"_DelT").c_str(),(name+"_DelT").c_str(),100,-25000,25000);
 		sZHist = new TH1F((name+"_Z").c_str(),(name+"_Z").c_str(),100,-100,100);
+		//energyHist = new TH1F((name+"_Z").c_str(),(name+"_Z").c_str(),100,0,40);
 	}
 };
 
@@ -93,7 +103,7 @@ int main(int argc,char *argv[]){
 	TApplication *fApp = new TApplication("Test", NULL, NULL);
 	GenerateScintMatrixXYCenters();
 	lite_interface::SingleMuonTrack *smt = new lite_interface::SingleMuonTrack;
-	lite_interface::Calibration *calib = lite_interface::Calibration::instance("../completeCalib2.root");
+	lite_interface::Calibration *calib = lite_interface::Calibration::instance("/home/rsehgal/BackBoneSoftwares/ismranData/completeCalib2.root");
 	std::string outputFileName=argv[1];
 	TFile *trackFile = new TFile(outputFileName.c_str(),"READ");
 	TTree *trackTree = (TTree*)trackFile->Get("TracksTree");
@@ -154,6 +164,9 @@ int main(int argc,char *argv[]){
 	TH1F *histDelT = new TH1F("histDelT","histDelT",100,-25000,25000);
 	TH1F *histDelT_Check = new TH1F("histDelT_Check","histDelT_Check",100,-25000,25000);
 
+	std::vector<TH1F*> vecOfEnerHist;
+
+
 		unsigned int countNew = 0 ;
 		//std::vector<unsigned int> vecOfScintId = {50,59,68,77};
 		//std::vector<unsigned int> vecOfScintId = {49,58,67,76};
@@ -184,10 +197,75 @@ int main(int argc,char *argv[]){
 		TH1F *delT_12 = new TH1F("DelT_12","DelT_23",100,-10000.,10000.);
 		TH1F *delT_20 = new TH1F("DelT_20","DelT_31",100,-10000.,10000.);
 
+		for(unsigned int i = 0 ; i < vecOfScintId.size() ; i++){
+			vecOfEnerHist.push_back(new TH1F(vecOfBarsNamess[vecOfScintId[i]].c_str(),vecOfBarsNamess[vecOfScintId[i]].c_str(),100,0,40));
+		}
+
+		TH1F *enerSumHist = new TH1F("EnergySum","EnergySum",100,0,240);
+
 		std::vector<TH1F*> interBarHistVec;
 
 		TH1F *delTFirst = new TH1F("DelT_First","DelT_First",100,-10000.,10000.);
 		TH1F *delTFirstSecond = new TH1F("DelT_FirstSecond","DelT_FirstSecond",100,-10000.,10000.);
+
+		/*
+		 * Trying to reproduced Pawan's result
+		 */
+		TH1F *delTInterBar_P = new TH1F("delTInterBar_P","delTInterBar_P",100,-10000.,10000.);
+		TH1F *estimatedZ_P = new TH1F("estimatedZ_P","estimatedZ_P",100,-100.,100.);
+
+		std::vector<ScintData*> vecOfScintData;
+		for(unsigned int i = 0 ; i < smtVec.size() ; i++){
+			vecOfScintData.clear();
+			if(smtVec[i]->CheckTrackForRequiredScintillators(vecOfScintId)){
+				double sumEner = 0.;
+				for(unsigned int j = 0 ; j < smtVec[i]->size() ; j++){
+						bool exist = false;
+						for(unsigned int m = 0 ; m < vecOfScintId.size() ; m++){
+							exist = ((smtVec[i]->GetMuonTrack())[j]->GetBarIndex() == vecOfScintId[m]);
+							if(exist){
+								vecOfScintData.push_back(new ScintData(
+											 						  (smtVec[i]->GetMuonTrack())[j]->GetTNearCorr(),
+																	  (smtVec[i]->GetMuonTrack())[j]->GetTFarCorr(),
+																	  (smtVec[i]->GetMuonTrack())[j]->GetTAverage(),
+																	   (smtVec[i]->GetMuonTrack())[j]->EstimateHitPosition_Param()->GetZ(),
+																	   (smtVec[i]->GetMuonTrack())[j]->GetDelTCorrected() ) );
+								vecOfEnerHist[m]->Fill((smtVec[i]->GetMuonTrack())[j]->GetQMeanCorrected());
+								sumEner += (smtVec[i]->GetMuonTrack())[j]->GetQMeanCorrected();
+								break;
+							}
+						}
+
+				}
+
+				//Long64_t diff = vecOfScintData[0]->sTAvg - vecOfScintData[2]->sTAvg;
+				Long64_t diff = vecOfScintData[0]->sTSmall - vecOfScintData[2]->sTSmall;
+				delTInterBar_P->Fill(diff);
+				estimatedZ_P->Fill(vecOfScintData[0]->sZ - vecOfScintData[2]->sZ);
+				enerSumHist->Fill(sumEner);
+			}
+		}
+		new TCanvas();
+		delTInterBar_P->Draw();
+
+		new TCanvas();
+		estimatedZ_P->Draw();
+
+		new TCanvas();
+		enerSumHist->SetLineColor(6);
+		enerSumHist->Scale(1/enerSumHist->Integral());
+		enerSumHist->Draw();
+		for(unsigned int i = 0 ; i < vecOfScintId.size() ; i++){
+			vecOfEnerHist[i]->SetLineColor(i+1);
+			vecOfEnerHist[i]->Scale(1/vecOfEnerHist[i]->Integral());
+			vecOfEnerHist[i]->Draw("same");
+		}
+
+
+
+
+
+
 		for( unsigned int tIndex = 0 ; tIndex < bins ; tIndex++)
 		{
 			TH1F *histInterBarDelT = new TH1F(("TIndex_"+std::to_string(tIndex)).c_str(),("TIndex_"+std::to_string(tIndex)).c_str(),100,-10000.,10000.);
