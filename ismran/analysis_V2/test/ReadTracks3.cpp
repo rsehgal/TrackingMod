@@ -21,6 +21,7 @@
 #include "Analyzer.h"
 #include <TF1.h>
 #include "PsBar.h"
+#include "colors.h"
 struct ScintData{
 	ULong64_t sNear;
 	ULong64_t sFar;
@@ -473,7 +474,34 @@ int main(int argc,char *argv[]){
 
 		new TCanvas();
 		histDelT->Draw();
+
+
 #endif
+
+	{
+		unsigned int countBuggy = 0 ;
+		float allowedDeviation = 2;
+		TCanvas *ok = new TCanvas("OK","OK");
+		TCanvas *buggy = new TCanvas("BUGGY","BUGGY");
+		for(unsigned int i = 0 ; i < numOfLayers*numOfBarsInEachLayer ; i++){
+			std::cout <<"Processed DelT of Bar : " << vecOfBarsNamess[i] << std::endl;
+			TH1F *histDelT = lite_interface::PlotDelTCorrected(smtVec,i);
+			histDelT->SetLineColor(i+1);
+			histDelT->Scale(1/histDelT->Integral());
+			if(std::fabs(histDelT->GetMean()) > allowedDeviation ){
+				countBuggy++;
+				buggy->cd();
+				std::cout << RED << "Needs MORE correction for BAR : " << vecOfBarsNamess[i] << RESET << " : Mean : " << YELLOW << histDelT->GetMean() << RESET << std::endl;
+				histDelT->Draw("same");
+			}
+			else{
+				ok->cd();
+				histDelT->Draw("same");
+			}
+		}
+		std::cout << GREEN << "Number of buggy detector where MEAN is deviated by more than : " << allowedDeviation << " :: " << countBuggy << RESET << std::endl;
+		//histDelT->Draw();
+	}
 	fApp->Run();
 
 	return 0;

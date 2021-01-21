@@ -152,7 +152,26 @@ namespace lite_interface{
 		return hist;
 	}
 
+	TH1F* PlotDelTCorrected(std::vector<lite_interface::SingleMuonTrack*> smtVec, ushort barIndex){
+		std::string barName = vecOfBarsNamess[barIndex].substr(0,4)+"_DelT"+"_Corr";
+		TH1F *hist = new TH1F(barName.c_str(),barName.c_str(),200,-25,25); //Histogram with entries in nanosecond
 
+		for(unsigned int i = 0 ; i < smtVec.size() ; i++){
+			std::vector<lite_interface::ScintillatorBar_V2*> scintBarVec = smtVec[i]->GetMuonTrack();
+			std::vector<lite_interface::ScintillatorBar_V2*>::iterator itr;
+			for(itr = scintBarVec.begin() ; itr != scintBarVec.end() ; itr++){
+					if((*itr)->fBarIndex == barIndex){
+						hist->Fill((*itr)->GetDelTCorrected()/1000.);
+						/*if(IsSimulation)
+							hist->Fill((*itr)->GetDelTCorrected()/1000.);
+						else
+							hist->Fill((*itr)->GetDelTCorrected()/1000.);*/
+					}
+			}
+		}
+
+		return hist;
+	}
 
 	TH1F* PlotDelTCorrected(std::vector<lite_interface::ScintillatorBar_V2*> scintBarVec, ushort barIndex){
 		std::string barName = vecOfBarsNamess[barIndex].substr(0,4)+"_DelT"+"_Corr";
