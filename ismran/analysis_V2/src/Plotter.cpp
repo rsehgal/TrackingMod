@@ -5,6 +5,7 @@
 #include "Analyzer.h"
 #include "ScintillatorBar_V2.h"
 #include "SingleMuonTrack.h"
+#include <TGraph.h>
 
 namespace lite_interface{
 
@@ -120,6 +121,31 @@ namespace lite_interface{
 		return hist;
 	}
 
+	TH1F* PlotQMeanCorrected(std::vector<lite_interface::SingleMuonTrack*> smtVec,ushort barIndex){
+		unsigned int nbins = 1000;
+		unsigned int start = 0;
+		unsigned int end = 40;
+		std::string barName = vecOfBarsNamess[barIndex].substr(0,4)+"_QMean_Corr";
+		TH1F *hist = new TH1F(barName.c_str(),barName.c_str(),nbins,start,end);
+		for(unsigned int i = 0 ; i < smtVec.size() ; i++){
+					std::vector<lite_interface::ScintillatorBar_V2*> scintBarVec = smtVec[i]->GetMuonTrack();
+					std::vector<lite_interface::ScintillatorBar_V2*>::iterator itr;
+					for(itr = scintBarVec.begin() ; itr != scintBarVec.end() ; itr++){
+						if((*itr)->GetQMeanCorrected() > 15){
+							if((*itr)->fBarIndex == barIndex){
+								hist->Fill((*itr)->GetQMeanCorrected());
+								/*if(IsSimulation)
+									hist->Fill((*itr)->GetDelTCorrected()/1000.);
+								else
+									hist->Fill((*itr)->GetDelTCorrected()/1000.);*/
+							}
+						}
+					}
+		}
+
+		return hist;
+	}
+
 	TH1F* PlotQMeanCorrected(std::vector<lite_interface::ScintillatorBar_V2*> scintBarVec,ushort barIndex){
 		return PlotQ_0123(scintBarVec,barIndex,3);
 	}
@@ -152,14 +178,37 @@ namespace lite_interface{
 		return hist;
 	}
 
+	TH1F* PlotPixelDelTCorrected(std::vector<lite_interface::SingleMuonTrack*> smtVec, ushort barIndex1,ushort barIndex2){
+		std::string barName = vecOfBarsNamess[barIndex2].substr(0,4)+"_DelT"+"_Corr";
+		TH1F *hist = new TH1F(barName.c_str(),barName.c_str(),200,-25,25); //Histogram with entries in nanosecond
+		std::vector<unsigned int> vecOfScintId = {barIndex1,barIndex2};
+		for(unsigned int i = 0 ; i < smtVec.size() ; i++){
+			if(smtVec[i]->CheckTrackForRequiredScintillators(vecOfScintId)){
+				std::vector<lite_interface::ScintillatorBar_V2*> scintBarVec = smtVec[i]->GetMuonTrack();
+				std::vector<lite_interface::ScintillatorBar_V2*>::iterator itr;
+				for(itr = scintBarVec.begin() ; itr != scintBarVec.end() ; itr++){
+					if((*itr)->GetQMeanCorrected() > 15){
+						if((*itr)->fBarIndex == barIndex2){
+							hist->Fill((*itr)->GetDelTCorrected()/1000.);
+						}
+					}
+				}
+			}
+		}
+
+		return hist;
+	}
+
 	TH1F* PlotDelTCorrected(std::vector<lite_interface::SingleMuonTrack*> smtVec, ushort barIndex){
 		std::string barName = vecOfBarsNamess[barIndex].substr(0,4)+"_DelT"+"_Corr";
 		TH1F *hist = new TH1F(barName.c_str(),barName.c_str(),200,-25,25); //Histogram with entries in nanosecond
 
 		for(unsigned int i = 0 ; i < smtVec.size() ; i++){
+
 			std::vector<lite_interface::ScintillatorBar_V2*> scintBarVec = smtVec[i]->GetMuonTrack();
 			std::vector<lite_interface::ScintillatorBar_V2*>::iterator itr;
 			for(itr = scintBarVec.begin() ; itr != scintBarVec.end() ; itr++){
+				if((*itr)->GetQMeanCorrected() > 15){
 					if((*itr)->fBarIndex == barIndex){
 						hist->Fill((*itr)->GetDelTCorrected()/1000.);
 						/*if(IsSimulation)
@@ -167,6 +216,7 @@ namespace lite_interface{
 						else
 							hist->Fill((*itr)->GetDelTCorrected()/1000.);*/
 					}
+				}
 			}
 		}
 
@@ -215,6 +265,63 @@ namespace lite_interface{
 		}
 		return hist;
 	}
+
+	TGraph* PlotHitPointsOnBar(std::vector<lite_interface::SingleMuonTrack*> smtVec, ushort barIndex1,ushort barIndex2){
+		std::string barName = vecOfBarsNamess[barIndex2].substr(0,4)+"_DelT"+"_Corr";
+		//TH1F *hist = new TH1F(barName.c_str(),barName.c_str(),200,-25,25); //Histogram with entries in nanosecond
+		std::vector<unsigned int> vecOfScintId = {barIndex1,barIndex2};
+		std::vector<double> xvec;
+		std::vector<double> yvec;
+		for(unsigned int i = 0 ; i < smtVec.size() ; i++){
+			if(smtVec[i]->CheckTrackForRequiredScintillators(vecOfScintId)){
+				std::vector<lite_interface::ScintillatorBar_V2*> scintBarVec = smtVec[i]->GetMuonTrack();
+				std::vector<lite_interface::ScintillatorBar_V2*>::iterator itr;
+				for(itr = scintBarVec.begin() ; itr != scintBarVec.end() ; itr++){
+					if((*itr)->GetQMeanCorrected() > 15){
+						if((*itr)->fBarIndex == barIndex1){
+							xvec.push_back((*itr)->EstimateHitPosition_Param()->GetZ());
+						}
+						if((*itr)->fBarIndex == barIndex2){
+							yvec.push_back((*itr)->EstimateHitPosition_Param()->GetZ());
+						}
+					}
+				}
+			}
+		}
+
+		TGraph *gr = new TGraph(xvec.size(),&xvec[0],&yvec[0]);
+		return gr;
+	}
+
+	TH2F* PlotHitPointsOnBarHist(std::vector<lite_interface::SingleMuonTrack*> smtVec, ushort barIndex1,ushort barIndex2){
+			std::string barName = vecOfBarsNamess[barIndex2].substr(0,4)+"_HitPoint_Histogram";
+			TH2F *hist = new TH2F(barName.c_str(),barName.c_str(),200,-100,100,200,-100,100); //Histogram with entries in nanosecond
+			std::vector<unsigned int> vecOfScintId = {barIndex1,barIndex2};
+			std::vector<double> xvec;
+			std::vector<double> yvec;
+			for(unsigned int i = 0 ; i < smtVec.size() ; i++){
+				if(smtVec[i]->CheckTrackForRequiredScintillators(vecOfScintId)){
+					std::vector<lite_interface::ScintillatorBar_V2*> scintBarVec = smtVec[i]->GetMuonTrack();
+					std::vector<lite_interface::ScintillatorBar_V2*>::iterator itr;
+					double xval=-100,yval=-100;
+					for(itr = scintBarVec.begin() ; itr != scintBarVec.end() ; itr++){
+						if((*itr)->GetQMeanCorrected() > 15){
+							if((*itr)->fBarIndex == barIndex1){
+								xvec.push_back((*itr)->EstimateHitPosition_Param()->GetZ());
+								xval = (*itr)->EstimateHitPosition_Param()->GetZ();
+							}
+							if((*itr)->fBarIndex == barIndex2){
+								yvec.push_back((*itr)->EstimateHitPosition_Param()->GetZ());
+								yval = (*itr)->EstimateHitPosition_Param()->GetZ();
+							}
+						}
+					}
+					hist->Fill(xval,yval);
+				}
+			}
+
+			return hist;
+		}
 
 	TH1F* CalculateZResolution(std::vector<lite_interface::ScintillatorBar_V2*> scintBarVec, ushort barIndex){
 

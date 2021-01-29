@@ -104,7 +104,7 @@ int main(int argc,char *argv[]){
 	TApplication *fApp = new TApplication("Test", NULL, NULL);
 	GenerateScintMatrixXYCenters();
 	lite_interface::SingleMuonTrack *smt = new lite_interface::SingleMuonTrack;
-	lite_interface::Calibration *calib = lite_interface::Calibration::instance("/home/rsehgal/BackBoneSoftwares/ismranData/completeCalib2.root");
+	lite_interface::Calibration *calib = lite_interface::Calibration::instance("completeCalib2.root");
 	std::string outputFileName=argv[1];
 	TFile *trackFile = new TFile(outputFileName.c_str(),"READ");
 	TTree *trackTree = (TTree*)trackFile->Get("TracksTree");
@@ -155,6 +155,23 @@ int main(int argc,char *argv[]){
 
 	}
 
+	TH1F *pixelHist = lite_interface::PlotPixelDelTCorrected(smtVec,3,12);
+	TFile *outfile = new TFile(argv[2],"RECREATE");
+	outfile->cd();
+	pixelHist->Write();
+	outfile->Close();
+
+	TGraph *gr = lite_interface::PlotHitPointsOnBar(smtVec,2,9);
+	gr->Draw("ap");
+
+	TH2F *hist2D = lite_interface::PlotHitPointsOnBarHist(smtVec,2,9);
+	new TCanvas();
+	hist2D->Draw();
+
+	std::cout << "Output file closed........" << std::endl;
+
+	//pixelHist->Draw();
+#if(0)
 	TFile *outfile = new TFile(argv[2],"RECREATE");
 	{
 		unsigned int countBuggy = 0 ;
@@ -193,6 +210,8 @@ int main(int argc,char *argv[]){
 		//histDelT->Draw();
 	}
 	outfile->Close();
+#endif
+
 	fApp->Run();
 
 	return 0;
