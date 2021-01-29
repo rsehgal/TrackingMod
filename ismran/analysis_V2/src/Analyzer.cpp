@@ -89,6 +89,7 @@ void Analyzer::CreateScintillatorVector(){
 			 * Putting MUON ENERGY CUT
 			 */
 			//if((qmean > qstart) && (qmean < qend))
+			//if(qmean > 15000)
 			{
 
 				ScintillatorBar_V2 *scint;
