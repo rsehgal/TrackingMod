@@ -294,9 +294,10 @@ namespace lite_interface{
 	}
 
 	TH2F* PlotHitPointsOnBarHist(std::vector<lite_interface::SingleMuonTrack*> smtVec, ushort barIndex1,ushort barIndex2){
-			std::string barName = vecOfBarsNamess[barIndex2].substr(0,4)+"_HitPoint_Histogram";
-			TH2F *hist = new TH2F(barName.c_str(),barName.c_str(),200,-100,100,200,-100,100); //Histogram with entries in nanosecond
 			std::vector<unsigned int> vecOfScintId = {barIndex1,barIndex2};
+			/*std::string barName = vecOfBarsNamess[barIndex2].substr(0,4)+"_HitPoint_Histogram";
+			TH2F *hist = new TH2F(barName.c_str(),barName.c_str(),200,-100,100,200,-100,100); //Histogram with entries in nanosecond
+
 			std::vector<double> xvec;
 			std::vector<double> yvec;
 			for(unsigned int i = 0 ; i < smtVec.size() ; i++){
@@ -318,13 +319,101 @@ namespace lite_interface{
 					}
 					hist->Fill(xval,yval);
 				}
-			}
+			}*/
+
+			TH2F *hist = PlotHitPointsOnBarHist(smtVec,vecOfScintId);
 
 			return hist;
 		}
 
-	TH2F* PlotHitPointsOnLayerHist(std::vector<lite_interface::SingleMuonTrack*> smtVec, ushort layerIndex){
+	TH2F* PlotHitPointsOnBarHist(std::vector<lite_interface::SingleMuonTrack*> smtVec, std::vector<unsigned int> vecOfScintId){
+				std::string barName = vecOfBarsNamess[vecOfScintId[vecOfScintId.size()-1]].substr(0,4)+"_HitPoint_Histogram";
+				TH2F *hist = new TH2F(barName.c_str(),barName.c_str(),200,-100,100,200,-100,100); //Histogram with entries in nanosecond
+				//std::vector<unsigned int> vecOfScintId = {barIndex1,barIndex2};
+				std::vector<double> xvec;
+				std::vector<double> yvec;
+				for(unsigned int i = 0 ; i < smtVec.size() ; i++){
+					if(smtVec[i]->CheckTrackForRequiredScintillators(vecOfScintId)){
+						std::vector<lite_interface::ScintillatorBar_V2*> scintBarVec = smtVec[i]->GetMuonTrack();
+						std::vector<lite_interface::ScintillatorBar_V2*>::iterator itr;
+						double xval=-100,yval=-100;
+						for(itr = scintBarVec.begin() ; itr != scintBarVec.end() ; itr++){
+							if((*itr)->GetQMeanCorrected() > 15){
+								//if((*itr)->fBarIndex == barIndex1){
+								if((*itr)->fBarIndex == vecOfScintId[0]){
+									xvec.push_back((*itr)->EstimateHitPosition_Param()->GetZ());
+									xval = (*itr)->EstimateHitPosition_Param()->GetZ();
+								}
+								//if((*itr)->fBarIndex == barIndex2){
+								if((*itr)->fBarIndex == vecOfScintId[1]){
+									yvec.push_back((*itr)->EstimateHitPosition_Param()->GetZ());
+									yval = (*itr)->EstimateHitPosition_Param()->GetZ();
+								}
+							}
+						}
+						hist->Fill(xval,yval);
+					}
+				}
 
+				return hist;
+			}
+
+	std::vector<double> GetXYonPixel(lite_interface::SingleMuonTrack* smt, std::vector<unsigned int> vecOfScintId){
+
+					std::vector<double> xy;
+
+						if(smt->CheckTrackForRequiredScintillators(vecOfScintId)){
+							std::vector<lite_interface::ScintillatorBar_V2*> scintBarVec = smt->GetMuonTrack();
+							std::vector<lite_interface::ScintillatorBar_V2*>::iterator itr;
+							double xval=-100,yval=-100;
+							for(itr = scintBarVec.begin() ; itr != scintBarVec.end() ; itr++){
+								bool xval_bool=false;
+								bool yval_bool=false;
+								if((*itr)->GetQMeanCorrected() > 15){
+									//if((*itr)->fBarIndex == barIndex1){
+									if((*itr)->fBarIndex == vecOfScintId[0]){
+										xval_bool = true;
+										xval = (*itr)->EstimateHitPosition_Param()->GetZ();
+										xy.push_back(xval);
+									}
+									//if((*itr)->fBarIndex == barIndex2){
+									if((*itr)->fBarIndex == vecOfScintId[1]){
+										yval_bool = true;
+										yval = (*itr)->EstimateHitPosition_Param()->GetZ();
+										xy.push_back(yval);
+									}
+								}
+							}
+							return xy;
+						}
+
+
+				}
+
+	/*
+	 * This function will generate the Hit point on the pixel specified layer.
+	 *
+	 * Layer next to specified one, will be used to form the pixel
+	 */
+	TH2F* PlotHitPointsOnLayerHist(std::vector<lite_interface::SingleMuonTrack*> smtVec, ushort layerIndex){
+		std::vector<unsigned int> vecOfLayers;
+		vecOfLayers.push_back(layerIndex);
+		vecOfLayers.push_back(layerIndex+1);
+		std::string Layer="Layer_"+std::to_string(layerIndex);
+		TH2F *hist = new TH2F(Layer.c_str(),Layer.c_str(),200,-100,100,200,-100,100); //Histogram with entries in nanosecond
+		for(unsigned int i = 0 ; i < smtVec.size() ; i++){
+			//double xval=-100,yval=-100;
+			std::vector<unsigned int> hittedBarVec = smtVec[i]->CheckTrackForRequiredLayers(vecOfLayers);
+			if(hittedBarVec.size() == vecOfLayers.size()){
+				std::vector<double> xy = GetXYonPixel(smtVec[i],hittedBarVec);
+				if(xy.size() > 0){
+					if(xy[0] >= -50 && xy[0] <= 50 && xy[1] >= -50 && xy[1] <= 50 && std::fabs(xy[1]) > 0.01)
+					hist->Fill(xy[0],xy[1]);
+				}
+			}
+		}
+
+		return hist;
 	}	
 
 	TH1F* CalculateZResolution(std::vector<lite_interface::ScintillatorBar_V2*> scintBarVec, ushort barIndex){

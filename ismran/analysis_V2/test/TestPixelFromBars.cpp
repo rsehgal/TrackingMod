@@ -164,9 +164,13 @@ int main(int argc,char *argv[]){
 	TGraph *gr = lite_interface::PlotHitPointsOnBar(smtVec,2,9);
 	gr->Draw("ap");
 
-	TH2F *hist2D = lite_interface::PlotHitPointsOnBarHist(smtVec,2,9);
+	//TH2F *hist2D = lite_interface::PlotHitPointsOnBarHist(smtVec,2,9);
+	//new TCanvas();
+	//hist2D->Draw();
+
+	TH2F *hist2DLayer = lite_interface::PlotHitPointsOnLayerHist(smtVec,0);
 	new TCanvas();
-	hist2D->Draw();
+	hist2DLayer->Draw();
 
 	std::cout << "Output file closed........" << std::endl;
 

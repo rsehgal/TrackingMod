@@ -314,15 +314,18 @@ bool SingleMuonTrack::CheckTrackForRequiredScintillators(std::vector<unsigned in
 	return exist;
 }
 
-bool SingleMuonTrack::CheckTrackForLayerNum(unsigned int layerIndex){
+bool SingleMuonTrack::CheckTrackForLayerNum(unsigned int layerIndex, unsigned int &hittedBarIndex){
 	bool exist = false;
-	for(unsigned int barIndex = layerIndex*numOfBarsInEachLayer ; barIndex < (layerIndex+1)*numOfBarsInEachLayer ; barIndex++){
+	for(unsigned int barGeomIndex = layerIndex*numOfBarsInEachLayer ; barGeomIndex < (layerIndex+1)*numOfBarsInEachLayer ; barGeomIndex++){
 		for(unsigned int index = 0 ; index < size() ; index++){
-			exist |= (fSingleMuonTrack[index]->GetBarIndex() == barIndex);
-			if(exist)
+			exist |= (fSingleMuonTrack[index]->GetBarIndex() == barGeomIndex);
+			if(exist){
+				hittedBarIndex = barGeomIndex;
 				return exist;
+			}
 		}
 	}
+	hittedBarIndex = 10000;
 	return exist;
 }
 
@@ -335,6 +338,20 @@ bool SingleMuonTrack::CheckTrackForLayerNum(unsigned int layerIndex){
  */
 std::vector<unsigned int> SingleMuonTrack::CheckTrackForRequiredLayers(std::vector<unsigned int> vecOfLayerIndex){
 
+	std::vector<unsigned int> vecOfHittedBarIndex;
+	bool hitted = true;
+	for(unsigned int i = 0 ; i < vecOfLayerIndex.size() ; i++){
+		unsigned int hittedBarIndex = 10000;
+		bool hittedLocal = false;
+		hittedLocal = CheckTrackForLayerNum(vecOfLayerIndex[i],hittedBarIndex);
+		if(hittedLocal){
+			vecOfHittedBarIndex.push_back(hittedBarIndex);
+		}
+		hitted &= hittedLocal;
+		if(!hitted)
+			break;
+	}
+	return vecOfHittedBarIndex;
 }
 
 //#ifdef USE_FOR_SIMULATION
