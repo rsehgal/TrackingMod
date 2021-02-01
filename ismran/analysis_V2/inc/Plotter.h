@@ -55,6 +55,8 @@ namespace lite_interface{
 	extern TGraph* PlotHitPointsOnBar(std::vector<lite_interface::SingleMuonTrack*> smtVec, ushort barIndex1,ushort barIndex2);
 	extern TH2F* PlotHitPointsOnBarHist(std::vector<lite_interface::SingleMuonTrack*> smtVec, ushort barIndex1,ushort barIndex2);
 	extern TH2F* PlotHitPointsOnLayerHist(std::vector<lite_interface::SingleMuonTrack*> smtVec, ushort layerIndex);
+	extern TH2F* PlotHitPointsOnBarHist(std::vector<lite_interface::SingleMuonTrack*> smtVec, std::vector<unsigned int> vecOfScintId);
+	extern std::vector<double> GetXYonPixel(lite_interface::SingleMuonTrack* smt, std::vector<unsigned int> vecOfScintId);
 
 	/*
 	 * Graphs of Single Muon Track
