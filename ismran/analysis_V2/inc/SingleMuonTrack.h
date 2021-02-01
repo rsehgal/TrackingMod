@@ -94,6 +94,8 @@ public:
 #endif
 
 	bool CheckTrackForRequiredScintillators(std::vector<unsigned int> vecOfScintBarIndex);
+	std::vector<unsigned int> CheckTrackForRequiredLayers(std::vector<unsigned int> vecOfLayerIndex);
+	bool CheckTrackForLayerNum(unsigned int layerIndex);
 
 #ifndef FOR_SIMULATION
 	ClassDef(SingleMuonTrack,1)

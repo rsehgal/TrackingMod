@@ -323,6 +323,10 @@ namespace lite_interface{
 			return hist;
 		}
 
+	TH2F* PlotHitPointsOnLayerHist(std::vector<lite_interface::SingleMuonTrack*> smtVec, ushort layerIndex){
+
+	}	
+
 	TH1F* CalculateZResolution(std::vector<lite_interface::ScintillatorBar_V2*> scintBarVec, ushort barIndex){
 
 			TF1 *param = lite_interface::Calibration::instance()->GetCalibrationDataOf(barIndex)->fParameterization_F;
