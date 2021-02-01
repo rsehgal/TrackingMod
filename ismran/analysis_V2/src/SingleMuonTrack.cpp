@@ -313,6 +313,30 @@ bool SingleMuonTrack::CheckTrackForRequiredScintillators(std::vector<unsigned in
 	}
 	return exist;
 }
+
+bool SingleMuonTrack::CheckTrackForLayerNum(unsigned int layerIndex){
+	bool exist = false;
+	for(unsigned int barIndex = layerIndex*numOfBarsInEachLayer ; barIndex < (layerIndex+1)*numOfBarsInEachLayer ; barIndex++){
+		for(unsigned int index = 0 ; index < size() ; index++){
+			exist |= (fSingleMuonTrack[index]->GetBarIndex() == barIndex);
+			if(exist)
+				return exist;
+		}
+	}
+	return exist;
+}
+
+/*
+ * Return vector of hitted Scintillators IF muon is detected by specified layers
+ * 
+ * The calling function should check the size of returned vector.
+ * IF size is not equal to size specified scintillator layers then it means
+ * some of the layers has not detected the muon.
+ */
+std::vector<unsigned int> SingleMuonTrack::CheckTrackForRequiredLayers(std::vector<unsigned int> vecOfLayerIndex){
+
+}
+
 //#ifdef USE_FOR_SIMULATION
 #if defined(USE_FOR_SIMULATION) || defined(FOR_SIMULATION)
 double SingleMuonTrack::GetZenithAngle_MeanHitPoint(){
