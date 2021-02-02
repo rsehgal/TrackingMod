@@ -266,6 +266,26 @@ namespace lite_interface{
 		return hist;
 	}
 
+	TH2F* PlotHitPointsOnBar(std::vector<lite_interface::SingleMuonTrack*> smtVec, ushort barIndex){
+		ushort nbinsx = 9;
+		ushort nbinsz = 10;
+		std::string name = "Hit points on "+vecOfBarsNamess[barIndex];
+		TH2F *hist = new TH2F(name.c_str(),name.c_str(),nbinsx,-45,45,nbinsz,-50,50);
+
+		for(unsigned int i = 0 ; i < smtVec.size() ; i++){
+			std::vector<lite_interface::ScintillatorBar_V2*> scintBarVec = smtVec[i]->GetMuonTrack();
+			std::vector<lite_interface::ScintillatorBar_V2*>::iterator itr;
+			for(itr = scintBarVec.begin() ; itr != scintBarVec.end() ; itr++){
+				if((*itr)->fBarIndex == barIndex){
+						lite_interface::Point3D *hitPt = (*itr)->EstimateHitPosition();
+						//hitPt->Print();
+						hist->Fill(hitPt->GetX(),hitPt->GetZ());
+				}
+			}
+		}
+		return hist;
+	}
+
 	TGraph* PlotHitPointsOnBar(std::vector<lite_interface::SingleMuonTrack*> smtVec, ushort barIndex1,ushort barIndex2){
 		std::string barName = vecOfBarsNamess[barIndex2].substr(0,4)+"_DelT"+"_Corr";
 		//TH1F *hist = new TH1F(barName.c_str(),barName.c_str(),200,-25,25); //Histogram with entries in nanosecond

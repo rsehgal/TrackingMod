@@ -52,6 +52,7 @@ namespace lite_interface{
 	 */
 	extern TH1F* PlotBarsProfile(std::vector<ScintillatorBar_V2*> scintBarVec);
 	extern TH2F* PlotHitPointsOnBar(std::vector<ScintillatorBar_V2*> scintBarVec, ushort barIndex);
+	extern TH2F* PlotHitPointsOnBar(std::vector<lite_interface::SingleMuonTrack*> smtVec, ushort barIndex);
 	extern TGraph* PlotHitPointsOnBar(std::vector<lite_interface::SingleMuonTrack*> smtVec, ushort barIndex1,ushort barIndex2);
 	extern TH2F* PlotHitPointsOnBarHist(std::vector<lite_interface::SingleMuonTrack*> smtVec, ushort barIndex1,ushort barIndex2);
 	extern TH2F* PlotHitPointsOnLayerHist(std::vector<lite_interface::SingleMuonTrack*> smtVec, ushort layerIndex);

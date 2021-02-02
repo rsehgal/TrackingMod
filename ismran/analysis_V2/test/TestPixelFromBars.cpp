@@ -168,9 +168,13 @@ int main(int argc,char *argv[]){
 	//new TCanvas();
 	//hist2D->Draw();
 
-	TH2F *hist2DLayer = lite_interface::PlotHitPointsOnLayerHist(smtVec,0);
+	TH2F *hist2DLayer = lite_interface::PlotHitPointsOnLayerHist(smtVec,3);
 	new TCanvas();
 	hist2DLayer->Draw();
+
+	TH2F *hist2DBar = lite_interface::PlotHitPointsOnBar(smtVec,3);
+	new TCanvas();
+	hist2DBar->Draw();
 
 	std::cout << "Output file closed........" << std::endl;
 
