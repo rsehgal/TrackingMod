@@ -208,7 +208,8 @@ namespace lite_interface{
 			std::vector<lite_interface::ScintillatorBar_V2*> scintBarVec = smtVec[i]->GetMuonTrack();
 			std::vector<lite_interface::ScintillatorBar_V2*>::iterator itr;
 			for(itr = scintBarVec.begin() ; itr != scintBarVec.end() ; itr++){
-				if((*itr)->GetQMeanCorrected() > 15){
+				//if((*itr)->GetQMeanCorrected() > 15)
+				{
 					if((*itr)->fBarIndex == barIndex){
 						hist->Fill((*itr)->GetDelTCorrected()/1000.);
 						/*if(IsSimulation)
@@ -378,6 +379,48 @@ namespace lite_interface{
 				return hist;
 			}
 
+	TH1F* PlotStripProfileOfLayer(std::vector<lite_interface::ScintillatorBar_V2*> scintBarVec, ushort layerIndex){
+		std::string layerName = "Layer_"+std::to_string(layerIndex);
+		TH1F *hist = new TH1F(layerName.c_str(),layerName.c_str(),numOfBarsInEachLayer,layerIndex*numOfBarsInEachLayer,(layerIndex+1)*numOfBarsInEachLayer);
+
+			std::vector<lite_interface::ScintillatorBar_V2*>::iterator itr;
+			for(itr = scintBarVec.begin() ; itr != scintBarVec.end() ; itr++){
+			if((*itr)->GetQMeanCorrected() > 15)
+				{
+					if(((*itr)->fBarIndex >= layerIndex*numOfBarsInEachLayer) &&
+							((*itr)->fBarIndex < (layerIndex+1)*numOfBarsInEachLayer)){
+						//std::cout << "BAR INDEX : " << (*itr)->fBarIndex << std::endl;
+						hist->Fill((*itr)->fBarIndex);
+
+					}
+				}
+			}
+
+
+		return hist;
+	}
+
+	TH1F* PlotStripProfileOfLayer(std::vector<lite_interface::SingleMuonTrack*> smtVec, ushort layerIndex){
+		std::string layerName = "Layer_"+std::to_string(layerIndex);
+		TH1F *hist = new TH1F(layerName.c_str(),layerName.c_str(),numOfBarsInEachLayer,layerIndex*numOfBarsInEachLayer,(layerIndex+1)*numOfBarsInEachLayer);
+		for(unsigned int i = 0 ; i < smtVec.size() ; i++){
+			std::vector<lite_interface::ScintillatorBar_V2*> scintBarVec = smtVec[i]->GetMuonTrack();
+			std::vector<lite_interface::ScintillatorBar_V2*>::iterator itr;
+			for(itr = scintBarVec.begin() ; itr != scintBarVec.end() ; itr++){
+				if((*itr)->GetQMeanCorrected() > 15){
+					if(((*itr)->fBarIndex >= layerIndex*numOfBarsInEachLayer) &&
+							((*itr)->fBarIndex < (layerIndex+1)*numOfBarsInEachLayer)){
+						//std::cout << "BAR INDEX : " << (*itr)->fBarIndex << std::endl;
+						hist->Fill((*itr)->fBarIndex);
+
+					}
+				}
+			}
+		}
+
+		return hist;
+	}
+
 	std::vector<double> GetXYonPixel(lite_interface::SingleMuonTrack* smt, std::vector<unsigned int> vecOfScintId){
 
 					std::vector<double> xy;
@@ -420,7 +463,7 @@ namespace lite_interface{
 		vecOfLayers.push_back(layerIndex);
 		vecOfLayers.push_back(layerIndex+1);
 		std::string Layer="Layer_"+std::to_string(layerIndex);
-		TH2F *hist = new TH2F(Layer.c_str(),Layer.c_str(),200,-100,100,200,-100,100); //Histogram with entries in nanosecond
+		TH2F *hist = new TH2F(Layer.c_str(),Layer.c_str(),10,-50,50,10,-50,50); //Histogram with entries in nanosecond
 		for(unsigned int i = 0 ; i < smtVec.size() ; i++){
 			//double xval=-100,yval=-100;
 			std::vector<unsigned int> hittedBarVec = smtVec[i]->CheckTrackForRequiredLayers(vecOfLayers);
@@ -465,6 +508,7 @@ namespace lite_interface{
 	}
 
 //#ifdef USE_FOR_SIMULATION
+#if(0)
 	TGraph* PlotDelTvsZ(std::vector<lite_interface::ScintillatorBar_V2*> scintBarVec, ushort barIndex, bool linear){
 		ushort nbinsx = 9;
 		ushort nbinsz = 10;
@@ -491,7 +535,43 @@ namespace lite_interface{
 		delTvsZ->SetTitle(barName.c_str());
 		return delTvsZ;
 	}
+#endif
 //#endif
+
+	TH2F* PlotDelTvsZ(std::vector<lite_interface::ScintillatorBar_V2*> scintBarVec, ushort barIndex, bool linear){
+		ushort nbinsx = 9;
+		ushort nbinsz = 10;
+		//std::string name = "DelT Vs Z : "+vecOfBarsNamess[barIndex];
+		std::string barName = vecOfBarsNamess[barIndex].substr(0,4)+"_DelTvsZ";
+		std::vector<lite_interface::ScintillatorBar_V2*>::iterator itr;
+		std::vector<double> zVec;
+		std::vector<double> delTVec;
+
+		//TH2F *delTvsZ = new TH2F("DeltVsZ","DeltVsZ",1000,-30,30,1000,-500,500);
+		TH2F *delTvsZ = new TH2F("DeltVsZ","DeltVsZ",1000,-10,10,1000,-60,60);
+		for(itr = scintBarVec.begin() ; itr != scintBarVec.end() ; itr++){
+			if((*itr)->fBarIndex == barIndex){
+#ifdef USE_FOR_SIMULATION
+				zVec.push_back((*itr)->hitZ);
+#else
+				if(linear)
+					zVec.push_back((*itr)->EstimateHitPosition()->GetZ());
+				else
+					zVec.push_back((*itr)->EstimateHitPosition_Param()->GetZ());
+#endif
+				delTVec.push_back((*itr)->fDelTstamp/1000. );
+
+				float zval = (*itr)->EstimateHitPosition_Param()->GetZ();
+				if(zval > -50 && zval < 50)
+					delTvsZ->Fill((*itr)->GetDelTCorrected()/1000.,zval);
+
+			}
+		}
+		//TGraph *delTvsZ = new TGraph(delTVec.size(),&delTVec[0],&zVec[0]);
+		//delTvsZ->SetTitle(barName.c_str());
+		return delTvsZ;
+	}
+
 
 	TGraphErrors* PlotMuonTrack(lite_interface::SingleMuonTrack *smt,int opt){
 		return PlotMuonTrack(smt->Get3DHitPointVector(),opt);

@@ -112,7 +112,7 @@ int main(int argc,char *argv[]){
 
 
 	Long64_t nentries = trackTree->GetEntries();
-
+	//nentries = 785000;
 	Long64_t nbytes = 0;
 	unsigned int barIndex = 5;
 	std::vector<lite_interface::ScintillatorBar_V2*> vectOfScintBars;
@@ -164,10 +164,11 @@ int main(int argc,char *argv[]){
 	TGraph *gr = lite_interface::PlotHitPointsOnBar(smtVec,2,9);
 	gr->Draw("ap");
 
-	//TH2F *hist2D = lite_interface::PlotHitPointsOnBarHist(smtVec,2,9);
-	//new TCanvas();
-	//hist2D->Draw();
+	TH2F *hist2D = lite_interface::PlotHitPointsOnBarHist(smtVec,4,13);
+	new TCanvas();
+	hist2D->Draw("colz");
 
+/*
 	TH2F *hist2DLayer = lite_interface::PlotHitPointsOnLayerHist(smtVec,3);
 	new TCanvas();
 	hist2DLayer->Draw();
@@ -175,6 +176,42 @@ int main(int argc,char *argv[]){
 	TH2F *hist2DBar = lite_interface::PlotHitPointsOnBar(smtVec,3);
 	new TCanvas();
 	hist2DBar->Draw();
+
+	TH1F *stripProfile = lite_interface::PlotStripProfileOfLayer(smtVec,0);
+	new TCanvas();
+	stripProfile->Draw();
+
+
+	TH1F *stripProfile1 = lite_interface::PlotStripProfileOfLayer(smtVec,1);
+	new TCanvas();
+	stripProfile1->Draw();
+
+	TH1F *stripProfile2 = lite_interface::PlotStripProfileOfLayer(smtVec,2);
+	new TCanvas();
+	stripProfile2->Draw();
+
+	TH1F *stripProfile3 = lite_interface::PlotStripProfileOfLayer(smtVec,3);
+	new TCanvas();
+	stripProfile3->Draw();
+
+	TH1F *stripProfile4 = lite_interface::PlotStripProfileOfLayer(smtVec,4);
+	new TCanvas();
+	stripProfile4->Draw();
+
+	TH1F *stripProfile5 = lite_interface::PlotStripProfileOfLayer(smtVec,5);
+	new TCanvas();
+	stripProfile5->Draw();
+
+	TH1F *stripProfile6 = lite_interface::PlotStripProfileOfLayer(smtVec,6);
+	new TCanvas();
+	stripProfile6->Draw();
+
+	TH1F *stripProfile7 = lite_interface::PlotStripProfileOfLayer(smtVec,7);
+	new TCanvas();
+	stripProfile7->Draw();
+*/
+
+
 
 	std::cout << "Output file closed........" << std::endl;
 
