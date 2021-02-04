@@ -43,7 +43,8 @@ namespace lite_interface{
 	extern TH1F* PlotDelTCorrected(std::vector<lite_interface::SingleMuonTrack*> smtVec, ushort barIndex);
 	extern TH1F* PlotPixelDelTCorrected(std::vector<lite_interface::SingleMuonTrack*> smtVec, ushort barIndex1,ushort barIndex2);
 //#ifdef USE_FOR_SIMULATION
-	extern TGraph* PlotDelTvsZ(std::vector<lite_interface::ScintillatorBar_V2*> scintBarVec, ushort barIndex, bool linear=false);
+	//extern TGraph* PlotDelTvsZ(std::vector<lite_interface::ScintillatorBar_V2*> scintBarVec, ushort barIndex, bool linear=false);
+	extern TH2F* PlotDelTvsZ(std::vector<lite_interface::ScintillatorBar_V2*> scintBarVec, ushort barIndex, bool linear=false);
 	extern TGraph* PlotDelTvsZ(unsigned int barIndex,std::vector<float> delTVec, std::vector<float> zVec);
 //#endif
 
@@ -58,6 +59,8 @@ namespace lite_interface{
 	extern TH2F* PlotHitPointsOnLayerHist(std::vector<lite_interface::SingleMuonTrack*> smtVec, ushort layerIndex);
 	extern TH2F* PlotHitPointsOnBarHist(std::vector<lite_interface::SingleMuonTrack*> smtVec, std::vector<unsigned int> vecOfScintId);
 	extern std::vector<double> GetXYonPixel(lite_interface::SingleMuonTrack* smt, std::vector<unsigned int> vecOfScintId);
+	extern TH1F* PlotStripProfileOfLayer(std::vector<lite_interface::SingleMuonTrack*> smtVec, ushort layerIndex);
+	extern TH1F* PlotStripProfileOfLayer(std::vector<lite_interface::ScintillatorBar_V2*> scintBarVec, ushort layerIndex);
 
 	/*
 	 * Graphs of Single Muon Track

@@ -91,6 +91,9 @@ target_link_libraries(ReadTracks4 ${ROOT_LIBRARIES}  Tracklib)
 add_executable(TestPixelFromBars test/TestPixelFromBars.cpp ${sources} ${headers})
 target_link_libraries(TestPixelFromBars ${ROOT_LIBRARIES}  Tracklib)
 
+add_executable(TestScintillatorHealth test/TestScintillatorHealth.cpp ${sources} ${headers})
+target_link_libraries(TestScintillatorHealth ${ROOT_LIBRARIES}  Tracklib)
+
 add_executable(ReadTracksDebug test/ReadTracksDebug.cpp ${sources} ${headers})
 target_link_libraries(ReadTracksDebug ${ROOT_LIBRARIES}  Tracklib)
 

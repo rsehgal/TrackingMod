@@ -104,7 +104,7 @@ int main(int argc,char *argv[]){
 	TApplication *fApp = new TApplication("Test", NULL, NULL);
 	GenerateScintMatrixXYCenters();
 	lite_interface::SingleMuonTrack *smt = new lite_interface::SingleMuonTrack;
-	lite_interface::Calibration *calib = lite_interface::Calibration::instance("/home/rsehgal/BackBoneSoftwares/ismranData/completeCalib2.root");
+	lite_interface::Calibration *calib = lite_interface::Calibration::instance("completeCalib2.root");
 	std::string outputFileName=argv[1];
 	TFile *trackFile = new TFile(outputFileName.c_str(),"READ");
 	TTree *trackTree = (TTree*)trackFile->Get("TracksTree");
