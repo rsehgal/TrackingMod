@@ -35,6 +35,7 @@ namespace lite_interface{
 
 	extern TH1F* PlotQMeanCorrected_V2(std::vector<ScintillatorBar_V2> scintBarVec,ushort barIndex=65535);
 	extern TH1F* PlotQMeanCorrected(std::vector<lite_interface::SingleMuonTrack*> smtVec,ushort barIndex);
+	extern TH1F* PlotQMeanCorrectedOfFirstBarWithRespectToSecond(std::vector<lite_interface::SingleMuonTrack*> smtVec,ushort barIndex1,ushort barIndex2);
 	/*
 	 * Histogram of DelT
 	 */
@@ -42,6 +43,7 @@ namespace lite_interface{
 	extern TH1F* PlotDelTCorrected(std::vector<ScintillatorBar_V2*> scintBarVec, ushort barIndex);
 	extern TH1F* PlotDelTCorrected(std::vector<lite_interface::SingleMuonTrack*> smtVec, ushort barIndex);
 	extern TH1F* PlotPixelDelTCorrected(std::vector<lite_interface::SingleMuonTrack*> smtVec, ushort barIndex1,ushort barIndex2);
+	extern TH1F* PlotPixelDelTBetweenBars(std::vector<lite_interface::SingleMuonTrack*> smtVec, ushort barIndex1,ushort barIndex2);
 //#ifdef USE_FOR_SIMULATION
 	//extern TGraph* PlotDelTvsZ(std::vector<lite_interface::ScintillatorBar_V2*> scintBarVec, ushort barIndex, bool linear=false);
 	extern TH2F* PlotDelTvsZ(std::vector<lite_interface::ScintillatorBar_V2*> scintBarVec, ushort barIndex, bool linear=false);

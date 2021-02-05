@@ -168,6 +168,42 @@ int main(int argc,char *argv[]){
 	new TCanvas();
 	hist2D->Draw("colz");
 
+
+	TH1F *histInterBarPixel3_9 = lite_interface::PlotPixelDelTBetweenBars(smtVec,3,9);
+	new TCanvas();
+	histInterBarPixel3_9->Draw();
+
+	TH1F *histInterBarPixel3_12 = lite_interface::PlotPixelDelTBetweenBars(smtVec,3,12);
+	new TCanvas();
+	histInterBarPixel3_12->Draw();
+
+	TH1F *histInterBarPixel3_17 = lite_interface::PlotPixelDelTBetweenBars(smtVec,3,17);
+	new TCanvas();
+	histInterBarPixel3_17->Draw();
+
+	TH1F *ener9 = lite_interface::PlotQMeanCorrectedOfFirstBarWithRespectToSecond(smtVec,3,9);
+	TH1F *ener12 = lite_interface::PlotQMeanCorrectedOfFirstBarWithRespectToSecond(smtVec,3,12);
+	TH1F *ener17 = lite_interface::PlotQMeanCorrectedOfFirstBarWithRespectToSecond(smtVec,3,17);
+	ener9->SetLineColor(1);
+	ener12->SetLineColor(2);
+	ener17->SetLineColor(4);
+	new TCanvas("9","9");
+	ener9->Draw();
+	new TCanvas("12","12");
+	ener12->Draw();
+	new TCanvas("17","17");
+	ener17->Draw();
+
+	/*TH1F *enerRatio9_12 = new TH1F(*ener9);
+	enerRatio9_12->Divide(ener12);
+	new TCanvas("9-12","9-12");
+	enerRatio9_12->Draw();
+
+	TH1F *enerRatio9_17 = new TH1F(*ener9);
+	enerRatio9_17->Divide(ener17);
+	new TCanvas("9-17","9-17");
+	enerRatio9_17->Draw();
+*/
 /*
 	TH2F *hist2DLayer = lite_interface::PlotHitPointsOnLayerHist(smtVec,3);
 	new TCanvas();
