@@ -155,6 +155,33 @@ int main(int argc,char *argv[]){
 
 	}
 
+
+	//for(unsigned int i = 0 ; i < smtVec.size();  i++){
+for(unsigned int i = 0 ; i < 50;  i++){
+		std::vector<lite_interface::ScintillatorBar_V2*> scintBarVec = smtVec[i]->GetMuonTrack();
+						std::vector<lite_interface::ScintillatorBar_V2*>::iterator itr;
+						double enerFirst = 0., enerSecond=0.;
+						if(scintBarVec.size() > 1){
+						for(itr = scintBarVec.begin() ; itr != scintBarVec.end() ; itr++){
+							//if((*itr)->GetQMeanCorrected() > 15)
+							{
+								std::cout << vecOfBarsNamess[(*itr)->GetBarIndex()] << " : " << (*itr)->GetQMeanCorrected() << " , ";
+								/*if((*itr)->fBarIndex == barIndex1){
+									enerFirst = (*itr)->GetQMeanCorrected();
+
+								}
+
+								if((*itr)->fBarIndex == barIndex2){
+									enerSecond = (*itr)->GetQMeanCorrected();
+								}*/
+							}
+							
+
+						}
+						std::cout << std::endl;
+					}
+	}
+
 	TH1F *pixelHist = lite_interface::PlotPixelDelTCorrected(smtVec,3,12);
 	TFile *outfile = new TFile(argv[2],"RECREATE");
 	outfile->cd();
@@ -193,6 +220,11 @@ int main(int argc,char *argv[]){
 	ener12->Draw();
 	new TCanvas("17","17");
 	ener17->Draw();
+
+	TH2F *enerCorrrelated_3_9=lite_interface::PlotQMeanCorrectedCorrelationOfFirstBarWithRespectToSecond(smtVec,3,9);
+	new TCanvas("CorrelatedEnergy_3_9","CorrelatedEnergy_3_9");
+	enerCorrrelated_3_9->Draw("colz");
+
 
 	/*TH1F *enerRatio9_12 = new TH1F(*ener9);
 	enerRatio9_12->Divide(ener12);

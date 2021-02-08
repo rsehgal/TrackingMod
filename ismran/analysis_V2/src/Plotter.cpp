@@ -262,6 +262,42 @@ namespace lite_interface{
 			return hist;
 		}
 
+	TH2F* PlotQMeanCorrectedCorrelationOfFirstBarWithRespectToSecond(std::vector<lite_interface::SingleMuonTrack*> smtVec,ushort barIndex1,ushort barIndex2){
+			unsigned int nbins = 40;
+			unsigned int start = 0;
+			unsigned int end = 40;
+			std::string barName = vecOfBarsNamess[barIndex2].substr(0,4)+"_QMean_Corr";
+			std::string title = "EnergyCorrelationPlot_"+std::to_string(barIndex1)+"_"+std::to_string(barIndex2);
+			TH2F *hist = new TH2F(title.c_str(),title.c_str(),nbins,start,end,nbins,start,end);
+			for(unsigned int i = 0 ; i < smtVec.size() ; i++){
+						std::vector<lite_interface::ScintillatorBar_V2*> scintBarVec = smtVec[i]->GetMuonTrack();
+						std::vector<lite_interface::ScintillatorBar_V2*>::iterator itr;
+						double enerFirst = 0., enerSecond=0.;
+						for(itr = scintBarVec.begin() ; itr != scintBarVec.end() ; itr++){
+							//if((*itr)->GetQMeanCorrected() > 15)
+							{
+								if((*itr)->fBarIndex == barIndex1){
+									enerFirst = (*itr)->GetQMeanCorrected();
+
+								}
+
+								if((*itr)->fBarIndex == barIndex2){
+									enerSecond = (*itr)->GetQMeanCorrected();
+								}
+							}
+
+						}
+						//std::cout << "EnerFirst : " << enerFirst <<" : EnerSecond : " << enerSecond << std::endl;
+						/*if(enerFirst > 10 && enerSecond > 10.){
+
+							hist->Fill(enerSecond);
+						}*/
+						hist->Fill(enerFirst,enerSecond);
+			}
+
+			return hist;
+		}
+
 	TH1F* PlotDelTCorrected(std::vector<lite_interface::SingleMuonTrack*> smtVec, ushort barIndex){
 		std::string barName = vecOfBarsNamess[barIndex].substr(0,4)+"_DelT"+"_Corr";
 		TH1F *hist = new TH1F(barName.c_str(),barName.c_str(),200,-25,25); //Histogram with entries in nanosecond
