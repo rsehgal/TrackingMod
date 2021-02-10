@@ -55,11 +55,15 @@ int main(int argc, char *argv[]){
 	TH2F *delTvsZ = lite_interface::PlotDelTvsZ(scintBarVec, barIndex);
 	delTvsZ->Draw("colz");
 
+	ULong64_t timeWindow = GetMuonTrackTimeWindow(scintBarVec);
+
+	(new TCanvas())->SetLogy();
+	qMean->Draw();
 
 	/*
 	 * CHECKING STRIP) PROFILE
 	 */
-	TH1F *stripProfile = lite_interface::PlotStripProfileOfLayer(scintBarVec,0);
+	/*TH1F *stripProfile = lite_interface::PlotStripProfileOfLayer(scintBarVec,0);
 	new TCanvas();
 	stripProfile->Draw();
 
@@ -74,7 +78,7 @@ int main(int argc, char *argv[]){
 
 	TH1F *stripProfile3 = lite_interface::PlotStripProfileOfLayer(scintBarVec,3);
 	new TCanvas();
-	stripProfile3->Draw();
+	stripProfile3->Draw();*/
 
 /*	TH1F *stripProfile4 = lite_interface::PlotStripProfileOfLayer(smtVec,4);
 	new TCanvas();

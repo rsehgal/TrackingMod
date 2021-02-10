@@ -29,6 +29,7 @@ namespace lite_interface{
 	extern TH1F* PlotQ(std::vector<ScintillatorBar_V2*> scintBarVec, ushort barIndex=65535);
 	extern TH1F* PlotQ_0123(std::vector<ScintillatorBar_V2*> scintBarVec,ushort barIndex, ushort opt);
 	extern TH1F* PlotQMean(std::vector<ScintillatorBar_V2*> scintBarVec,ushort barIndex=65535);
+	extern TH1F* PlotQMean(std::vector<lite_interface::SingleMuonTrack*> smtVec,ushort barIndex);
 	extern TH1F* PlotQMeanCorrected(std::vector<ScintillatorBar_V2*> scintBarVec,ushort barIndex=65535);
 	extern TH1F* PlotQNear(std::vector<ScintillatorBar_V2*> scintBarVec,ushort barIndex=65535);
 	extern TH1F* PlotQFar(std::vector<ScintillatorBar_V2*> scintBarVec,ushort barIndex=65535);
@@ -101,6 +102,12 @@ namespace lite_interface{
 	extern TH1F* PlotZenithAngle(std::vector<double> zenithAngleVect,int opt);
 	extern TH1F* Plot_Acc_Corr_ZenithAngle(std::vector<double> zenithAngleVect,int opt);
 	extern int GetBinNumber(int nbins,double start,double end);
+
+	/*
+	 * Time estimation to form the tag
+	 * ~20ns
+	 */
+	extern ULong64_t GetMuonTrackTimeWindow(std::vector<lite_interface::ScintillatorBar_V2*> scintBarVec);
 
 
 	extern TH1F* GetSolidAngleCorrectedHist(TH1F* solidAngleHist);

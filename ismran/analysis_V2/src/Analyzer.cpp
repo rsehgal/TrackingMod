@@ -292,7 +292,7 @@ void Analyzer::ReconstructMuonTrack(){
 		} else {
 			//Outside 20ns window, implied track ends, hence either store it in the vector of write it to the ROOT file
 			singleMuonTrack->Sort();
-			if(singleMuonTrack->size() >= 8)
+			if(singleMuonTrack->size() >= 2)
 			{
 
 				//if(singleMuonTrack->IsClearTrack())
