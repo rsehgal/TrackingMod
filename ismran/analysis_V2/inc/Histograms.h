@@ -10,6 +10,7 @@
 
 
 #include <TH1D.h>
+#include <TCanvas.h>
 #include "ScintillatorBar_V2.h"
 class TH1D;
 //class ScintillatorBar_V2;
@@ -21,6 +22,7 @@ class Histograms {
 	unsigned short int padHeight ;
 
 public:
+	TCanvas *fCanvas;
 	TH1D *fhistQNear;
 	TH1D *fhistQFar;
 	TH1D *fhistQMean;
@@ -44,6 +46,7 @@ public:
 	void FillHistogram(lite_interface::ScintillatorBar_V2 *scintBarVec);
 	void FillCorrectedQMean(lite_interface::ScintillatorBar_V2 *scintBarVec);
 	void DoSinglePointEnergyCalibrationForMuon();
+	void Save();
 	virtual ~Histograms();
 };
 

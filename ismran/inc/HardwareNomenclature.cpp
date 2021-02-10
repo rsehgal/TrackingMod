@@ -58,7 +58,8 @@ std::vector<std::string> vecOfBarsNamess={
 /*
  * Mapping Matrix of Full Setup 25 Sep onwards
  */
-/*std::vector<std::string> vecOfBarsNamess={
+/*
+std::vector<std::string> vecOfBarsNamess={
 		"PS01_S2AB1017","PS02_S2AB1005","PS03_S3AA1783","PS04_S2AB1007","PS05_S2AB1006", "PS06_S2AB1013","PS07_S3AA1786","PS08_S3AA1784","PS09_S2AB1016",
 		"PS10_S2AB1012", "PS11_S2AB1015","PS12_S2AB1004","PS13_S2AB1010","PS14_S2AB1014","PS15_S2AB1011",  "PS16_S2AB1009","PS17_S1AA6527","PS18_S1AA6526",
 		"PS19_S2AB0715","PS20_S2AB0718","PS21_S2AB0716","PS22_S2AB1008","PS23_S1AA6518","PS24_S1AA6516","PS25_S2AB0717","PS26_S2AB0712","PS27_S2AB0709",
@@ -70,7 +71,8 @@ std::vector<std::string> vecOfBarsNamess={
 		"PS73_SF878"   ,"PS74_SF891"   ,"PS75_SF887", "PS76_SF888"   ,"PS77_SF892"   ,"PS78_SF886"   ,"PS79_SF883"   ,"PS80_SF877"   , "PS81_SF879"
 		//,   ,   ,"PS84_SF882"   ,"PS85_SF881" ,  "PS86_SF884"   ,"PS87_SF876"   ,   ,   ,"PS90_SF875"
   //"PS46_S1AA6643" ->  "PS82_SF885" , "PS55_S1AA6646" -> "PS83_SF890", "PS64_S3AA1787 ->  "PS88_SF880"","PS65_S3AA1782" -> "PS89_SF873"
-};*/
+};
+*/
 
 std::vector<std::string> vecOfBarsNamess={
 		"PS01_S2AB1017","PS02_S2AB1005","PS03_S3AA1783","PS04_S2AB1007","PS41_S1AA6519", "PS42_S1AA6522","PS07_S3AA1786","PS08_S3AA1784","PS09_S2AB1016",
@@ -83,6 +85,7 @@ std::vector<std::string> vecOfBarsNamess={
 		//,   ,   ,"PS84_SF882"   ,"PS85_SF881" ,  "PS86_SF884"   ,"PS87_SF876"   ,   ,   ,"PS90_SF875"
   //"PS46_S1AA6643" ->  "PS82_SF885" , "PS55_S1AA6646" -> "PS83_SF890", "PS64_S3AA1787 ->  "PS88_SF880"","PS65_S3AA1782" -> "PS89_SF873"
 };
+
 //std::cout <<"@@@@@@@@@@@ USING OBLONG GEOM @@@@@@@@@@@" << std::endl;
 #endif
 

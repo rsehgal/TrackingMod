@@ -9,6 +9,41 @@
 
 namespace lite_interface{
 
+	ULong64_t GetMuonTrackTimeWindow(std::vector<lite_interface::ScintillatorBar_V2*> scintBarVec){
+		ULong64_t timeWindow = 20000;
+		ULong64_t startTime = 0;
+		ULong64_t endTime = 0;
+		std::vector<lite_interface::ScintillatorBar_V2*>::iterator itr;
+		bool startFound = false;
+		bool endFound = false;
+		TH1F *timeWindowHist = new TH1F("TimeWindowHist","TimeWindowHist",50,0,30000);
+		for(itr = scintBarVec.begin() ; itr != scintBarVec.end() ; itr++){
+			if((*itr)->GetLayerIndex() == 0){
+				startFound = true;
+				endTime = (*itr)->GetTSmallTimestamp();
+			}
+
+			if((*itr)->GetLayerIndex() == (numOfLayers-1)){
+				endFound = true;
+				startTime = (*itr)->GetTSmallTimestamp();
+			}
+
+			if(startFound && endFound){
+				timeWindow = endTime - startTime;
+				timeWindowHist->Fill(timeWindow);
+				startFound = false;
+				endFound = false;
+			}
+		}
+		//GetTSmallTimestamp
+
+		new TCanvas("TimeWindowHist","TimeWindowHist");
+		timeWindowHist->Draw();
+
+
+		return timeWindow;
+	}
+
 	TH1F* PlotQ(std::vector<lite_interface::ScintillatorBar_V2*> scintBarVec, ushort barIndex){
 		TH1F *hist = new TH1F("RawHist","RawHist",40000,0,40000);
 		std::vector<lite_interface::ScintillatorBar_V2*>::iterator itr;
@@ -121,6 +156,34 @@ namespace lite_interface{
 		return hist;
 	}
 
+	TH1F* PlotQMean(std::vector<lite_interface::SingleMuonTrack*> smtVec,ushort barIndex){
+			unsigned int nbins = 1000;
+			unsigned int start = 0;
+			unsigned int end = 40;
+			std::string barName = vecOfBarsNamess[barIndex].substr(0,4)+"_QMean_Corr";
+			TH1F *hist = new TH1F(barName.c_str(),barName.c_str(),nbins,start,end);
+			for(unsigned int i = 0 ; i < smtVec.size() ; i++){
+						std::vector<lite_interface::ScintillatorBar_V2*> scintBarVec = smtVec[i]->GetMuonTrack();
+						std::vector<lite_interface::ScintillatorBar_V2*>::iterator itr;
+						for(itr = scintBarVec.begin() ; itr != scintBarVec.end() ; itr++){
+							//if((*itr)->GetQMeanCorrected() > 15)
+							//if((*itr)->GetQLongMean() > 5000 && (*itr)->GetQLongMean() < 13000 )
+							{
+								if((*itr)->fBarIndex == barIndex){
+									hist->Fill((*itr)->GetQLongMean()/1000.);
+									//hist->Fill((*itr)->GetQLongMean()/1000.);
+									/*if(IsSimulation)
+										hist->Fill((*itr)->GetDelTCorrected()/1000.);
+									else
+										hist->Fill((*itr)->GetDelTCorrected()/1000.);*/
+								}
+							}
+						}
+			}
+
+			return hist;
+		}
+
 	TH1F* PlotQMeanCorrected(std::vector<lite_interface::SingleMuonTrack*> smtVec,ushort barIndex){
 		unsigned int nbins = 1000;
 		unsigned int start = 0;
@@ -131,9 +194,12 @@ namespace lite_interface{
 					std::vector<lite_interface::ScintillatorBar_V2*> scintBarVec = smtVec[i]->GetMuonTrack();
 					std::vector<lite_interface::ScintillatorBar_V2*>::iterator itr;
 					for(itr = scintBarVec.begin() ; itr != scintBarVec.end() ; itr++){
-						if((*itr)->GetQMeanCorrected() > 15){
+						//if((*itr)->GetQMeanCorrected() > 15)
+						//if((*itr)->GetQLongMean() > 5000 && (*itr)->GetQLongMean() < 13000 )
+						{
 							if((*itr)->fBarIndex == barIndex){
 								hist->Fill((*itr)->GetQMeanCorrected());
+								//hist->Fill((*itr)->GetQLongMean()/1000.);
 								/*if(IsSimulation)
 									hist->Fill((*itr)->GetDelTCorrected()/1000.);
 								else
@@ -263,12 +329,13 @@ namespace lite_interface{
 		}
 
 	TH2F* PlotQMeanCorrectedCorrelationOfFirstBarWithRespectToSecond(std::vector<lite_interface::SingleMuonTrack*> smtVec,ushort barIndex1,ushort barIndex2){
-			unsigned int nbins = 40;
+			unsigned int nbins = 1000;
 			unsigned int start = 0;
-			unsigned int end = 40;
+			unsigned int end = 50;
 			std::string barName = vecOfBarsNamess[barIndex2].substr(0,4)+"_QMean_Corr";
 			std::string title = "EnergyCorrelationPlot_"+std::to_string(barIndex1)+"_"+std::to_string(barIndex2);
 			TH2F *hist = new TH2F(title.c_str(),title.c_str(),nbins,start,end,nbins,start,end);
+			std::ofstream outfile("debug.txt");
 			for(unsigned int i = 0 ; i < smtVec.size() ; i++){
 						std::vector<lite_interface::ScintillatorBar_V2*> scintBarVec = smtVec[i]->GetMuonTrack();
 						std::vector<lite_interface::ScintillatorBar_V2*>::iterator itr;
@@ -278,22 +345,31 @@ namespace lite_interface{
 							{
 								if((*itr)->fBarIndex == barIndex1){
 									enerFirst = (*itr)->GetQMeanCorrected();
+									//enerFirst = (*itr)->GetQLongMean()/1000.;
 
 								}
 
 								if((*itr)->fBarIndex == barIndex2){
 									enerSecond = (*itr)->GetQMeanCorrected();
+									//enerSecond = (*itr)->GetQLongMean()/1000.;
 								}
 							}
 
 						}
 						//std::cout << "EnerFirst : " << enerFirst <<" : EnerSecond : " << enerSecond << std::endl;
+						//if(enerFirst >= 5. && enerSecond >= 5. && enerFirst <= 15. && enerSecond <= 15. )
+						if(enerFirst > 0. && enerSecond > 0. )
+						{
+							outfile << "Track Num : " << i <<  " : EnerFirst : " << enerFirst <<" : EnerSecond : " << enerSecond << std::endl;
+							hist->Fill(enerFirst,enerSecond);
+						}
 						/*if(enerFirst > 10 && enerSecond > 10.){
 
 							hist->Fill(enerSecond);
 						}*/
-						hist->Fill(enerFirst,enerSecond);
+						//hist->Fill(enerFirst,enerSecond);
 			}
+			outfile.close();
 
 			return hist;
 		}
@@ -805,6 +881,7 @@ namespace lite_interface{
 #else
 				    		//vecOfHists[muonTrackVec[i]->size()-1]->Fill(muonTrackVec[i]->GetEnergySum()/1000.);
 							energySum = muonTrackVec[i]->GetEnergySum()/1000.;
+							//std::cout << "EnergySum : " << energySum << std::endl;
 #endif
 							if(energySum > 0. && energySum < 400.)
 								vecOfHists[muonTrackVec[i]->size()-1]->Fill(energySum);

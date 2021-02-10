@@ -109,6 +109,12 @@ target_link_libraries(ReadProcessedData2 ${ROOT_LIBRARIES} Tracklib)
 add_executable(ReadExactHitData test/ReadExactHitData.cpp ${sources} ${headers})
 target_link_libraries(ReadExactHitData ${ROOT_LIBRARIES} Tracklib)
 
+add_executable(TestSystemHealth test/TestSystemHealth.cpp ${sources} ${headers})
+target_link_libraries(TestSystemHealth ${ROOT_LIBRARIES} Tracklib)
+
+add_executable(GetEnergyCalibrationFormulaFromCosmicData test/GetEnergyCalibrationFormulaFromCosmicData.cpp ${sources} ${headers})
+target_link_libraries(GetEnergyCalibrationFormulaFromCosmicData ${ROOT_LIBRARIES} Tracklib -lSpectrum)
+
 #add_executable(ReadTracks_V2 test/ReadTracks_V2.cpp ${sources} ${headers})
 #target_link_libraries(ReadTracks_V2 ${ROOT_LIBRARIES}  Tracklib)
 

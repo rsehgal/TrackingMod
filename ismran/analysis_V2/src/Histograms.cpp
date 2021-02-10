@@ -16,6 +16,30 @@ Histograms::Histograms() {
 
 }
 
+void Histograms::Save(){
+	std::string filename = fBarName+".pdf";
+
+	fCanvas->cd(1);
+	fhistDelTCorrected->Draw();
+
+	(fCanvas->cd(2))->SetLogy();
+	fhistQNear->Draw();
+	fhistQFar->SetLineColor(6);
+	fhistQFar->Draw("same");
+
+	(fCanvas->cd(3))->SetLogy();
+	fhistQMean->Draw();
+
+	(fCanvas->cd(4))->SetLogy();
+	fhistQMeanCorrected->Draw();
+
+	//
+
+	//fCanvas->cd(4);
+
+	fCanvas->Print(filename.c_str());
+}
+
 Histograms::Histograms(std::string barName,unsigned int barIndex){
 
 	fBarName = barName;
@@ -30,16 +54,18 @@ Histograms::Histograms(std::string barName,unsigned int barIndex){
 							   padWidth,(barIndex+1)*padHeight);
 	fhistQNearFarPad->Draw();*/
 
-	fhistQNear = new TH1D((barName+"-Near").c_str(),(barName+"-Near").c_str(),nbins,qstart,qend);
+	fCanvas = new TCanvas(barName.c_str(),barName.c_str());
+	fCanvas->Divide(2,2);
+	fhistQNear = new TH1D((barName+"-Near").c_str(),(barName+"-Near").c_str(),nbins,lqstart,lqend);
 	fhistQNear->SetLineColor(1);
-	fhistQFar  = new TH1D((barName+"-Far").c_str(),(barName+"-Far").c_str(),nbins,qstart,qend);
+	fhistQFar  = new TH1D((barName+"-Far").c_str(),(barName+"-Far").c_str(),nbins,lqstart,lqend);
 	fhistQFar->SetLineColor(2);
 
 	/*fhistQMeanPad = new TPad( (barName+"-MeanPad").c_str(),(barName+"-MeanPad").c_str(),
 							   padWidth,barIndex*padHeight,
 							   2*padWidth,(barIndex+1)*padHeight);
 	fhistQMeanPad->Draw();*/
-	fhistQMean  = new TH1D((barName+"-QMean").c_str(),(barName+"-QMean").c_str(),nbins,qstart,qend);
+	fhistQMean  = new TH1D((barName+"-QMean").c_str(),(barName+"-QMean").c_str(),nbins,lqstart,lqend);
 
 
 	/*fhistDelTPad = new TPad( (barName+"-DelTPad").c_str(),(barName+"-DelTPad").c_str(),
@@ -54,7 +80,7 @@ Histograms::Histograms(std::string barName,unsigned int barIndex){
 	fhistDelTCorrectedPad->Draw();*/
 	fhistDelTCorrected  = new TH1D((barName+"-DelTCorrected").c_str(),(barName+"-DelTCorrected").c_str(),200,-25000,25000);
 
-	fhistQMeanCorrected  = new TH1D((barName+"-QMeanCorrected").c_str(),(barName+"-QMeanCorrected").c_str(),nbins,12000,32000);
+	fhistQMeanCorrected  = new TH1D((barName+"-QMeanCorrected").c_str(),(barName+"-QMeanCorrected").c_str(),nbins,0,40);
 
 
 }
@@ -65,7 +91,7 @@ void Histograms::FillHistogram(lite_interface::ScintillatorBar_V2 *scintBar){
 	fhistQMean->Fill(scintBar->fQlongMean);
 	fhistDelT->Fill(scintBar->fDelTstamp);
 	fhistDelTCorrected->Fill(scintBar->GetDelTCorrected());
-	//fhistQMeanCorrected->Fill(scintBar->GetQMeanCorrected());
+	fhistQMeanCorrected->Fill(scintBar->GetQMeanCorrected());
 }
 #if(0)
 //Working

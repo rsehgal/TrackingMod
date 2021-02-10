@@ -157,7 +157,8 @@ int main(int argc,char *argv[]){
 
 
 	//for(unsigned int i = 0 ; i < smtVec.size();  i++){
-for(unsigned int i = 0 ; i < 50;  i++){
+#if(0)
+	for(unsigned int i = 0 ; i < 50;  i++){
 		std::vector<lite_interface::ScintillatorBar_V2*> scintBarVec = smtVec[i]->GetMuonTrack();
 						std::vector<lite_interface::ScintillatorBar_V2*>::iterator itr;
 						double enerFirst = 0., enerSecond=0.;
@@ -165,7 +166,7 @@ for(unsigned int i = 0 ; i < 50;  i++){
 						for(itr = scintBarVec.begin() ; itr != scintBarVec.end() ; itr++){
 							//if((*itr)->GetQMeanCorrected() > 15)
 							{
-								std::cout << vecOfBarsNamess[(*itr)->GetBarIndex()] << " : " << (*itr)->GetQMeanCorrected() << " , ";
+								//std::cout << vecOfBarsNamess[(*itr)->GetBarIndex()] << " : " << (*itr)->GetQMeanCorrected() << " , ";
 								/*if((*itr)->fBarIndex == barIndex1){
 									enerFirst = (*itr)->GetQMeanCorrected();
 
@@ -178,10 +179,10 @@ for(unsigned int i = 0 ; i < 50;  i++){
 							
 
 						}
-						std::cout << std::endl;
+						//std::cout << std::endl;
 					}
 	}
-
+#endif
 	TH1F *pixelHist = lite_interface::PlotPixelDelTCorrected(smtVec,3,12);
 	TFile *outfile = new TFile(argv[2],"RECREATE");
 	outfile->cd();
@@ -221,9 +222,47 @@ for(unsigned int i = 0 ; i < 50;  i++){
 	new TCanvas("17","17");
 	ener17->Draw();
 
-	TH2F *enerCorrrelated_3_9=lite_interface::PlotQMeanCorrectedCorrelationOfFirstBarWithRespectToSecond(smtVec,3,9);
-	new TCanvas("CorrelatedEnergy_3_9","CorrelatedEnergy_3_9");
+	TH2F *enerCorrrelated_3_9=lite_interface::PlotQMeanCorrectedCorrelationOfFirstBarWithRespectToSecond(smtVec,3,17);
+	new TCanvas("CorrelatedEnergy_3_17","CorrelatedEnergy_3_17");
 	enerCorrrelated_3_9->Draw("colz");
+
+
+	TH1F *qmeanCorr_3 = lite_interface::PlotQMeanCorrected(smtVec,3);
+	TH1F *qmeanCorr_12 = lite_interface::PlotQMeanCorrected(smtVec,17);
+	//qmeanCorr_3->Scale(1/qmeanCorr_3->Integral());
+	//qmeanCorr_12->Scale(1/qmeanCorr_12->Integral());
+	qmeanCorr_3->SetLineColor(4);
+	qmeanCorr_12->SetLineColor(6);
+	new TCanvas("EnergyDissection","EnergyDissection");
+	qmeanCorr_3->Draw();
+	qmeanCorr_12->Draw("same");
+
+
+	TH1F *qmean_3 = lite_interface::PlotQMean(smtVec,3);
+		TH1F *qmean_12 = lite_interface::PlotQMean(smtVec,17);
+		//qmeanCorr_3->Scale(1/qmeanCorr_3->Integral());
+		//qmeanCorr_12->Scale(1/qmeanCorr_12->Integral());
+		qmean_3->SetLineColor(4);
+		qmean_12->SetLineColor(6);
+		new TCanvas("EnergyDissectionQMean","EnergyDissectionQMean");
+		qmean_3->Draw();
+		qmean_12->Draw("same");
+
+		new TCanvas();
+		qmean_3->Draw();
+
+		new TCanvas();
+		qmean_12->Draw();
+
+		std::vector<TH1D*> enerWithMultVec = lite_interface::PlotEnergyDistributionWithMultiplicity(smtVec);
+		new TCanvas();
+		for(unsigned int i = 0 ; i < enerWithMultVec.size() ; i++){
+			if(enerWithMultVec[i]->GetEntries() > 10)
+				enerWithMultVec[i]->Draw("same");
+		}
+
+
+
 
 
 	/*TH1F *enerRatio9_12 = new TH1F(*ener9);
