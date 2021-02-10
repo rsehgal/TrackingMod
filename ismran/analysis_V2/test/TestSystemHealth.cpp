@@ -18,13 +18,37 @@
 #include <TSpectrum.h>
 #include  "Histograms.h"
 
+std::string getFileName(const std::string& s) {
+
+   char sep = '/';
+
+#ifdef _WIN32
+   sep = '\\';
+#endif
+
+   size_t i = s.rfind(sep, s.length());
+   if (i != std::string::npos) {
+      return(s.substr(i+1, s.length() - i));
+   }
+
+   return("");
+}
+
 int main(int argc, char *argv[]){
+	/*std::string outputRootFileName = "SystemHealth_"+getFileName(std::string(argv[1]));
+	std::cout << "Output file : " << outputRootFileName << std::endl;
+	return 0;
+	 */
+	std::string outputRootFileName = "SystemHealth_"+getFileName(std::string(argv[1]));
+	std::string delFile = "rm -rf "+outputRootFileName+".pdf";
+	system(delFile.c_str());
+
 	std::string allfilenames="";
 	std::string command = "/usr/bin/pdfunite ";
 	TApplication *fApp = new TApplication("Test", NULL, NULL);
 	lite_interface::Calibration *calib = lite_interface::Calibration::instance("completeCalib2.root");
 	std::string filename = argv[1];
-	ushort barIndex = std::atoi(argv[2]);
+	//ushort barIndex = std::atoi(argv[2]);
 
 	std::vector<Histograms*> vecOfHists;
 	for(unsigned int i = 0 ; i < vecOfBarsNamess.size() ; i++){
@@ -49,8 +73,11 @@ int main(int argc, char *argv[]){
 		else
 			allfilenames+=(" "+vecOfBarsNamess[i]+".pdf");
 	}
+
+
+
 	command += allfilenames;
-	command += (" systemHealth.pdf");
+	command += (" "+outputRootFileName+".pdf");
 	std::cout << "================ Exectung command ============= " << std::endl;
 	std::cout << command << std::endl;
 
@@ -60,6 +87,21 @@ int main(int argc, char *argv[]){
 	std::cout << "================ Exectung command ============= " << std::endl;
 	std::cout << delfiles << std::endl;
 	system(delfiles.c_str());
+
+
+
+	TFile *f = new TFile(outputRootFileName.c_str(),"RECREATE");
+	f->cd();
+	for(unsigned int i = 0 ; i < vecOfBarsNamess.size() ; i++){
+		vecOfHists[i]->fhistQNear->Write();
+		vecOfHists[i]->fhistQFar->Write();
+		vecOfHists[i]->fhistQMean->Write();
+		vecOfHists[i]->fhistQMeanCorrected->Write();
+		vecOfHists[i]->fhistDelT->Write();
+		vecOfHists[i]->fhistDelTCorrected->Write();
+
+	}
+	f->Close();
 
 	return 0;
 }
