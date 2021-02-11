@@ -112,6 +112,9 @@ target_link_libraries(ReadExactHitData ${ROOT_LIBRARIES} Tracklib)
 add_executable(TestSystemHealth test/TestSystemHealth.cpp ${sources} ${headers})
 target_link_libraries(TestSystemHealth ${ROOT_LIBRARIES} Tracklib)
 
+add_executable(SystemHealthComparison test/SystemHealthComparison.cpp ${sources} ${headers})
+target_link_libraries(SystemHealthComparison ${ROOT_LIBRARIES} Tracklib)
+
 add_executable(GetEnergyCalibrationFormulaFromCosmicData test/GetEnergyCalibrationFormulaFromCosmicData.cpp ${sources} ${headers})
 target_link_libraries(GetEnergyCalibrationFormulaFromCosmicData ${ROOT_LIBRARIES} Tracklib -lSpectrum)
 
