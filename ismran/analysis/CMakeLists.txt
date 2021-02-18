@@ -37,6 +37,8 @@ endif(CRY)
 find_package(ROOT REQUIRED)
 include_directories(${ROOT_INCLUDE_DIR})
 
+include_directories(../analysis_V2/inc)
+
 file(GLOB MAC_FILES ${PROJECT_SOURCE_DIR}/MacFiles/*)
 message(STATUS ${MAC_FILES})
 #file(COPY ${MAC_FILES} DESTINATION ${PROJECT_SOURCE_DIR}/build)

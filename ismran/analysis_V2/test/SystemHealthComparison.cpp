@@ -20,9 +20,9 @@
 
 int main(int argc, char *argv[]){
 
-	std::vector<std::string> vecOfDates = {"14Jan - Without Scatterer","18Jan - Aluminium","22Jan - Iron"};
-	std::vector<std::string> vecOfFileNames={"SystemHealth-WithoutScatterer-14Jan.root", "SystemHealth-Al-18Jan.root",
-											 "SystemHealth-Fe-22Jan.root"};//,"SystemHealth-Fe-03Feb.root"};
+	std::vector<std::string> vecOfDates = {"14Jan - Without Scatterer","18Jan - Aluminium","22Jan - Iron","03Feb - Lead"};
+	std::vector<std::string> vecOfFileNames={"Cosmic-SystemHealth-WithoutScatterer-New-14Jan.root", "Cosmic-SystemHealth-Al-New-18Jan.root",
+											 "Cosmic-SystemHealth-Fe-New-22Jan.root","Cosmic-SystemHealth-Pb-New-03Feb.root"};//,"SystemHealth-Fe-03Feb.root"};
 
 	std::vector<TFile*> vecOfFilePointers;
 

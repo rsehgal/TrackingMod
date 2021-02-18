@@ -72,7 +72,11 @@ Calibration::Calibration(std::string fileName) {
 		double energyCalibrationFactor = bin;// (1.0*muonEnergyPeak) - bin;
 
 		//double energyCalibrationFactor = 1.;
-		TF1 *enerCalibFormula = (TF1*)fp->Get(Form("fecalib_%s",vecOfBarsNamess[barIndex].c_str()));
+		//TF1 *enerCalibFormula = (TF1*)fp->Get(Form("fecalib_%s",vecOfBarsNamess[barIndex].c_str()));
+
+		//Taking energy Calibration formula from cosmic data
+		TF1 *enerCalibFormula = (TF1*)fp->Get(Form("%s_Energy_F",vecOfBarsNamess[barIndex].c_str()));
+
 		TGraphErrors *enerCalibGraph = (TGraphErrors*)fp->Get(Form("grEneCalib_%s",vecOfBarsNamess[barIndex].c_str()));
 
 		//int barPhyNum = std::stoi(vecOfBarsName[barIndex].substr(2,2));
@@ -96,7 +100,8 @@ Calibration::Calibration(std::string fileName) {
 		/*
 		 * Also including energy calibration formula
 		 */
-		//fVecOfCalibrationData.push_back(new CalibrationData( delTShift_F, temp_F ,gr,vecOfDelTFormula,enerCalibFormula,energyCalibrationFactor));
+		fVecOfCalibrationData.push_back(new CalibrationData( delTShift_F, temp_F ,gr,vecOfDelTFormula,enerCalibFormula,energyCalibrationFactor));
+#if(0)
 		if(barPhyNum <= 70)
 			fVecOfCalibrationData.push_back(new CalibrationData( delTShift_F, temp_F ,gr,vecOfDelTFormula,enerCalibGraph,energyCalibrationFactor));
 		else{
@@ -113,6 +118,7 @@ Calibration::Calibration(std::string fileName) {
 			enerCalibGraph = (TGraphErrors*)fp->Get(Form("grEneCalib_%s",vecOfBarsNamess[0].c_str()));
 			fVecOfCalibrationData.push_back(new CalibrationData( delTShift_F, temp_F ,gr,vecOfDelTFormula,enerCalibGraph,energyCalibrationFactor));
 		}
+#endif
 
 		/*double offset = delTShift_F->GetParameter(1);
 		fVecOfCalibrationData.push_back(new CalibrationData( delTShift_F,offset, temp_F ,gr,energyCalibrationFactor));*/

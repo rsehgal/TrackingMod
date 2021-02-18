@@ -27,8 +27,8 @@ namespace lite_interface{
 	 * opt : 2 -> QFar
 	 */
 	extern TH1F* PlotQ(std::vector<ScintillatorBar_V2*> scintBarVec, ushort barIndex=65535);
-	extern TH1F* PlotQ_0123(std::vector<ScintillatorBar_V2*> scintBarVec,ushort barIndex, ushort opt);
-	extern TH1F* PlotQMean(std::vector<ScintillatorBar_V2*> scintBarVec,ushort barIndex=65535);
+	extern TH1F* PlotQ_0123(std::vector<ScintillatorBar_V2*> scintBarVec,ushort barIndex, ushort opt,bool energKev=false);
+	extern TH1F* PlotQMean(std::vector<ScintillatorBar_V2*> scintBarVec,ushort barIndex=65535,bool energKev=false);
 	extern TH1F* PlotQMean(std::vector<lite_interface::SingleMuonTrack*> smtVec,ushort barIndex);
 	extern TH1F* PlotQMeanCorrected(std::vector<ScintillatorBar_V2*> scintBarVec,ushort barIndex=65535);
 	extern TH1F* PlotQNear(std::vector<ScintillatorBar_V2*> scintBarVec,ushort barIndex=65535);
