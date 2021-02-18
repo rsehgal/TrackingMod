@@ -127,11 +127,21 @@ target_link_libraries(readCalibrationFormulaFile ${ROOT_LIBRARIES} Tracklib)
 add_executable(GenerateMuonSinglePointCalibration test/GenerateMuonSinglePointCalibration.cpp ${sources} ${headers})
 target_link_libraries(GenerateMuonSinglePointCalibration ${ROOT_LIBRARIES} Tracklib)
 
+add_executable(GetEnergyCalibrationFromCosmicData test/GetEnergyCalibrationFromCosmicData.cpp ${sources} ${headers})
+target_link_libraries(GetEnergyCalibrationFromCosmicData ${ROOT_LIBRARIES} Tracklib -lSpectrum)
+
+
 add_executable(TestMuonEnergyCalib test/TestMuonEnergyCalib.cpp ${sources} ${headers})
 target_link_libraries(TestMuonEnergyCalib ${ROOT_LIBRARIES} Tracklib)
 
 add_executable(ReadCalibData test/ReadCalibData.cpp ${sources} ${headers})
 target_link_libraries(ReadCalibData ${ROOT_LIBRARIES} Tracklib)
+
+add_executable(readCalibDataFile test/readCalibDataFile.cpp ${sources} ${headers})
+target_link_libraries(readCalibDataFile ${ROOT_LIBRARIES} Tracklib)
+
+add_executable(TestNewCalibFromDataFiles test/TestNewCalibFromDataFiles.cpp ${sources} ${headers})
+target_link_libraries(TestNewCalibFromDataFiles ${ROOT_LIBRARIES} Tracklib)
 
 add_executable(ReadCalibData2 test/ReadCalibData2.cpp ${sources} ${headers})
 target_link_libraries(ReadCalibData2 ${ROOT_LIBRARIES} Tracklib)

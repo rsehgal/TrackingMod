@@ -55,7 +55,7 @@ namespace lite_interface{
 		return hist;
 	}
 
-	TH1F* PlotQ_0123(std::vector<lite_interface::ScintillatorBar_V2*> scintBarVec, ushort barIndex, ushort opt){
+	TH1F* PlotQ_0123(std::vector<lite_interface::ScintillatorBar_V2*> scintBarVec, ushort barIndex, ushort opt,bool energKev){
 		TH1F *hist;
 		unsigned int nbins = 1000;
 		unsigned int start = 0;
@@ -63,7 +63,13 @@ namespace lite_interface{
 		if(opt == 0){
 			std::string barName = vecOfBarsNamess[barIndex].substr(0,4)+"_QMean";
 			//hist = new TH1F("HistQMean","HistQMean",nbins,start,end);
-			hist = new TH1F(barName.c_str(),barName.c_str(),nbins,start,end);
+			//hist = new TH1F(barName.c_str(),barName.c_str(),nbins,start,end);
+
+			if(energKev)
+				hist = new TH1F(barName.c_str(),barName.c_str(),nbins,start*1000,end*1000);
+			else
+				hist = new TH1F(barName.c_str(),barName.c_str(),nbins,start,end);
+
 			std::vector<lite_interface::ScintillatorBar_V2*>::iterator itr;
 			for(itr = scintBarVec.begin() ; itr != scintBarVec.end() ; itr++){
 				if(IsSimulation){
@@ -79,7 +85,10 @@ namespace lite_interface{
 						hist->Fill((*itr)->GetQLongMean()/1000.);
 					}else{
 						if((*itr)->fBarIndex == barIndex){
-							hist->Fill((*itr)->GetQLongMean()/1000.);
+							if(energKev)
+								hist->Fill((*itr)->GetQLongMean());
+							else
+								hist->Fill((*itr)->GetQLongMean()/1000.);
 						}
 					}
 					}
@@ -216,8 +225,8 @@ namespace lite_interface{
 		return PlotQ_0123(scintBarVec,barIndex,3);
 	}
 
-	TH1F* PlotQMean(std::vector<lite_interface::ScintillatorBar_V2*> scintBarVec,ushort barIndex){
-		return PlotQ_0123(scintBarVec,barIndex,0);
+	TH1F* PlotQMean(std::vector<lite_interface::ScintillatorBar_V2*> scintBarVec,ushort barIndex,bool energKev){
+		return PlotQ_0123(scintBarVec,barIndex,0,energKev);
 	}
 	
 	TH1F* PlotQNear(std::vector<lite_interface::ScintillatorBar_V2*> scintBarVec,ushort barIndex){

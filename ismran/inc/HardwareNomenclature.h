@@ -30,7 +30,7 @@ extern std::vector<int> vecOfFarVoltage;
 extern std::vector<int> vecOfNearThreshold;
 extern std::vector<int> vecOfFarThreshold;
 extern std::vector<int> vecOfSourcePositions;
-
+extern std::vector<std::string> sequentialBarNames;
 struct Point2D{
 	double x;
 	double y;
