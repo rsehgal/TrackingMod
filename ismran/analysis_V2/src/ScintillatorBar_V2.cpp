@@ -212,12 +212,14 @@ void ScintillatorBar_V2::Print(){
 
 #endif
 
-	std::cout << "Estimated Hit Position Linear : " ; EstimateHitPosition()->Print();
+//	std::cout << "Estimated Hit Position Linear : " ; EstimateHitPosition()->Print();
+
 //#ifdef USE_FOR_SIMULATION
 	//std::cout << "Fitted Linear Hit position : " ; fittedLinear->Print();
 //#endif
 
-	std::cout << "Estimated Hit Position Param : " ; EstimateHitPosition_Param()->Print();
+	//std::cout << "Estimated Hit Position Param : " ; EstimateHitPosition_Param()->Print();
+
 //#ifdef USE_FOR_SIMULATION
 	//std::cout << "Fitted Param Hit position : " ; fittedParam->Print();
 //#endif

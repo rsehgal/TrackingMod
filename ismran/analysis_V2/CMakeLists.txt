@@ -134,6 +134,9 @@ target_link_libraries(GetEnergyCalibrationFromCosmicData ${ROOT_LIBRARIES} Track
 add_executable(TestMuonEnergyCalib test/TestMuonEnergyCalib.cpp ${sources} ${headers})
 target_link_libraries(TestMuonEnergyCalib ${ROOT_LIBRARIES} Tracklib)
 
+add_executable(MuonTrackAnalysis test/MuonTrackAnalysis.cpp ${sources} ${headers})
+target_link_libraries(MuonTrackAnalysis ${ROOT_LIBRARIES} Tracklib)
+
 add_executable(ReadCalibData test/ReadCalibData.cpp ${sources} ${headers})
 target_link_libraries(ReadCalibData ${ROOT_LIBRARIES} Tracklib)
 

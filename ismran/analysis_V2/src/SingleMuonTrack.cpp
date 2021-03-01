@@ -354,6 +354,14 @@ std::vector<unsigned int> SingleMuonTrack::CheckTrackForRequiredLayers(std::vect
 	return vecOfHittedBarIndex;
 }
 
+int SingleMuonTrack::GetTraversalTime(){
+	lite_interface::ScintillatorBar_V2 *scintStart = fSingleMuonTrack[0];
+	lite_interface::ScintillatorBar_V2 *scintEnd = fSingleMuonTrack[size()-1];
+
+	return (scintEnd->GetTSmallTimestamp() - scintStart->GetTSmallTimestamp());
+
+}
+
 //#ifdef USE_FOR_SIMULATION
 #if defined(USE_FOR_SIMULATION) || defined(FOR_SIMULATION)
 double SingleMuonTrack::GetZenithAngle_MeanHitPoint(){
