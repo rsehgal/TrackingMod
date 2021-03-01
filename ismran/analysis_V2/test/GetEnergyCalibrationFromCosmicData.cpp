@@ -58,9 +58,19 @@ int main(int argc, char *argv[]){
 	TF1 *g2    = new TF1("g2","gaus",0.7,0.9);
 	TF1 *g3    = new TF1("g3","gaus",5,12);*/
 
-	TF1 *g1    = new TF1("g1","gaus",300,600);
-	TF1 *g2    = new TF1("g2","gaus",700,900);
-	TF1 *g3    = new TF1("g3","gaus",5000,12000);
+	TF1 *g1    = new TF1("g1","gaus",300,700);
+	TF1 *g2    = new TF1("g2","gaus",800,1200);
+	TF1 *g3    = new TF1("g3","gaus",5000,15000);
+
+	std::string phyNum = vecOfBarsNamess[i].substr(0,4);
+	if(phyNum == "PS47")
+		g3    = new TF1("g1","gaus",3000,10000);
+	if(phyNum == "PS72")
+		g3    = new TF1("g1","gaus",2500,5000);
+	if(phyNum == "PS81")
+		g3    = new TF1("g1","gaus",1000,2500);
+	if(phyNum == "PS88")
+		g3    = new TF1("g1","gaus",4000,8000);
 
 	hist->Fit(g1,"R");
 	double posK = g1->GetParameter(1);
