@@ -577,24 +577,42 @@ void ReadCalibrationDataFile::ProcessFile(std::string filename){
 		std::cout << maxCount << " : " << mean << " : " << stdDev << std::endl;
 
 		std::string tempBarName=fileNameStruct->sBarName;
-		if(fileNameStruct->sBarName=="PS1_S2AB1017")
+		if(fileNameStruct->sBarName=="PS1_S2AB1017"){
 			tempBarName="PS01_S2AB1017";
-		if(fileNameStruct->sBarName=="PS2_S2AB1005")
+			currentBarName=tempBarName;
+		}
+		if(fileNameStruct->sBarName=="PS2_S2AB1005"){
                         tempBarName="PS02_S2AB1005";
-		 if(fileNameStruct->sBarName=="PS3_S3AA1783")
+			currentBarName=tempBarName;
+		}
+		 if(fileNameStruct->sBarName=="PS3_S3AA1783"){
                         tempBarName="PS03_S3AA1783";
-		 if(fileNameStruct->sBarName=="PS4_S2AB1007")
+			currentBarName=tempBarName;
+		 }
+		 if(fileNameStruct->sBarName=="PS4_S2AB1007"){
                         tempBarName="PS04_S2AB1007";
-		  if(fileNameStruct->sBarName=="PS5_S2AB1006")
+			currentBarName=tempBarName;
+		 }
+		  if(fileNameStruct->sBarName=="PS5_S2AB1006"){
                         tempBarName="PS05_S2AB1006";
-		   if(fileNameStruct->sBarName=="PS6_S2AB1013")
+			currentBarName=tempBarName;
+		  }
+		   if(fileNameStruct->sBarName=="PS6_S2AB1013"){
                         tempBarName="PS06_S2AB1013";
-		    if(fileNameStruct->sBarName=="PS7_S3AA1786")
+			currentBarName=tempBarName;
+		   }
+		    if(fileNameStruct->sBarName=="PS7_S3AA1786"){
                         tempBarName="PS07_S3AA1786";
-		     if(fileNameStruct->sBarName=="PS8_S3AA1784")
+			currentBarName=tempBarName;
+		    }
+		     if(fileNameStruct->sBarName=="PS8_S3AA1784"){
                         tempBarName="PS08_S3AA1784";
-		      if(fileNameStruct->sBarName=="PS9_S2AB1016")
+			currentBarName=tempBarName;
+		     }
+		      if(fileNameStruct->sBarName=="PS9_S2AB1016"){
                         tempBarName="PS09_S2AB1016";
+		      	currentBarName=tempBarName;
+		      }
 
 
 		TF1 *formula = new TF1(	Form("fdelt_shift_Cs137_%s_%dcm",(tempBarName).c_str(), fileNameStruct->sSourcePos), Gaus,-50, 50, 3);

@@ -20,11 +20,9 @@ int main(){
 
 	//rc.DoParameterization_V2("/home/rsehgal/PS1_S2AB1017/");
 
-	std::string dir="/home/rsehgal/ismranData/Hall9/Characterization/";
-	//for(unsigned int i = 0 ; i < sequentialBarNames.size() ; i++)
-	{
-		rc.DoParameterization_V2((dir+"PS1_S2AB1017/"));
-		//rc.DoParameterization_V2((dir+sequentialBarNames[i]+"/"));
+	std::string dir="";
+	for(unsigned int i = 0 ; i < sequentialBarNames.size() ; i++){
+		rc.DoParameterization_V2((dir+sequentialBarNames[i]));
 	}
 
 

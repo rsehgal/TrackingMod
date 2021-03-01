@@ -40,7 +40,7 @@ Calibration* Calibration::instance() {
         	std::cout<<"@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@" << std::endl;
         }
 }
-
+#if(0)
 Calibration::Calibration(std::string fileName) {
 	fFileName = fileName;
 	TFile *fp = new TFile(fileName.c_str(), "r");
@@ -125,6 +125,37 @@ Calibration::Calibration(std::string fileName) {
 
 	}
 }
+#endif
+
+Calibration::Calibration(std::string fileName) {
+	fFileName = fileName;
+	TFile *fp = new TFile(fileName.c_str(), "r");
+	unsigned int numOfBars=vecOfBarsNamess.size();//vecOfBarsName.size();
+	for(unsigned int barIndex = 0; barIndex < numOfBars; barIndex++){
+
+		TF1 *delTShift_F = (TF1*)fp->Get(Form("fdelt_shift_Cs137_%s_0cm",vecOfBarsNamess[barIndex].c_str()));
+		TF1 *paramertization_F = (TF1*)fp->Get(Form("fzparam_%s",vecOfBarsNamess[barIndex].c_str()));
+		//TF1 *enerCalibFormula = (TF1*)fp->Get(Form("%s_Energy_F",vecOfBarsNamess[barIndex].c_str()));
+		TF1 *enerCalibFormula;
+		if(barIndex == 34)
+			enerCalibFormula = (TF1*)fp->Get("PS35_S1AA6520_Energy_F");
+		else
+			enerCalibFormula = (TF1*)fp->Get(Form("%s_Energy_F",vecOfBarsNamess[barIndex].c_str()));
+
+		std::cout << "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@" << std::endl;
+		std::cout << "Processing Bar : " << vecOfBarsNamess[barIndex] << std::endl;
+		std::cout << "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@" << std::endl;
+
+		//if(barIndex!=34)
+
+			//std::cout << "Parameters of " << vecOfBarsNamess[barIndex] << " : " <<  enerCalibFormula->GetParameter(0) << " , " << enerCalibFormula->GetParameter(1) << std::endl;
+			//std::cout << "DelTparam : " << delTShift_F->GetParameter(1) << std::endl;
+
+		fVecOfCalibrationData.push_back(new CalibrationData( delTShift_F, paramertization_F ,enerCalibFormula));
+
+	}
+}
+
 
 CalibrationData* Calibration::GetCalibrationDataOf(int barNo){
 	//std::cout <<" @@@@@@2 BAR NO : " << barNo << std::endl;
