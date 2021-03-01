@@ -137,6 +137,10 @@ target_link_libraries(TestMuonEnergyCalib ${ROOT_LIBRARIES} Tracklib)
 add_executable(MuonTrackAnalysis test/MuonTrackAnalysis.cpp ${sources} ${headers})
 target_link_libraries(MuonTrackAnalysis ${ROOT_LIBRARIES} Tracklib)
 
+add_executable(TestMuonTrackTimeEstimation test/TestMuonTrackTimeEstimation.cpp ${sources} ${headers})
+target_link_libraries(TestMuonTrackTimeEstimation ${ROOT_LIBRARIES} Tracklib)
+
+
 add_executable(ReadCalibData test/ReadCalibData.cpp ${sources} ${headers})
 target_link_libraries(ReadCalibData ${ROOT_LIBRARIES} Tracklib)
 
