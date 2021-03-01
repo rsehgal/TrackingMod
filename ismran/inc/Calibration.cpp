@@ -137,9 +137,9 @@ Calibration::Calibration(std::string fileName) {
 		TF1 *paramertization_F = (TF1*)fp->Get(Form("fzparam_%s",vecOfBarsNamess[barIndex].c_str()));
 		//TF1 *enerCalibFormula = (TF1*)fp->Get(Form("%s_Energy_F",vecOfBarsNamess[barIndex].c_str()));
 		TF1 *enerCalibFormula;
-		if(barIndex == 34)
+		/*if(barIndex == 34)
 			enerCalibFormula = (TF1*)fp->Get("PS35_S1AA6520_Energy_F");
-		else
+		else*/
 			enerCalibFormula = (TF1*)fp->Get(Form("%s_Energy_F",vecOfBarsNamess[barIndex].c_str()));
 
 		std::cout << "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@" << std::endl;
