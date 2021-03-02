@@ -41,6 +41,13 @@ int main(int argc, char *argv[]){
 
 	Long64_t nbytes = 0;
 
+	std::vector<lite_interface::SingleMuonTrack*> smtVec;
+
+
+	TH1F *energySumHist = new TH1F("energySumHist","energySumHist",250,0,250);
+
+	TH1F *multiplictyHist = new TH1F("multiplictyHist","multiplictyHist",15,0,15);
+
 	int counter = 0;
 	for (Long64_t i=0; i<nentries;i++) {
 		//std::cout << "Fetching Entry : " << i << std::endl;
@@ -59,12 +66,35 @@ int main(int argc, char *argv[]){
 		}*/
 
 		histTraversalTime->Fill(smt->GetTraversalTime());
+		//smtVec.push_back(new lite_interface::SingleMuonTrack(*smt));
+		energySumHist->Fill(smt->GetEnergySum());
+		multiplictyHist->Fill(smt->size());
+		smtVec.push_back(new lite_interface::SingleMuonTrack(*smt));
 	}
 
 	new TCanvas("MuonTrackSize","MuonTrackSize");
 	muonTrackSizeHist->Draw();
 	new TCanvas("TraversalTime","TraversalTime");
 	histTraversalTime->Draw();
+	std::vector<TH1D*> vecOfHist  = lite_interface::PlotEnergyDistributionWithMultiplicity(smtVec);
+	new TCanvas("EnergySumWithMultiplicity","EnergySumWithMultiplicity");
+	for(unsigned int i = 0; i < vecOfHist.size() ; i++){
+		vecOfHist[i]->SetLineColor(i+2);
+		//new TCanvas();
+		if(vecOfHist[i]->GetEntries()  > 10)
+		{
+
+			vecOfHist[i]->Scale(1/vecOfHist[i]->Integral());
+			vecOfHist[i]->Draw("same");
+		}
+	}
+
+
+	new TCanvas("EnergySumHist","EnergySumHist");
+	energySumHist->Draw();
+
+	new TCanvas("MultiplicityHist","MultiplicityHist");
+	multiplictyHist->Draw();
 
 	fApp->Run();
 

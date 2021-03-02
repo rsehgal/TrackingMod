@@ -6,6 +6,6 @@ do
   echo "Currently running shot number $shotNo"
   filename="ProcessedData_"$shotNo".root"
   echo "Output Filename : $filename"
-  ./build/AnalyzeData $2 $filename $noOfShots $shotNo
+  ./AnalyzeData $2 $filename $noOfShots $shotNo
 done
 

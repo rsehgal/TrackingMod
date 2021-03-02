@@ -313,6 +313,8 @@ Double_t ScintillatorBar_V2::GetQMeanCorrected(){
 	if(IsSimulation)
 		return fQlongMean;
 	else{
+		//std::cout << "ENTERED GetQMeanCorrected : " << __FILE__ <<" : " << __LINE__ << std::endl;
+		//std::cout << "BAR INDEX : " << fBarIndex << std::endl;
 		TF1 *enercalibFormula = Calibration::instance()->GetCalibrationDataOf(fBarIndex)->fEnergyCalibration_F;
 		/*std::cout << "BARIndex" << fBarIndex <<  " : BarName : " << vecOfBarsNamess[fBarIndex] <<  " : QlongMean : " << fQlongMean <<  " : Parameters : "
 				<< enercalibFormula->GetParameter(0) << " , " <<  enercalibFormula->GetParameter(1) << std::endl;*/
