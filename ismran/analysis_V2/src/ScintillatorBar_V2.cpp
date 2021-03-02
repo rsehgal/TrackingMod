@@ -199,7 +199,7 @@ void ScintillatorBar_V2::EstimateHitPositionAlongY(Point3D *temp, Point3D *tempE
 
 void ScintillatorBar_V2::Print(){
 	std::cout <<"-----------------------------------------------" << std::endl;
-	std::cout <<"BarIndex : " << fBarIndex <<  " :  Energy :  " << GetQMeanCorrected() << " : DelT : " << GetDelT() << std::endl;
+	std::cout <<"BarIndex : " << fBarIndex << " : BAR Name : "<< vecOfBarsNamess[fBarIndex]<<   " :  Energy :  " << GetQMeanCorrected() << " : DelT : " << GetDelT() << std::endl;
 #ifdef USE_FOR_SIMULATION
 	std::cout << "Mean Hit Position : " << hitX <<" , " << hitY << " , " << hitZ << std::endl;
 	std::cout << "Exact Hit Position individual : " << exactHitX <<" , " << exactHitY << " , " << exactHitZ << std::endl;
