@@ -280,15 +280,21 @@ void Analyzer::ReconstructMuonTrack(){
 	hitPointVecTree->Branch("EnergyVector","std::vector<double>", &energyVec);
 
 	singleMuonTrack->push_back(fVecOfScintillatorBar[0]);
+	ULong64_t tStart = fVecOfScintillatorBar[0]->fTSmallTimeStamp;
 	unsigned int count=0;
 	for (unsigned int i = 1; i < scintVecSize; i++) {
+
+		if(fVecOfScintillatorBar[i]->GetQMeanCorrected() > 15){
 		//if(!(i%100000))
 			//std::cout << "Processed : " << i << " : bars " << std::endl;
 
-		if ((fVecOfScintillatorBar[i]->fTSmallTimeStamp - fVecOfScintillatorBar[i - 1]->fTSmallTimeStamp) < 20000) {
+		//if ((fVecOfScintillatorBar[i]->fTSmallTimeStamp - fVecOfScintillatorBar[i - 1]->fTSmallTimeStamp) < 20000) {
+		if (std::fabs(fVecOfScintillatorBar[i]->fTSmallTimeStamp - tStart) < 20000) {
 			//Within 20ns window
 			singleMuonTrack->push_back(fVecOfScintillatorBar[i]);
 			//std::cout << __FILE__ << " : " << __LINE__ << " : ";		fVecOfScintillatorBar[i]->Print();
+			if(fVecOfScintillatorBar[i]->fTSmallTimeStamp < tStart)
+				tStart = fVecOfScintillatorBar[i]->fTSmallTimeStamp;
 		} else {
 			//Outside 20ns window, implied track ends, hence either store it in the vector of write it to the ROOT file
 			singleMuonTrack->Sort();
@@ -382,7 +388,9 @@ void Analyzer::ReconstructMuonTrack(){
 			singleMuonTrack->clear();
 			//singleMuonTrack = new SingleMuonTrack();
 			singleMuonTrack->push_back(fVecOfScintillatorBar[i]);
+			tStart = fVecOfScintillatorBar[i]->fTSmallTimeStamp;
 		}
+	}
 	}
 
 	//TCanvas *can=lite_interface::PlotEnergyDistributionWithMultiplicity(smtVec);
