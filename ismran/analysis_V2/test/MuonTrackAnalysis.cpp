@@ -19,7 +19,7 @@
 #include  "Histograms.h"
 
 int main(int argc, char *argv[]){
-
+	GenerateScintMatrixXYCenters();
 	TApplication *fApp = new TApplication("Test", NULL, NULL);
 	lite_interface::SingleMuonTrack *smt = new lite_interface::SingleMuonTrack;
 
@@ -65,18 +65,21 @@ int main(int argc, char *argv[]){
 			}
 		}*/
 
-		histTraversalTime->Fill(smt->GetTraversalTime());
+		if(smt->size() > 7)
+			histTraversalTime->Fill(smt->GetTraversalTime());
 		//smtVec.push_back(new lite_interface::SingleMuonTrack(*smt));
 		energySumHist->Fill(smt->GetEnergySum());
 		multiplictyHist->Fill(smt->size());
 		smtVec.push_back(new lite_interface::SingleMuonTrack(*smt));
 	}
 
+	std::cout << "Size of SMTVec : " << smtVec.size() << std::endl;
 	new TCanvas("MuonTrackSize","MuonTrackSize");
 	muonTrackSizeHist->Draw();
 	new TCanvas("TraversalTime","TraversalTime");
 	histTraversalTime->Draw();
 	std::vector<TH1D*> vecOfHist  = lite_interface::PlotEnergyDistributionWithMultiplicity(smtVec);
+	std::cout << "Size of SMTVec2 : " << smtVec.size() << std::endl;
 	new TCanvas("EnergySumWithMultiplicity","EnergySumWithMultiplicity");
 	for(unsigned int i = 0; i < vecOfHist.size() ; i++){
 		vecOfHist[i]->SetLineColor(i+2);
@@ -95,6 +98,36 @@ int main(int argc, char *argv[]){
 
 	new TCanvas("MultiplicityHist","MultiplicityHist");
 	multiplictyHist->Draw();
+
+
+	/*unsigned int Counter = 0;
+	for(unsigned int i = 0 ; i < smtVec.size() ; i++){
+		Counter++;
+		//if(!i)
+			//std::cout << "Counter : " << Counter << std::endl;
+		if(!(Counter%1000000))
+		std::cout << "Counter : " << Counter << std::endl;
+	}*/
+
+	for(unsigned int i = 0 ; i < smtVec.size() ; i++){
+		//std::cout <<"Size of MuonTrack : " << i <<" : " << smtVec[i]->size() << std::endl;
+		std::cout <<"=================== Track Num : " << i << " : Energy Sum : " << smtVec[i]->GetEnergySum() << " ============================" << std::endl;
+		for(unsigned int j = 0 ; j < smtVec[i]->size() ; j++){
+			//std::cout <<"Size of MuonTrack : " << smtVec[i]->size() << std::endl;
+
+			/*if((smtVec[i]->GetMuonTrack())[j]->GetLayerIndex() == numOfLayers-1)
+
+			{
+				(smtVec[i]->GetMuonTrack())[j]->EstimateHitPosition_Param()->Print();
+				//(smtVec[i]->GetMuonTrack())[j]->Print();
+			}*/
+
+			if((smtVec[i]->GetMuonTrack())[j]->GetLayerIndex() == 6 || (smtVec[i]->GetMuonTrack())[j]->GetLayerIndex() == 7){
+				std::cout << "Energy : " << (smtVec[i]->GetMuonTrack())[j]->GetQMeanCorrected() << " : "; (smtVec[i]->GetMuonTrack())[j]->EstimateHitPosition_Param()->Print();
+			}
+
+		}
+	}
 
 	fApp->Run();
 
