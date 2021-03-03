@@ -12,6 +12,7 @@
 #include "includes.hh"
 #include <vector>
 class Point3D;
+class Point2D;
 
 extern Tracking::Vector3D<double> ConvertToTomoVector3D(Point3D pt);
 
@@ -40,6 +41,10 @@ extern TH1D* PlotZenithAngle(std::vector<std::vector<Point3D*>> muonTrackVec, st
 extern TH1D* PlotZenithAngle_XY(std::vector<std::vector<Point3D*>> muonTrackVec, std::string histTitle);
 extern bool CheckRange(std::vector<Point3D*> singleMuonTrack);
 extern void PrintPoint3DVector(std::vector<Point3D*> vect);
+
+extern double Interpolate(Point2D p1, Point2D p2, double y);
+extern TF1* GetMuonPeakFitFormula(std::string barName);
+
 
 class HelperFunctions {
 public:

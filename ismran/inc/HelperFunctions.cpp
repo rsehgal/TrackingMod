@@ -9,7 +9,8 @@
 #include "PsBar.h"
 #include "includes.hh"
 #include <TMath.h>
-
+#include "HardwareNomenclature.h"
+#include<bits/stdc++.h>
 
 
 std::vector<std::vector<unsigned long int>> myhist2D;
@@ -235,6 +236,36 @@ void PrintPoint3DVector(std::vector<Point3D*> vect){
 	}
 }
 
+double Interpolate(Point2D p1, Point2D p2, double y){
+	double slope = (p2.y - p1.y)/(p2.x - p1.x);
+	double retval = (y - p1.y)/slope + p1.x;
+	return retval;
+}
+
+TF1* GetMuonPeakFitFormula(std::string barName){
+	unsigned int peakPos;
+	unsigned int startOffset = 1500;
+	unsigned int endOffset = 200;
+	std::vector<unsigned int> vecOfPeakPos = {6000,8800,9600,8900,8000,8340,9800,8900,8000,
+	                                          8800,8000,8200,9700,9000,9200,8800,7000,8000,
+											  9500,9000,9200,8000,8500,8200,9000,8800,9200,
+											  8600,8000,8800,9000,8400,9200,9200,8400,9600,
+											  8400,8400,8350,5500,8200,7700,7600,7800,6200,
+											  8050,5200,7200,7000,5950,6800,8050,8400,8150,
+											  8200,7800,8800,9000,8700,8150,8400,9200,9100,
+											  8500,8600,7100,8400,8150,8500,9000,13500,3800,
+											  6500,9700,10250,11800,10500,10200,10000,9600,1500,
+											  10000,11500,9700,9550,10300,10200,5000,9900,11700};
+
+	std::vector<std::string>::iterator it;
+	it = std::find (sequentialBarNames.begin(), sequentialBarNames.end(), barName);
+	if (it != sequentialBarNames.end()){
+		unsigned int index = it - sequentialBarNames.begin();
+		peakPos = vecOfPeakPos[index];
+	}
+	return (new TF1("g1","gaus",peakPos-startOffset,peakPos+endOffset));
+
+}
 
 HelperFunctions::HelperFunctions() {
 	// TODO Auto-generated constructor stub

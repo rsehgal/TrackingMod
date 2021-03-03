@@ -13,6 +13,7 @@
 #include "HardwareNomenclature.h"
 #include <TVector3.h>
 #include "Plotter.h"
+#include <algorithm>
 #ifndef FOR_SIMULATION
 ClassImp(lite_interface::SingleMuonTrack)
 #endif
@@ -62,6 +63,64 @@ void SingleMuonTrack::clear(){
 
 unsigned long int SingleMuonTrack::size(){
 	return fSingleMuonTrack.size();
+}
+
+unsigned int SingleMuonTrack::NumOfHitsInLayer(unsigned int layerNum){
+	unsigned int noOfHits = 0;
+	for(unsigned int i = 0 ; i < size() ; i++){
+		if(fSingleMuonTrack[i]->GetLayerIndex()==layerNum){
+			noOfHits++;
+		}
+	}
+	return noOfHits;
+}
+
+bool SingleMuonTrack::SingleHitInEachLayer(){
+	std::vector<unsigned int> vecOfNumOfHits;
+	for(unsigned int i = 0 ; i < numOfLayers ; i++){
+		vecOfNumOfHits.push_back(NumOfHitsInLayer(i));
+	}
+
+	/*
+	 * If number of hits in each layer is 0 or 1
+	 * then return true else false
+	 */
+	bool singleHit = true;
+	for(unsigned int i = 0 ; i < numOfLayers ; i++){
+		singleHit &= (vecOfNumOfHits[i]<=1);
+	}
+	return singleHit;
+}
+
+SingleMuonTrack* SingleMuonTrack::GetIncomingTrack(){
+	std::vector<ScintillatorBar_V2*> vecOfScintBars;
+	if(SingleHitInEachLayer()){
+		for(unsigned int i = 0 ; i < size() ; i++){
+			/*if(fSingleMuonTrack[i]->GetLayerIndex()==5 ||
+			   fSingleMuonTrack[i]->GetLayerIndex()==6 ||
+			   fSingleMuonTrack[i]->GetLayerIndex()==7)*/
+			if(std::count(incomingLayerIndices.begin(),incomingLayerIndices.end(),fSingleMuonTrack[i]->GetLayerIndex()))
+			{
+				vecOfScintBars.push_back(fSingleMuonTrack[i]);
+			}
+		}
+		return (new SingleMuonTrack(vecOfScintBars));
+	}
+	return NULL;
+}
+
+SingleMuonTrack* SingleMuonTrack::GetOutgoingTrack(){
+	std::vector<ScintillatorBar_V2*> vecOfScintBars;
+		if(SingleHitInEachLayer()){
+			for(unsigned int i = 0 ; i < size() ; i++){
+				if(std::count(outgoingLayerIndices.begin(),outgoingLayerIndices.end(),fSingleMuonTrack[i]->GetLayerIndex()))
+				{
+					vecOfScintBars.push_back(fSingleMuonTrack[i]);
+				}
+			}
+			return (new SingleMuonTrack(vecOfScintBars));
+		}
+		return NULL;
 }
 
 void SingleMuonTrack::Print(){

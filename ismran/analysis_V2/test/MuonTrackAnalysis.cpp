@@ -20,6 +20,15 @@
 
 int main(int argc, char *argv[]){
 	GenerateScintMatrixXYCenters();
+	for(unsigned int i = 0 ; i < vecOfScintXYCenter.size() ; i++){
+			if(!(i%9))
+				std::cout <<"=================================" << std::endl;
+			vecOfScintXYCenter[i].Print();
+		}
+
+	//return 0;
+
+
 	TApplication *fApp = new TApplication("Test", NULL, NULL);
 	lite_interface::SingleMuonTrack *smt = new lite_interface::SingleMuonTrack;
 
@@ -70,7 +79,8 @@ int main(int argc, char *argv[]){
 		//smtVec.push_back(new lite_interface::SingleMuonTrack(*smt));
 		energySumHist->Fill(smt->GetEnergySum());
 		multiplictyHist->Fill(smt->size());
-		smtVec.push_back(new lite_interface::SingleMuonTrack(*smt));
+		//if(smt->SingleHitInEachLayer())
+			smtVec.push_back(new lite_interface::SingleMuonTrack(*smt));
 	}
 
 	std::cout << "Size of SMTVec : " << smtVec.size() << std::endl;
@@ -111,7 +121,7 @@ int main(int argc, char *argv[]){
 
 	for(unsigned int i = 0 ; i < smtVec.size() ; i++){
 		//std::cout <<"Size of MuonTrack : " << i <<" : " << smtVec[i]->size() << std::endl;
-		std::cout <<"=================== Track Num : " << i << " : Energy Sum : " << smtVec[i]->GetEnergySum() << " ============================" << std::endl;
+		std::cout <<"=================== Track Num : " << i << " : Track Size : " << smtVec[i]->size() << " : Energy Sum : " << smtVec[i]->GetEnergySum() << " ============================" << std::endl;
 		for(unsigned int j = 0 ; j < smtVec[i]->size() ; j++){
 			//std::cout <<"Size of MuonTrack : " << smtVec[i]->size() << std::endl;
 
@@ -122,15 +132,45 @@ int main(int argc, char *argv[]){
 				//(smtVec[i]->GetMuonTrack())[j]->Print();
 			}*/
 
-			if((smtVec[i]->GetMuonTrack())[j]->GetLayerIndex() == 6 || (smtVec[i]->GetMuonTrack())[j]->GetLayerIndex() == 7){
-				std::cout << "Energy : " << (smtVec[i]->GetMuonTrack())[j]->GetQMeanCorrected() << " : "; (smtVec[i]->GetMuonTrack())[j]->EstimateHitPosition_Param()->Print();
+			//if(smtVec[i]->NumOfHitsInLayer(7)==1 )
+			if(smtVec[i]->SingleHitInEachLayer())
+			{
+				//if((smtVec[i]->GetMuonTrack())[j]->GetLayerIndex() == 6 || (smtVec[i]->GetMuonTrack())[j]->GetLayerIndex() == 7)
+				{
+
+					std::cout << "Energy : " << (smtVec[i]->GetMuonTrack())[j]->GetQMeanCorrected() << " : "; (smtVec[i]->GetMuonTrack())[j]->EstimateHitPosition_Param()->Print();
+				}
 			}
 
 		}
+
+		std::cout << "++++++++++++++++++++++++++++++++ Incoming Track ++++++++++++++++++++++++++++++++++" << std::endl;
+		lite_interface::SingleMuonTrack *trk = smtVec[i]->GetIncomingTrack();
+		if(trk){
+		for(unsigned int j = 0 ; j < trk->size() ; j++){
+			std::cout << "Energy : " << (trk->GetMuonTrack())[j]->GetQMeanCorrected() << " : "; (trk->GetMuonTrack())[j]->EstimateHitPosition_Param()->Print();
+		}
+		}
+
 	}
+
+
+	TH1F *stripProfile7 = lite_interface::PlotStripProfileOfLayer(smtVec,7);
+	TH1F *stripProfile6 = lite_interface::PlotStripProfileOfLayer(smtVec,6);
+	TH1F *stripProfile5 = lite_interface::PlotStripProfileOfLayer(smtVec,5);
+
+	new TCanvas("StripProfile_Layer7","StripProfile_Layer7");
+	stripProfile7->Draw();
+
+	new TCanvas("StripProfile_Layer6","StripProfile_Layer6");
+	stripProfile6->Draw();
+
+	new TCanvas("StripProfile_Layer5","StripProfile_Layer5");
+	stripProfile5->Draw();
 
 	fApp->Run();
 
 
 	return 0;
 }
+

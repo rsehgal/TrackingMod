@@ -30,6 +30,18 @@ float barWidth = 10.;
 float barHeight = 10.;
 float barLength = 100.;
 
+/*
+ * Ref Y is the slab of Scatterer
+ * Y of all the detector should be with respect to  Scatterer Slab.
+ */
+float offsetYLowerDetectors = -20.;
+float offsetYUpperDetectors = 50.;
+unsigned int numOfLowerLayers = 5;
+unsigned int numOfUpperLayers = 3;
+std::vector<unsigned int> incomingLayerIndices={7,6,5};
+std::vector<unsigned int> outgoingLayerIndices={4,3,2,1,0};
+
+
 double errorX = 5.;
 double errorY = 5.;
 
