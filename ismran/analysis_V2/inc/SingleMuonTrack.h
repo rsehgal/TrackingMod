@@ -97,6 +97,10 @@ public:
 	std::vector<unsigned int> CheckTrackForRequiredLayers(std::vector<unsigned int> vecOfLayerIndex);
 	bool CheckTrackForLayerNum(unsigned int layerIndex, unsigned int &hittedBarIndex);
 	int GetTraversalTime();
+	unsigned int NumOfHitsInLayer(unsigned int layerNum);
+	bool SingleHitInEachLayer();
+	SingleMuonTrack* GetIncomingTrack();
+	SingleMuonTrack* GetOutgoingTrack();
 
 #ifndef FOR_SIMULATION
 	ClassDef(SingleMuonTrack,1)

@@ -889,11 +889,15 @@ namespace lite_interface{
 							energySum = muonTrackVec[i]->GetEnergySum();
 #else
 				    		//vecOfHists[muonTrackVec[i]->size()-1]->Fill(muonTrackVec[i]->GetEnergySum()/1000.);
-							energySum = muonTrackVec[i]->GetEnergySum();///1000.;
+
+							if(muonTrackVec[i]->SingleHitInEachLayer()){
+								energySum = muonTrackVec[i]->GetEnergySum();///1000.;
+
 							//std::cout << "EnergySum : " << energySum << std::endl;
 #endif
 							if(energySum > 0. && energySum < 400.)
 								vecOfHists[muonTrackVec[i]->size()-1]->Fill(energySum);
+							}
 				    	}
 
 				    }

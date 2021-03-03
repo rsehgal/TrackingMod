@@ -19,6 +19,12 @@ extern unsigned int numOfBarsInEachLayer;//=9;
 extern float barWidth;
 extern float barHeight;
 extern float barLength;
+extern float offsetYLowerDetectors;
+extern float offsetYUpperDetectors;
+extern unsigned int numOfLowerLayers;
+extern unsigned int numOfUpperLayers;
+extern std::vector<unsigned int> incomingLayerIndices;
+extern std::vector<unsigned int> outgoingLayerIndices;
 
 extern std::map<std::string,TH1D*> barsEnergyMap;
 extern std::vector<TH1D*> vecOfEnergyHist;

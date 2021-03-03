@@ -75,6 +75,8 @@ std::vector<std::string> vecOfBarsNamess={
 };*/
 
 
+
+
 std::vector<std::string> vecOfBarsNamess={
 		"PS01_S2AB1017","PS02_S2AB1005","PS03_S3AA1783","PS04_S2AB1007","PS41_S1AA6519", "PS42_S1AA6522","PS07_S3AA1786","PS08_S3AA1784","PS09_S2AB1016",
 		//"PS1_S2AB1017","PS2_S2AB1005","PS3_S3AA1783","PS4_S2AB1007","PS41_S1AA6519", "PS42_S1AA6522","PS7_S3AA1786","PS8_S3AA1784","PS9_S2AB1016",
@@ -88,6 +90,8 @@ std::vector<std::string> vecOfBarsNamess={
 		//,   ,   ,"PS84_SF882"   ,"PS85_SF881" ,  "PS86_SF884"   ,"PS87_SF876"   ,   ,   ,"PS90_SF875"
   //"PS46_S1AA6643" ->  "PS82_SF885" , "PS55_S1AA6646" -> "PS83_SF890", "PS64_S3AA1787 ->  "PS88_SF880"","PS65_S3AA1782" -> "PS89_SF873"
 };
+
+
 
 //std::cout <<"@@@@@@@@@@@ USING OBLONG GEOM @@@@@@@@@@@" << std::endl;
 #endif
@@ -169,12 +173,35 @@ std::vector<std::string> sequentialBarNames={
 };
 
 std::vector<Point2D> vecOfScintXYCenter;
+/*
+//Suitable when there is no split
 void GenerateScintMatrixXYCenters(){
 	for(unsigned int i = 0 ; i < numOfLayers ; i++){
 		for(unsigned int j = 0 ; j < numOfBarsInEachLayer ; j++){
 			double x = -1.*(numOfBarsInEachLayer*barWidth)/2. + barWidth/2. + (j*barWidth);
 			double y = -1.*(numOfLayers*barHeight)/2. + barHeight/2. + (i*barHeight);
 			//double y = -1.*(numOfLayers*barHeight)/2. + barHeight + (i*barHeight);
+			vecOfScintXYCenter.push_back(Point2D(x,y));
+		}
+	}
+}
+*/
+
+void GenerateScintMatrixXYCenters(){
+	for(unsigned int i = 0 ; i < numOfLowerLayers ; i++){
+		for(unsigned int j = 0 ; j < numOfBarsInEachLayer ; j++){
+			double x = -1.*(numOfBarsInEachLayer*barWidth)/2. + barWidth/2. + (j*barWidth);
+			double y = -1.*(numOfLowerLayers*barHeight) + barHeight/2. + (i*barHeight);
+			y += offsetYLowerDetectors;
+			vecOfScintXYCenter.push_back(Point2D(x,y));
+		}
+	}
+
+	for(unsigned int i = 0 ; i < numOfUpperLayers ; i++){
+		for(unsigned int j = 0 ; j < numOfBarsInEachLayer ; j++){
+			double x = -1.*(numOfBarsInEachLayer*barWidth)/2. + barWidth/2. + (j*barWidth);
+			double y = barHeight/2. + (i*barHeight);
+			y += offsetYUpperDetectors;
 			vecOfScintXYCenter.push_back(Point2D(x,y));
 		}
 	}
