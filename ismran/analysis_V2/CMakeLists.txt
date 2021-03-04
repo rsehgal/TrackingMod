@@ -24,13 +24,19 @@ option(CRY "Enable CRY library for cosmic event generation" OFF)
 option(USE_CALIBRATION "Use Calibration data for Sampling of time" OFF)
 option(USE_FOR_SIMULATION "Use Analyzer for simulated data" OFF)
 option(STAGGERED_GEOM "Use Scattered geometry configurtion" OFF)
-
+option(SINGLE_POINT_CALIBRATION "Use Single Point Muon Calibration" ON)
 option(WITH_GEANT4_UIVIS "Build example with Geant4 UI and Vis drivers" ON)
+
 if(WITH_GEANT4_UIVIS)
   find_package(Geant4 REQUIRED ui_all vis_all)
 else()
   find_package(Geant4 REQUIRED)
 endif()
+
+if(SINGLE_POINT_CALIBRATION)
+add_definitions(-DSINGLE_POINT_CALIBRATION)
+endif(SINGLE_POINT_CALIBRATION)
+
 
 if(STAGGERED_GEOM)
 add_definitions(-DSTAGGERED_GEOM)
@@ -94,6 +100,10 @@ target_link_libraries(TestPixelFromBars ${ROOT_LIBRARIES}  Tracklib)
 add_executable(TestScintillatorHealth test/TestScintillatorHealth.cpp ${sources} ${headers})
 target_link_libraries(TestScintillatorHealth ${ROOT_LIBRARIES}  Tracklib)
 
+add_executable(TestScintillatorPeaks test/TestScintillatorPeaks.cpp ${sources} ${headers})
+target_link_libraries(TestScintillatorPeaks ${ROOT_LIBRARIES}  Tracklib)
+
+
 add_executable(ReadTracksDebug test/ReadTracksDebug.cpp ${sources} ${headers})
 target_link_libraries(ReadTracksDebug ${ROOT_LIBRARIES}  Tracklib)
 
@@ -139,6 +149,9 @@ target_link_libraries(MuonTrackAnalysis ${ROOT_LIBRARIES} Tracklib)
 
 add_executable(TestMuonTrackTimeEstimation test/TestMuonTrackTimeEstimation.cpp ${sources} ${headers})
 target_link_libraries(TestMuonTrackTimeEstimation ${ROOT_LIBRARIES} Tracklib)
+
+#add_executable(dissection test/dissection.cpp ${sources} ${headers})
+#target_link_libraries(dissection ${ROOT_LIBRARIES} Tracklib)
 
 
 add_executable(ReadCalibData test/ReadCalibData.cpp ${sources} ${headers})

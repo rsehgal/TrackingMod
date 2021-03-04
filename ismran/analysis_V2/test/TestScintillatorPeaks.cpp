@@ -20,7 +20,7 @@ int main(int argc, char *argv[]){
 	TApplication *fApp = new TApplication("Test", NULL, NULL);
 	GenerateScintMatrixXYCenters();
 
-	ushort barIndex = std::atoi(argv[2]);
+	//ushort barIndex = std::atoi(argv[2]);
 	lite_interface::Calibration *calib = lite_interface::Calibration::instance("completeCalib2.root");
 	lite_interface::Analyzer::numOfShots = 1;
 	lite_interface::Analyzer::shotNo = 1;
@@ -32,21 +32,37 @@ int main(int argc, char *argv[]){
 	std::vector<lite_interface::ScintillatorBar_V2*> scintBarVec = analyzerObj.GetVectorOfScintillators();
 
 
-	TH1F *qNear = lite_interface::PlotQNear(scintBarVec, barIndex);
+	/*TH1F *qNear = lite_interface::PlotQNear(scintBarVec, barIndex);
 	TH1F *qFar = lite_interface::PlotQFar(scintBarVec, barIndex);
 	TH1F *qMean = lite_interface::PlotQMean(scintBarVec, barIndex);
-	TH1F *qMeanCorrected = lite_interface::PlotQMeanCorrected(scintBarVec, barIndex);
+	TH1F *qMeanCorrected = lite_interface::PlotQMeanCorrected(scintBarVec, barIndex);*/
 
-	(new TCanvas("Q","Q"))->SetLogy();
+	/*(new TCanvas("Q","Q"))->SetLogy();
 	qNear->Draw();
 	qFar->SetLineColor(6);
 	qFar->Draw("same");
 	qMean->SetLineColor(kGreen);
 	qMean->Draw("same");
 	qMeanCorrected->SetLineColor(1);
-	qMeanCorrected->Draw("same");
+	qMeanCorrected->Draw("same");*/
 
-	new TCanvas("Corrected DelT","Corrected DelT");
+	for(unsigned int barIndex = 0 ; barIndex < vecOfBarsNamess.size() ; barIndex++){
+		TH1F *qNear = lite_interface::PlotQNear(scintBarVec, barIndex);
+			TH1F *qFar = lite_interface::PlotQFar(scintBarVec, barIndex);
+			TH1F *qMean = lite_interface::PlotQMean(scintBarVec, barIndex);
+			TH1F *qMeanCorrected = lite_interface::PlotQMeanCorrected(scintBarVec, barIndex);
+
+		(new TCanvas(vecOfBarsNamess[barIndex].c_str(),vecOfBarsNamess[barIndex].c_str()))->SetLogy();
+			qNear->Draw();
+			qFar->SetLineColor(6);
+			qFar->Draw("same");
+			qMean->SetLineColor(kGreen);
+			qMean->Draw("same");
+			qMeanCorrected->SetLineColor(1);
+			qMeanCorrected->Draw("same");
+	}
+
+	/*new TCanvas("Corrected DelT","Corrected DelT");
 	TH1F *delTCorrected = lite_interface::PlotDelTCorrected(scintBarVec, barIndex);
 	delTCorrected->Draw();
 
@@ -55,7 +71,7 @@ int main(int argc, char *argv[]){
 	TH2F *delTvsZ = lite_interface::PlotDelTvsZ(scintBarVec, barIndex);
 	delTvsZ->Draw("colz");
 
-	ULong64_t timeWindow = GetMuonTrackTimeWindow(scintBarVec);
+	ULong64_t timeWindow = GetMuonTrackTimeWindow(scintBarVec);*/
 
 	/*(new TCanvas("QMean","QMean"))->SetLogy();
 	qMean->Draw();

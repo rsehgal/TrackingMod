@@ -246,7 +246,7 @@ TF1* GetMuonPeakFitFormula(std::string barName){
 	unsigned int peakPos;
 	unsigned int startOffset = 1500;
 	unsigned int endOffset = 200;
-	std::vector<unsigned int> vecOfPeakPos = {6000,8800,9600,8900,8000,8340,9800,8900,8000,
+	/*std::vector<unsigned int> vecOfPeakPos = {6000,8800,9600,8900,8000,8340,9800,8900,8000,
 	                                          8800,8000,8200,9700,9000,9200,8800,7000,8000,
 											  9500,9000,9200,8000,8500,8200,9000,8800,9200,
 											  8600,8000,8800,9000,8400,9200,9200,8400,9600,
@@ -255,7 +255,7 @@ TF1* GetMuonPeakFitFormula(std::string barName){
 											  8200,7800,8800,9000,8700,8150,8400,9200,9100,
 											  8500,8600,7100,8400,8150,8500,9000,13500,3800,
 											  6500,9700,10250,11800,10500,10200,10000,9600,1500,
-											  10000,11500,9700,9550,10300,10200,5000,9900,11700};
+											  10000,11500,9700,9550,10300,10200,5000,9900,11700};*/
 
 	std::vector<std::string>::iterator it;
 	it = std::find (sequentialBarNames.begin(), sequentialBarNames.end(), barName);
