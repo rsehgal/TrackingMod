@@ -313,14 +313,19 @@ Double_t ScintillatorBar_V2::GetQMeanCorrected(){
 	if(IsSimulation)
 		return fQlongMean;
 	else{
+		Double_t ener = 0.;
+#ifndef SINGLE_POINT_CALIBRATION
 		//std::cout << "ENTERED GetQMeanCorrected : " << __FILE__ <<" : " << __LINE__ << std::endl;
 		//std::cout << "BAR INDEX : " << fBarIndex << std::endl;
 		TF1 *enercalibFormula = Calibration::instance()->GetCalibrationDataOf(fBarIndex)->fEnergyCalibration_F;
 		/*std::cout << "BARIndex" << fBarIndex <<  " : BarName : " << vecOfBarsNamess[fBarIndex] <<  " : QlongMean : " << fQlongMean <<  " : Parameters : "
 				<< enercalibFormula->GetParameter(0) << " , " <<  enercalibFormula->GetParameter(1) << std::endl;*/
-		Double_t ener = (enercalibFormula->Eval(fQlongMean)) ;
+		ener = (enercalibFormula->Eval(fQlongMean)) ;
 		//std::cout << "Predicted Energy : " << ener << std::endl;
-
+#else
+		//Using single point calibration, and using equation of straight line to get y correspoinding to a x
+		ener = (20./(1.*GetPeakPos(vecOfBarsNamess[fBarIndex])))*fQlongMean;
+#endif
 		return ener;
 	}
 	/*TGraph *gr = Calibration::instance()->GetCalibrationDataOf(fBarIndex)->fGraphWithMuonPoint;

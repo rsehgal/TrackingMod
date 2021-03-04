@@ -31,6 +31,8 @@ extern std::vector<int> vecOfNearThreshold;
 extern std::vector<int> vecOfFarThreshold;
 extern std::vector<int> vecOfSourcePositions;
 extern std::vector<std::string> sequentialBarNames;
+extern std::vector<unsigned int> vecOfPeakPos;
+
 struct Point2D{
 	double x;
 	double y;
@@ -52,6 +54,7 @@ struct Point2D{
 };
 extern std::vector<Point2D> vecOfScintXYCenter;
 extern void GenerateScintMatrixXYCenters();
+extern unsigned int GetPeakPos(std::string barName);
 
 class HardWareNomenclature {
 public:
