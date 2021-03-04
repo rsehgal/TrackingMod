@@ -59,6 +59,7 @@ int main(int argc, char *argv[]){
 
 	int counter = 0;
 	for (Long64_t i=0; i<nentries;i++) {
+
 		//std::cout << "Fetching Entry : " << i << std::endl;
 		nbytes += trackTree->GetEntry(i);
 		if(!(i % 100000) && i!=0)
@@ -119,7 +120,13 @@ int main(int argc, char *argv[]){
 		std::cout << "Counter : " << Counter << std::endl;
 	}*/
 
+	unsigned int genuineTrackCounter = 0 ;
+	TH1F *energySumHistUsefulTracks = new TH1F("energySumHist_UsefulTracks","energySumHist_UsefulTracks",250,0,250);
+
 	for(unsigned int i = 0 ; i < smtVec.size() ; i++){
+
+		if(smtVec[i]->size() > 7)
+		{
 		//std::cout <<"Size of MuonTrack : " << i <<" : " << smtVec[i]->size() << std::endl;
 		std::cout <<"=================== Track Num : " << i << " : Track Size : " << smtVec[i]->size() << " : Energy Sum : " << smtVec[i]->GetEnergySum() << " ============================" << std::endl;
 		for(unsigned int j = 0 ; j < smtVec[i]->size() ; j++){
@@ -147,11 +154,13 @@ int main(int argc, char *argv[]){
 		std::cout << "++++++++++++++++++++++++++++++++ Incoming Track ++++++++++++++++++++++++++++++++++" << std::endl;
 		lite_interface::SingleMuonTrack *trk = smtVec[i]->GetIncomingTrack();
 		if(trk){
+			genuineTrackCounter++;
+			energySumHistUsefulTracks->Fill(smtVec[i]->GetEnergySum());
 		for(unsigned int j = 0 ; j < trk->size() ; j++){
 			std::cout << "Energy : " << (trk->GetMuonTrack())[j]->GetQMeanCorrected() << " : "; (trk->GetMuonTrack())[j]->EstimateHitPosition_Param()->Print();
 		}
 		}
-
+	}
 	}
 
 
@@ -167,6 +176,14 @@ int main(int argc, char *argv[]){
 
 	new TCanvas("StripProfile_Layer5","StripProfile_Layer5");
 	stripProfile5->Draw();
+
+	new TCanvas("EnergyDeposition_UsefulTracks","EnergyDeposition_UsefulTracks");
+	energySumHistUsefulTracks->Draw();
+
+	std::cout << std::endl << std::endl;
+	std::cout <<"@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@" << std::endl;
+	std::cout <<"Number of Useful Tracks : " << genuineTrackCounter << std::endl;
+	std::cout <<"@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@" << std::endl;
 
 	fApp->Run();
 
