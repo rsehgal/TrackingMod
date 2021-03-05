@@ -21,7 +21,7 @@ do
 	  filename="ProcessedData_$justFileName-$shotNo.root"
 	  allFileNames+=" $filename"
 	  echo "Output Filename : $filename"
-	  ./build/AnalyzeData $eachfile $filename $noOfShots $shotNo
+	  ./AnalyzeData $eachfile $filename $noOfShots $shotNo
 	done
 	#command="hadd ProcessedData_$justFileName.root $allFileNames"
 
