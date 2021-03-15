@@ -125,8 +125,8 @@ target_link_libraries(TestSystemHealth ${ROOT_LIBRARIES} Tracklib)
 add_executable(SystemHealthComparison test/SystemHealthComparison.cpp ${sources} ${headers})
 target_link_libraries(SystemHealthComparison ${ROOT_LIBRARIES} Tracklib)
 
-add_executable(GetEnergyCalibrationFormulaFromCosmicData test/GetEnergyCalibrationFormulaFromCosmicData.cpp ${sources} ${headers})
-target_link_libraries(GetEnergyCalibrationFormulaFromCosmicData ${ROOT_LIBRARIES} Tracklib -lSpectrum)
+#add_executable(GetEnergyCalibrationFormulaFromCosmicData test/GetEnergyCalibrationFormulaFromCosmicData.cpp ${sources} ${headers})
+#target_link_libraries(GetEnergyCalibrationFormulaFromCosmicData ${ROOT_LIBRARIES} Tracklib -lSpectrum)
 
 #add_executable(ReadTracks_V2 test/ReadTracks_V2.cpp ${sources} ${headers})
 #target_link_libraries(ReadTracks_V2 ${ROOT_LIBRARIES}  Tracklib)
@@ -157,11 +157,14 @@ target_link_libraries(TestMuonTrackTimeEstimation ${ROOT_LIBRARIES} Tracklib)
 add_executable(ReadCalibData test/ReadCalibData.cpp ${sources} ${headers})
 target_link_libraries(ReadCalibData ${ROOT_LIBRARIES} Tracklib)
 
-add_executable(readCalibDataFile test/readCalibDataFile.cpp ${sources} ${headers})
-target_link_libraries(readCalibDataFile ${ROOT_LIBRARIES} Tracklib)
+#add_executable(readCalibDataFile test/readCalibDataFile.cpp ${sources} ${headers})
+#target_link_libraries(readCalibDataFile ${ROOT_LIBRARIES} Tracklib)
+add_executable(TestTimeToPositionResolution test/TestTimeToPositionResolution.cpp ${sources} ${headers})
+target_link_libraries(TestTimeToPositionResolution ${ROOT_LIBRARIES} Tracklib)
 
 add_executable(TestNewCalibFromDataFiles test/TestNewCalibFromDataFiles.cpp ${sources} ${headers})
 target_link_libraries(TestNewCalibFromDataFiles ${ROOT_LIBRARIES} Tracklib)
+
 
 add_executable(ReadCalibData2 test/ReadCalibData2.cpp ${sources} ${headers})
 target_link_libraries(ReadCalibData2 ${ROOT_LIBRARIES} Tracklib)
