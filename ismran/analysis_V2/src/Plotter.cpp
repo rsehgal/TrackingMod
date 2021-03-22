@@ -907,7 +907,12 @@ namespace lite_interface{
 #else
 				    		//vecOfHists[muonTrackVec[i]->size()-1]->Fill(muonTrackVec[i]->GetEnergySum()/1000.);
 
-							if(muonTrackVec[i]->SingleHitInEachLayer()){
+							/*
+							 * To put the constraint to have single hit in each layer
+							 * uncomment the line below
+							 */
+							if(muonTrackVec[i]->SingleHitInEachLayer())
+							{
 								energySum = muonTrackVec[i]->GetEnergySum();///1000.;
 
 							//std::cout << "EnergySum : " << energySum << std::endl;

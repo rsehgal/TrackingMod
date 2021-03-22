@@ -133,7 +133,7 @@ bool SingleMuonTrack::SingleHitInEachLayer(){
 	 */
 	bool singleHit = true;
 	for(unsigned int i = 0 ; i < numOfLayers ; i++){
-		singleHit &= (vecOfNumOfHits[i]==1);
+		singleHit &= (vecOfNumOfHits[i]<=1);
 	}
 	return singleHit;
 }
