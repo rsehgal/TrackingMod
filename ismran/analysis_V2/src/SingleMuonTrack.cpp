@@ -21,6 +21,13 @@ namespace lite_interface {
 
 unsigned long int SingleMuonTrack::wrongTrackCounter = 0;
 
+ScintillatorBar_V2* SingleMuonTrack::GetScintillator(unsigned int barIndex){
+	for(unsigned int i = 0 ; i < size() ; i++){
+		if(fSingleMuonTrack[i]->GetBarIndex() == barIndex)
+			return fSingleMuonTrack[i];
+	}
+}
+
 SingleMuonTrack::SingleMuonTrack() {
 	// TODO Auto-generated constructor stub
 	//std::cout << "SINGLEMUONTRACK : DEfault Contructor called" << std::endl;
@@ -28,16 +35,33 @@ SingleMuonTrack::SingleMuonTrack() {
 }
 
 SingleMuonTrack::SingleMuonTrack(std::vector<ScintillatorBar_V2*> vecOfScintBars){
+	fHitInAllLayers = true;
+	std::vector<unsigned int> vecOfHittedBarIndex;
+	for(unsigned int i = 0 ; i < numOfLayers; i++){
+		vecOfHittedBarIndex.push_back(0);
+	}
 	fSingleMuonTrack = vecOfScintBars;
+	for(unsigned int i = 0 ; i < vecOfScintBars.size() ; i++){
+		vecOfHittedBarIndex[vecOfScintBars[i]->GetLayerIndex()]++;
+	}
+
+	for(unsigned int i = 0 ; i < numOfLayers; i++){
+		fHitInAllLayers &= (vecOfHittedBarIndex[i] > 0);
+	}
+
 }
 
 SingleMuonTrack::SingleMuonTrack(const SingleMuonTrack &smt){
+
 	//std::cout << "SINGLEMUONTRACK : Copy Contructor called" << std::endl;
 	//smt.GetMuonTrack()[0]->Print();
+	fHitInAllLayers = smt.fHitInAllLayers;
 	for(unsigned int i = 0 ; i < smt.GetMuonTrack().size() ; i++){
 		//fSingleMuonTrack.push_back(new ScintillatorBar_V2(*smt.GetMuonTrack()[i]));
 		fSingleMuonTrack.push_back(new lite_interface::ScintillatorBar_V2(*(smt.GetMuonTrack()[i])));
 	}
+
+
 }
 
 SingleMuonTrack::~SingleMuonTrack() {
@@ -75,6 +99,30 @@ unsigned int SingleMuonTrack::NumOfHitsInLayer(unsigned int layerNum){
 	return noOfHits;
 }
 
+bool SingleMuonTrack::HitInAllLayers(){
+	return fHitInAllLayers;
+}
+
+bool SingleMuonTrack::SingleHitInLayer(unsigned int layerIndex){
+	std::vector<unsigned int> vecOfNumOfHits;
+	for(unsigned int i = 0 ; i < numOfLayers ; i++){
+		vecOfNumOfHits.push_back(NumOfHitsInLayer(i));
+	}
+
+	/*
+	 * If number of hits in each layer is 0 or 1
+	 * then return true else false
+	 */
+	bool singleHit = true;
+	/*for(unsigned int i = 0 ; i < numOfLayers ; i++){
+		singleHit &= (vecOfNumOfHits[i]==1);
+	}*/
+
+	singleHit &= (vecOfNumOfHits[layerIndex]==1);
+	return singleHit;
+}
+
+
 bool SingleMuonTrack::SingleHitInEachLayer(){
 	std::vector<unsigned int> vecOfNumOfHits;
 	for(unsigned int i = 0 ; i < numOfLayers ; i++){
@@ -87,7 +135,7 @@ bool SingleMuonTrack::SingleHitInEachLayer(){
 	 */
 	bool singleHit = true;
 	for(unsigned int i = 0 ; i < numOfLayers ; i++){
-		singleHit &= (vecOfNumOfHits[i]<=1);
+		singleHit &= (vecOfNumOfHits[i]==1);
 	}
 	return singleHit;
 }

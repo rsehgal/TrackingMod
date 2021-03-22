@@ -103,6 +103,9 @@ target_link_libraries(TestScintillatorHealth ${ROOT_LIBRARIES}  Tracklib)
 add_executable(TestScintillatorPeaks test/TestScintillatorPeaks.cpp ${sources} ${headers})
 target_link_libraries(TestScintillatorPeaks ${ROOT_LIBRARIES}  Tracklib)
 
+add_executable(TestTimeToPositionResolution test/TestTimeToPositionResolution.cpp ${sources} ${headers})
+target_link_libraries(TestTimeToPositionResolution ${ROOT_LIBRARIES}  Tracklib)
+
 
 add_executable(ReadTracksDebug test/ReadTracksDebug.cpp ${sources} ${headers})
 target_link_libraries(ReadTracksDebug ${ROOT_LIBRARIES}  Tracklib)
@@ -149,6 +152,9 @@ target_link_libraries(MuonTrackAnalysis ${ROOT_LIBRARIES} Tracklib)
 
 add_executable(TestMuonTrackTimeEstimation test/TestMuonTrackTimeEstimation.cpp ${sources} ${headers})
 target_link_libraries(TestMuonTrackTimeEstimation ${ROOT_LIBRARIES} Tracklib)
+
+add_executable(TestQMeanCorrected90Scintillators test/TestQMeanCorrected90Scintillators.cpp ${sources} ${headers})
+target_link_libraries(TestQMeanCorrected90Scintillators ${ROOT_LIBRARIES} Tracklib)
 
 #add_executable(dissection test/dissection.cpp ${sources} ${headers})
 #target_link_libraries(dissection ${ROOT_LIBRARIES} Tracklib)

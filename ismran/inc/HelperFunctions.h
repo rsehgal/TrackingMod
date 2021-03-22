@@ -11,8 +11,10 @@
 #include <base/Vector3D.h>
 #include "includes.hh"
 #include <vector>
+#include "SingleMuonTrack.h"
 class Point3D;
 class Point2D;
+
 
 extern Tracking::Vector3D<double> ConvertToTomoVector3D(Point3D pt);
 
@@ -43,6 +45,7 @@ extern bool CheckRange(std::vector<Point3D*> singleMuonTrack);
 extern void PrintPoint3DVector(std::vector<Point3D*> vect);
 
 extern double Interpolate(Point2D p1, Point2D p2, double y);
+extern Point2D Get2DHitPointOnLayer(lite_interface::SingleMuonTrack *smt, unsigned int layerIndex);
 extern TF1* GetMuonPeakFitFormula(std::string barName);
 
 

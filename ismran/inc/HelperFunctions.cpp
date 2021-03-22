@@ -11,10 +11,28 @@
 #include <TMath.h>
 #include "HardwareNomenclature.h"
 #include<bits/stdc++.h>
-
+#include "ScintillatorBar_V2.h"
 
 std::vector<std::vector<unsigned long int>> myhist2D;
 
+Point2D Get2DHitPointOnLayer(lite_interface::SingleMuonTrack *smt, unsigned int layerIndex){
+	if(smt->HitInAllLayers()){
+	if(layerIndex > 0 && layerIndex < numOfLayers-1){
+		if(smt->SingleHitInLayer(layerIndex-1) && smt->SingleHitInLayer(layerIndex+1)){
+			unsigned int barIndexInBelowLayer = 0;
+			unsigned int barIndexInUpperLayer = 0;
+			smt->CheckTrackForLayerNum(layerIndex-1,barIndexInBelowLayer);
+			smt->CheckTrackForLayerNum(layerIndex+1,barIndexInUpperLayer);
+			lite_interface::ScintillatorBar_V2 *scintillatorInBelowLayer = smt->GetScintillator(barIndexInBelowLayer);
+			lite_interface::ScintillatorBar_V2 *scintillatorInUpperLayer = smt->GetScintillator(barIndexInUpperLayer);
+			lite_interface::Point3D *hitPointInBelowLayer = scintillatorInBelowLayer->EstimateHitPosition_Param();
+			lite_interface::Point3D *hitPointInUpperLayer = scintillatorInUpperLayer->EstimateHitPosition_Param();
+
+
+		}
+	}
+	}
+}
 
 bool CheckRange(std::vector<Point3D*> singleMuonTrack){
 	for(unsigned int i = 0 ; i < singleMuonTrack.size() ; i++){

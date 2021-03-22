@@ -16,30 +16,47 @@ namespace lite_interface{
 		std::vector<lite_interface::ScintillatorBar_V2*>::iterator itr;
 		bool startFound = false;
 		bool endFound = false;
-		TH1F *timeWindowHist = new TH1F("TimeWindowHist","TimeWindowHist",50,0,30000);
+		TH1F *timeWindowHist = new TH1F("TimeWindowHist","TimeWindowHist",50,0,30);
+		int counter = 0 ;
 		for(itr = scintBarVec.begin() ; itr != scintBarVec.end() ; itr++){
-			if((*itr)->GetLayerIndex() == 0){
-				startFound = true;
-				endTime = (*itr)->GetTSmallTimestamp();
-			}
+			/*if(!startFound && !endFound)
+				std::cout << "@@@@ Correctly set to False values @@@@" << std::endl;*/
 
+			//if((*itr)->GetLayerIndex() == 0){
 			if((*itr)->GetLayerIndex() == (numOfLayers-1)){
-				endFound = true;
+				startFound = true;
+				//endTime = (*itr)->GetTSmallTimestamp();
 				startTime = (*itr)->GetTSmallTimestamp();
 			}
 
+			//if((*itr)->GetLayerIndex() == (numOfLayers-1)){
+			if((*itr)->GetLayerIndex() == 0){
+				endFound = true;
+				//startTime = (*itr)->GetTSmallTimestamp();
+				endTime = (*itr)->GetTSmallTimestamp();
+			}
+
 			if(startFound && endFound){
-				timeWindow = endTime - startTime;
-				timeWindowHist->Fill(timeWindow);
 				startFound = false;
 				endFound = false;
+				counter++;
+				timeWindow = (endTime - startTime)/1000.;
+				timeWindowHist->Fill(timeWindow);
+
 			}
 		}
 		//GetTSmallTimestamp
 
+		TFile *fp = new TFile("PassageTime.root","RECREATE");
+		fp->cd();
+		timeWindowHist->Write();
+		fp->Close();
+
+
 		new TCanvas("TimeWindowHist","TimeWindowHist");
 		timeWindowHist->Draw();
 
+		std::cout << "@@@@@@@@ COUNTER Val : " << counter << " @@@@@@@@" << std::endl;
 
 		return timeWindow;
 	}

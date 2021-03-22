@@ -46,13 +46,18 @@ int main(int argc, char *argv[]){
 	qMeanCorrected->SetLineColor(1);
 	qMeanCorrected->Draw("same");*/
 
+	TFile *fp = new TFile("QMeanForPeakSelection.root","RECREATE");
+	fp->cd();
 	for(unsigned int barIndex = 0 ; barIndex < vecOfBarsNamess.size() ; barIndex++){
-		TH1F *qNear = lite_interface::PlotQNear(scintBarVec, barIndex);
-			TH1F *qFar = lite_interface::PlotQFar(scintBarVec, barIndex);
+		std::cout << "Processing BAR : "<< vecOfBarsNamess[barIndex] << std::endl;
+		//TH1F *qNear = lite_interface::PlotQNear(scintBarVec, barIndex);
+		//	TH1F *qFar = lite_interface::PlotQFar(scintBarVec, barIndex);
 			TH1F *qMean = lite_interface::PlotQMean(scintBarVec, barIndex);
-			TH1F *qMeanCorrected = lite_interface::PlotQMeanCorrected(scintBarVec, barIndex);
+			qMean->Write();
+			
+		//	TH1F *qMeanCorrected = lite_interface::PlotQMeanCorrected(scintBarVec, barIndex);
 
-		(new TCanvas(vecOfBarsNamess[barIndex].c_str(),vecOfBarsNamess[barIndex].c_str()))->SetLogy();
+	      /*	(new TCanvas(vecOfBarsNamess[barIndex].c_str(),vecOfBarsNamess[barIndex].c_str()))->SetLogy();
 			qNear->Draw();
 			qFar->SetLineColor(6);
 			qFar->Draw("same");
@@ -60,6 +65,9 @@ int main(int argc, char *argv[]){
 			qMean->Draw("same");
 			qMeanCorrected->SetLineColor(1);
 			qMeanCorrected->Draw("same");
+			*/
+
+
 	}
 
 	/*new TCanvas("Corrected DelT","Corrected DelT");
@@ -114,6 +122,9 @@ int main(int argc, char *argv[]){
 	TH1F *stripProfile7 = lite_interface::PlotStripProfileOfLayer(smtVec,7);
 	new TCanvas();
 	stripProfile7->Draw();*/
+
+	std::cout << "Closing the output file ..... " << std::endl;
+	fp->Close();
 	fApp->Run();
 
 
