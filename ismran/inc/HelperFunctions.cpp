@@ -34,6 +34,10 @@ Point2D Get2DHitPointOnLayer(lite_interface::SingleMuonTrack *smt, unsigned int 
 	}
 }
 
+
+std::vector<std::vector<unsigned long int>> myhist2D;
+
+
 bool CheckRange(std::vector<Point3D*> singleMuonTrack){
 	for(unsigned int i = 0 ; i < singleMuonTrack.size() ; i++){
 		if(std::isinf(singleMuonTrack[i]->x) || std::isinf(singleMuonTrack[i]->y) || std::isinf(singleMuonTrack[i]->z)

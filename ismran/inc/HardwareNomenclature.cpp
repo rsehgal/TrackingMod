@@ -128,7 +128,6 @@ std::vector<std::string> vecOfBarsNamess={
 };
 */
 
-
 //std::cout <<"@@@@@@@@@@@ USING OBLONG GEOM @@@@@@@@@@@" << std::endl;
 #endif
 

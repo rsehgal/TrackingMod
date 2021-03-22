@@ -60,10 +60,8 @@ SingleMuonTrack::SingleMuonTrack(const SingleMuonTrack &smt){
 		//fSingleMuonTrack.push_back(new ScintillatorBar_V2(*smt.GetMuonTrack()[i]));
 		fSingleMuonTrack.push_back(new lite_interface::ScintillatorBar_V2(*(smt.GetMuonTrack()[i])));
 	}
-
-
 }
-
+f
 SingleMuonTrack::~SingleMuonTrack() {
 	// TODO Auto-generated destructor stub
 }
