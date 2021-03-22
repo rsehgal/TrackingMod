@@ -164,8 +164,7 @@ target_link_libraries(ReadCalibData ${ROOT_LIBRARIES} Tracklib)
 
 #add_executable(readCalibDataFile test/readCalibDataFile.cpp ${sources} ${headers})
 #target_link_libraries(readCalibDataFile ${ROOT_LIBRARIES} Tracklib)
-add_executable(TestTimeToPositionResolution test/TestTimeToPositionResolution.cpp ${sources} ${headers})
-target_link_libraries(TestTimeToPositionResolution ${ROOT_LIBRARIES} Tracklib)
+
 
 add_executable(TestNewCalibFromDataFiles test/TestNewCalibFromDataFiles.cpp ${sources} ${headers})
 target_link_libraries(TestNewCalibFromDataFiles ${ROOT_LIBRARIES} Tracklib)
