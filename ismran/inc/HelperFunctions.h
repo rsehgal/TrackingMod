@@ -44,7 +44,7 @@ extern bool CheckRange(std::vector<Point3D*> singleMuonTrack);
 extern void PrintPoint3DVector(std::vector<Point3D*> vect);
 
 extern double Interpolate(Point2D p1, Point2D p2, double y);
-extern Point2D Get2DHitPointOnLayer(lite_interface::SingleMuonTrack *smt, unsigned int layerIndex);
+extern lite_interface::Point3D* Get3DHitPointOnLayer(lite_interface::SingleMuonTrack *smt, unsigned int layerIndex);
 extern TF1* GetMuonPeakFitFormula(std::string barName);
 
 

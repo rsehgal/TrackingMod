@@ -15,23 +15,43 @@
 
 std::vector<std::vector<unsigned long int>> myhist2D;
 
-Point2D Get2DHitPointOnLayer(lite_interface::SingleMuonTrack *smt, unsigned int layerIndex){
+lite_interface::Point3D* Get3DHitPointOnLayer(lite_interface::SingleMuonTrack *smt, unsigned int layerIndex){
+	lite_interface::Point3D *hitPointInInspectedLayer = new lite_interface::Point3D(10000.,10000.,10000.);
 	if(smt->HitInAllLayers()){
 	if(layerIndex > 0 && layerIndex < numOfLayers-1){
 		if(smt->SingleHitInLayer(layerIndex-1) && smt->SingleHitInLayer(layerIndex+1)){
-			unsigned int barIndexInBelowLayer = 0;
-			unsigned int barIndexInUpperLayer = 0;
-			smt->CheckTrackForLayerNum(layerIndex-1,barIndexInBelowLayer);
-			smt->CheckTrackForLayerNum(layerIndex+1,barIndexInUpperLayer);
+			unsigned int barIndexInInspectedLayer = 100000;
+			unsigned int barIndexInBelowLayer = 100000;
+			unsigned int barIndexInUpperLayer = 100000;
+			if(smt->CheckTrackForLayerNum(layerIndex,barIndexInInspectedLayer) &&
+			smt->CheckTrackForLayerNum(layerIndex-1,barIndexInBelowLayer) &&
+			smt->CheckTrackForLayerNum(layerIndex+1,barIndexInUpperLayer) ){
+			lite_interface::ScintillatorBar_V2 *scintillatorInInspectedLayer = smt->GetScintillator(barIndexInInspectedLayer);
 			lite_interface::ScintillatorBar_V2 *scintillatorInBelowLayer = smt->GetScintillator(barIndexInBelowLayer);
 			lite_interface::ScintillatorBar_V2 *scintillatorInUpperLayer = smt->GetScintillator(barIndexInUpperLayer);
+			//std::cout << "BaR InDeX : " << scintillatorInUpperLayer->GetBarIndex() << " : " << __FILE__ << " : " << __LINE__ << std::endl;
+
 			lite_interface::Point3D *hitPointInBelowLayer = scintillatorInBelowLayer->EstimateHitPosition_Param();
 			lite_interface::Point3D *hitPointInUpperLayer = scintillatorInUpperLayer->EstimateHitPosition_Param();
+			hitPointInInspectedLayer = scintillatorInInspectedLayer->EstimateHitPosition_Param();
 
+			double xOrZ = Interpolate(Point2D(hitPointInBelowLayer->GetZ(),hitPointInBelowLayer->GetY()) ,
+									  Point2D(hitPointInUpperLayer->GetZ(),hitPointInUpperLayer->GetY()) ,
+									  hitPointInInspectedLayer->GetY());
+
+			if(layerIndex == 1 || layerIndex == 3 || layerIndex == 5 || layerIndex == 8){
+				hitPointInInspectedLayer->SetXYZ(hitPointInInspectedLayer->GetZ(),hitPointInInspectedLayer->GetY(),xOrZ);
+				//hitPointInInspectedLayer.SetZ(xOrZ);
+			}else{
+				//hitPointInInspectedLayer.SetX(xOrZ);
+				hitPointInInspectedLayer->SetXYZ(xOrZ,hitPointInInspectedLayer->GetY(),hitPointInInspectedLayer->GetZ());
+			}
+		}
 
 		}
 	}
 	}
+	return hitPointInInspectedLayer;
 }
 
 

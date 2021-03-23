@@ -150,6 +150,7 @@ lite_interface::Point3D* ScintillatorBar_V2::EstimateHitPosition(){
 lite_interface::Point3D* ScintillatorBar_V2::EstimateHitPosition_Param(){
 	//(1.0*100)/22.0) = 545454545
 	//double zval = ( 4.545454545 * ( GetDelTCorrected()/1000. + 11.)) - 50.;
+	//std::cout << "BAR INDEX : " << fBarIndex << " : " << __FILE__ << " : " << __LINE__ << std::endl;
 	TF1 *param = lite_interface::Calibration::instance()->GetCalibrationDataOf(fBarIndex)->fParameterization_F;
 	double zval = 0.;
 	double xOrZval = 0.;
