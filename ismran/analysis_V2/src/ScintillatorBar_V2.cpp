@@ -242,6 +242,11 @@ ushort ScintillatorBar_V2::GetBarIndex()const{
 ushort ScintillatorBar_V2::GetLayerIndex(){
 	return  (fBarIndex/numOfBarsInEachLayer);
 }
+
+ushort ScintillatorBar_V2::GetBarIndexInLayer(){
+	return (fBarIndex%numOfBarsInEachLayer);
+}
+
 UInt_t ScintillatorBar_V2::GetQLongNear()const{
 	return fQlongNear;
 }

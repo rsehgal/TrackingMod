@@ -102,6 +102,7 @@ public:
 	 */
 	ushort GetBarIndex()const;
 	ushort GetLayerIndex() ;
+	ushort GetBarIndexInLayer();
 	UInt_t GetQLongNear()const;
 	UInt_t GetQLongFar();
 	Double_t GetQLongMean() const;

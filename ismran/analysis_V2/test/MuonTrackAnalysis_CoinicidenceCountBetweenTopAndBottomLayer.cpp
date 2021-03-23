@@ -65,19 +65,23 @@ int main(int argc, char *argv[]){
 	bool layer9Found = false;
 	bool layer7Found = false;
 	bool layer0Found = false;
+	/*
 	TH1F *layer9TimingHist = new TH1F("Layer_9_Timing_Hist","Layer_9_Timing_Hist",100,-20000,20000);
 	TH1F *layer7TimingHist = new TH1F("Layer_7_Timing_Hist","Layer_7_Timing_Hist",100,-20000,20000);
 	TH1F *layer0TimingHist = new TH1F("Layer_0_Timing_Hist","Layer_0_Timing_Hist",100,-20000,20000);
-
+	*/
 	Long_t delTCorr_Layer9=0;
 	Long_t delTCorr_Layer7=0;
 	Long_t delTCorr_Layer0=0;
 
+	TH1F *coincCountHist = new TH1F("Coinc_count_Hist","Coinc_count_Hist",10,0,10);
+
 	unsigned int counterSingleHitInEachLayer = 0;
 	unsigned int counterSingleHitInEachLayerAndHittedIn3Layers = 0;
-	Long_t timeWinLower = -1000;
-	Long_t timeWinUpper = 1000;
+	Long_t timeWinLower = -6000;
+	Long_t timeWinUpper = -4000;
 	unsigned int barIndexInLayer = 4;
+	ushort barInd = 10000;
 	for(unsigned int i = 0 ; i < smtVec.size() ; i++){
 		layer9Found = false;
 		layer7Found = false;
@@ -91,47 +95,29 @@ int main(int argc, char *argv[]){
 				lite_interface::ScintillatorBar_V2 *scint = smt[j];
 				if(scint->GetLayerIndex() == 9){
 					layer9Found = true;
-					//Long_t delTCorr
+					layer9Found &= (scint->GetBarIndexInLayer()==0);
 					delTCorr_Layer9 = scint->GetDelTCorrected();// /1000.;
-					layer9Found &= (scint->GetBarIndexInLayer()==barIndexInLayer);
 					layer9Found &= (delTCorr_Layer9 > timeWinLower && delTCorr_Layer9 < timeWinUpper);
 				}
-				if(scint->GetLayerIndex() == 7){
-					layer7Found = true;
-					//Long_t delTCorr
-					delTCorr_Layer7 = scint->GetDelTCorrected();// /1000.;
-					layer7Found &= (scint->GetBarIndexInLayer()==barIndexInLayer);
-					layer7Found &= (delTCorr_Layer7 > timeWinLower && delTCorr_Layer7 < timeWinUpper);
-				}
-				if(scint->GetLayerIndex() == 0){
+
+				if(scint->GetLayerIndex() == 4){
 					layer0Found = true;
-					layer0Found &= (scint->GetBarIndexInLayer()==barIndexInLayer);
-					//Long_t delTCorr
 					delTCorr_Layer0 = scint->GetDelTCorrected();// /1000.;
-					//layer0Found &= (delTCorr > -500 && delTCorr < 500);
+					layer0Found &= (delTCorr_Layer0 > timeWinLower && delTCorr_Layer9 < timeWinUpper);
+					barInd = scint->GetBarIndexInLayer();
+
 				}
 			}
 
-			if(layer9Found && layer7Found && layer0Found){
-				counterSingleHitInEachLayerAndHittedIn3Layers++;
-				layer9TimingHist->Fill(delTCorr_Layer9);
-				layer7TimingHist->Fill(delTCorr_Layer7);
-				layer0TimingHist->Fill(delTCorr_Layer0);
+			if(layer9Found && layer0Found){
+				coincCountHist->Fill(barInd);
 			}
 
 
 		}
 	}
-	std::cout << "Number of Tracks with Single hit in each layer : " << counterSingleHitInEachLayer << std::endl;
-	std::cout << "Number of Tracks with Single hit in each layer and hitted in 3Layers : " << counterSingleHitInEachLayerAndHittedIn3Layers << std::endl;
 	new TCanvas();
-	layer9TimingHist->Draw();
-
-	new TCanvas();
-	layer7TimingHist->Draw();
-
-	new TCanvas();
-	layer0TimingHist->Draw();
+	coincCountHist->Draw();
 	fApp->Run();
 
 
