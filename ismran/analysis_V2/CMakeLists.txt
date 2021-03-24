@@ -158,6 +158,11 @@ target_link_libraries(TestQMeanCorrected90Scintillators ${ROOT_LIBRARIES} Trackl
 #add_executable(dissection test/dissection.cpp ${sources} ${headers})
 #target_link_libraries(dissection ${ROOT_LIBRARIES} Tracklib)
 
+add_executable(TestXYCenterForEachScintillator test/TestXYCenterForEachScintillator.cpp ${sources} ${headers})
+target_link_libraries(TestXYCenterForEachScintillator ${ROOT_LIBRARIES} Tracklib)
+
+add_executable(TestStripProfileOfLayersUsingHitInScintillators test/TestStripProfileOfLayersUsingHitInScintillators.cpp ${sources} ${headers})
+target_link_libraries(TestStripProfileOfLayersUsingHitInScintillators ${ROOT_LIBRARIES} Tracklib)
 
 add_executable(ReadCalibData test/ReadCalibData.cpp ${sources} ${headers})
 target_link_libraries(ReadCalibData ${ROOT_LIBRARIES} Tracklib)

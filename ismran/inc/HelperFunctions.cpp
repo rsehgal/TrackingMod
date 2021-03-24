@@ -18,14 +18,25 @@ std::vector<std::vector<unsigned long int>> myhist2D;
 lite_interface::Point3D* Get3DHitPointOnLayer(lite_interface::SingleMuonTrack *smt, unsigned int layerIndex){
 	lite_interface::Point3D *hitPointInInspectedLayer = new lite_interface::Point3D(10000.,10000.,10000.);
 	if(smt->HitInAllLayers()){
-	if(layerIndex > 0 && layerIndex < numOfLayers-1){
-		if(smt->SingleHitInLayer(layerIndex-1) && smt->SingleHitInLayer(layerIndex+1)){
+	//if(layerIndex > 0 && layerIndex < numOfLayers-1){
+		if(layerIndex < numOfLayers-1){
+		ushort belowIndex = 0;
+		ushort upperIndex = 0;
+		if(layerIndex==0){
+			belowIndex = layerIndex+1;
+			upperIndex = layerIndex+3;
+		}else{
+			belowIndex = layerIndex-1;
+			upperIndex = layerIndex+1;
+		}
+		//if(smt->SingleHitInLayer(layerIndex-1) && smt->SingleHitInLayer(layerIndex+1)){
+		if(smt->SingleHitInLayer(belowIndex) && smt->SingleHitInLayer(upperIndex)){
 			unsigned int barIndexInInspectedLayer = 100000;
 			unsigned int barIndexInBelowLayer = 100000;
 			unsigned int barIndexInUpperLayer = 100000;
 			if(smt->CheckTrackForLayerNum(layerIndex,barIndexInInspectedLayer) &&
-			smt->CheckTrackForLayerNum(layerIndex-1,barIndexInBelowLayer) &&
-			smt->CheckTrackForLayerNum(layerIndex+1,barIndexInUpperLayer) ){
+			smt->CheckTrackForLayerNum(belowIndex,barIndexInBelowLayer) &&
+			smt->CheckTrackForLayerNum(upperIndex,barIndexInUpperLayer) ){
 			lite_interface::ScintillatorBar_V2 *scintillatorInInspectedLayer = smt->GetScintillator(barIndexInInspectedLayer);
 			lite_interface::ScintillatorBar_V2 *scintillatorInBelowLayer = smt->GetScintillator(barIndexInBelowLayer);
 			lite_interface::ScintillatorBar_V2 *scintillatorInUpperLayer = smt->GetScintillator(barIndexInUpperLayer);
@@ -39,12 +50,20 @@ lite_interface::Point3D* Get3DHitPointOnLayer(lite_interface::SingleMuonTrack *s
 									  Point2D(hitPointInUpperLayer->GetZ(),hitPointInUpperLayer->GetY()) ,
 									  hitPointInInspectedLayer->GetY());
 
+
 			if(layerIndex == 1 || layerIndex == 3 || layerIndex == 5 || layerIndex == 8){
-				hitPointInInspectedLayer->SetXYZ(hitPointInInspectedLayer->GetZ(),hitPointInInspectedLayer->GetY(),xOrZ);
+				//Cross Layers
+
+				//hitPointInInspectedLayer->SetXYZ(hitPointInInspectedLayer->GetZ(),hitPointInInspectedLayer->GetY(),xOrZ);
+				hitPointInInspectedLayer->SetXYZ(xOrZ,hitPointInInspectedLayer->GetY(),hitPointInInspectedLayer->GetZ());
+
 				//hitPointInInspectedLayer.SetZ(xOrZ);
 			}else{
+				//Oblong layers
 				//hitPointInInspectedLayer.SetX(xOrZ);
-				hitPointInInspectedLayer->SetXYZ(xOrZ,hitPointInInspectedLayer->GetY(),hitPointInInspectedLayer->GetZ());
+
+				//hitPointInInspectedLayer->SetXYZ(xOrZ,hitPointInInspectedLayer->GetY(),hitPointInInspectedLayer->GetZ());
+				hitPointInInspectedLayer->SetXYZ(hitPointInInspectedLayer->GetZ(),hitPointInInspectedLayer->GetY(),xOrZ);
 			}
 		}
 

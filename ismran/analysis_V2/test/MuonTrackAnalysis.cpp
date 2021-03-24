@@ -160,22 +160,35 @@ int main(int argc, char *argv[]){
 	}
 
 
-	TH1F *stripProfile7 = lite_interface::PlotStripProfileOfLayer(smtVec,7);
+	/*TH1F *stripProfile7 = lite_interface::PlotStripProfileOfLayer(smtVec,7);
 	TH1F *stripProfile6 = lite_interface::PlotStripProfileOfLayer(smtVec,6);
-	TH1F *stripProfile5 = lite_interface::PlotStripProfileOfLayer(smtVec,5);
+	TH1F *stripProfile5 = lite_interface::PlotStripProfileOfLayer(smtVec,5);*/
+
+	TH1F *stripProfile0 = lite_interface::PlotStripProfileOfLayer(smtVec,0);
+	TH1F *stripProfile1 = lite_interface::PlotStripProfileOfLayer(smtVec,1);
+	TH1F *stripProfile2 = lite_interface::PlotStripProfileOfLayer(smtVec,2);
+	TH1F *stripProfile3 = lite_interface::PlotStripProfileOfLayer(smtVec,3);
+	TH1F *stripProfile4 = lite_interface::PlotStripProfileOfLayer(smtVec,4);
+
 
 	/*TH1F *stripProfile7 = lite_interface::PlotStripProfileOfLayer(smtVecUsefulTracks,7);
 		TH1F *stripProfile6 = lite_interface::PlotStripProfileOfLayer(smtVecUsefulTracks,6);
 		TH1F *stripProfile5 = lite_interface::PlotStripProfileOfLayer(smtVecUsefulTracks,5);*/
 
-	new TCanvas("StripProfile_Layer7","StripProfile_Layer7");
-	stripProfile7->Draw();
+	new TCanvas("StripProfile_Layer0","StripProfile_Layer0");
+	stripProfile0->Draw();
 
-	new TCanvas("StripProfile_Layer6","StripProfile_Layer6");
-	stripProfile6->Draw();
+	new TCanvas("StripProfile_Layer1","StripProfile_Layer1");
+	stripProfile1->Draw();
 
-	new TCanvas("StripProfile_Layer5","StripProfile_Layer5");
-	stripProfile5->Draw();
+	new TCanvas("StripProfile_Layer2","StripProfile_Layer2");
+	stripProfile2->Draw();
+
+	new TCanvas("StripProfile_Layer3","StripProfile_Layer3");
+	stripProfile3->Draw();
+
+	new TCanvas("StripProfile_Layer4","StripProfile_Layer4");
+	stripProfile4->Draw();
 
 	new TCanvas("EnergyDeposition_UsefulTracks","EnergyDeposition_UsefulTracks");
 	energySumHistUsefulTracks->Draw();

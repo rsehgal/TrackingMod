@@ -62,18 +62,40 @@ int main(int argc, char *argv[]){
 	}
 
 	std::cout << "Size of SMTVec : " << smtVec.size() << std::endl;
-	TH2F *hist2D_Layer1 = new TH2F("HitPointOnLayer_1","HitPointOnLayer_1",100,-50,50,100,-50,50);
-	TH2F *hist2D_Layer3 = new TH2F("HitPointOnLayer_3","HitPointOnLayer_3",100,-50,50,100,-50,50);
-	TH2F *hist2D_Layer8 = new TH2F("HitPointOnLayer_8","HitPointOnLayer_8",100,-50,50,100,-50,50);
+	TH2F *hist2D_Layer0 = new TH2F("HitPointOnLayer_0","HitPointOnLayer_0",200,-50,50,200,-50,50);
+	TH2F *hist2D_Layer1 = new TH2F("HitPointOnLayer_1","HitPointOnLayer_1",200,-50,50,200,-50,50);
+	TH2F *hist2D_Layer2 = new TH2F("HitPointOnLayer_2","HitPointOnLayer_2",200,-50,50,200,-50,50);
+	TH2F *hist2D_Layer3 = new TH2F("HitPointOnLayer_3","HitPointOnLayer_3",200,-50,50,200,-50,50);
+	TH2F *hist2D_Layer4 = new TH2F("HitPointOnLayer_4","HitPointOnLayer_4",200,-50,50,200,-50,50);
+	TH2F *hist2D_Layer5 = new TH2F("HitPointOnLayer_5","HitPointOnLayer_5",200,-50,50,200,-50,50);
+	TH2F *hist2D_Layer8 = new TH2F("HitPointOnLayer_8","HitPointOnLayer_8",200,-50,50,200,-50,50);
 
 	for(unsigned int i = 0 ; i < smtVec.size() ; i++){
+		{
+		lite_interface::Point3D *hitPoint = Get3DHitPointOnLayer(smtVec[i],0);
+		hist2D_Layer0->Fill(hitPoint->GetX(),hitPoint->GetZ());
+		}
 		{
 		lite_interface::Point3D *hitPoint = Get3DHitPointOnLayer(smtVec[i],1);
 		hist2D_Layer1->Fill(hitPoint->GetX(),hitPoint->GetZ());
 		}
 		{
+		lite_interface::Point3D *hitPoint = Get3DHitPointOnLayer(smtVec[i],2);
+		hist2D_Layer2->Fill(hitPoint->GetX(),hitPoint->GetZ());
+		}
+
+		{
 		lite_interface::Point3D *hitPoint = Get3DHitPointOnLayer(smtVec[i],3);
 		hist2D_Layer3->Fill(hitPoint->GetX(),hitPoint->GetZ());
+		}
+		{
+		lite_interface::Point3D *hitPoint = Get3DHitPointOnLayer(smtVec[i],4);
+		hist2D_Layer4->Fill(hitPoint->GetX(),hitPoint->GetZ());
+		}
+
+		{
+		lite_interface::Point3D *hitPoint = Get3DHitPointOnLayer(smtVec[i],5);
+		hist2D_Layer5->Fill(hitPoint->GetX(),hitPoint->GetZ());
 		}
 		{
 		lite_interface::Point3D *hitPoint = Get3DHitPointOnLayer(smtVec[i],8);
@@ -82,11 +104,23 @@ int main(int argc, char *argv[]){
 
 	}
 
+	new TCanvas("Layer0","Layer0");
+	hist2D_Layer0->Draw("colz");
+
 	new TCanvas("Layer1","Layer1");
 	hist2D_Layer1->Draw("colz");
 
+	new TCanvas("Layer2","Layer2");
+	hist2D_Layer2->Draw("colz");
+
 	new TCanvas("Layer3","Layer3");
 	hist2D_Layer3->Draw("colz");
+
+	new TCanvas("Layer4","Layer4");
+	hist2D_Layer4->Draw();
+
+	new TCanvas("Layer5","Layer5");
+	hist2D_Layer5->Draw("colz");
 
 	new TCanvas("Layer8","Layer8");
 	hist2D_Layer8->Draw("colz");
