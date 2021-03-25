@@ -16,7 +16,7 @@ namespace lite_interface {
 
 Point3D::Point3D() {
 	// TODO Auto-generated constructor stub
-	fX = 100 ; fY = 100.; fZ=100.;
+	fX = 10000 ; fY = 10000.; fZ=10000.;
 
 }
 

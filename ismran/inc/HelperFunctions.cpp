@@ -26,8 +26,15 @@ lite_interface::Point3D* Get3DHitPointOnLayer(lite_interface::SingleMuonTrack *s
 			belowIndex = layerIndex+1;
 			upperIndex = layerIndex+3;
 		}else{
+			if(layerIndex==5 || layerIndex==4 ){
+				/*belowIndex = layerIndex-3;
+				upperIndex = layerIndex-1;*/
+				upperIndex = layerIndex-3;
+				belowIndex = layerIndex-1;
+			}else{
 			belowIndex = layerIndex-1;
 			upperIndex = layerIndex+1;
+			}
 		}
 		//if(smt->SingleHitInLayer(layerIndex-1) && smt->SingleHitInLayer(layerIndex+1)){
 		if(smt->SingleHitInLayer(belowIndex) && smt->SingleHitInLayer(upperIndex)){
