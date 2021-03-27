@@ -406,6 +406,19 @@ double SingleMuonTrack::GetZenithAngle_Param(){
 }
 
 
+bool SingleMuonTrack::IfPassThroughOneOrMoreOfScintillators(std::vector<unsigned int> vecOfScintBarIndex){
+	bool exist = false;
+	for(unsigned int barIdIndex = 0 ; barIdIndex < vecOfScintBarIndex.size() ; barIdIndex++){
+
+		for(unsigned int index = 0 ; index < size() ; index++){
+			exist |= (fSingleMuonTrack[index]->GetBarIndex() == vecOfScintBarIndex[barIdIndex]);
+			if(exist)
+				return exist;
+		}
+	}
+	return exist;
+}
+
 bool SingleMuonTrack::CheckTrackForRequiredScintillators(std::vector<unsigned int> vecOfScintBarIndex){
 	bool exist = true;
 	for(unsigned int barIdIndex = 0 ; barIdIndex < vecOfScintBarIndex.size() ; barIdIndex++){

@@ -111,7 +111,9 @@ void Analyzer::CreateScintillatorVector(){
 				//EstimateHitPosition(scint);
 				scint->EstimateHitPosition_V2(fCalib);*/
 				//scint->EstimateHitPosition(fCalib);
-				if(scint->GetQMeanCorrected() > 15.)
+
+				//if(scint->GetQMeanCorrected() > 15.)
+				if(scint->GetQMeanCorrected() > 5.2)
 					fVecOfScintillatorBar.push_back(scint);
 			}
 		}

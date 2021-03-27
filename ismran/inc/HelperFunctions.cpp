@@ -17,66 +17,94 @@ std::vector<std::vector<unsigned long int>> myhist2D;
 
 lite_interface::Point3D* Get3DHitPointOnLayer(lite_interface::SingleMuonTrack *smt, unsigned int layerIndex){
 	lite_interface::Point3D *hitPointInInspectedLayer = new lite_interface::Point3D(10000.,10000.,10000.);
+
+	//std::vector<unsigned int>
+	//if(smt->IfPassThroughOneOrMoreOfScintillators())
+	{
 	if(smt->HitInAllLayers()){
 	//if(layerIndex > 0 && layerIndex < numOfLayers-1){
 		if(layerIndex < numOfLayers-1){
-		ushort belowIndex = 0;
-		ushort upperIndex = 0;
+		/*ushort belowIndex = 0;
+		ushort upperIndex = 0;*/
+		ushort startIndex = 0;
+		ushort endIndex = 0;
 		if(layerIndex==0){
-			belowIndex = layerIndex+1;
-			upperIndex = layerIndex+3;
+			/*belowIndex = layerIndex+1;
+			upperIndex = layerIndex+3;*/
+			startIndex = layerIndex+3;
+			endIndex = layerIndex+1;
 		}else{
 			if(layerIndex==5 || layerIndex==4 ){
 				/*belowIndex = layerIndex-3;
 				upperIndex = layerIndex-1;*/
-				upperIndex = layerIndex-3;
-				belowIndex = layerIndex-1;
+
+				/*upperIndex = layerIndex-3;
+				belowIndex = layerIndex-1;*/
+				startIndex = layerIndex-3;
+				endIndex = layerIndex-1;
 			}else{
-			belowIndex = layerIndex-1;
-			upperIndex = layerIndex+1;
+			/*belowIndex = layerIndex-1;
+			upperIndex = layerIndex+1;*/
+				startIndex = layerIndex+1;
+				endIndex = layerIndex-1;
 			}
 		}
 		//if(smt->SingleHitInLayer(layerIndex-1) && smt->SingleHitInLayer(layerIndex+1)){
-		if(smt->SingleHitInLayer(belowIndex) && smt->SingleHitInLayer(upperIndex)){
+		//if(smt->SingleHitInLayer(belowIndex) && smt->SingleHitInLayer(upperIndex)){
+		if(smt->SingleHitInLayer(startIndex) && smt->SingleHitInLayer(endIndex)){
 			unsigned int barIndexInInspectedLayer = 100000;
-			unsigned int barIndexInBelowLayer = 100000;
-			unsigned int barIndexInUpperLayer = 100000;
-			if(smt->CheckTrackForLayerNum(layerIndex,barIndexInInspectedLayer) &&
+			/*unsigned int barIndexInBelowLayer = 100000;
+			unsigned int barIndexInUpperLayer = 100000;*/
+			unsigned int barIndexInStartLayer = 100000;
+			unsigned int barIndexInEndLayer = 100000;
+
+			/*if(smt->CheckTrackForLayerNum(layerIndex,barIndexInInspectedLayer) &&
 			smt->CheckTrackForLayerNum(belowIndex,barIndexInBelowLayer) &&
-			smt->CheckTrackForLayerNum(upperIndex,barIndexInUpperLayer) ){
+			smt->CheckTrackForLayerNum(upperIndex,barIndexInUpperLayer) )*/
+			if(smt->CheckTrackForLayerNum(layerIndex,barIndexInInspectedLayer) &&
+			   smt->CheckTrackForLayerNum(startIndex,barIndexInStartLayer) &&
+			   smt->CheckTrackForLayerNum(endIndex,barIndexInEndLayer) ){
 			lite_interface::ScintillatorBar_V2 *scintillatorInInspectedLayer = smt->GetScintillator(barIndexInInspectedLayer);
-			lite_interface::ScintillatorBar_V2 *scintillatorInBelowLayer = smt->GetScintillator(barIndexInBelowLayer);
-			lite_interface::ScintillatorBar_V2 *scintillatorInUpperLayer = smt->GetScintillator(barIndexInUpperLayer);
+			/*lite_interface::ScintillatorBar_V2 *scintillatorInBelowLayer = smt->GetScintillator(barIndexInBelowLayer);
+			lite_interface::ScintillatorBar_V2 *scintillatorInUpperLayer = smt->GetScintillator(barIndexInUpperLayer);*/
+			lite_interface::ScintillatorBar_V2 *scintillatorInStartLayer = smt->GetScintillator(barIndexInStartLayer);
+			lite_interface::ScintillatorBar_V2 *scintillatorInEndLayer = smt->GetScintillator(barIndexInEndLayer);
 			//std::cout << "BaR InDeX : " << scintillatorInUpperLayer->GetBarIndex() << " : " << __FILE__ << " : " << __LINE__ << std::endl;
 
-			lite_interface::Point3D *hitPointInBelowLayer = scintillatorInBelowLayer->EstimateHitPosition_Param();
-			lite_interface::Point3D *hitPointInUpperLayer = scintillatorInUpperLayer->EstimateHitPosition_Param();
+			/*lite_interface::Point3D *hitPointInBelowLayer = scintillatorInBelowLayer->EstimateHitPosition_Param();
+			lite_interface::Point3D *hitPointInUpperLayer = scintillatorInUpperLayer->EstimateHitPosition_Param();*/
+			/*lite_interface::Point3D *startPt = scintillatorInBelowLayer->EstimateHitPosition_Param();
+			lite_interface::Point3D *endPt = scintillatorInUpperLayer->EstimateHitPosition_Param();*/
+			lite_interface::Point3D *startPt = scintillatorInStartLayer->EstimateHitPosition_Param();
+			lite_interface::Point3D *endPt = scintillatorInEndLayer->EstimateHitPosition_Param();
 			hitPointInInspectedLayer = scintillatorInInspectedLayer->EstimateHitPosition_Param();
 
-			double xOrZ = Interpolate(Point2D(hitPointInBelowLayer->GetZ(),hitPointInBelowLayer->GetY()) ,
+			/*double xOrZ = Interpolate(Point2D(hitPointInBelowLayer->GetZ(),hitPointInBelowLayer->GetY()) ,
 									  Point2D(hitPointInUpperLayer->GetZ(),hitPointInUpperLayer->GetY()) ,
-									  hitPointInInspectedLayer->GetY());
+									  hitPointInInspectedLayer->GetY());*/
+			double xOrZ = Interpolate(startPt,endPt,hitPointInInspectedLayer);
 
 
 			if(layerIndex == 1 || layerIndex == 3 || layerIndex == 5 || layerIndex == 8){
 				//Cross Layers
 
-				//hitPointInInspectedLayer->SetXYZ(hitPointInInspectedLayer->GetZ(),hitPointInInspectedLayer->GetY(),xOrZ);
-				hitPointInInspectedLayer->SetXYZ(xOrZ,hitPointInInspectedLayer->GetY(),hitPointInInspectedLayer->GetZ());
+				hitPointInInspectedLayer->SetXYZ(hitPointInInspectedLayer->GetZ(),hitPointInInspectedLayer->GetY(),xOrZ);
+				//hitPointInInspectedLayer->SetXYZ(xOrZ,hitPointInInspectedLayer->GetY(),hitPointInInspectedLayer->GetZ());
 
 				//hitPointInInspectedLayer.SetZ(xOrZ);
 			}else{
 				//Oblong layers
 				//hitPointInInspectedLayer.SetX(xOrZ);
 
-				//hitPointInInspectedLayer->SetXYZ(xOrZ,hitPointInInspectedLayer->GetY(),hitPointInInspectedLayer->GetZ());
-				hitPointInInspectedLayer->SetXYZ(hitPointInInspectedLayer->GetZ(),hitPointInInspectedLayer->GetY(),xOrZ);
+				hitPointInInspectedLayer->SetXYZ(xOrZ,hitPointInInspectedLayer->GetY(),hitPointInInspectedLayer->GetZ());
+				//hitPointInInspectedLayer->SetXYZ(hitPointInInspectedLayer->GetZ(),hitPointInInspectedLayer->GetY(),xOrZ);
 			}
 		}
 
 		}
 	}
 	}
+}
 	return hitPointInInspectedLayer;
 }
 
@@ -299,6 +327,16 @@ void PrintPoint3DVector(std::vector<Point3D*> vect){
 	for(unsigned short int i = 0 ; i < vect.size() ; i++){
 		vect[i]->Print();
 	}
+}
+
+double Interpolate(lite_interface::Point3D* startPoint,lite_interface::Point3D* endPoint,lite_interface::Point3D* pointOnInspectedLayer){
+	Tracking::Vector3D<double> startPt(startPoint->GetX(),startPoint->GetY(),startPoint->GetZ());
+	Tracking::Vector3D<double> endPt(endPoint->GetX(),endPoint->GetY(),endPoint->GetZ());
+	Tracking::Vector3D<double> inspectedLayerPt(pointOnInspectedLayer->GetX(),pointOnInspectedLayer->GetY(),pointOnInspectedLayer->GetZ());
+	Tracking::Vector3D<double> dir = (endPt-startPt).Unit();
+	double dist = (inspectedLayerPt.y()-startPt.y())/dir.y();
+	double retval = startPt.z()+dir.z()*dist;
+	return retval;
 }
 
 double Interpolate(Point2D p1, Point2D p2, double y){

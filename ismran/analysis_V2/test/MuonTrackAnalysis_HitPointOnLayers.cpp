@@ -70,6 +70,14 @@ int main(int argc, char *argv[]){
 	TH2F *hist2D_Layer5 = new TH2F("HitPointOnLayer_5","HitPointOnLayer_5",200,-50,50,200,-50,50);
 	TH2F *hist2D_Layer8 = new TH2F("HitPointOnLayer_8","HitPointOnLayer_8",200,-50,50,200,-50,50);
 
+	//TGraph *gr_Layer8 = new TGraph();
+	//TGraph *gr_Layer3 = new TGraph();
+	std::vector<double> xvecLayer3, yvecLayer3;
+	std::vector<double> xvecLayer8, yvecLayer8;
+
+	TH1F *zhist_Layer1 = new TH1F("Hist_InterPolated_Position","Hist_InterPolated_Position",200,-50.,50.);
+	TH1F *zhist_Layer8 = new TH1F("Hist_InterPolated_Position","Hist_InterPolated_Position",200,-50.,50.);
+
 	for(unsigned int i = 0 ; i < smtVec.size() ; i++){
 		{
 		lite_interface::Point3D *hitPoint = Get3DHitPointOnLayer(smtVec[i],0);
@@ -78,6 +86,15 @@ int main(int argc, char *argv[]){
 		{
 		lite_interface::Point3D *hitPoint = Get3DHitPointOnLayer(smtVec[i],1);
 		hist2D_Layer1->Fill(hitPoint->GetX(),hitPoint->GetZ());
+
+		unsigned int hittBarIndex = 10000;
+				bool check = smtVec[i]->CheckTrackForLayerNum(1,hittBarIndex);
+				if(check){
+					lite_interface::ScintillatorBar_V2 *scint = smtVec[i]->GetScintillator(hittBarIndex);
+					if(scint->GetBarIndexInLayer()==0)
+						zhist_Layer1->Fill(hitPoint->GetZ());
+				}
+
 		}
 		{
 		lite_interface::Point3D *hitPoint = Get3DHitPointOnLayer(smtVec[i],2);
@@ -87,6 +104,13 @@ int main(int argc, char *argv[]){
 		{
 		lite_interface::Point3D *hitPoint = Get3DHitPointOnLayer(smtVec[i],3);
 		hist2D_Layer3->Fill(hitPoint->GetX(),hitPoint->GetZ());
+		/*gr_Layer3->SetName("Layer3");
+		gr_Layer3->SetTitle("Layer3");
+		gr_Layer3->AddPoint(hitPoint->GetX(),hitPoint->GetZ());*/
+		if(hitPoint->GetX() < 9000. && hitPoint->GetZ() < 9000){
+		xvecLayer3.push_back(hitPoint->GetX());
+		yvecLayer3.push_back(hitPoint->GetZ());
+		}
 		}
 		{
 		lite_interface::Point3D *hitPoint = Get3DHitPointOnLayer(smtVec[i],4);
@@ -100,6 +124,24 @@ int main(int argc, char *argv[]){
 		{
 		lite_interface::Point3D *hitPoint = Get3DHitPointOnLayer(smtVec[i],8);
 		hist2D_Layer8->Fill(hitPoint->GetX(),hitPoint->GetZ());
+
+		unsigned int hittBarIndex = 10000;
+		bool check = smtVec[i]->CheckTrackForLayerNum(8,hittBarIndex);
+		if(check){
+			lite_interface::ScintillatorBar_V2 *scint = smtVec[i]->GetScintillator(hittBarIndex);
+			if(scint->GetBarIndexInLayer()==0)
+				zhist_Layer8->Fill(hitPoint->GetZ());
+		}
+
+
+		/*gr_Layer8->SetName("Layer8");
+		gr_Layer8->SetTitle("Layer8");
+		gr_Layer8->AddPoint(hitPoint->GetX(),hitPoint->GetZ());*/
+		if(hitPoint->GetX() < 9000. && hitPoint->GetZ() < 9000){
+		xvecLayer8.push_back(hitPoint->GetX());
+		yvecLayer8.push_back(hitPoint->GetZ());
+
+		}
 		}
 
 	}
@@ -113,8 +155,15 @@ int main(int argc, char *argv[]){
 	new TCanvas("Layer2","Layer2");
 	hist2D_Layer2->Draw("colz");
 
-	new TCanvas("Layer3","Layer3");
+	TCanvas *canLayer3 = new TCanvas("Layer3","Layer3");
+	/*canLayer3->Divide(2,1);
+	canLayer3->cd(1);*/
 	hist2D_Layer3->Draw("colz");
+	/*canLayer3->cd(2);
+	TGraph *gr_Layer3 = new TGraph(xvecLayer3.size(),&xvecLayer3[0],&yvecLayer3[0]);
+	gr_Layer3->SetName("Layer3");
+	gr_Layer3->SetTitle("Layer3");
+	gr_Layer3->Draw("ap");*/
 
 	new TCanvas("Layer4","Layer4");
 	hist2D_Layer4->Draw();
@@ -122,8 +171,35 @@ int main(int argc, char *argv[]){
 	new TCanvas("Layer5","Layer5");
 	hist2D_Layer5->Draw("colz");
 
-	new TCanvas("Layer8","Layer8");
+	TCanvas *canLayer8 = new TCanvas("Layer8","Layer8");
+	/*canLayer8->Divide(2,1);
+	canLayer8->cd(1);*/
 	hist2D_Layer8->Draw("colz");
+	/*canLayer8->cd(2);
+	TGraph *gr_Layer8 = new TGraph(xvecLayer8.size(),&xvecLayer8[0],&yvecLayer8[0]);
+	gr_Layer8->SetName("Layer8");
+	gr_Layer8->SetTitle("Layer8");
+	gr_Layer8->Draw("ap");*/
+
+	new TCanvas("Hist_Of_Interpolated_Position_Layer1","Hist_Of_Interpolated_Position_Layer1");
+	zhist_Layer1->Draw();
+
+	new TCanvas("Hist_Of_Interpolated_Position_Layer8","Hist_Of_Interpolated_Position_Layer8");
+	zhist_Layer8->Draw();
+
+	TFile *fp = new TFile("HitPattern.root","RECREATE");
+	fp->cd();
+	hist2D_Layer0->Write();
+	hist2D_Layer1->Write();
+	hist2D_Layer2->Write();
+	hist2D_Layer3->Write();
+	hist2D_Layer4->Write();
+	hist2D_Layer5->Write();
+	hist2D_Layer8->Write();
+
+	zhist_Layer1->Write();
+	zhist_Layer8->Write();
+	fp->Close();
 
 
 	fApp->Run();
@@ -131,4 +207,5 @@ int main(int argc, char *argv[]){
 
 	return 0;
 }
+
 
