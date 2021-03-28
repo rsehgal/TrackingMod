@@ -2,7 +2,7 @@
  * MuonTrackAnalysis.cpp
  *
  *  Created on: 01-Mar-2021
- *      Author: rsehgal
+ *       Author: rsehgal
  */
 
 #include <iostream>
@@ -75,25 +75,44 @@ int main(int argc, char *argv[]){
 	std::vector<double> xvecLayer3, yvecLayer3;
 	std::vector<double> xvecLayer8, yvecLayer8;
 
-	TH1F *zhist_Layer1 = new TH1F("Hist_InterPolated_Position","Hist_InterPolated_Position",200,-50.,50.);
-	TH1F *zhist_Layer8 = new TH1F("Hist_InterPolated_Position","Hist_InterPolated_Position",200,-50.,50.);
+	TH1F *zhist_Layer1 = new TH1F("Hist_Z_InterPolated_Position_Layer1","Hist_Z_InterPolated_Position_Layer1",200,-50.,50.);
+	TH1F *zhist_Layer8 = new TH1F("Hist_Z_InterPolated_Position_Layer8","Hist_Z_InterPolated_Position_Layer8",200,-50.,50.);
+	TH1F *xhist_Layer8 = new TH1F("Hist_X_Pos_From_Parameterization_Layer8","Hist_X_Pos_From_Parameterization_Layer8",200,-50.,50.);
+
 
 	for(unsigned int i = 0 ; i < smtVec.size() ; i++){
 		{
 		lite_interface::Point3D *hitPoint = Get3DHitPointOnLayer(smtVec[i],0);
 		hist2D_Layer0->Fill(hitPoint->GetX(),hitPoint->GetZ());
 		}
+		//Block for Layer 1
 		{
 		lite_interface::Point3D *hitPoint = Get3DHitPointOnLayer(smtVec[i],1);
-		hist2D_Layer1->Fill(hitPoint->GetX(),hitPoint->GetZ());
+		//hist2D_Layer1->Fill(hitPoint->GetX(),hitPoint->GetZ());
 
 		unsigned int hittBarIndex = 10000;
-				bool check = smtVec[i]->CheckTrackForLayerNum(1,hittBarIndex);
+				lite_interface::ScintillatorBar_V2 *scint0;
+				lite_interface::ScintillatorBar_V2 *scint2;
+
+				bool check = smtVec[i]->CheckTrackForLayerNum(0,hittBarIndex);
+				if(check){
+					scint0 = smtVec[i]->GetScintillator(hittBarIndex);
+				}
+				check &= smtVec[i]->CheckTrackForLayerNum(2,hittBarIndex);
+				if(check){
+					scint2 = smtVec[i]->GetScintillator(hittBarIndex);
+				}
+				//check &= smtVec[i]->CheckTrackForLayerNum(2,hittBarIndex);
+				check &= smtVec[i]->CheckTrackForLayerNum(1,hittBarIndex);
 				if(check){
 					lite_interface::ScintillatorBar_V2 *scint = smtVec[i]->GetScintillator(hittBarIndex);
-					if(scint->GetBarIndexInLayer()==0)
-						zhist_Layer1->Fill(hitPoint->GetZ());
-				}
+					/*if(scint->GetBarIndexInLayer()==3)
+						zhist_Layer1->Fill(hitPoint->GetZ());*/
+					if(scint0->GetBarIndexInLayer() == scint2->GetBarIndexInLayer()){
+						hist2D_Layer1->Fill(hitPoint->GetX(),hitPoint->GetZ());
+					}
+
+				}//check
 
 		}
 		{
@@ -121,16 +140,36 @@ int main(int argc, char *argv[]){
 		lite_interface::Point3D *hitPoint = Get3DHitPointOnLayer(smtVec[i],5);
 		hist2D_Layer5->Fill(hitPoint->GetX(),hitPoint->GetZ());
 		}
+
+		//Block for Layer 8
 		{
 		lite_interface::Point3D *hitPoint = Get3DHitPointOnLayer(smtVec[i],8);
-		hist2D_Layer8->Fill(hitPoint->GetX(),hitPoint->GetZ());
+		//hist2D_Layer8->Fill(hitPoint->GetX(),hitPoint->GetZ());
 
 		unsigned int hittBarIndex = 10000;
-		bool check = smtVec[i]->CheckTrackForLayerNum(8,hittBarIndex);
+
+		lite_interface::ScintillatorBar_V2 *scintLayer9;
+		lite_interface::ScintillatorBar_V2 *scintLayer7;
+
+		bool check = smtVec[i]->CheckTrackForLayerNum(9,hittBarIndex);
+		if(check){
+			scintLayer9 = smtVec[i]->GetScintillator(hittBarIndex);
+		}
+		check &= smtVec[i]->CheckTrackForLayerNum(7,hittBarIndex);
+		if(check){
+			scintLayer7 = smtVec[i]->GetScintillator(hittBarIndex);
+		}
+		check &= smtVec[i]->CheckTrackForLayerNum(8,hittBarIndex);
+
 		if(check){
 			lite_interface::ScintillatorBar_V2 *scint = smtVec[i]->GetScintillator(hittBarIndex);
-			if(scint->GetBarIndexInLayer()==0)
+
+			//if(scint->GetBarIndexInLayer()==3 && scintLayer7->GetBarIndexInLayer()==3 && scintLayer9->GetBarIndexInLayer()==3 ){
+			if(scintLayer7->GetBarIndexInLayer() == scintLayer9->GetBarIndexInLayer()){
 				zhist_Layer8->Fill(hitPoint->GetZ());
+				xhist_Layer8->Fill(hitPoint->GetX());
+				hist2D_Layer8->Fill(hitPoint->GetX(),hitPoint->GetZ());
+			}
 		}
 
 
@@ -187,6 +226,9 @@ int main(int argc, char *argv[]){
 	new TCanvas("Hist_Of_Interpolated_Position_Layer8","Hist_Of_Interpolated_Position_Layer8");
 	zhist_Layer8->Draw();
 
+	new TCanvas("Hist_Of_X_Pos_From_Parameterization_Layer8","Hist_Of_X_Pos_From_Parameterization_Layer8");
+	xhist_Layer8->Draw();
+
 	TFile *fp = new TFile("HitPattern.root","RECREATE");
 	fp->cd();
 	hist2D_Layer0->Write();
@@ -199,6 +241,7 @@ int main(int argc, char *argv[]){
 
 	zhist_Layer1->Write();
 	zhist_Layer8->Write();
+	xhist_Layer8->Write();
 	fp->Close();
 
 
