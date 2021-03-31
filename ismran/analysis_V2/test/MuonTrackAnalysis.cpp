@@ -82,8 +82,9 @@ int main(int argc, char *argv[]){
 		multiplictyHist->Fill(smt->size());
 		//if(smt->SingleHitInEachLayer())
 			smtVec.push_back(new lite_interface::SingleMuonTrack(*smt));
+			smtVec[i]->Print();
 	}
-
+#if(0)
 	std::cout << "Size of SMTVec : " << smtVec.size() << std::endl;
 	new TCanvas("MuonTrackSize","MuonTrackSize");
 	muonTrackSizeHist->Draw();
@@ -199,7 +200,7 @@ int main(int argc, char *argv[]){
 	std::cout <<"@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@" << std::endl;
 
 	fApp->Run();
-
+#endif
 
 	return 0;
 }

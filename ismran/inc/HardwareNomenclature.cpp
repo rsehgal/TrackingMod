@@ -208,6 +208,7 @@ std::vector<std::string> sequentialBarNames={
 };
 
 std::vector<Point2D> vecOfScintXYCenter;
+std::vector<double> vecOfLayersYPos;
 /*
 //Suitable when there is no split
 void GenerateScintMatrixXYCenters(){
@@ -224,6 +225,9 @@ void GenerateScintMatrixXYCenters(){
 
 void GenerateScintMatrixXYCenters(){
 	for(unsigned int i = 0 ; i < numOfLowerLayers ; i++){
+		double y = -1.*(numOfLowerLayers*barHeight) + barHeight/2. + (i*barHeight);
+		y += offsetYLowerDetectors;
+		vecOfLayersYPos.push_back(y);
 		for(unsigned int j = 0 ; j < numOfBarsInEachLayer ; j++){
 			double x = -1.*(numOfBarsInEachLayer*barWidth)/2. + barWidth/2. + (j*barWidth);
 			double y = -1.*(numOfLowerLayers*barHeight) + barHeight/2. + (i*barHeight);
@@ -233,6 +237,9 @@ void GenerateScintMatrixXYCenters(){
 	}
 
 	for(unsigned int i = 0 ; i < numOfUpperLayers ; i++){
+		double y = barHeight/2. + (i*barHeight);
+		y += offsetYUpperDetectors;
+		vecOfLayersYPos.push_back(y);
 		for(unsigned int j = 0 ; j < numOfBarsInEachLayer ; j++){
 			double x = -1.*(numOfBarsInEachLayer*barWidth)/2. + barWidth/2. + (j*barWidth);
 			double y = barHeight/2. + (i*barHeight);
@@ -240,6 +247,10 @@ void GenerateScintMatrixXYCenters(){
 			vecOfScintXYCenter.push_back(Point2D(x,y));
 		}
 	}
+}
+
+double GetYOfLayer(unsigned int layerIndex){
+	return vecOfLayersYPos[layerIndex];
 }
 
 unsigned int GetPeakPos(std::string barName){

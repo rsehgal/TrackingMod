@@ -113,7 +113,7 @@ void Analyzer::CreateScintillatorVector(){
 				//scint->EstimateHitPosition(fCalib);
 
 				//if(scint->GetQMeanCorrected() > 15.)
-				if(scint->GetQMeanCorrected() > 5.2)
+				if(scint->GetQMeanCorrected() > qmeanCorrThreshold)
 					fVecOfScintillatorBar.push_back(scint);
 			}
 		}
@@ -286,7 +286,9 @@ void Analyzer::ReconstructMuonTrack(){
 	unsigned int count=0;
 	for (unsigned int i = 1; i < scintVecSize; i++) {
 
-		if(fVecOfScintillatorBar[i]->GetQMeanCorrected() > 15){
+		//if(fVecOfScintillatorBar[i]->GetQMeanCorrected() > 15){
+		if(fVecOfScintillatorBar[i]->GetQMeanCorrected() > qmeanCorrThreshold){
+
 		//if(!(i%100000))
 			//std::cout << "Processed : " << i << " : bars " << std::endl;
 
@@ -299,7 +301,29 @@ void Analyzer::ReconstructMuonTrack(){
 				tStart = fVecOfScintillatorBar[i]->fTSmallTimeStamp;
 		} else {
 			//Outside 20ns window, implied track ends, hence either store it in the vector of write it to the ROOT file
+			//std::cout << "OUTSIDE 20 ns WINDOW, hence filling the Muon Track.........." << std::endl;
 			singleMuonTrack->Sort();
+
+
+/*
+			std::vector<unsigned int> vecOfHittedBarIndex;
+			for(unsigned int i = 0 ; i < numOfLayers; i++){
+				vecOfHittedBarIndex.push_back(0);
+			}
+			std::vector<lite_interface::ScintillatorBar_V2*> vecOfScintBars = singleMuonTrack->GetMuonTrack();
+			for(unsigned int i = 0 ; i < vecOfScintBars.size() ; i++){
+				vecOfHittedBarIndex[vecOfScintBars[i]->GetLayerIndex()]++;
+			}
+			for(unsigned int i = 0 ; i < numOfLayers; i++){
+					singleMuonTrack->fHitInAllLayers &= (vecOfHittedBarIndex[i] > 0);
+			}
+			for(unsigned int i = 0 ; i < vecOfRequiredLayers.size() ; i++){
+				singleMuonTrack->fHitInRequiredLayers &= (vecOfHittedBarIndex[vecOfRequiredLayers[i]] > 0);
+			}
+			if(singleMuonTrack->fHitInRequiredLayers)
+				std::cout << "========== Found Muon track that has hits in required layers ==========" << std::endl;
+*/
+
 			if(singleMuonTrack->size() >= 2)
 			{
 

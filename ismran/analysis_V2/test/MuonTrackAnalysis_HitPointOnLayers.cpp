@@ -62,32 +62,69 @@ int main(int argc, char *argv[]){
 	}
 
 	std::cout << "Size of SMTVec : " << smtVec.size() << std::endl;
-	TH2F *hist2D_Layer0 = new TH2F("HitPointOnLayer_0","HitPointOnLayer_0",200,-50,50,200,-50,50);
-	TH2F *hist2D_Layer1 = new TH2F("HitPointOnLayer_1","HitPointOnLayer_1",200,-50,50,200,-50,50);
-	TH2F *hist2D_Layer2 = new TH2F("HitPointOnLayer_2","HitPointOnLayer_2",200,-50,50,200,-50,50);
+//	TH2F *hist2D_Layer0 = new TH2F("HitPointOnLayer_0","HitPointOnLayer_0",200,-50,50,200,-50,50);
+//	TH2F *hist2D_Layer1 = new TH2F("HitPointOnLayer_1","HitPointOnLayer_1",200,-50,50,200,-50,50);
+//	TH2F *hist2D_Layer2 = new TH2F("HitPointOnLayer_2","HitPointOnLayer_2",200,-50,50,200,-50,50);
 	TH2F *hist2D_Layer3 = new TH2F("HitPointOnLayer_3","HitPointOnLayer_3",200,-50,50,200,-50,50);
-	TH2F *hist2D_Layer4 = new TH2F("HitPointOnLayer_4","HitPointOnLayer_4",200,-50,50,200,-50,50);
-	TH2F *hist2D_Layer5 = new TH2F("HitPointOnLayer_5","HitPointOnLayer_5",200,-50,50,200,-50,50);
+//	TH2F *hist2D_Layer4 = new TH2F("HitPointOnLayer_4","HitPointOnLayer_4",200,-50,50,200,-50,50);
+//	TH2F *hist2D_Layer5 = new TH2F("HitPointOnLayer_5","HitPointOnLayer_5",200,-50,50,200,-50,50);
 	TH2F *hist2D_Layer8 = new TH2F("HitPointOnLayer_8","HitPointOnLayer_8",200,-50,50,200,-50,50);
 
 	//TGraph *gr_Layer8 = new TGraph();
 	//TGraph *gr_Layer3 = new TGraph();
+/*
 	std::vector<double> xvecLayer3, yvecLayer3;
 	std::vector<double> xvecLayer8, yvecLayer8;
 
 	TH1F *zhist_Layer1 = new TH1F("Hist_Z_InterPolated_Position_Layer1","Hist_Z_InterPolated_Position_Layer1",200,-50.,50.);
 	TH1F *zhist_Layer8 = new TH1F("Hist_Z_InterPolated_Position_Layer8","Hist_Z_InterPolated_Position_Layer8",200,-50.,50.);
 	TH1F *xhist_Layer8 = new TH1F("Hist_X_Pos_From_Parameterization_Layer8","Hist_X_Pos_From_Parameterization_Layer8",200,-50.,50.);
+	TH1F *delX_Hist_Layer1 = new TH1F("DelX_Hist_Layer1","DelX_Hist_Layer1",200,-50.,50.);
+	TH1F *delZ_Hist_Layer1 = new TH1F("DelZ_Hist_Layer1","DelZ_Hist_Layer1",200,-50.,50.);
+	TH1F *dist_Hist_Layer8_1 = new TH1F("Distance_Between_Layer_8_1","Distance_Between_Layer_8_1",200,0,200.);
+	TH1F *delZ_Layer_9_7 = new TH1F("delZ_Layer_9_7","delZ_Layer_9_7",200,-50,50.);
+*/
 
 
 	for(unsigned int i = 0 ; i < smtVec.size() ; i++){
+
+		//Block for layer 3
+		{
+			lite_interface::Point3D *hitPoint = Get3DHitPointOnLayer(smtVec[i],3);
+			if(hitPoint->GetX() < 9000. && hitPoint->GetZ() < 9000){
+				hist2D_Layer3->Fill(hitPoint->GetX(),hitPoint->GetZ());
+			}
+		}
+
+		//Block for layer 8
+		{
+			lite_interface::Point3D *hitPoint = Get3DHitPointOnLayer(smtVec[i],8);
+			if(hitPoint->GetX() < 9000. && hitPoint->GetZ() < 9000){
+				hist2D_Layer8->Fill(hitPoint->GetX(),hitPoint->GetZ());
+			}
+		}
+
+	}
+
+#if(0)
+	for(unsigned int i = 0 ; i < smtVec.size() ; i++){
 		{
 		lite_interface::Point3D *hitPoint = Get3DHitPointOnLayer(smtVec[i],0);
-		hist2D_Layer0->Fill(hitPoint->GetX(),hitPoint->GetZ());
+		if(hitPoint->GetX() < 9000. && hitPoint->GetZ() < 9000){
+			hist2D_Layer0->Fill(hitPoint->GetX(),hitPoint->GetZ());
 		}
+
+		}
+
+		bool checkLayer1 = false;
+		bool checkLayer8 = false;
+		lite_interface::Point3D *hitPointLayer1;
 		//Block for Layer 1
 		{
+
 		lite_interface::Point3D *hitPoint = Get3DHitPointOnLayer(smtVec[i],1);
+		hitPointLayer1 = hitPoint;
+
 		//hist2D_Layer1->Fill(hitPoint->GetX(),hitPoint->GetZ());
 
 		unsigned int hittBarIndex = 10000;
@@ -105,24 +142,33 @@ int main(int argc, char *argv[]){
 				//check &= smtVec[i]->CheckTrackForLayerNum(2,hittBarIndex);
 				check &= smtVec[i]->CheckTrackForLayerNum(1,hittBarIndex);
 				if(check){
+					checkLayer1 = check;
 					lite_interface::ScintillatorBar_V2 *scint = smtVec[i]->GetScintillator(hittBarIndex);
 					/*if(scint->GetBarIndexInLayer()==3)
 						zhist_Layer1->Fill(hitPoint->GetZ());*/
-					if(scint0->GetBarIndexInLayer() == scint2->GetBarIndexInLayer()){
+					//if(scint0->GetBarIndexInLayer() == scint2->GetBarIndexInLayer())
+					if(hitPoint->GetX() < 9000. && hitPoint->GetZ() < 9000)
+					{
 						hist2D_Layer1->Fill(hitPoint->GetX(),hitPoint->GetZ());
 					}
 
 				}//check
 
 		}
+		//Block for layer 2
 		{
 		lite_interface::Point3D *hitPoint = Get3DHitPointOnLayer(smtVec[i],2);
+		if(hitPoint->GetX() < 9000. && hitPoint->GetZ() < 9000){
 		hist2D_Layer2->Fill(hitPoint->GetX(),hitPoint->GetZ());
 		}
+		}
 
+		//Block for layer 3
 		{
 		lite_interface::Point3D *hitPoint = Get3DHitPointOnLayer(smtVec[i],3);
+		if(hitPoint->GetX() < 9000. && hitPoint->GetZ() < 9000){
 		hist2D_Layer3->Fill(hitPoint->GetX(),hitPoint->GetZ());
+		}
 		/*gr_Layer3->SetName("Layer3");
 		gr_Layer3->SetTitle("Layer3");
 		gr_Layer3->AddPoint(hitPoint->GetX(),hitPoint->GetZ());*/
@@ -131,14 +177,21 @@ int main(int argc, char *argv[]){
 		yvecLayer3.push_back(hitPoint->GetZ());
 		}
 		}
+		//Block For layer 4
 		{
+
 		lite_interface::Point3D *hitPoint = Get3DHitPointOnLayer(smtVec[i],4);
+		if(hitPoint->GetX() < 9000. && hitPoint->GetZ() < 9000){
 		hist2D_Layer4->Fill(hitPoint->GetX(),hitPoint->GetZ());
 		}
+		}
 
+		//Block for layer 5
 		{
 		lite_interface::Point3D *hitPoint = Get3DHitPointOnLayer(smtVec[i],5);
+		if(hitPoint->GetX() < 9000. && hitPoint->GetZ() < 9000){
 		hist2D_Layer5->Fill(hitPoint->GetX(),hitPoint->GetZ());
+		}
 		}
 
 		//Block for Layer 8
@@ -162,14 +215,44 @@ int main(int argc, char *argv[]){
 		check &= smtVec[i]->CheckTrackForLayerNum(8,hittBarIndex);
 
 		if(check){
+			checkLayer8 = check;
 			lite_interface::ScintillatorBar_V2 *scint = smtVec[i]->GetScintillator(hittBarIndex);
 
+
+			lite_interface::Point3D *hitPtLayer7 = scintLayer7->EstimateHitPosition_Param();
+			lite_interface::Point3D *hitPtLayer9 = scintLayer9->EstimateHitPosition_Param();
+
 			//if(scint->GetBarIndexInLayer()==3 && scintLayer7->GetBarIndexInLayer()==3 && scintLayer9->GetBarIndexInLayer()==3 ){
-			if(scintLayer7->GetBarIndexInLayer() == scintLayer9->GetBarIndexInLayer()){
-				zhist_Layer8->Fill(hitPoint->GetZ());
+			//if(scintLayer7->GetBarIndexInLayer() == scintLayer9->GetBarIndexInLayer())
+			{
+				if(scint->GetBarIndexInLayer()==3 && scintLayer7->GetBarIndexInLayer()==3 && scintLayer9->GetBarIndexInLayer()==3 ){
+					zhist_Layer8->Fill(hitPoint->GetZ());
+					delZ_Layer_9_7->Fill(hitPtLayer7->GetZ()-hitPtLayer9->GetZ());
+				}
 				xhist_Layer8->Fill(hitPoint->GetX());
+				if(hitPoint->GetX() < 9000. && hitPoint->GetZ() < 9000){
 				hist2D_Layer8->Fill(hitPoint->GetX(),hitPoint->GetZ());
+				}
 			}
+
+
+
+
+			/*if(checkLayer1 && checkLayer8){
+				lite_interface::Point3D *hitPtLayer7 = scintLayer7->EstimateHitPosition_Param();
+				lite_interface::Point3D *hitPtLayer9 = scintLayer9->EstimateHitPosition_Param();
+
+				Tracking::Vector3D<double> start(hitPtLayer9->GetX(),hitPtLayer9->GetY(),hitPtLayer9->GetZ());
+				Tracking::Vector3D<double> end(hitPtLayer7->GetX(),hitPtLayer7->GetY(),hitPtLayer7->GetZ());
+				Tracking::Vector3D<double> dir = (end-start).Unit();
+				double dist = (GetYOfLayer(1)-hitPoint->GetY())/dir.y();
+				double xExtraPolated = hitPoint->GetX()+dir.x()*dist;
+				double zExtraPolated = hitPoint->GetZ()+dir.z()*dist;
+				delX_Hist_Layer1->Fill(xExtraPolated-hitPointLayer1->GetX());
+				delZ_Hist_Layer1->Fill(zExtraPolated-hitPointLayer1->GetZ());
+				dist_Hist_Layer8_1->Fill(dist);
+
+			}*/
 		}
 
 
@@ -184,7 +267,9 @@ int main(int argc, char *argv[]){
 		}
 
 	}
+#endif
 
+/*
 	new TCanvas("Layer0","Layer0");
 	hist2D_Layer0->Draw("colz");
 
@@ -193,33 +278,23 @@ int main(int argc, char *argv[]){
 
 	new TCanvas("Layer2","Layer2");
 	hist2D_Layer2->Draw("colz");
+*/
 
 	TCanvas *canLayer3 = new TCanvas("Layer3","Layer3");
-	/*canLayer3->Divide(2,1);
-	canLayer3->cd(1);*/
 	hist2D_Layer3->Draw("colz");
-	/*canLayer3->cd(2);
-	TGraph *gr_Layer3 = new TGraph(xvecLayer3.size(),&xvecLayer3[0],&yvecLayer3[0]);
-	gr_Layer3->SetName("Layer3");
-	gr_Layer3->SetTitle("Layer3");
-	gr_Layer3->Draw("ap");*/
 
+/*
 	new TCanvas("Layer4","Layer4");
 	hist2D_Layer4->Draw();
 
 	new TCanvas("Layer5","Layer5");
 	hist2D_Layer5->Draw("colz");
+*/
 
 	TCanvas *canLayer8 = new TCanvas("Layer8","Layer8");
-	/*canLayer8->Divide(2,1);
-	canLayer8->cd(1);*/
 	hist2D_Layer8->Draw("colz");
-	/*canLayer8->cd(2);
-	TGraph *gr_Layer8 = new TGraph(xvecLayer8.size(),&xvecLayer8[0],&yvecLayer8[0]);
-	gr_Layer8->SetName("Layer8");
-	gr_Layer8->SetTitle("Layer8");
-	gr_Layer8->Draw("ap");*/
 
+/*
 	new TCanvas("Hist_Of_Interpolated_Position_Layer1","Hist_Of_Interpolated_Position_Layer1");
 	zhist_Layer1->Draw();
 
@@ -229,19 +304,44 @@ int main(int argc, char *argv[]){
 	new TCanvas("Hist_Of_X_Pos_From_Parameterization_Layer8","Hist_Of_X_Pos_From_Parameterization_Layer8");
 	xhist_Layer8->Draw();
 
-	TFile *fp = new TFile("HitPattern.root","RECREATE");
+
+	new TCanvas("Hist_Of_DelX_Layer1","Hist_Of_DelX_Layer1");
+	delX_Hist_Layer1->Draw();
+
+	new TCanvas("Hist_Of_DelZ_Layer1","Hist_Of_DelZ_Layer1");
+	delZ_Hist_Layer1->Draw();
+
+	new TCanvas("Distance_Between_Layer8_And_Layer1","Distance_Between_Layer8_And_Layer1");
+	dist_Hist_Layer8_1->Draw();
+
+	new TCanvas("DelZ_Layer_9_7","DelZ_Layer_9_7");
+	delZ_Layer_9_7->Draw();
+*/
+
+	std::string matWithExt = filename.substr(13);
+	TFile *fp = new TFile(("HitPattern"+matWithExt).c_str(),"RECREATE");
 	fp->cd();
+/*
 	hist2D_Layer0->Write();
 	hist2D_Layer1->Write();
 	hist2D_Layer2->Write();
+*/
 	hist2D_Layer3->Write();
+/*
 	hist2D_Layer4->Write();
 	hist2D_Layer5->Write();
+*/
 	hist2D_Layer8->Write();
 
+/*
 	zhist_Layer1->Write();
 	zhist_Layer8->Write();
 	xhist_Layer8->Write();
+	delX_Hist_Layer1->Write();
+	delZ_Hist_Layer1->Write();
+	dist_Hist_Layer8_1->Write();
+	delZ_Layer_9_7->Write();
+*/
 	fp->Close();
 
 

@@ -21,6 +21,7 @@ public:
 	std::vector<ScintillatorBar_V2*> fSingleMuonTrack;
 	static unsigned long int wrongTrackCounter;
 	bool fHitInAllLayers;
+	//bool fHitInRequiredLayers;
 public:
 	SingleMuonTrack();
 	SingleMuonTrack(std::vector<ScintillatorBar_V2*> vecOfScintBars);
@@ -109,6 +110,7 @@ public:
 	 * Function to detect whether the track hits all the layers
 	 */
 	bool HitInAllLayers();
+	bool HitInRequiredLayers();
 
 #ifndef FOR_SIMULATION
 	ClassDef(SingleMuonTrack,1)

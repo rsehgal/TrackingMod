@@ -31,11 +31,14 @@ ScintillatorBar_V2* SingleMuonTrack::GetScintillator(unsigned int barIndex){
 SingleMuonTrack::SingleMuonTrack() {
 	// TODO Auto-generated constructor stub
 	//std::cout << "SINGLEMUONTRACK : DEfault Contructor called" << std::endl;
+	fHitInAllLayers = false;
+	//fHitInRequiredLayers = false;
 
 }
 
 SingleMuonTrack::SingleMuonTrack(std::vector<ScintillatorBar_V2*> vecOfScintBars){
 	fHitInAllLayers = true;
+	//fHitInRequiredLayers = true;
 	std::vector<unsigned int> vecOfHittedBarIndex;
 	for(unsigned int i = 0 ; i < numOfLayers; i++){
 		vecOfHittedBarIndex.push_back(0);
@@ -45,8 +48,29 @@ SingleMuonTrack::SingleMuonTrack(std::vector<ScintillatorBar_V2*> vecOfScintBars
 		vecOfHittedBarIndex[vecOfScintBars[i]->GetLayerIndex()]++;
 	}
 
+	std::cout << "====================================" << std::endl;
 	for(unsigned int i = 0 ; i < numOfLayers; i++){
 		fHitInAllLayers &= (vecOfHittedBarIndex[i] > 0);
+/*
+		if(vecOfHittedBarIndex[i] > 0){
+			std::cout << "HIT FOUND IN LAYER  " << i << std::endl;
+		}
+		if(fHitInAllLayers)
+		fHitInAllLayers &= (vecOfHittedBarIndex[i] > 0);
+		else
+			fHitInAllLayers |= (vecOfHittedBarIndex[i] > 0);
+*/
+
+
+
+	}
+
+	std::cout << "*************************************" << std::endl;
+	for(unsigned int i = 0 ; i < vecOfRequiredLayers.size() ; i++){
+		/*if(vecOfHittedBarIndex[vecOfRequiredLayers[i]] > 0){
+			std::cout <<"hit found in layer : " << i << std::endl;
+		}*/
+		//fHitInRequiredLayers &= (vecOfHittedBarIndex[vecOfRequiredLayers[i]] > 0);
 	}
 
 }
@@ -56,6 +80,7 @@ SingleMuonTrack::SingleMuonTrack(const SingleMuonTrack &smt){
 	//std::cout << "SINGLEMUONTRACK : Copy Contructor called" << std::endl;
 	//smt.GetMuonTrack()[0]->Print();
 	fHitInAllLayers = smt.fHitInAllLayers;
+	//fHitInRequiredLayers = smt.fHitInRequiredLayers;
 	for(unsigned int i = 0 ; i < smt.GetMuonTrack().size() ; i++){
 		//fSingleMuonTrack.push_back(new ScintillatorBar_V2(*smt.GetMuonTrack()[i]));
 		fSingleMuonTrack.push_back(new lite_interface::ScintillatorBar_V2(*(smt.GetMuonTrack()[i])));
@@ -98,7 +123,57 @@ unsigned int SingleMuonTrack::NumOfHitsInLayer(unsigned int layerNum){
 }
 
 bool SingleMuonTrack::HitInAllLayers(){
-	return fHitInAllLayers;
+	//return fHitInAllLayers;
+	std::vector<unsigned int> vecOfHittedLayers;
+		for(unsigned int i = 0 ; i < numOfLayers; i++){
+			vecOfHittedLayers.push_back(0);
+		}
+		//fSingleMuonTrack = vecOfScintBars;
+		for(unsigned int i = 0 ; i < size() ; i++){
+			vecOfHittedLayers[fSingleMuonTrack[i]->GetLayerIndex()]++;
+		}
+
+		std::cout << "====================================" << std::endl;
+		bool hitInAllLayers = true;
+		for(unsigned int i = 0 ; i < numOfLayers; i++){
+			hitInAllLayers &= (vecOfHittedLayers[i] > 0);
+		}
+
+/*
+		bool hitInRequiredLayers = true;
+		std::cout << "*************************************" << std::endl;
+		for(unsigned int i = 0 ; i < vecOfRequiredLayers.size() ; i++){
+			hitInRequiredLayers &= (vecOfHittedLayers[vecOfRequiredLayers[i]] > 0);
+		}
+*/
+		return hitInAllLayers;
+}
+
+bool SingleMuonTrack::HitInRequiredLayers(){
+// return fHitInRequiredLayers;
+	std::vector<unsigned int> vecOfHittedLayers;
+		for(unsigned int i = 0 ; i < numOfLayers; i++){
+			vecOfHittedLayers.push_back(0);
+		}
+		//fSingleMuonTrack = vecOfScintBars;
+		for(unsigned int i = 0 ; i < size() ; i++){
+			vecOfHittedLayers[fSingleMuonTrack[i]->GetLayerIndex()]++;
+		}
+
+		/*std::cout << "====================================" << std::endl;
+		bool hitInAllLayers = true;
+		for(unsigned int i = 0 ; i < numOfLayers; i++){
+			hitInAllLayers &= (vecOfHittedLayers[i] > 0);
+		}*/
+
+
+		bool hitInRequiredLayers = true;
+		//std::cout << "*************************************" << std::endl;
+		for(unsigned int i = 0 ; i < vecOfRequiredLayers.size() ; i++){
+			hitInRequiredLayers &= (vecOfHittedLayers[vecOfRequiredLayers[i]] > 0);
+		}
+
+		return hitInRequiredLayers;
 }
 
 bool SingleMuonTrack::SingleHitInLayer(unsigned int layerIndex){
@@ -170,9 +245,12 @@ SingleMuonTrack* SingleMuonTrack::GetOutgoingTrack(){
 }
 
 void SingleMuonTrack::Print(){
-	std::cout << "==== Print from SingleMuonTrack  : size : " << fSingleMuonTrack.size() << " : Zenith Angle : " << GetZenithAngle(4) <<"  =====" << std::endl;
+	//if(fHitInRequiredLayers)
+	{
+	//std::cout << "==== Print from SingleMuonTrack  : size : " << fSingleMuonTrack.size() << " : Zenith Angle : " << GetZenithAngle(4) <<"  ===== : Hit_In_Required_Layers : " << fHitInRequiredLayers <<  std::endl;
 	for(unsigned int j = 0 ; j < fSingleMuonTrack.size() ; j++){
 		fSingleMuonTrack[j]->Print();
+	}
 	}
 	//std::cout << "@@@@@@@@@2 Total Energy Deposited : " << fTotalEnergyDeposited << " @@@@@@@@@" <<  std::endl;
 }

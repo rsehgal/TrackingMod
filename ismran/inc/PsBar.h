@@ -25,6 +25,7 @@ extern unsigned int numOfLowerLayers;
 extern unsigned int numOfUpperLayers;
 extern std::vector<unsigned int> incomingLayerIndices;
 extern std::vector<unsigned int> outgoingLayerIndices;
+extern std::vector<unsigned int> vecOfRequiredLayers;
 
 extern std::map<std::string,TH1D*> barsEnergyMap;
 extern std::vector<TH1D*> vecOfEnergyHist;
@@ -34,6 +35,7 @@ extern std::vector<unsigned int> vecOfdeltaTMin;
 extern std::vector<unsigned int> vecOfdeltaTMax;
 
 //energy range to select the particle
+extern double qmeanCorrThreshold;
 extern int qstart;// = 4000;
 extern int qend;// = 18000;
 //time difference between Far and Near PMT of a PsBar

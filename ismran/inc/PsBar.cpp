@@ -18,6 +18,7 @@ std::vector<TH1D*> vecOfEnergyHist;
 std::vector<TH1D*> vecOfTimeDiffHist;
 std::vector<unsigned int> vecOfdeltaTMin;
 std::vector<unsigned int> vecOfdeltaTMax;
+double qmeanCorrThreshold = 5.5;
 int qstart = 3000;
 int qend = 25000;
 int nbins = 1000;
@@ -29,6 +30,9 @@ int maxEnergyDepositedByMuonTrack = 190000;
 float barWidth = 10.;
 float barHeight = 10.;
 float barLength = 100.;
+//std::vector<unsigned int> vecOfRequiredLayers={0,1,2,3,4,7,8,9};
+//std::vector<unsigned int> vecOfRequiredLayers={7,8,9};
+std::vector<unsigned int> vecOfRequiredLayers={2,3,4,7,8,9};
 
 /*
  * Ref Y is the slab of Scatterer
