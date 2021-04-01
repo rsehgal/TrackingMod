@@ -46,6 +46,7 @@ extern void PrintPoint3DVector(std::vector<Point3D*> vect);
 extern double Interpolate(Point2D p1, Point2D p2, double y);
 extern double Interpolate(lite_interface::Point3D* startPoint,lite_interface::Point3D* endPoint,lite_interface::Point3D* pointOnInspectedLayer);
 extern lite_interface::Point3D* Get3DHitPointOnLayer(lite_interface::SingleMuonTrack *smt, unsigned int layerIndex);
+extern lite_interface::Point3D* ExtrapolatePointOnLayer(lite_interface::Point3D *startPt, lite_interface::Point3D *endPt, unsigned int layerIndex);
 extern TF1* GetMuonPeakFitFormula(std::string barName);
 
 

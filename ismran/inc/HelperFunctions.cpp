@@ -111,6 +111,15 @@ lite_interface::Point3D* Get3DHitPointOnLayer(lite_interface::SingleMuonTrack *s
 }
 #endif
 
+lite_interface::Point3D* ExtrapolatePointOnLayer(lite_interface::Point3D *startPt, lite_interface::Point3D *endPt, unsigned int layerIndex){
+	Tracking::Vector3D<double> start(hitPtLayer9->GetX(),hitPtLayer9->GetY(),hitPtLayer9->GetZ());
+	Tracking::Vector3D<double> end(hitPtLayer7->GetX(),hitPtLayer7->GetY(),hitPtLayer7->GetZ());
+	Tracking::Vector3D<double> dir = (end-start).Unit();
+	double dist = (GetYOfLayer(1)-hitPoint->GetY())/dir.y();
+					double xExtraPolated = hitPoint->GetX()+dir.x()*dist;
+					double zExtraPolated = hitPoint->GetZ()+dir.z()*dist;
+}
+
 lite_interface::Point3D* Get3DHitPointOnLayer(lite_interface::SingleMuonTrack *smt, unsigned int layerIndex){
 	lite_interface::Point3D *hitPointInInspectedLayer = new lite_interface::Point3D(10000.,10000.,10000.);
 

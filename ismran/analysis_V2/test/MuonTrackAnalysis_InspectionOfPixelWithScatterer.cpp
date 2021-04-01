@@ -62,43 +62,6 @@ int main(int argc, char *argv[]){
 
 		bool layer3Pixel = false;
 		bool layer8Pixel = false;
-			//Block for layer 3
-			{
-				unsigned int hittBarIndex = 10000;
-
-				lite_interface::ScintillatorBar_V2 *scintLayer4;
-				lite_interface::ScintillatorBar_V2 *scintLayer2;
-
-
-
-				bool check = smtVec[i]->CheckTrackForLayerNum(4,hittBarIndex);
-				if(check){
-					scintLayer4 = smtVec[i]->GetScintillator(hittBarIndex);
-				}
-				check &= smtVec[i]->CheckTrackForLayerNum(2,hittBarIndex);
-				if(check){
-					scintLayer2 = smtVec[i]->GetScintillator(hittBarIndex);
-				}
-				check &= smtVec[i]->CheckTrackForLayerNum(3,hittBarIndex);
-
-				if(check){
-
-					lite_interface::ScintillatorBar_V2 *scint = smtVec[i]->GetScintillator(hittBarIndex);
-
-					if(scint->GetBarIndexInLayer()==4 && scintLayer2->GetBarIndexInLayer()==4 && scintLayer4->GetBarIndexInLayer()==4 ){
-						layer3Pixel = check;
-						lite_interface::Point3D *hitPoint = Get3DHitPointOnLayer(smtVec[i],3);
-						if(hitPoint->GetX() < 9000. && hitPoint->GetZ() < 9000){
-							hist2D_Layer3->Fill(hitPoint->GetX(),hitPoint->GetZ());
-						}
-					}
-					//lite_interface::Point3D *hitPtLayer7 = scintLayer7->EstimateHitPosition_Param();
-					//lite_interface::Point3D *hitPtLayer9 = scintLayer9->EstimateHitPosition_Param();
-				}
-
-
-			}
-
 			//Block for layer 8
 			{
 				unsigned int hittBarIndex = 10000;
@@ -132,6 +95,46 @@ int main(int argc, char *argv[]){
 
 
 			}
+			//Block for layer 3
+						{
+							unsigned int hittBarIndex = 10000;
+
+							lite_interface::ScintillatorBar_V2 *scintLayer4;
+							lite_interface::ScintillatorBar_V2 *scintLayer2;
+
+
+
+							bool check = smtVec[i]->CheckTrackForLayerNum(4,hittBarIndex);
+							if(check){
+								scintLayer4 = smtVec[i]->GetScintillator(hittBarIndex);
+							}
+							check &= smtVec[i]->CheckTrackForLayerNum(2,hittBarIndex);
+							if(check){
+								scintLayer2 = smtVec[i]->GetScintillator(hittBarIndex);
+							}
+							check &= smtVec[i]->CheckTrackForLayerNum(3,hittBarIndex);
+
+							if(check){
+
+								lite_interface::ScintillatorBar_V2 *scint = smtVec[i]->GetScintillator(hittBarIndex);
+
+								//if(scint->GetBarIndexInLayer()==4 && scintLayer2->GetBarIndexInLayer()==4 && scintLayer4->GetBarIndexInLayer()==4 )
+								if(layer8Pixel)
+								{
+									layer3Pixel = check;
+									lite_interface::Point3D *hitPoint = Get3DHitPointOnLayer(smtVec[i],3);
+									if(hitPoint->GetX() < 9000. && hitPoint->GetZ() < 9000){
+										hist2D_Layer3->Fill(hitPoint->GetX(),hitPoint->GetZ());
+									}
+								}
+								//lite_interface::Point3D *hitPtLayer7 = scintLayer7->EstimateHitPosition_Param();
+								//lite_interface::Point3D *hitPtLayer9 = scintLayer9->EstimateHitPosition_Param();
+							}
+
+
+						}
+
+
 
 		}
 
