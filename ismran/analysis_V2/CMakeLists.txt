@@ -182,6 +182,9 @@ target_link_libraries(MuonTrackAnalysis_HitPointOnLayers ${ROOT_LIBRARIES} Track
 add_executable(MuonTrackAnalysis_InspectionOfPixelWithScatterer test/MuonTrackAnalysis_InspectionOfPixelWithScatterer.cpp ${sources} ${headers})
 target_link_libraries(MuonTrackAnalysis_InspectionOfPixelWithScatterer ${ROOT_LIBRARIES} Tracklib)
 
+add_executable(CoreTest test/CoreTest.cpp ${sources} ${headers})
+target_link_libraries(CoreTest ${ROOT_LIBRARIES} Tracklib)
+
 add_executable(TestNewCalibFromDataFiles test/TestNewCalibFromDataFiles.cpp ${sources} ${headers})
 target_link_libraries(TestNewCalibFromDataFiles ${ROOT_LIBRARIES} Tracklib)
 

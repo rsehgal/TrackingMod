@@ -111,13 +111,29 @@ lite_interface::Point3D* Get3DHitPointOnLayer(lite_interface::SingleMuonTrack *s
 }
 #endif
 
-lite_interface::Point3D* ExtrapolatePointOnLayer(lite_interface::Point3D *startPt, lite_interface::Point3D *endPt, unsigned int layerIndex){
-	Tracking::Vector3D<double> start(hitPtLayer9->GetX(),hitPtLayer9->GetY(),hitPtLayer9->GetZ());
-	Tracking::Vector3D<double> end(hitPtLayer7->GetX(),hitPtLayer7->GetY(),hitPtLayer7->GetZ());
-	Tracking::Vector3D<double> dir = (end-start).Unit();
+lite_interface::Point3D* ExtrapolatePointOnLayer(lite_interface::Point3D *startPt, 
+												 lite_interface::Point3D *endPt, 
+												 unsigned int layerIndex){
+
+	Tracking::Vector3D<double> start(startPt->GetX(),startPt->GetY(),startPt->GetZ());
+	Tracking::Vector3D<double> end(endPt->GetX(),endPt->GetY(),endPt->GetZ());
+	/*Tracking::Vector3D<double> dir = (end-start).Unit();
 	double dist = (GetYOfLayer(1)-hitPoint->GetY())/dir.y();
 					double xExtraPolated = hitPoint->GetX()+dir.x()*dist;
-					double zExtraPolated = hitPoint->GetZ()+dir.z()*dist;
+					double zExtraPolated = hitPoint->GetZ()+dir.z()*dist;*/
+	Tracking::Vector3D<double> extraPolatedPt = ExtrapolatePointOnLayer(start,end,layerIndex);
+	return (new lite_interface::Point3D(extraPolatedPt.x(),extraPolatedPt.y(),extraPolatedPt.z()));
+}
+
+Tracking::Vector3D<double> ExtrapolatePointOnLayer(Tracking::Vector3D<double> start, 
+												   Tracking::Vector3D<double> end,
+												   unsigned int layerIndex){
+	Tracking::Vector3D<double> dir = (end-start).Unit();
+	double yOnLayer = GetYOfLayer(layerIndex);
+	double dist = (yOnLayer-start.y())/dir.y();
+	double xExtraPolated = start.x()+dir.x()*dist;
+	double zExtraPolated = start.z()+dir.z()*dist;
+	return Tracking::Vector3D<double>(xExtraPolated,yOnLayer,zExtraPolated);
 }
 
 lite_interface::Point3D* Get3DHitPointOnLayer(lite_interface::SingleMuonTrack *smt, unsigned int layerIndex){

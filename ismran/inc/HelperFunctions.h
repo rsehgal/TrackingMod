@@ -47,6 +47,7 @@ extern double Interpolate(Point2D p1, Point2D p2, double y);
 extern double Interpolate(lite_interface::Point3D* startPoint,lite_interface::Point3D* endPoint,lite_interface::Point3D* pointOnInspectedLayer);
 extern lite_interface::Point3D* Get3DHitPointOnLayer(lite_interface::SingleMuonTrack *smt, unsigned int layerIndex);
 extern lite_interface::Point3D* ExtrapolatePointOnLayer(lite_interface::Point3D *startPt, lite_interface::Point3D *endPt, unsigned int layerIndex);
+extern Tracking::Vector3D<double> ExtrapolatePointOnLayer(Tracking::Vector3D<double> start, Tracking::Vector3D<double> end,  unsigned int layerIndex);
 extern TF1* GetMuonPeakFitFormula(std::string barName);
 
 
