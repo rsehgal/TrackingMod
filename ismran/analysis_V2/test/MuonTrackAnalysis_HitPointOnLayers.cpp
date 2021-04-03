@@ -67,7 +67,7 @@ int main(int argc, char *argv[]){
 //	TH2F *hist2D_Layer2 = new TH2F("HitPointOnLayer_2","HitPointOnLayer_2",200,-50,50,200,-50,50);
 	TH2F *hist2D_Layer3 = new TH2F("HitPointOnLayer_3","HitPointOnLayer_3",200,-50,50,200,-50,50);
 //	TH2F *hist2D_Layer4 = new TH2F("HitPointOnLayer_4","HitPointOnLayer_4",200,-50,50,200,-50,50);
-//	TH2F *hist2D_Layer5 = new TH2F("HitPointOnLayer_5","HitPointOnLayer_5",200,-50,50,200,-50,50);
+	TH2F *hist2D_Layer5 = new TH2F("HitPointOnLayer_5","HitPointOnLayer_5",200,-50,50,200,-50,50);
 	TH2F *hist2D_Layer8 = new TH2F("HitPointOnLayer_8","HitPointOnLayer_8",200,-50,50,200,-50,50);
 
 	//TGraph *gr_Layer8 = new TGraph();
@@ -93,6 +93,14 @@ int main(int argc, char *argv[]){
 			lite_interface::Point3D *hitPoint = Get3DHitPointOnLayer(smtVec[i],3);
 			if(hitPoint->GetX() < 9000. && hitPoint->GetZ() < 9000){
 				hist2D_Layer3->Fill(hitPoint->GetX(),hitPoint->GetZ());
+			}
+		}
+
+		//Block for layer 8
+		{
+			lite_interface::Point3D *hitPoint = Get3DHitPointOnLayer(smtVec[i],5);
+			if(hitPoint->GetX() < 9000. && hitPoint->GetZ() < 9000){
+				hist2D_Layer5->Fill(hitPoint->GetX(),hitPoint->GetZ());
 			}
 		}
 
@@ -286,10 +294,10 @@ int main(int argc, char *argv[]){
 /*
 	new TCanvas("Layer4","Layer4");
 	hist2D_Layer4->Draw();
-
+*/
 	new TCanvas("Layer5","Layer5");
 	hist2D_Layer5->Draw("colz");
-*/
+
 
 	TCanvas *canLayer8 = new TCanvas("Layer8","Layer8");
 	hist2D_Layer8->Draw("colz");
@@ -329,8 +337,9 @@ int main(int argc, char *argv[]){
 	hist2D_Layer3->Write();
 /*
 	hist2D_Layer4->Write();
-	hist2D_Layer5->Write();
 */
+	hist2D_Layer5->Write();
+
 	hist2D_Layer8->Write();
 
 /*
