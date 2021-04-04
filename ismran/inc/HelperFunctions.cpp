@@ -125,6 +125,22 @@ lite_interface::Point3D* ExtrapolatePointOnLayer(lite_interface::Point3D *startP
 	return (new lite_interface::Point3D(extraPolatedPt.x(),extraPolatedPt.y(),extraPolatedPt.z()));
 }
 
+lite_interface::Point3D* ExtrapolatePointOnLayer(lite_interface::Point3D *startPt,
+												 lite_interface::Point3D *endPt,
+												 lite_interface::Point3D *intermediatePt,
+												 unsigned int layerIndex){
+
+	Tracking::Vector3D<double> start(startPt->GetX(),startPt->GetY(),startPt->GetZ());
+	Tracking::Vector3D<double> end(endPt->GetX(),endPt->GetY(),endPt->GetZ());
+	Tracking::Vector3D<double> intermediate(intermediatePt->GetX(),intermediatePt->GetY(),intermediatePt->GetZ());
+	/*Tracking::Vector3D<double> dir = (end-start).Unit();
+	double dist = (GetYOfLayer(1)-hitPoint->GetY())/dir.y();
+					double xExtraPolated = hitPoint->GetX()+dir.x()*dist;
+					double zExtraPolated = hitPoint->GetZ()+dir.z()*dist;*/
+	Tracking::Vector3D<double> extraPolatedPt = ExtrapolatePointOnLayer(start,end,intermediate,layerIndex);
+	return (new lite_interface::Point3D(extraPolatedPt.x(),extraPolatedPt.y(),extraPolatedPt.z()));
+}
+
 Tracking::Vector3D<double> ExtrapolatePointOnLayer(Tracking::Vector3D<double> start, 
 												   Tracking::Vector3D<double> end,
 												   unsigned int layerIndex){
@@ -135,6 +151,19 @@ Tracking::Vector3D<double> ExtrapolatePointOnLayer(Tracking::Vector3D<double> st
 	double zExtraPolated = start.z()+dir.z()*dist;
 	return Tracking::Vector3D<double>(xExtraPolated,yOnLayer,zExtraPolated);
 }
+
+Tracking::Vector3D<double> ExtrapolatePointOnLayer(Tracking::Vector3D<double> start,
+												   Tracking::Vector3D<double> end,
+												   Tracking::Vector3D<double> intermediate,
+												   unsigned int layerIndex){
+	Tracking::Vector3D<double> dir = (end-start).Unit();
+	double yOnLayer = GetYOfLayer(layerIndex);
+	double dist = (yOnLayer-intermediate.y())/dir.y();
+	double xExtraPolated = intermediate.x()+dir.x()*dist;
+	double zExtraPolated = intermediate.z()+dir.z()*dist;
+	return Tracking::Vector3D<double>(xExtraPolated,yOnLayer,zExtraPolated);
+}
+
 
 lite_interface::Point3D* Get3DHitPointOnLayer(lite_interface::SingleMuonTrack *smt, unsigned int layerIndex){
 	lite_interface::Point3D *hitPointInInspectedLayer = new lite_interface::Point3D(10000.,10000.,10000.);
@@ -195,6 +224,77 @@ lite_interface::Point3D* Get3DHitPointOnLayer(lite_interface::SingleMuonTrack *s
 	}
 }
 	return hitPointInInspectedLayer;
+}
+
+lite_interface::Point3D* Get3DHitPointOnLayer(lite_interface::SingleMuonTrack *smt, unsigned int layerIndex,
+											  lite_interface::Point3D *extrapolatedPt,unsigned int onLayer){
+	lite_interface::Point3D *hitPointInInspectedLayer = new lite_interface::Point3D(10000.,10000.,10000.);
+
+	//std::vector<unsigned int>
+	//if(smt->IfPassThroughOneOrMoreOfScintillators())
+	{
+	//if(smt->HitInAllLayers()){
+	if(smt->HitInRequiredLayers())
+		{
+		if(layerIndex < numOfLayers-1){
+		ushort startIndex = 0;
+		ushort endIndex = 0;
+		if(layerIndex==0){
+			startIndex = layerIndex+3;
+			endIndex = layerIndex+1;
+		}else{
+			if(layerIndex==5 || layerIndex==4 ){
+				startIndex = layerIndex-3;
+				endIndex = layerIndex-1;
+			}else{
+				startIndex = layerIndex+1;
+				endIndex = layerIndex-1;
+			}
+		}
+
+		lite_interface::Point3D *startPt = new lite_interface::Point3D(10000.,10000.,10000.);
+		lite_interface::Point3D *endPt = new lite_interface::Point3D(10000.,10000.,10000.);
+		if(smt->SingleHitInLayer(startIndex) && smt->SingleHitInLayer(endIndex) && smt->SingleHitInLayer(layerIndex)){
+			unsigned int barIndexInInspectedLayer = 100000;
+			unsigned int barIndexInStartLayer = 100000;
+			unsigned int barIndexInEndLayer = 100000;
+
+			if(smt->CheckTrackForLayerNum(layerIndex,barIndexInInspectedLayer) &&
+			   smt->CheckTrackForLayerNum(startIndex,barIndexInStartLayer) &&
+			   smt->CheckTrackForLayerNum(endIndex,barIndexInEndLayer) ){
+			lite_interface::ScintillatorBar_V2 *scintillatorInInspectedLayer = smt->GetScintillator(barIndexInInspectedLayer);
+			lite_interface::ScintillatorBar_V2 *scintillatorInStartLayer = smt->GetScintillator(barIndexInStartLayer);
+			lite_interface::ScintillatorBar_V2 *scintillatorInEndLayer = smt->GetScintillator(barIndexInEndLayer);
+			//std::cout << "BaR InDeX : " << scintillatorInUpperLayer->GetBarIndex() << " : " << __FILE__ << " : " << __LINE__ << std::endl;
+
+			startPt = scintillatorInStartLayer->EstimateHitPosition_Param();
+			endPt = scintillatorInEndLayer->EstimateHitPosition_Param();
+			hitPointInInspectedLayer = scintillatorInInspectedLayer->EstimateHitPosition_Param();
+
+			double xOrZ = Interpolate(startPt,endPt,hitPointInInspectedLayer);
+
+
+			if(layerIndex == 1 || layerIndex == 3 || layerIndex == 5 || layerIndex == 8){
+				//Cross Layers
+
+				hitPointInInspectedLayer->SetXYZ(hitPointInInspectedLayer->GetZ(),hitPointInInspectedLayer->GetY(),xOrZ);
+			}else{
+				//Oblong layers
+				hitPointInInspectedLayer->SetXYZ(xOrZ,hitPointInInspectedLayer->GetY(),hitPointInInspectedLayer->GetZ());
+			}
+		}
+
+		}
+		lite_interface::Point3D *extPolPt = ExtrapolatePointOnLayer(startPt,endPt,hitPointInInspectedLayer,onLayer);
+		extrapolatedPt->SetXYZ(extPolPt->GetX(),extPolPt->GetY(),extPolPt->GetZ());
+		//std::cout << "EXTRAPOLATED POINT : " ; extrapolatedPt->Print();
+			return hitPointInInspectedLayer;
+	}
+
+
+		}
+}
+
 }
 
 
