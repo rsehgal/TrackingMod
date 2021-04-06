@@ -111,6 +111,7 @@ public:
 	 */
 	bool HitInAllLayers();
 	bool HitInRequiredLayers();
+	bool HitInRequiredLayers(std::vector<unsigned int> reqLayersVec);
 
 #ifndef FOR_SIMULATION
 	ClassDef(SingleMuonTrack,1)

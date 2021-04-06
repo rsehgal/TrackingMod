@@ -176,6 +176,33 @@ bool SingleMuonTrack::HitInRequiredLayers(){
 		return hitInRequiredLayers;
 }
 
+bool SingleMuonTrack::HitInRequiredLayers(std::vector<unsigned int> reqLayersVec){
+// return fHitInRequiredLayers;
+	std::vector<unsigned int> vecOfHittedLayers;
+		for(unsigned int i = 0 ; i < numOfLayers; i++){
+			vecOfHittedLayers.push_back(0);
+		}
+		//fSingleMuonTrack = vecOfScintBars;
+		for(unsigned int i = 0 ; i < size() ; i++){
+			vecOfHittedLayers[fSingleMuonTrack[i]->GetLayerIndex()]++;
+		}
+
+		/*std::cout << "====================================" << std::endl;
+		bool hitInAllLayers = true;
+		for(unsigned int i = 0 ; i < numOfLayers; i++){
+			hitInAllLayers &= (vecOfHittedLayers[i] > 0);
+		}*/
+
+
+		bool hitInRequiredLayers = true;
+		//std::cout << "*************************************" << std::endl;
+		for(unsigned int i = 0 ; i < reqLayersVec.size() ; i++){
+			hitInRequiredLayers &= (vecOfHittedLayers[reqLayersVec[i]] > 0);
+		}
+
+		return hitInRequiredLayers;
+}
+
 bool SingleMuonTrack::SingleHitInLayer(unsigned int layerIndex){
 	std::vector<unsigned int> vecOfNumOfHits;
 	for(unsigned int i = 0 ; i < numOfLayers ; i++){

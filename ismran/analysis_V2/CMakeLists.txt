@@ -185,6 +185,8 @@ target_link_libraries(MuonTrackAnalysis_InspectionOfPixelWithScatterer ${ROOT_LI
 add_executable(MuonTrackAnalysis_ExtrapolationDiff test/MuonTrackAnalysis_ExtrapolationDiff.cpp ${sources} ${headers})
 target_link_libraries(MuonTrackAnalysis_ExtrapolationDiff ${ROOT_LIBRARIES} Tracklib)
 
+add_executable(MuonTrackAnalysis_RefinedTrackTest test/MuonTrackAnalysis_RefinedTrackTest.cpp ${sources} ${headers})
+target_link_libraries(MuonTrackAnalysis_RefinedTrackTest ${ROOT_LIBRARIES} Tracklib)
 
 add_executable(CoreTest test/CoreTest.cpp ${sources} ${headers})
 target_link_libraries(CoreTest ${ROOT_LIBRARIES} Tracklib)
