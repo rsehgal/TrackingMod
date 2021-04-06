@@ -76,23 +76,67 @@ int main(int argc, char *argv[]){
 	std::string name = "Layer_"+std::to_string(extrpolatedLayerIndex)+"xdiff_zdifff";
 	std::string histname="Hist_"+name;
 	TH2F *hist2D_xdiff_zdiff = new TH2F(histname.c_str(),histname.c_str(),400,-100,100,400,-100,100);
+	TH1F *histAngle = new TH1F("DeviationAngleHist","DeviationAngleHist",100,-1.5,1.5);
 
 
 	for(unsigned int i = 0 ; i < smtVec.size() ; i++){
 
-		bool validIncoming = false;
-		bool validOutgoing = false;
+		bool validIncoming = true;
+		bool validOutgoing = true;
 
 		std::vector<lite_interface::Point3D*> incoming = GetTrackFromLayers(smtVec[i],incomingLayerIndices);
 		std::vector<lite_interface::Point3D*> outgoing = GetTrackFromLayers(smtVec[i],outgoingLayerIndices);
+		//std::cout << "JUST BEFORE Calculating validIncoming : " ;
 		for(unsigned int j = 0 ; j < incoming.size() ; j++){
 			lite_interface::Point3D *temp = incoming[j];
-			validIncoming = (temp->GetX() < 9000 && temp->GetY() < 9000 && temp->GetZ() < 9000);
+			//temp->Print();
+			validIncoming &= (temp->GetX() > -50. && temp->GetX() < 50. &&
+				    //temp->GetY() > -50. && temp->GetY() < 50. &&
+				    temp->GetZ() > -50. && temp->GetZ() < 50.);
+					//(temp->GetX() < 9000 && temp->GetY() < 9000 && temp->GetZ() < 9000);
 		}
+		validIncoming &= (incoming.size() > 0);
+
 		for(unsigned int j = 0 ; j < outgoing.size() ; j++){
 			lite_interface::Point3D *temp = outgoing[j];
-			validOutgoing = (temp->GetX() < 9000 && temp->GetY() < 9000 && temp->GetZ() < 9000);
+			validOutgoing &= (temp->GetX() > -50 && temp->GetX() < 50 &&
+				    //temp->GetY() > -50 && temp->GetY() < 50 &&
+				    temp->GetZ() > -50 && temp->GetZ() < 50);
+					//(temp->GetX() < 9000 && temp->GetY() < 9000 && temp->GetZ() < 9000);
 		}
+		validOutgoing &= (outgoing.size() > 0);
+
+		if(1){
+		if(validIncoming && validOutgoing ){
+			std::vector<lite_interface::Point3D*> fittedIncomingTrack = lite_interface::CreateFittedTrack(incoming);
+			std::vector<lite_interface::Point3D*> fittedOutgoingTrack = lite_interface::CreateFittedTrack(outgoing);
+
+			bool validFittedIncoming = true;
+			bool validFittedOutgoing = true;
+
+			for(unsigned int j = 0 ; j < fittedIncomingTrack.size() ; j++){
+				lite_interface::Point3D *temp = fittedIncomingTrack[j];
+				validFittedIncoming &= (temp->GetX() > -50 && temp->GetX() < 50 &&
+									    //temp->GetY() > -50 && temp->GetY() < 50 &&
+									    temp->GetZ() > -50 && temp->GetZ() < 50);
+			}
+
+			for(unsigned int j = 0 ; j < fittedOutgoingTrack.size() ; j++){
+				lite_interface::Point3D *temp = fittedOutgoingTrack[j];
+				validFittedOutgoing &= (temp->GetX() > -50 && temp->GetX() < 50 &&
+									    //temp->GetY() > -50 && temp->GetY() < 50 &&
+									    temp->GetZ() > -50 && temp->GetZ() < 50);
+			}
+
+			if(validFittedIncoming && validFittedOutgoing){
+				double incomingZenithAngle = GetZenithAngle(fittedIncomingTrack);
+				double outgoingZenithAngle = GetZenithAngle(fittedOutgoingTrack);
+				double angleDiff = outgoingZenithAngle-incomingZenithAngle;
+				histAngle->Fill(angleDiff);
+			}
+		}}
+
+		if(0){
 		if(validIncoming && validOutgoing ){
 			std::cout <<"@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@" << std::endl;
 			//Incoming
@@ -103,13 +147,13 @@ int main(int argc, char *argv[]){
 
 			}
 			{
-			std::vector<lite_interface::Point3D*> fittedTrack = lite_interface::CreateFittedTrack(incoming);
+			/*std::vector<lite_interface::Point3D*> fittedTrack = lite_interface::CreateFittedTrack(incoming);
 			std::cout << "*********** Printing Fitted Incoming Track *********" << std::endl;
 			for(unsigned int j = 0 ; j < fittedTrack.size() ; j++){
 				lite_interface::Point3D *temp = fittedTrack[j];
 				temp->Print();
 
-			}
+			}*/
 			}
 
 			//Outgoing
@@ -120,16 +164,16 @@ int main(int argc, char *argv[]){
 
 			}
 			{
-			std::vector<lite_interface::Point3D*> fittedTrack = lite_interface::CreateFittedTrack(outgoing);
+			/*std::vector<lite_interface::Point3D*> fittedTrack = lite_interface::CreateFittedTrack(outgoing);
 			std::cout << "*********** Printing Fitted Outgoing Track *********" << std::endl;
 			for(unsigned int j = 0 ; j < fittedTrack.size() ; j++){
 				lite_interface::Point3D *temp = fittedTrack[j];
 				temp->Print();
 
+			}*/
 			}
-			}
-
 		}
+	 }
 	}
 
 
@@ -168,6 +212,8 @@ int main(int argc, char *argv[]){
 
 //	fp->Close();
 
+	new TCanvas("Hist of Deviation","Hist of Deviation");
+	histAngle->Draw();
 
 	fApp->Run();
 

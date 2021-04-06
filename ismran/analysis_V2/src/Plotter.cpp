@@ -1070,10 +1070,13 @@ namespace lite_interface{
 
 	double GetZenithAngle(std::vector<lite_interface::Point3D*> vecOfPoint3D){
 		TVector3 ref(0.,-1.,0.);
+		if(vecOfPoint3D.size() > 0){
 		Point3D *startPoint = vecOfPoint3D[0];
 		Point3D *endPoint = vecOfPoint3D[vecOfPoint3D.size() - 1];
 		TVector3 muonDir(TVector3(endPoint->GetX(), endPoint->GetY(), endPoint->GetZ())	- TVector3(startPoint->GetX(), startPoint->GetY(),startPoint->GetZ()));
 		return muonDir.Angle(ref);
+		}
+
 	}
 
 	int GetBinNumber(int nbins,double start,double end , double val){
