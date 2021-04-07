@@ -20,6 +20,8 @@
 #include <TH2F.h>
 
 int main(int argc, char *argv[]){
+
+	TFile *fpRefined = new TFile("refinedTracks.root","RECREATE");
 	GenerateScintMatrixXYCenters();
 	for(unsigned int i = 0 ; i < vecOfScintXYCenter.size() ; i++){
 			if(!(i%9))
@@ -76,8 +78,11 @@ int main(int argc, char *argv[]){
 	std::string name = "Layer_"+std::to_string(extrpolatedLayerIndex)+"xdiff_zdifff";
 	std::string histname="Hist_"+name;
 	TH2F *hist2D_xdiff_zdiff = new TH2F(histname.c_str(),histname.c_str(),400,-100,100,400,-100,100);
-	TH1F *histAngle = new TH1F("DeviationAngleHist","DeviationAngleHist",100,-1.5,1.5);
+	TH1F *histAngle = new TH1F("DeviationAngleHistWrtVertical","DeviationAngleHistWrtVertical",100,-1.5,1.5);
+	TH1F *histAngleDev = new TH1F("DeviationAngleHist","DeviationAngleHist",100,-1.5,1.5);
+	TH1F *histAngleDistLowerLayers = new TH1F("AnglularDistributionUsingLowerLayers","AnglularDistributionUsingLowerLayers",100,0,1.5);
 
+	TVector3 ref(0.,-1.,0.);
 
 	for(unsigned int i = 0 ; i < smtVec.size() ; i++){
 
@@ -106,6 +111,18 @@ int main(int argc, char *argv[]){
 		}
 		validOutgoing &= (outgoing.size() > 0);
 
+		//Block inserted just to see the angular distribution usign lower layers
+		if(validOutgoing){
+			lite_interface::Point3D *outgoingStart = outgoing[0];
+			lite_interface::Point3D *outgoingEnd = outgoing[outgoing.size()-1];
+
+			TVector3 outgoingTVec3(outgoingEnd->GetX()-outgoingStart->GetX(),
+								   outgoingEnd->GetY()-outgoingStart->GetY(),
+								   outgoingEnd->GetZ()-outgoingStart->GetZ());
+
+			histAngleDistLowerLayers->Fill(outgoingTVec3.Angle(ref));
+		}
+
 		if(1){
 		if(validIncoming && validOutgoing ){
 			std::vector<lite_interface::Point3D*> fittedIncomingTrack = lite_interface::CreateFittedTrack(incoming);
@@ -133,6 +150,7 @@ int main(int argc, char *argv[]){
 				double outgoingZenithAngle = GetZenithAngle(fittedOutgoingTrack);
 				double angleDiff = outgoingZenithAngle-incomingZenithAngle;
 				histAngle->Fill(angleDiff);
+				histAngleDev->Fill(lite_interface::GetDeviation(fittedIncomingTrack,fittedOutgoingTrack));
 			}
 		}}
 
@@ -176,7 +194,16 @@ int main(int argc, char *argv[]){
 	 }
 	}
 
+	TF1 *formula = new TF1("zenForm", "[0]*sin(x)*pow(cos(x),[1])", 0,1);
 
+			//TF1 *formula = new TF1("zenForm", "[0]*sin(x)*cos(x)*pow(cos(x),[1])", 0.05,1.5);
+	histAngleDistLowerLayers->Fit(formula, "r");
+
+	fpRefined->cd();
+	histAngleDistLowerLayers->Write();
+	histAngle->Write();
+	histAngleDev->Write();
+	fpRefined->Close();
 
 /*
 	std::string canName="Can_"+name;
@@ -212,8 +239,14 @@ int main(int argc, char *argv[]){
 
 //	fp->Close();
 
-	new TCanvas("Hist of Deviation","Hist of Deviation");
+	new TCanvas("Hist of Deviation WRT Vertical","Hist of Deviation  WRT Vertical");
 	histAngle->Draw();
+
+	new TCanvas("Hist of Deviation","Hist of Deviation");
+	histAngleDev->Draw();
+
+	new TCanvas("Angular Distribution With Lower Layers","Angular Distribution With Lower Layers");
+	histAngleDistLowerLayers->Draw();
 
 	fApp->Run();
 

@@ -6,6 +6,7 @@
 #include "ScintillatorBar_V2.h"
 #include "SingleMuonTrack.h"
 #include <TGraph.h>
+#include <TVector3.h>
 
 namespace lite_interface{
 
@@ -1067,6 +1068,23 @@ namespace lite_interface{
 		return vecOfEstimatedXorZ;
 	}
 
+	double GetDeviation(std::vector<lite_interface::Point3D*> incoming, std::vector<lite_interface::Point3D*> outgoing ){
+		if(incoming.size() > 0 && outgoing.size() > 0){
+			Point3D *incomingStart = incoming[0];
+			Point3D *incomingEnd = incoming[incoming.size()-1];
+			Point3D *outgoingStart = outgoing[0];
+			Point3D *outgoingEnd = outgoing[outgoing.size()-1];
+			TVector3 incomingTVec3(incomingEnd->GetX()-incomingStart->GetX(),
+								   incomingEnd->GetY()-incomingStart->GetY(),
+								   incomingEnd->GetZ()-incomingStart->GetZ());
+
+			TVector3 outgoingTVec3(outgoingEnd->GetX()-outgoingStart->GetX(),
+								   outgoingEnd->GetY()-outgoingStart->GetY(),
+								   outgoingEnd->GetZ()-outgoingStart->GetZ());
+
+			return outgoingTVec3.Angle(incomingTVec3);
+		}
+	}
 
 	double GetZenithAngle(std::vector<lite_interface::Point3D*> vecOfPoint3D){
 		TVector3 ref(0.,-1.,0.);

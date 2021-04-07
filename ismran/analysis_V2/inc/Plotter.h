@@ -99,6 +99,7 @@ namespace lite_interface{
 	 */
 	extern TH1F* PlotZenithAngle(std::vector<SingleMuonTrack*> muonTrackVec, int opt=1);
 	extern double GetZenithAngle(std::vector<lite_interface::Point3D*> vecOfPoint3D);
+	extern double GetDeviation(std::vector<lite_interface::Point3D*> incoming, std::vector<lite_interface::Point3D*> outgoing );
 	extern TH1F* PlotZenithAngle(std::vector<double> zenithAngleVect,int opt);
 	extern TH1F* Plot_Acc_Corr_ZenithAngle(std::vector<double> zenithAngleVect,int opt);
 	extern int GetBinNumber(int nbins,double start,double end);
