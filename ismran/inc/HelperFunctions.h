@@ -70,6 +70,9 @@ extern Tracking::Vector3D<double> ExtrapolatePointOnLayer(Tracking::Vector3D<dou
 												   unsigned int layerIndex);
 extern TF1* GetMuonPeakFitFormula(std::string barName);
 
+extern TVector3 GetTVector3(lite_interface::Point3D *start, lite_interface::Point3D *end);
+extern TVector3 GetTVector3(lite_interface::Point3D *pt);
+
 
 class HelperFunctions {
 public:

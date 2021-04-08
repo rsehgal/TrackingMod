@@ -81,6 +81,8 @@ int main(int argc, char *argv[]){
 	TH1F *histAngle = new TH1F("DeviationAngleHistWrtVertical","DeviationAngleHistWrtVertical",100,-1.5,1.5);
 	TH1F *histAngleDev = new TH1F("DeviationAngleHist","DeviationAngleHist",100,-1.5,1.5);
 	TH1F *histAngleDistLowerLayers = new TH1F("AnglularDistributionUsingLowerLayers","AnglularDistributionUsingLowerLayers",100,0,1.5);
+	TH1F *histAngleDistLowerLayersFitted = new TH1F("AnglularDistributionUsingLowerLayersFitted","AnglularDistributionUsingLowerLayersFitted",100,0,1.5);
+	TH1F *histAngleDistUpperLayers = new TH1F("AnglularDistributionUsingUpperLayers","AnglularDistributionUsingUpperLayers",100,0,1.5);
 
 	TVector3 ref(0.,-1.,0.);
 
@@ -113,15 +115,16 @@ int main(int argc, char *argv[]){
 
 		//Block inserted just to see the angular distribution usign lower layers
 		if(validOutgoing){
-			lite_interface::Point3D *outgoingStart = outgoing[0];
-			lite_interface::Point3D *outgoingEnd = outgoing[outgoing.size()-1];
-
-			TVector3 outgoingTVec3(outgoingEnd->GetX()-outgoingStart->GetX(),
-								   outgoingEnd->GetY()-outgoingStart->GetY(),
-								   outgoingEnd->GetZ()-outgoingStart->GetZ());
-
-			histAngleDistLowerLayers->Fill(outgoingTVec3.Angle(ref));
+					histAngleDistLowerLayers->Fill(lite_interface::GetZenithAngle(outgoing));
+					std::vector<lite_interface::Point3D*> fittedOutgoingTrack = lite_interface::CreateFittedTrack(outgoing);
+					histAngleDistLowerLayersFitted->Fill(lite_interface::GetZenithAngle(fittedOutgoingTrack));
 		}
+
+		//Block inserted just to see the angular distribution usign upper layers
+		if(validIncoming){
+			histAngleDistUpperLayers->Fill(lite_interface::GetZenithAngle(incoming));
+		}
+
 
 		if(1){
 		if(validIncoming && validOutgoing ){
@@ -198,11 +201,14 @@ int main(int argc, char *argv[]){
 
 			//TF1 *formula = new TF1("zenForm", "[0]*sin(x)*cos(x)*pow(cos(x),[1])", 0.05,1.5);
 	histAngleDistLowerLayers->Fit(formula, "r");
+	histAngleDistUpperLayers->Fit(formula, "r");
 
 	fpRefined->cd();
 	histAngleDistLowerLayers->Write();
+	histAngleDistUpperLayers->Write();
 	histAngle->Write();
 	histAngleDev->Write();
+	histAngleDistLowerLayersFitted->Write();
 	fpRefined->Close();
 
 /*
@@ -247,6 +253,12 @@ int main(int argc, char *argv[]){
 
 	new TCanvas("Angular Distribution With Lower Layers","Angular Distribution With Lower Layers");
 	histAngleDistLowerLayers->Draw();
+
+	new TCanvas("Angular Distribution With Upper Layers","Angular Distribution With Upper Layers");
+	histAngleDistUpperLayers->Draw();
+
+	new TCanvas("Angular Distribution With Lower Layers : Fitted","Angular Distribution With Lower Layers : Fitted");
+	histAngleDistLowerLayersFitted->Draw();
 
 	fApp->Run();
 

@@ -32,7 +32,7 @@ float barHeight = 10.;
 float barLength = 100.;
 //std::vector<unsigned int> vecOfRequiredLayers={0,1,2,3,4,7,8,9};
 //std::vector<unsigned int> vecOfRequiredLayers={7,8,9};
-std::vector<unsigned int> vecOfRequiredLayers={2,3,4,7,8,9};
+std::vector<unsigned int> vecOfRequiredLayers={0,1,2,3,4,7,8,9};
 
 /*
  * Ref Y is the slab of Scatterer

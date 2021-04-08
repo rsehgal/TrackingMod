@@ -265,6 +265,16 @@ lite_interface::Point3D* Get3DHitPointOnLayer(lite_interface::SingleMuonTrack *s
 	return hitPointInInspectedLayer;
 }
 
+TVector3 GetTVector3(lite_interface::Point3D *start, lite_interface::Point3D *end){
+	return TVector3(end->GetX()-start->GetX(),
+				 end->GetY()-start->GetY(),
+				 end->GetZ()-start->GetZ());
+}
+
+TVector3 GetTVector3(lite_interface::Point3D *pt){
+	return TVector3(pt->GetX(),pt->GetY(),pt->GetZ());
+}
+
 std::vector<lite_interface::Point3D*> GetTrackFromLayers(lite_interface::SingleMuonTrack *smt,std::vector<unsigned int> vecOfLayerIndex){
 	std::vector<lite_interface::Point3D*> refinedTrack;
 	if(smt->HitInRequiredLayers()){
