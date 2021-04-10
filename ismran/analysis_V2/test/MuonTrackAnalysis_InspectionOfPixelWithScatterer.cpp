@@ -57,6 +57,7 @@ int main(int argc, char *argv[]){
 	}
 	TH2F *hist2D_Layer3 = new TH2F("HitPointOnLayer_3","HitPointOnLayer_3",200,-50,50,200,-50,50);
 	TH2F *hist2D_Layer8 = new TH2F("HitPointOnLayer_8","HitPointOnLayer_8",200,-50,50,200,-50,50);
+	TH1F *histPixel = new TH1F("HistOfPixelOnLayer","HistOfPixelOnLayer",numOfBarsInEachLayer*numOfBarsInEachLayer,0,numOfBarsInEachLayer*numOfBarsInEachLayer);
 
 	for(unsigned int i = 0 ; i < smtVec.size() ; i++){
 
@@ -121,11 +122,17 @@ int main(int argc, char *argv[]){
 								//if(scint->GetBarIndexInLayer()==4 && scintLayer2->GetBarIndexInLayer()==4 && scintLayer4->GetBarIndexInLayer()==4 )
 								if(layer8Pixel)
 								{
+									if(scint->GetBarIndexInLayer()==4 && scintLayer2->GetBarIndexInLayer()==4 && scintLayer4->GetBarIndexInLayer()==4 )
+									{
 									layer3Pixel = check;
 									lite_interface::Point3D *hitPoint = Get3DHitPointOnLayer(smtVec[i],3);
 									if(hitPoint->GetX() < 9000. && hitPoint->GetZ() < 9000){
 										hist2D_Layer3->Fill(hitPoint->GetX(),hitPoint->GetZ());
 									}
+									}
+
+									if(scintLayer2->GetBarIndexInLayer()==scintLayer4->GetBarIndexInLayer())
+										histPixel->Fill(scint->GetBarIndexInLayer()*numOfBarsInEachLayer+scintLayer2->GetBarIndexInLayer());
 								}
 								//lite_interface::Point3D *hitPtLayer7 = scintLayer7->EstimateHitPosition_Param();
 								//lite_interface::Point3D *hitPtLayer9 = scintLayer9->EstimateHitPosition_Param();
@@ -145,12 +152,17 @@ int main(int argc, char *argv[]){
 	TCanvas *canLayer8 = new TCanvas("Layer8","Layer8");
 	hist2D_Layer8->Draw("colz");
 
+	TCanvas *canPixel = new TCanvas("PixelHistLayer3","PixelHistLayer3");
+	histPixel->Draw();
+
+
 	std::string matWithExt = filename.substr(13);
 	TFile *fp = new TFile(("HitPattern_Pixel"+matWithExt).c_str(),"RECREATE");
 	fp->cd();
 
 	hist2D_Layer3->Write();
 	hist2D_Layer8->Write();
+	histPixel->Write();
 
 	fp->Close();
 

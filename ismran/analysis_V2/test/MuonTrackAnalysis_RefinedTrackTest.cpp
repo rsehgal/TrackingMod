@@ -83,6 +83,14 @@ int main(int argc, char *argv[]){
 	TH1F *histAngleDistLowerLayers = new TH1F("AnglularDistributionUsingLowerLayers","AnglularDistributionUsingLowerLayers",100,0,1.5);
 	TH1F *histAngleDistLowerLayersFitted = new TH1F("AnglularDistributionUsingLowerLayersFitted","AnglularDistributionUsingLowerLayersFitted",100,0,1.5);
 	TH1F *histAngleDistUpperLayers = new TH1F("AnglularDistributionUsingUpperLayers","AnglularDistributionUsingUpperLayers",100,0,1.5);
+	TH1F *diffFittedStartX = new TH1F("Diff bet. X of start point of Fitted and Unfitted track","Diff bet. X of start point of Fitted and Unfitted track",
+									  100,-50,50);
+	TH1F *diffFittedStartZ = new TH1F("Diff bet. Z of start point of Fitted and Unfitted track","Diff bet. Z of start point of Fitted and Unfitted track",
+									  100,-50,50);
+	TH1F *diffFittedEndX = new TH1F("Diff bet. X of end point of Fitted and Unfitted track","Diff bet. X of end point of Fitted and Unfitted track",
+									  100,-50,50);
+	TH1F *diffFittedEndZ = new TH1F("Diff bet. Z of end point of Fitted and Unfitted track","Diff bet. Z of end point of Fitted and Unfitted track",
+									  100,-50,50);
 
 	TVector3 ref(0.,-1.,0.);
 
@@ -114,10 +122,15 @@ int main(int argc, char *argv[]){
 		validOutgoing &= (outgoing.size() > 0);
 
 		//Block inserted just to see the angular distribution usign lower layers
-		if(validOutgoing){
+		if(validOutgoing && validIncoming){
 					histAngleDistLowerLayers->Fill(lite_interface::GetZenithAngle(outgoing));
 					std::vector<lite_interface::Point3D*> fittedOutgoingTrack = lite_interface::CreateFittedTrack(outgoing);
 					histAngleDistLowerLayersFitted->Fill(lite_interface::GetZenithAngle(fittedOutgoingTrack));
+					diffFittedStartX->Fill(fittedOutgoingTrack[0]->GetX()-outgoing[0]->GetX());
+					diffFittedStartZ->Fill(fittedOutgoingTrack[0]->GetZ()-outgoing[0]->GetZ());
+
+					diffFittedEndX->Fill(fittedOutgoingTrack[fittedOutgoingTrack.size()-1]->GetX()-outgoing[outgoing.size()-1]->GetX());
+					diffFittedEndZ->Fill(fittedOutgoingTrack[fittedOutgoingTrack.size()-1]->GetZ()-outgoing[outgoing.size()-1]->GetZ());
 		}
 
 		//Block inserted just to see the angular distribution usign upper layers
@@ -209,6 +222,10 @@ int main(int argc, char *argv[]){
 	histAngle->Write();
 	histAngleDev->Write();
 	histAngleDistLowerLayersFitted->Write();
+	diffFittedStartX->Write();
+	diffFittedStartZ->Write();
+	diffFittedEndX->Write();
+	diffFittedEndZ->Write();
 	fpRefined->Close();
 
 /*
@@ -259,6 +276,18 @@ int main(int argc, char *argv[]){
 
 	new TCanvas("Angular Distribution With Lower Layers : Fitted","Angular Distribution With Lower Layers : Fitted");
 	histAngleDistLowerLayersFitted->Draw();
+
+	TCanvas *can = new TCanvas("Histograms of Diffs","Histograms of Diffs");
+	can->Divide(2,2);
+	can->cd(1);
+	diffFittedStartX->Draw();
+	can->cd(2);
+	diffFittedStartZ->Draw();
+	can->cd(3);
+	diffFittedEndX->Draw();
+	can->cd(4);
+	diffFittedEndZ->Draw();
+
 
 	fApp->Run();
 
