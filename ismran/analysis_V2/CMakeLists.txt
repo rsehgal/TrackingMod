@@ -155,8 +155,11 @@ target_link_libraries(TestMuonTrackTimeEstimation ${ROOT_LIBRARIES} Tracklib)
 add_executable(TestQMeanCorrected90Scintillators test/TestQMeanCorrected90Scintillators.cpp ${sources} ${headers})
 target_link_libraries(TestQMeanCorrected90Scintillators ${ROOT_LIBRARIES} Tracklib)
 
-#add_executable(dissection test/dissection.cpp ${sources} ${headers})
-#target_link_libraries(dissection ${ROOT_LIBRARIES} Tracklib)
+add_executable(dissection test/dissection.cpp ${sources} ${headers})
+target_link_libraries(dissection ${ROOT_LIBRARIES} Tracklib)
+
+add_executable(dissectionCore test/dissectionCore.cpp ${sources} ${headers})
+target_link_libraries(dissectionCore ${ROOT_LIBRARIES} Tracklib)
 
 add_executable(TestXYCenterForEachScintillator test/TestXYCenterForEachScintillator.cpp ${sources} ${headers})
 target_link_libraries(TestXYCenterForEachScintillator ${ROOT_LIBRARIES} Tracklib)
