@@ -41,7 +41,10 @@ namespace lite_interface{
 				startFound = false;
 				endFound = false;
 				counter++;
-				timeWindow = (endTime - startTime)/1000.;
+				Long64_t delt = (endTime - startTime);
+				std::cout << "STart Time : " << startTime <<" : EndTime : " << endTime << " :  (EndTime - StartTime) : " << delt << std::endl;
+
+				timeWindow = delt/1000.;
 				timeWindowHist->Fill(timeWindow);
 
 			}

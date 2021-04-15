@@ -47,13 +47,41 @@ int main(int argc, char *argv[]){
 
 
 
+		std::ofstream outfile("Raw_"+std::string(argv[1])+".txt");
 
 		int counter = 0;
-		for (Long64_t i=0; i<nentries;i++) {
+		nbytes += dataTree->GetEntry(0);
+		ULong64_t tstampStart = tstamp;
+		UInt_t timeStart = time;
+		outfile << "TStamp Start : " << std::setw(20) << tstampStart <<" : WallTStart" << std::setw(20) << timeStart << std::endl;
+		for (Long64_t i=1; i<nentries;i++) {
 				nbytes += dataTree->GetEntry(i);
-				std::cout << brch << " , " << qlong << " , " << tstamp << " , " << time << std::endl;
+				//if(std::fabs(tstampPrev - tstamp) > 1000000000000)
+
+					Long64_t timeElapsedWall = time-timeStart;
+					Long64_t timeElapsedDaq = tstamp-tstampStart;
+					timeElapsedDaq/=pow(10,12);
+					Long64_t diff = timeElapsedWall-timeElapsedDaq;
+					//if(std::fabs(timeElapsedWall-timeElapsedDaq) < 5 )
+					if(std::fabs(diff) < 5 )
+					{
+						outfile << std::setw(10) << "OK : " << std::setw(8) << brch << " , " << std::setw(20) << tstamp << " , " << std::setw(8) <<  qlong << " , " << std::setw(15) << time
+																						  << " : Time Elapsed (Wall) : " << std::setw(10) << timeElapsedWall
+																						  << " : Time Elapsed (DAQ) : " << std::setw(10) <<  timeElapsedDaq << std::endl;
+					}
+					else{
+						outfile << std::setw(10) << "NOTOK : " << std::setw(8) << brch << " , " << std::setw(20) << tstamp << " , " << std::setw(8) <<  qlong << " , " << std::setw(15) << time
+																												  << " : Time Elapsed (Wall) : " << std::setw(10) << timeElapsedWall
+																												  << " : Time Elapsed (DAQ) : " << std::setw(10) <<  timeElapsedDaq << std::endl;
+
+					}
+					//" : Diff : " << (tstampPrev - tstamp) << std::endl;
+				//std::cout << brch << " , " << qlong << " , " << tstamp << " , " << time << std::endl;
+				//tstampPrev = tstamp;
 		}
 
+		outfile.close();
+		std::cout <<"File closed..........." << std::endl;
 				fApp->Run();
 
 		return 0;

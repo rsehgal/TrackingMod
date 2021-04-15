@@ -45,8 +45,8 @@ void PairFinder::LoadDataAndSort() {
 		shotNo = 1;
 	}
 	unsigned long int numOfEventsInOneShot = nEntries/numOfShots;
-	if(numOfShots==1)
-	numOfEventsInOneShot = 10000;
+	//if(numOfShots==1)
+	//numOfEventsInOneShot = 10000;
 
 	//for (Long64_t iev = 0; iev < nEntries; iev++) {
 	for (Long64_t iev = (shotNo-1)*numOfEventsInOneShot; iev < shotNo*numOfEventsInOneShot; iev++) {

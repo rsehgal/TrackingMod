@@ -161,6 +161,9 @@ target_link_libraries(dissection ${ROOT_LIBRARIES} Tracklib)
 add_executable(dissectionCore test/dissectionCore.cpp ${sources} ${headers})
 target_link_libraries(dissectionCore ${ROOT_LIBRARIES} Tracklib)
 
+add_executable(RollOverDetection test/RollOverDetection.cpp ${sources} ${headers})
+target_link_libraries(RollOverDetection ${ROOT_LIBRARIES} Tracklib)
+
 add_executable(TestXYCenterForEachScintillator test/TestXYCenterForEachScintillator.cpp ${sources} ${headers})
 target_link_libraries(TestXYCenterForEachScintillator ${ROOT_LIBRARIES} Tracklib)
 
