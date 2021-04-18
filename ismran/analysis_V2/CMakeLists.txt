@@ -185,6 +185,9 @@ target_link_libraries(MuonTrackAnalysis_CoinicidenceCountBetweenTopAndBottomLaye
 add_executable(MuonTrackAnalysis_HitPointOnLayers test/MuonTrackAnalysis_HitPointOnLayers.cpp ${sources} ${headers})
 target_link_libraries(MuonTrackAnalysis_HitPointOnLayers ${ROOT_LIBRARIES} Tracklib)
 
+add_executable(MuonTrackAnalysis_HitPointOnLayers_Confined test/MuonTrackAnalysis_HitPointOnLayers_Confined.cpp ${sources} ${headers})
+target_link_libraries(MuonTrackAnalysis_HitPointOnLayers_Confined ${ROOT_LIBRARIES} Tracklib)
+
 add_executable(MuonTrackAnalysis_InspectionOfPixelWithScatterer test/MuonTrackAnalysis_InspectionOfPixelWithScatterer.cpp ${sources} ${headers})
 target_link_libraries(MuonTrackAnalysis_InspectionOfPixelWithScatterer ${ROOT_LIBRARIES} Tracklib)
 

@@ -538,6 +538,15 @@ bool SingleMuonTrack::CheckTrackForRequiredScintillators(std::vector<unsigned in
 	return exist;
 }
 
+bool SingleMuonTrack::CheckTrackForScintillator(unsigned int barIndex){
+	bool exist = false;
+	for(unsigned int index = 0 ; index < size() ; index++){
+		exist |= (fSingleMuonTrack[index]->GetBarIndex() == barIndex);
+		if(exist)
+			return exist;
+	}
+	return exist;
+}
 bool SingleMuonTrack::CheckTrackForLayerNum(unsigned int layerIndex, unsigned int &hittedBarIndex){
 	bool exist = false;
 	for(unsigned int barGeomIndex = layerIndex*numOfBarsInEachLayer ; barGeomIndex < (layerIndex+1)*numOfBarsInEachLayer ; barGeomIndex++){
