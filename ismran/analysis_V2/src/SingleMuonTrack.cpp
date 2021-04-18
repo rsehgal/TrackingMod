@@ -564,6 +564,17 @@ bool SingleMuonTrack::CheckTrackForRequiredScintillators(std::vector<unsigned in
 	return exist;
 }
 
+bool SingleMuonTrack::HitInAnyScintillators(std::vector<unsigned int> vecOfScintBarIndex){
+	bool hitFound = false;
+	for(unsigned int i = 0 ; i < vecOfScintBarIndex.size() ; i++){
+		hitFound |= CheckTrackForScintillator(vecOfScintBarIndex[i]);
+		if(hitFound)
+			return hitFound;
+	}
+	return hitFound;
+}
+
+
 bool SingleMuonTrack::CheckTrackForScintillator(unsigned int barIndex){
 	bool exist = false;
 	for(unsigned int index = 0 ; index < size() ; index++){

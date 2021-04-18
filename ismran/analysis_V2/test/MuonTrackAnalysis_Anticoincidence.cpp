@@ -66,6 +66,7 @@ int main(int argc, char *argv[]){
 //	TH2F *hist2D_Layer1 = new TH2F("HitPointOnLayer_1","HitPointOnLayer_1",200,-50,50,200,-50,50);
 //	TH2F *hist2D_Layer2 = new TH2F("HitPointOnLayer_2","HitPointOnLayer_2",200,-50,50,200,-50,50);
 	TH2F *hist2D_Layer3 = new TH2F("HitPointOnLayer_3","HitPointOnLayer_3",200,-50,50,200,-50,50);
+	TH2F *hist2D_Layer3_HitInAnyConfiningScints = new TH2F("HitPointOnLayer_3_HitInAnyConfiningScints","HitPointOnLayer_3_HitInAnyConfiningScints",200,-50,50,200,-50,50);
 //	TH2F *hist2D_Layer4 = new TH2F("HitPointOnLayer_4","HitPointOnLayer_4",200,-50,50,200,-50,50);
 //	TH2F *hist2D_Layer5 = new TH2F("HitPointOnLayer_5","HitPointOnLayer_5",200,-50,50,200,-50,50);
 //	TH2F *hist2D_Layer8 = new TH2F("HitPointOnLayer_8","HitPointOnLayer_8",200,-50,50,200,-50,50);
@@ -92,11 +93,22 @@ int main(int argc, char *argv[]){
 		//Block for layer 3
 		{
 			if(smtVec[i]->HitInRequiredLayers() && smtVec[i]->NoHitInScintillators(vecOfAntiCoincideneScint)){
-				lite_interface::Point3D *hitPoint = Get3DHitPointOnLayer(smtVec[i],1);
+				lite_interface::Point3D *hitPoint = Get3DHitPointOnLayer(smtVec[i],8);
 				if(hitPoint->GetX() < 9000. && hitPoint->GetZ() < 9000){
 					hist2D_Layer3->Fill(hitPoint->GetX(),hitPoint->GetZ());
 				}
 			}
+		}
+
+		//Block to  detect hit in Confining Scints
+		{
+			if(smtVec[i]->HitInRequiredLayers() && smtVec[i]->HitInAnyScintillators(vecOfAntiCoincideneScint)){
+				lite_interface::Point3D *hitPoint = Get3DHitPointOnLayer(smtVec[i],8);
+				if(hitPoint->GetX() < 9000. && hitPoint->GetZ() < 9000){
+					hist2D_Layer3_HitInAnyConfiningScints->Fill(hitPoint->GetX(),hitPoint->GetZ());
+				}
+			}
+
 		}
 
 
@@ -107,10 +119,14 @@ int main(int argc, char *argv[]){
 	TCanvas *canLayer3 = new TCanvas("Layer3","Layer3");
 	hist2D_Layer3->Draw("colz");
 
+	TCanvas *canLayer3_confiningScints = new TCanvas("Layer3_HitInConfiningScints","Layer3_HitInConfiningScints");
+	hist2D_Layer3_HitInAnyConfiningScints->Draw("colz");
+
 	std::string matWithExt = filename.substr(13);
 	TFile *fp = new TFile(("AntiCoincidence_HitPattern"+matWithExt).c_str(),"RECREATE");
 	fp->cd();
 	hist2D_Layer3->Write();
+	hist2D_Layer3_HitInAnyConfiningScints->Write();
 	fp->Close();
 
 	fApp->Run();

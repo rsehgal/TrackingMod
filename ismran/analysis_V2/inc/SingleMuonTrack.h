@@ -96,6 +96,7 @@ public:
 #endif
 
 	bool NoHitInScintillators(std::vector<unsigned int> vecOfScintBarIndex);
+	bool HitInAnyScintillators(std::vector<unsigned int> vecOfScintBarIndex);
 	bool CheckTrackForRequiredScintillators(std::vector<unsigned int> vecOfScintBarIndex);
 	bool CheckTrackForScintillator(unsigned int barIndex);
 	bool IfPassThroughOneOrMoreOfScintillators(std::vector<unsigned int> vecOfScintBarIndex);
