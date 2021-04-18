@@ -524,6 +524,22 @@ bool SingleMuonTrack::IfPassThroughOneOrMoreOfScintillators(std::vector<unsigned
 	return exist;
 }
 
+/*
+ * Will be used to do Anti-Coincidence
+ */
+bool SingleMuonTrack::NoHitInScintillators(std::vector<unsigned int> vecOfScintBarIndex){
+	bool hitFound = false;
+	for(unsigned int barIdIndex = 0 ; barIdIndex < vecOfScintBarIndex.size() ; barIdIndex++){
+                for(unsigned int index = 0 ; index < size() ; index++){
+                       hitFound = (fSingleMuonTrack[index]->GetBarIndex() == vecOfScintBarIndex[barIdIndex]);
+                       if(hitFound){
+                       		return !hitFound;
+		       }
+                }
+        }
+	return !hitFound;
+}
+
 bool SingleMuonTrack::CheckTrackForRequiredScintillators(std::vector<unsigned int> vecOfScintBarIndex){
 	bool exist = true;
 	for(unsigned int barIdIndex = 0 ; barIdIndex < vecOfScintBarIndex.size() ; barIdIndex++){

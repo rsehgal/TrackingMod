@@ -95,6 +95,7 @@ public:
 	double GetZenithAngle_ExactHitPoint();
 #endif
 
+	bool NoHitInScintillators(std::vector<unsigned int> vecOfScintBarIndex);
 	bool CheckTrackForRequiredScintillators(std::vector<unsigned int> vecOfScintBarIndex);
 	bool IfPassThroughOneOrMoreOfScintillators(std::vector<unsigned int> vecOfScintBarIndex);
 	std::vector<unsigned int> CheckTrackForRequiredLayers(std::vector<unsigned int> vecOfLayerIndex);
