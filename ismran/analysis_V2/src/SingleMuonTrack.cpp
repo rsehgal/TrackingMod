@@ -524,6 +524,16 @@ bool SingleMuonTrack::IfPassThroughOneOrMoreOfScintillators(std::vector<unsigned
 	return exist;
 }
 
+unsigned short SingleMuonTrack::GetNumOfHittedScintillatorsInLayer(unsigned short layerIndex){
+	unsigned short hitCounter=0;
+	for(unsigned int index = 0 ; index < size() ; index++){
+                       if(fSingleMuonTrack[index]->GetLayerIndex() == layerIndex)
+			      hitCounter++; 
+        }
+	return hitCounter;
+}
+
+
 /*
  * Will be used to do Anti-Coincidence
  */

@@ -114,6 +114,12 @@ public:
 	bool HitInRequiredLayers();
 	bool HitInRequiredLayers(std::vector<unsigned int> reqLayersVec);
 
+	/*
+	 * Function to detect the number of Hitted Scintillators in the specified layer
+	 */
+       unsigned short GetNumOfHittedScintillatorsInLayer(unsigned short layerIndex);
+	
+
 #ifndef FOR_SIMULATION
 	ClassDef(SingleMuonTrack,1)
 #endif
