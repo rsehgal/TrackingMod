@@ -179,6 +179,10 @@ target_link_libraries(ReadCalibData ${ROOT_LIBRARIES} Tracklib)
 add_executable(MuonTrackAnalysis_UsingDelT test/MuonTrackAnalysis_UsingDelT.cpp ${sources} ${headers})
 target_link_libraries(MuonTrackAnalysis_UsingDelT ${ROOT_LIBRARIES} Tracklib)
 
+add_executable(MuonTrackAnalysis_Anticoincidence test/MuonTrackAnalysis_Anticoincidence.cpp ${sources} ${headers})
+target_link_libraries(MuonTrackAnalysis_Anticoincidence ${ROOT_LIBRARIES} Tracklib)
+
+
 add_executable(MuonTrackAnalysis_CoinicidenceCountBetweenTopAndBottomLayer test/MuonTrackAnalysis_CoinicidenceCountBetweenTopAndBottomLayer.cpp ${sources} ${headers})
 target_link_libraries(MuonTrackAnalysis_CoinicidenceCountBetweenTopAndBottomLayer ${ROOT_LIBRARIES} Tracklib)
 

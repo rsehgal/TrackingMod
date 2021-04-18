@@ -26,6 +26,7 @@ extern unsigned int numOfUpperLayers;
 extern std::vector<unsigned int> incomingLayerIndices;
 extern std::vector<unsigned int> outgoingLayerIndices;
 extern std::vector<unsigned int> vecOfRequiredLayers;
+extern std::vector<unsigned int> vecOfAntiCoincideneScint;
 
 extern std::map<std::string,TH1D*> barsEnergyMap;
 extern std::vector<TH1D*> vecOfEnergyHist;
