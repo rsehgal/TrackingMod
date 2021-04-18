@@ -65,6 +65,8 @@ namespace lite_interface{
 	extern std::vector<double> GetXYonPixel(lite_interface::SingleMuonTrack* smt, std::vector<unsigned int> vecOfScintId);
 	extern TH1F* PlotStripProfileOfLayer(std::vector<lite_interface::SingleMuonTrack*> smtVec, ushort layerIndex);
 	extern TH1F* PlotStripProfileOfLayer(std::vector<lite_interface::ScintillatorBar_V2*> scintBarVec, ushort layerIndex);
+	extern TH1F* PlotHitMultiplicityOfLayer(std::vector<lite_interface::SingleMuonTrack*> smtVec, ushort layerIndex);
+
 
 	/*
 	 * Graphs of Single Muon Track

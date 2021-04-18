@@ -95,6 +95,7 @@ public:
 	double GetZenithAngle_ExactHitPoint();
 #endif
 
+	bool NoHitInScintillators(std::vector<unsigned int> vecOfScintBarIndex);
 	bool CheckTrackForRequiredScintillators(std::vector<unsigned int> vecOfScintBarIndex);
 	bool CheckTrackForScintillator(unsigned int barIndex);
 	bool IfPassThroughOneOrMoreOfScintillators(std::vector<unsigned int> vecOfScintBarIndex);
@@ -113,6 +114,12 @@ public:
 	bool HitInAllLayers();
 	bool HitInRequiredLayers();
 	bool HitInRequiredLayers(std::vector<unsigned int> reqLayersVec);
+
+	/*
+	 * Function to detect the number of Hitted Scintillators in the specified layer
+	 */
+       unsigned short GetNumOfHittedScintillatorsInLayer(unsigned short layerIndex);
+	
 
 #ifndef FOR_SIMULATION
 	ClassDef(SingleMuonTrack,1)
