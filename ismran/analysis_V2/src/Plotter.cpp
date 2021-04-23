@@ -628,7 +628,7 @@ namespace lite_interface{
 
 	TH1F* PlotHitMultiplicityOfLayer(std::vector<lite_interface::SingleMuonTrack*> smtVec, ushort layerIndex){
 		std::string layerName = "HitMultiplicity_Layer_"+std::to_string(layerIndex);
-                TH1F *hist = new TH1F(layerName.c_str(),layerName.c_str(),numOfBarsInEachLayer,0,numOfBarsInEachLayer);
+                TH1F *hist = new TH1F(layerName.c_str(),layerName.c_str(),numOfBarsInEachLayer,1,numOfBarsInEachLayer+1);
 		for(unsigned int i = 0 ; i < smtVec.size() ; i++){
 			hist->Fill(smtVec[i]->GetNumOfHittedScintillatorsInLayer(layerIndex));
 		}

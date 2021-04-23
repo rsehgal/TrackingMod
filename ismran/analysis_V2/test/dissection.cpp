@@ -47,12 +47,14 @@ int main(int argc, char *argv[]){
 
 				//if(smt->SingleHitInEachLayer())
 
-				if(smtVec.size() > 1){
+				/*if(smtVec.size() > 1){
 					std::cout << "TSmallTStamp of current track : " << (smt->GetMuonTrack())[0]->fTSmallTimeStamp << std::endl;
 					std::cout << "TSmallTStamp of previous track : " << (smtVec[smtVec.size()-1]->GetMuonTrack())[0]->fTSmallTimeStamp << std::endl;
+				}*/
+				if(smtVec.size() > 1 &&  (smt->GetMuonTrack())[0]->fTSmallTimeStamp < (smtVec[smtVec.size()-1]->GetMuonTrack())[0]->fTSmallTimeStamp){
+					std::cout << "================================ ROLLOVER DETECTED :  : TrackId : " << i << " ==============================" << std::endl;
+					smt->Print();
 				}
-				if(smtVec.size() > 1 &&  (smt->GetMuonTrack())[0]->fTSmallTimeStamp < (smtVec[smtVec.size()-1]->GetMuonTrack())[0]->fTSmallTimeStamp)
-					std::cout << "ROLLOVER DETECTED................. : TrackId : " << i << std::endl;
 
 
 				smtVec.push_back(new lite_interface::SingleMuonTrack(*smt));
@@ -61,12 +63,12 @@ int main(int argc, char *argv[]){
 				trackDeltDist->Fill(vecOfScint[vecOfScint.size()-1]->fTSmallTimeStamp - vecOfScint[0]->fTSmallTimeStamp );
 
 
-				if(smt->HitInRequiredLayers(vecOfRequiredLayers))
+				/*if(smt->HitInRequiredLayers(vecOfRequiredLayers))
 				{
 					counter++;
 					std::cout <<"===================== Printing Track : " << i << " ===================" << std::endl;
 					smt->Print();
-				}
+				}*/
 			}
 
 		std::cout <<"Number of Tracks with Hit in required layers : " << counter << std::endl;
@@ -94,6 +96,19 @@ int main(int argc, char *argv[]){
 		multiplicityHist->Draw();
 		new TCanvas("TrackDelTHist","TrackDelTHist");
 		trackDeltDist->Draw();
+
+		{
+		TH1F *hitMultiplicity = PlotHitMultiplicityOfLayer(smtVec,8);
+		new TCanvas("Can_HitMultiplicity_Layer8","Can_HitMultiplicity_Layer8");
+		hitMultiplicity->Draw();
+		}
+
+		{
+		TH1F *hitMultiplicity = PlotHitMultiplicityOfLayer(smtVec,3);
+		new TCanvas("Can_HitMultiplicity_Layer3","Can_HitMultiplicity_Layer3");
+		hitMultiplicity->Draw();
+		}
+
 		fApp->Run();
 
 		return 0;

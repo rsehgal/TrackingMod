@@ -167,6 +167,9 @@ target_link_libraries(RollOverDetection ${ROOT_LIBRARIES} Tracklib)
 add_executable(Rollover_Inspection test/Rollover_Inspection.cpp ${sources} ${headers})
 target_link_libraries(Rollover_Inspection ${ROOT_LIBRARIES} Tracklib)
 
+add_executable(MuonTrackAnalysis_PixelCoincidence test/MuonTrackAnalysis_PixelCoincidence.cpp ${sources} ${headers})
+target_link_libraries(MuonTrackAnalysis_PixelCoincidence ${ROOT_LIBRARIES} Tracklib)
+
 add_executable(TestXYCenterForEachScintillator test/TestXYCenterForEachScintillator.cpp ${sources} ${headers})
 target_link_libraries(TestXYCenterForEachScintillator ${ROOT_LIBRARIES} Tracklib)
 
@@ -181,6 +184,12 @@ target_link_libraries(ReadCalibData ${ROOT_LIBRARIES} Tracklib)
 
 add_executable(MuonTrackAnalysis_UsingDelT test/MuonTrackAnalysis_UsingDelT.cpp ${sources} ${headers})
 target_link_libraries(MuonTrackAnalysis_UsingDelT ${ROOT_LIBRARIES} Tracklib)
+
+add_executable(MuonTrackAnalysis_UsingOnlyCenterBars test/MuonTrackAnalysis_UsingOnlyCenterBars.cpp ${sources} ${headers})
+target_link_libraries(MuonTrackAnalysis_UsingOnlyCenterBars ${ROOT_LIBRARIES} Tracklib)
+
+add_executable(BoardRates test/BoardRates.cpp ${sources} ${headers})
+target_link_libraries(BoardRates ${ROOT_LIBRARIES} Tracklib)
 
 add_executable(MuonTrackAnalysis_Anticoincidence test/MuonTrackAnalysis_Anticoincidence.cpp ${sources} ${headers})
 target_link_libraries(MuonTrackAnalysis_Anticoincidence ${ROOT_LIBRARIES} Tracklib)

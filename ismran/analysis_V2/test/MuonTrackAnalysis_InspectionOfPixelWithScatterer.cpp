@@ -20,6 +20,7 @@
 #include <TH2F.h>
 
 int main(int argc, char *argv[]){
+	//gStyle->SetOptStat(0);
 	GenerateScintMatrixXYCenters();
 	for(unsigned int i = 0 ; i < vecOfScintXYCenter.size() ; i++){
 			if(!(i%9))
@@ -97,6 +98,7 @@ int main(int argc, char *argv[]){
 
 			}
 			//Block for layer 3
+			if(layer8Pixel)
 						{
 							unsigned int hittBarIndex = 10000;
 
@@ -120,7 +122,7 @@ int main(int argc, char *argv[]){
 								lite_interface::ScintillatorBar_V2 *scint = smtVec[i]->GetScintillator(hittBarIndex);
 
 								//if(scint->GetBarIndexInLayer()==4 && scintLayer2->GetBarIndexInLayer()==4 && scintLayer4->GetBarIndexInLayer()==4 )
-								if(layer8Pixel)
+								//if(layer8Pixel)
 								{
 									if(scint->GetBarIndexInLayer()==4 && scintLayer2->GetBarIndexInLayer()==4 && scintLayer4->GetBarIndexInLayer()==4 )
 									{
