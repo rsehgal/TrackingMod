@@ -5,11 +5,21 @@ counter=0
 dir=$2
 mat=$3
 dt=$4
-inputfilenames=`ls $dir/*$dt*.root`
-finalProcessedFile="ProcessedData_$mat-$dt.root"
+helper=$5
+inputfilenames=`ls $dir/*$mat*$dt*.root`
+if [ -z "$helper" ]
+then
+	finalProcessedFile="ProcessedData_$mat-$dt.root"
+else
+	finalProcessedFile="ProcessedData_$mat-$helper-$dt.root"
+fi
+
+echo "Final Output File Name : "$finalProcessedFile
+
 allProcessedFileNames=""
 for eachfile in $inputfilenames
 do
+	echo "Processed File : "$eachfile >> processed.log 
 	counter=$((counter+1))	
 	processedFileName="ProcessedData_$mat-$dt-$counter.root"
 	justFileName=$(basename $eachfile .root)

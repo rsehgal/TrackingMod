@@ -19,6 +19,7 @@ extern unsigned int numOfBarsInEachLayer;//=9;
 extern float barWidth;
 extern float barHeight;
 extern float barLength;
+extern double scattererPlaneY;
 extern float offsetYLowerDetectors;
 extern float offsetYUpperDetectors;
 extern unsigned int numOfLowerLayers;
@@ -46,6 +47,7 @@ extern int nbins;
 extern int minEnergyDepositedByMuonTrack;// = 170000;
 extern int maxEnergyDepositedByMuonTrack;// = 190000;
 extern unsigned long int timeBetweenTwoMuonTracks;
+extern double xyzLimit;
 
 extern double fwhm;// = 2.355 * 5.66353 ;
 

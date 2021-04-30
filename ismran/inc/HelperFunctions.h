@@ -27,6 +27,8 @@ void ResetVector(std::vector<T*> vecToReset){
 		//vecToReset.clear();
 }
 
+extern std::vector<lite_interface::SingleMuonTrack*> GetMuonTracksVector(std::string filename,unsigned int numOfTracks=0);
+
 extern void DrawGrid(std::string t, Int_t ngx, Int_t ngy);
 extern void GetFittedXorZ(TGraph *gr);
 extern double LinearFit(Double_t *x,Double_t *par);
@@ -60,6 +62,8 @@ extern std::vector<lite_interface::Point3D*> GetTrackFromLayers(lite_interface::
 
 extern lite_interface::Point3D* ExtrapolatePointOnLayer(lite_interface::Point3D *startPt, lite_interface::Point3D *endPt, unsigned int layerIndex);
 extern Tracking::Vector3D<double> ExtrapolatePointOnLayer(Tracking::Vector3D<double> start, Tracking::Vector3D<double> end,  unsigned int layerIndex);
+extern Tracking::Vector3D<double> ExtrapolatePointOnLayer(Tracking::Vector3D<double> start, Tracking::Vector3D<double> end,   double destinationYval);
+extern lite_interface::Point3D* ExtrapolatePointOnLayer(lite_interface::Point3D *startPt,lite_interface::Point3D *endPt, double destinationYval);
 extern lite_interface::Point3D* ExtrapolatePointOnLayer(lite_interface::Point3D *startPt,
 												 lite_interface::Point3D *endPt,
 												 lite_interface::Point3D *intermediatePt,

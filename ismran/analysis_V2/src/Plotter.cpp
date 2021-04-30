@@ -65,6 +65,8 @@ namespace lite_interface{
 		return timeWindow;
 	}
 
+
+
 	TH1F* PlotQ(std::vector<lite_interface::ScintillatorBar_V2*> scintBarVec, ushort barIndex){
 		TH1F *hist = new TH1F("RawHist","RawHist",40000,0,40000);
 		std::vector<lite_interface::ScintillatorBar_V2*>::iterator itr;
@@ -603,6 +605,35 @@ namespace lite_interface{
 
 
 		return hist;
+	}
+
+	TH1F* PlotStripProfileOfVectorOfLayer(std::vector<lite_interface::SingleMuonTrack*> smtVec, std::vector<unsigned short> vecOfLayerIndices){
+		std::string name = "Strip_profile_using_";
+		for(unsigned int i = 0 ; i< vecOfLayerIndices.size() ; i++){
+			name += (std::to_string(vecOfLayerIndices[i])+"_");
+		}
+		name+="Layers";
+		TH1F *stripProfile = new TH1F(name.c_str(),name.c_str(),90,0,90);
+		for(unsigned int i = 0 ; i < smtVec.size() ; i++){
+					std::vector<lite_interface::ScintillatorBar_V2*> scintBarVec = smtVec[i]->GetMuonTrack();
+					std::vector<lite_interface::ScintillatorBar_V2*>::iterator itr;
+					for(itr = scintBarVec.begin() ; itr != scintBarVec.end() ; itr++){
+						if((*itr)->GetQMeanCorrected() > 15){
+							//if(((*itr)->fBarIndex >= layerIndex*numOfBarsInEachLayer) &&
+								//	((*itr)->fBarIndex < (layerIndex+1)*numOfBarsInEachLayer))
+							if(std::find(vecOfLayerIndices.begin(),vecOfLayerIndices.end(),(*itr)->GetLayerIndex()) != vecOfLayerIndices.end())
+							{
+
+								//std::cout << "BAR INDEX : " << (*itr)->fBarIndex << std::endl;
+								stripProfile->Fill((*itr)->fBarIndex);
+
+							}
+						}
+					}
+				}
+
+		return stripProfile;
+
 	}
 
 	TH1F* PlotStripProfileOfLayer(std::vector<lite_interface::SingleMuonTrack*> smtVec, ushort layerIndex){

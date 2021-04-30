@@ -30,17 +30,20 @@ Analyzer::Analyzer() {
 }
 
 
-//Analyzer::Analyzer(std::string datafileName,std::string outputfileName, bool simulation) : fDatafileName(datafileName), fOutputfileName(outputfileName){
-Analyzer::Analyzer(std::string datafileName ): fDatafileName(datafileName){
+Analyzer::Analyzer(std::string datafileName, const char *outputfileName ): Analyzer(datafileName,std::string(outputfileName)){
 
+}
 
+Analyzer::Analyzer(std::string datafileName,bool thresholdCheck ): fDatafileName(datafileName){
+
+std::cout << "@@@@@@@@2 WRONG CONTRUCTOR CALLED @@@@@@@@@@@@.............."<< std::endl;
 #ifdef USE_FOR_SIMULATION
 		IsSimulation = true;
 		std::cout << "Going to create vector of Scintillator Bar from Simulated Data..."  << std::endl;
 		CreateScintillatorVector_FromSimulation();
 #else
 		fPairFinder =  new PairFinder(fDatafileName);
-		CreateScintillatorVector();
+		CreateScintillatorVector(thresholdCheck);
 #endif
 	//ReconstructMuonTrack();
 }
@@ -49,6 +52,7 @@ Analyzer::Analyzer(std::string datafileName ): fDatafileName(datafileName){
 //Analyzer::Analyzer(std::string datafileName,std::string outputfileName, bool simulation) : fDatafileName(datafileName), fOutputfileName(outputfileName){
 Analyzer::Analyzer(std::string datafileName,std::string outputfileName ): fDatafileName(datafileName), fOutputfileName(outputfileName){
 
+std::cout << "@@@@@@@@2 Correct CONTRUCTOR CALLED @@@@@@@@@@@@.............."<< std::endl;
 
 #ifdef USE_FOR_SIMULATION
 		IsSimulation = true;
@@ -73,7 +77,7 @@ std::vector<ScintillatorBar_V2*> Analyzer::GetVectorOfScintillators()const{
 	return fVecOfScintillatorBar;
 }
 
-void Analyzer::CreateScintillatorVector(){
+void Analyzer::CreateScintillatorVector(bool thresholdCheck){
 	std::vector<TreeEntry*> vectorOfPairedTreeEntries = fPairFinder->GetVectorOfPairedTreeEntries();
 	//unsigned long int numOfPairsInOneShot = vectorOfPairedTreeEntries.size()/numOfShots;
 	std::cout << "TRYING TO CREATE VECTOR OF SCINTILLATORS>>......................... : Size : " << vectorOfPairedTreeEntries.size() << std::endl;
@@ -113,8 +117,12 @@ void Analyzer::CreateScintillatorVector(){
 				//scint->EstimateHitPosition(fCalib);
 
 				//if(scint->GetQMeanCorrected() > 15.)
-				if(scint->GetQMeanCorrected() > qmeanCorrThreshold)
+				if(thresholdCheck){
+					if(scint->GetQMeanCorrected() > qmeanCorrThreshold)
+						fVecOfScintillatorBar.push_back(scint);
+				}else{
 					fVecOfScintillatorBar.push_back(scint);
+				}
 			}
 		}
 		i+=2;
@@ -247,6 +255,7 @@ void Analyzer::CreateScintillatorVector_FromSimulation(){
 #endif
 
 void Analyzer::ReconstructMuonTrack(){
+std::cout << "Going to Create Muon Tracks.................." << std::endl;
 //std::vector< lite_interface::SingleMuonTrack* > Analyzer::ReconstructMuonTrack(){
 	//TTree::SetMaxTreeSize(100000000);
 	std::sort(fVecOfScintillatorBar.begin(), fVecOfScintillatorBar.end(),CompareTimestampScintillator);

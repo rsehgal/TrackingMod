@@ -247,6 +247,9 @@ void GenerateScintMatrixXYCenters(){
 			vecOfScintXYCenter.push_back(Point2D(x,y));
 		}
 	}
+
+	vecOfLayersYPos.push_back(0.);
+
 }
 
 double GetYOfLayer(unsigned int layerIndex){

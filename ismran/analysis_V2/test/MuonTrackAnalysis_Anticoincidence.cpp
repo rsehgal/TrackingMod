@@ -35,37 +35,37 @@ int main(int argc, char *argv[]){
 
 	lite_interface::Calibration *calib = lite_interface::Calibration::instance("completeCalib2.root");
 	std::string filename = argv[1];
-
+	std::vector<lite_interface::SingleMuonTrack*> smtVec = GetMuonTracksVector(filename);
 	//lite_interface::Analyzer analyzerObj(filename);
 	//analyzerObj->ReconstructMuonTrack();
 
-	TFile *trackFile = new TFile(filename.c_str(),"READ");
-	TTree *trackTree = (TTree*)trackFile->Get("TracksTree");
-	trackTree->SetBranchAddress("MuonTracks",&smt);
+	//TFile *trackFile = new TFile(filename.c_str(),"READ");
+	//TTree *trackTree = (TTree*)trackFile->Get("TracksTree");
+	//trackTree->SetBranchAddress("MuonTracks",&smt);
 
-	Long64_t nentries = trackTree->GetEntries();
+	//Long64_t nentries = trackTree->GetEntries();
 
-	Long64_t nbytes = 0;
+	//Long64_t nbytes = 0;
 
-	std::vector<lite_interface::SingleMuonTrack*> smtVec;
+	//std::vector<lite_interface::SingleMuonTrack*> smtVec;
 
-	int counter = 0;
-	for (Long64_t i=0; i<nentries;i++) {
+	//int counter = 0;
+	//for (Long64_t i=0; i<nentries;i++) {
 
-		//std::cout << "Fetching Entry : " << i << std::endl;
-		nbytes += trackTree->GetEntry(i);
-		if(!(i % 100000) && i!=0)
-			std::cout << "Processed : " << i << " Tracks ........" << std::endl;
+	//	//std::cout << "Fetching Entry : " << i << std::endl;
+	//	nbytes += trackTree->GetEntry(i);
+	//	if(!(i % 100000) && i!=0)
+	//		std::cout << "Processed : " << i << " Tracks ........" << std::endl;
 
-		//if(smt->SingleHitInEachLayer())
-		smtVec.push_back(new lite_interface::SingleMuonTrack(*smt));
-	}
+	//	//if(smt->SingleHitInEachLayer())
+	//	smtVec.push_back(new lite_interface::SingleMuonTrack(*smt));
+	//}
 
 	std::cout << "Size of SMTVec : " << smtVec.size() << std::endl;
 //	TH2F *hist2D_Layer0 = new TH2F("HitPointOnLayer_0","HitPointOnLayer_0",200,-50,50,200,-50,50);
 //	TH2F *hist2D_Layer1 = new TH2F("HitPointOnLayer_1","HitPointOnLayer_1",200,-50,50,200,-50,50);
 //	TH2F *hist2D_Layer2 = new TH2F("HitPointOnLayer_2","HitPointOnLayer_2",200,-50,50,200,-50,50);
-	TH2F *hist2D_Layer3 = new TH2F("HitPointOnLayer_3","HitPointOnLayer_3",200,-50,50,200,-50,50);
+	TH2F *hist2D_Layer3 = new TH2F("NoHitIn_AntiCoincidence_Scintillator","NoHitIn_AntiCoincidence_Scintillator",200,-50,50,200,-50,50);
 	TH2F *hist2D_Layer3_HitInAnyConfiningScints = new TH2F("HitPointOnLayer_3_HitInAnyConfiningScints","HitPointOnLayer_3_HitInAnyConfiningScints",200,-50,50,200,-50,50);
 //	TH2F *hist2D_Layer4 = new TH2F("HitPointOnLayer_4","HitPointOnLayer_4",200,-50,50,200,-50,50);
 //	TH2F *hist2D_Layer5 = new TH2F("HitPointOnLayer_5","HitPointOnLayer_5",200,-50,50,200,-50,50);
@@ -86,14 +86,15 @@ int main(int argc, char *argv[]){
 	TH1F *delZ_Layer_9_7 = new TH1F("delZ_Layer_9_7","delZ_Layer_9_7",200,-50,50.);
 */
 
-
+	
+	unsigned int layerIndex = 3;
 	for(unsigned int i = 0 ; i < smtVec.size() ; i++){
 
 
 		//Block for layer 3
 		{
 			if(smtVec[i]->HitInRequiredLayers() && smtVec[i]->NoHitInScintillators(vecOfAntiCoincideneScint)){
-				lite_interface::Point3D *hitPoint = Get3DHitPointOnLayer(smtVec[i],8);
+				lite_interface::Point3D *hitPoint = Get3DHitPointOnLayer(smtVec[i],layerIndex);
 				if(hitPoint->GetX() < 9000. && hitPoint->GetZ() < 9000){
 					hist2D_Layer3->Fill(hitPoint->GetX(),hitPoint->GetZ());
 				}
@@ -103,7 +104,7 @@ int main(int argc, char *argv[]){
 		//Block to  detect hit in Confining Scints
 		{
 			if(smtVec[i]->HitInRequiredLayers() && smtVec[i]->HitInAnyScintillators(vecOfAntiCoincideneScint)){
-				lite_interface::Point3D *hitPoint = Get3DHitPointOnLayer(smtVec[i],8);
+				lite_interface::Point3D *hitPoint = Get3DHitPointOnLayer(smtVec[i],layerIndex);
 				if(hitPoint->GetX() < 9000. && hitPoint->GetZ() < 9000){
 					hist2D_Layer3_HitInAnyConfiningScints->Fill(hitPoint->GetX(),hitPoint->GetZ());
 				}

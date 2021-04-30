@@ -32,14 +32,16 @@ float barHeight = 10.;
 float barLength = 100.;
 //std::vector<unsigned int> vecOfRequiredLayers={0,1,2,3,4,7,8,9};
 //std::vector<unsigned int> vecOfRequiredLayers={7,8,9};
-//std::vector<unsigned int> vecOfRequiredLayers={0,1,2,3,4,7,8,9};
-std::vector<unsigned int> vecOfRequiredLayers={0,2,3,4,7,8,9};
+std::vector<unsigned int> vecOfRequiredLayers={0,1,2,3,4,7,8,9};
+//std::vector<unsigned int> vecOfRequiredLayers={0,2,3,4,7,8,9};
 std::vector<unsigned int> vecOfAntiCoincideneScint={55,56,57,58,59,60,61,50};
+double xyzLimit = 60.;
 
 /*
  * Ref Y is the slab of Scatterer
  * Y of all the detector should be with respect to  Scatterer Slab.
  */
+double scattererPlaneY = 0.;
 float offsetYLowerDetectors = -53;//-20.;
 float offsetYUpperDetectors = 28;//50.;
 unsigned int numOfLowerLayers = 7;

@@ -164,8 +164,15 @@ target_link_libraries(dissectionCore ${ROOT_LIBRARIES} Tracklib)
 add_executable(RollOverDetection test/RollOverDetection.cpp ${sources} ${headers})
 target_link_libraries(RollOverDetection ${ROOT_LIBRARIES} Tracklib)
 
+add_executable(MuonTrackAnalysis_SimplestSetup test/MuonTrackAnalysis_SimplestSetup.cpp ${sources} ${headers})
+target_link_libraries(MuonTrackAnalysis_SimplestSetup ${ROOT_LIBRARIES} Tracklib)
+
+
 add_executable(Rollover_Inspection test/Rollover_Inspection.cpp ${sources} ${headers})
 target_link_libraries(Rollover_Inspection ${ROOT_LIBRARIES} Tracklib)
+
+add_executable(Rollover_Inspection2 test/Rollover_Inspection2.cpp ${sources} ${headers})
+target_link_libraries(Rollover_Inspection2 ${ROOT_LIBRARIES} Tracklib)                 
 
 add_executable(MuonTrackAnalysis_PixelCoincidence test/MuonTrackAnalysis_PixelCoincidence.cpp ${sources} ${headers})
 target_link_libraries(MuonTrackAnalysis_PixelCoincidence ${ROOT_LIBRARIES} Tracklib)
@@ -178,6 +185,10 @@ target_link_libraries(TestStripProfileOfLayersUsingHitInScintillators ${ROOT_LIB
 
 add_executable(ReadCalibData test/ReadCalibData.cpp ${sources} ${headers})
 target_link_libraries(ReadCalibData ${ROOT_LIBRARIES} Tracklib)
+
+add_executable(MuonTrackAnalysis_StripProfileAnalysis test/MuonTrackAnalysis_StripProfileAnalysis.cpp ${sources} ${headers})
+target_link_libraries(MuonTrackAnalysis_StripProfileAnalysis ${ROOT_LIBRARIES} Tracklib)
+
 
 #add_executable(readCalibDataFile test/readCalibDataFile.cpp ${sources} ${headers})
 #target_link_libraries(readCalibDataFile ${ROOT_LIBRARIES} Tracklib)
@@ -212,6 +223,9 @@ target_link_libraries(MuonTrackAnalysis_ExtrapolationDiff ${ROOT_LIBRARIES} Trac
 
 add_executable(MuonTrackAnalysis_RefinedTrackTest test/MuonTrackAnalysis_RefinedTrackTest.cpp ${sources} ${headers})
 target_link_libraries(MuonTrackAnalysis_RefinedTrackTest ${ROOT_LIBRARIES} Tracklib)
+
+add_executable(MuonTrackAnalysis_HitOnScattererPlane_UsingAntiCoincidenceScintillators test/MuonTrackAnalysis_HitOnScattererPlane_UsingAntiCoincidenceScintillators.cpp ${sources} ${headers})
+target_link_libraries(MuonTrackAnalysis_HitOnScattererPlane_UsingAntiCoincidenceScintillators ${ROOT_LIBRARIES} Tracklib)
 
 add_executable(CoreTest test/CoreTest.cpp ${sources} ${headers})
 target_link_libraries(CoreTest ${ROOT_LIBRARIES} Tracklib)

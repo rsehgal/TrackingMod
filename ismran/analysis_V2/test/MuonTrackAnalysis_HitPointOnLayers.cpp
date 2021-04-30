@@ -40,6 +40,7 @@ int main(int argc, char *argv[]){
 	//analyzerObj->ReconstructMuonTrack();
 
 	TFile *trackFile = new TFile(filename.c_str(),"READ");
+	/*
 	TTree *trackTree = (TTree*)trackFile->Get("TracksTree");
 	trackTree->SetBranchAddress("MuonTracks",&smt);
 
@@ -54,12 +55,17 @@ int main(int argc, char *argv[]){
 
 		//std::cout << "Fetching Entry : " << i << std::endl;
 		nbytes += trackTree->GetEntry(i);
-		if(!(i % 100000) && i!=0)
+		if(!(i % 1000000) && i!=0){
 			std::cout << "Processed : " << i << " Tracks ........" << std::endl;
+			break;
+		}
 
 		//if(smt->SingleHitInEachLayer())
 		smtVec.push_back(new lite_interface::SingleMuonTrack(*smt));
 	}
+	*/
+
+	std::vector<lite_interface::SingleMuonTrack*> smtVec = GetMuonTracksVector(filename,2000000);
 
 	std::cout << "Size of SMTVec : " << smtVec.size() << std::endl;
 //	TH2F *hist2D_Layer0 = new TH2F("HitPointOnLayer_0","HitPointOnLayer_0",200,-50,50,200,-50,50);
@@ -68,7 +74,9 @@ int main(int argc, char *argv[]){
 	TH2F *hist2D_Layer3 = new TH2F("HitPointOnLayer_3","HitPointOnLayer_3",200,-50,50,200,-50,50);
 //	TH2F *hist2D_Layer4 = new TH2F("HitPointOnLayer_4","HitPointOnLayer_4",200,-50,50,200,-50,50);
 	TH2F *hist2D_Layer5 = new TH2F("HitPointOnLayer_5","HitPointOnLayer_5",200,-50,50,200,-50,50);
+	TH2F *hist2D_Layer7 = new TH2F("HitPointOnLayer_7","HitPointOnLayer_7",200,-50,50,200,-50,50);
 	TH2F *hist2D_Layer8 = new TH2F("HitPointOnLayer_8","HitPointOnLayer_8",200,-50,50,200,-50,50);
+	TH2F *hist2D_Layer9 = new TH2F("HitPointOnLayer_9","HitPointOnLayer_9",200,-50,50,200,-50,50);
 
 	//TGraph *gr_Layer8 = new TGraph();
 	//TGraph *gr_Layer3 = new TGraph();
@@ -90,12 +98,36 @@ int main(int argc, char *argv[]){
 
 		//Block for layer 3
 		{
-			lite_interface::Point3D *hitPoint = Get3DHitPointOnLayer(smtVec[i],3);
-			if(hitPoint->GetX() < 9000. && hitPoint->GetZ() < 9000){
-				hist2D_Layer3->Fill(hitPoint->GetX(),hitPoint->GetZ());
+			unsigned int inspectedLayerIndex=3;
+			unsigned int hittBarIndex = 10000;
+			ushort startIndex = GetStartIndex(inspectedLayerIndex);
+			ushort endIndex = GetEndIndex(inspectedLayerIndex);
+			bool check = smtVec[i]->CheckTrackForLayerNum(startIndex,hittBarIndex);
+			lite_interface::ScintillatorBar_V2 *scintStart;
+			lite_interface::ScintillatorBar_V2 *scintEnd;
+			if(check){
+				scintStart = smtVec[i]->GetScintillator(hittBarIndex);
 			}
-		}
+			check &= smtVec[i]->CheckTrackForLayerNum(endIndex,hittBarIndex);
+			if(check){
+				scintEnd = smtVec[i]->GetScintillator(hittBarIndex);
+			}
+			check &= smtVec[i]->CheckTrackForLayerNum(inspectedLayerIndex,hittBarIndex);
+			if(check){
+				lite_interface::Point3D *hitPoint = Get3DHitPointOnLayer(smtVec[i],inspectedLayerIndex);
+				if(hitPoint->GetX() < 9000. && hitPoint->GetZ() < 9000
+				&& scintStart->GetBarIndexInLayer()==scintEnd->GetBarIndexInLayer()
+				){
+					   hist2D_Layer3->Fill(hitPoint->GetX(),hitPoint->GetZ());
+			}
+			}
 
+			//lite_interface::Point3D *hitPoint = Get3DHitPointOnLayer(smtVec[i],inspectedLayerIndex);
+			//if(hitPoint->GetX() < 9000. && hitPoint->GetZ() < 9000){
+			//	hist2D_Layer3->Fill(hitPoint->GetX(),hitPoint->GetZ());
+			//}
+		}
+		/*	
 		//Block for layer 8
 		{
 			lite_interface::Point3D *hitPoint = Get3DHitPointOnLayer(smtVec[i],5);
@@ -111,6 +143,136 @@ int main(int argc, char *argv[]){
 				hist2D_Layer8->Fill(hitPoint->GetX(),hitPoint->GetZ());
 			}
 		}
+		*/
+		{
+			unsigned int inspectedLayerIndex=5;
+			unsigned int hittBarIndex = 10000;
+			ushort startIndex = GetStartIndex(inspectedLayerIndex);
+			ushort endIndex = GetEndIndex(inspectedLayerIndex);
+			bool check = smtVec[i]->CheckTrackForLayerNum(startIndex,hittBarIndex);
+			lite_interface::ScintillatorBar_V2 *scintStart;
+			lite_interface::ScintillatorBar_V2 *scintEnd;
+			if(check){
+				scintStart = smtVec[i]->GetScintillator(hittBarIndex);
+			}
+			check &= smtVec[i]->CheckTrackForLayerNum(endIndex,hittBarIndex);
+			if(check){
+				scintEnd = smtVec[i]->GetScintillator(hittBarIndex);
+			}
+			check &= smtVec[i]->CheckTrackForLayerNum(inspectedLayerIndex,hittBarIndex);
+			if(check){
+				lite_interface::Point3D *hitPoint = Get3DHitPointOnLayer(smtVec[i],inspectedLayerIndex);
+				if(hitPoint->GetX() < 9000. && hitPoint->GetZ() < 9000 
+				//&&  scintStart->GetBarIndexInLayer()==scintEnd->GetBarIndexInLayer()
+				){
+					   hist2D_Layer5->Fill(hitPoint->GetX(),hitPoint->GetZ());
+			}
+			}
+
+			//lite_interface::Point3D *hitPoint = Get3DHitPointOnLayer(smtVec[i],inspectedLayerIndex);
+			//if(hitPoint->GetX() < 9000. && hitPoint->GetZ() < 9000){
+			//	hist2D_Layer3->Fill(hitPoint->GetX(),hitPoint->GetZ());
+			//}
+		}
+		
+		{
+			unsigned int inspectedLayerIndex=8;
+			unsigned int hittBarIndex = 10000;
+			ushort startIndex = GetStartIndex(inspectedLayerIndex);
+			ushort endIndex = GetEndIndex(inspectedLayerIndex);
+			bool check = smtVec[i]->CheckTrackForLayerNum(startIndex,hittBarIndex);
+			lite_interface::ScintillatorBar_V2 *scintStart;
+			lite_interface::ScintillatorBar_V2 *scintEnd;
+			if(check){
+				scintStart = smtVec[i]->GetScintillator(hittBarIndex);
+			}
+			check &= smtVec[i]->CheckTrackForLayerNum(endIndex,hittBarIndex);
+			if(check){
+				scintEnd = smtVec[i]->GetScintillator(hittBarIndex);
+			}
+			check &= smtVec[i]->CheckTrackForLayerNum(inspectedLayerIndex,hittBarIndex);
+			if(check){
+				lite_interface::Point3D *hitPoint = Get3DHitPointOnLayer_Refined(smtVec[i],inspectedLayerIndex);
+				if(hitPoint->GetX() < 9000. && hitPoint->GetZ() < 9000 
+				&&  scintStart->GetBarIndexInLayer()==scintEnd->GetBarIndexInLayer()
+				){
+					   hist2D_Layer8->Fill(hitPoint->GetX(),hitPoint->GetZ());
+			}
+			}
+
+			//lite_interface::Point3D *hitPoint = Get3DHitPointOnLayer(smtVec[i],inspectedLayerIndex);
+			//if(hitPoint->GetX() < 9000. && hitPoint->GetZ() < 9000){
+			//	hist2D_Layer3->Fill(hitPoint->GetX(),hitPoint->GetZ());
+			//}
+		}
+		
+		//Block for layer 9
+		{
+			unsigned int inspectedLayerIndex=9;
+			unsigned int hittBarIndex = 10000;
+			ushort startIndex = GetStartIndex(inspectedLayerIndex);
+			ushort endIndex = GetEndIndex(inspectedLayerIndex);
+			bool check = smtVec[i]->CheckTrackForLayerNum(startIndex,hittBarIndex);
+			lite_interface::ScintillatorBar_V2 *scintStart;
+			lite_interface::ScintillatorBar_V2 *scintEnd;
+			if(check){
+				scintStart = smtVec[i]->GetScintillator(hittBarIndex);
+			}
+			check &= smtVec[i]->CheckTrackForLayerNum(endIndex,hittBarIndex);
+			if(check){
+				scintEnd = smtVec[i]->GetScintillator(hittBarIndex);
+			}
+			check &= smtVec[i]->CheckTrackForLayerNum(inspectedLayerIndex,hittBarIndex);
+			if(check){
+				//lite_interface::Point3D *hitPoint = GetHitPointOnLayer_FromParam(smtVec[i],inspectedLayerIndex);
+				lite_interface::Point3D *hitPoint = Get3DHitPointOnLayer_Refined(smtVec[i],inspectedLayerIndex);
+				if((hitPoint != NULL) &&hitPoint->GetX() < 9000. && hitPoint->GetZ() < 9000 
+				&&  scintStart->GetBarIndexInLayer()==scintEnd->GetBarIndexInLayer()
+				){
+					   hist2D_Layer9->Fill(hitPoint->GetX(),hitPoint->GetZ());
+			}
+			}
+
+			//lite_interface::Point3D *hitPoint = Get3DHitPointOnLayer(smtVec[i],inspectedLayerIndex);
+			//if(hitPoint->GetX() < 9000. && hitPoint->GetZ() < 9000){
+			//	hist2D_Layer3->Fill(hitPoint->GetX(),hitPoint->GetZ());
+			//}
+		}
+		//Block for layer 7
+		{
+			unsigned int inspectedLayerIndex=7;
+			unsigned int hittBarIndex = 10000;
+			ushort startIndex = GetStartIndex(inspectedLayerIndex);
+			ushort endIndex = GetEndIndex(inspectedLayerIndex);
+			bool check = smtVec[i]->CheckTrackForLayerNum(startIndex,hittBarIndex);
+			lite_interface::ScintillatorBar_V2 *scintStart;
+			lite_interface::ScintillatorBar_V2 *scintEnd;
+			if(check){
+				scintStart = smtVec[i]->GetScintillator(hittBarIndex);
+			}
+			check &= smtVec[i]->CheckTrackForLayerNum(endIndex,hittBarIndex);
+			if(check){
+				scintEnd = smtVec[i]->GetScintillator(hittBarIndex);
+			}
+			check &= smtVec[i]->CheckTrackForLayerNum(inspectedLayerIndex,hittBarIndex);
+			if(check){
+				//lite_interface::Point3D *hitPoint = GetHitPointOnLayer_FromParam(smtVec[i],inspectedLayerIndex);
+				lite_interface::Point3D *hitPoint = Get3DHitPointOnLayer_Refined(smtVec[i],inspectedLayerIndex);
+				if((hitPoint != NULL) &&hitPoint->GetX() < 9000. && hitPoint->GetZ() < 9000 
+				&&  scintStart->GetBarIndexInLayer()==scintEnd->GetBarIndexInLayer()
+				){
+					   hist2D_Layer7->Fill(hitPoint->GetX(),hitPoint->GetZ());
+			}
+			}
+
+			//lite_interface::Point3D *hitPoint = Get3DHitPointOnLayer(smtVec[i],inspectedLayerIndex);
+			//if(hitPoint->GetX() < 9000. && hitPoint->GetZ() < 9000){
+			//	hist2D_Layer3->Fill(hitPoint->GetX(),hitPoint->GetZ());
+			//}
+		}
+
+
+
 
 	}
 
@@ -297,10 +459,15 @@ int main(int argc, char *argv[]){
 */
 	new TCanvas("Layer5","Layer5");
 	hist2D_Layer5->Draw("colz");
-
+	
+	TCanvas *canLayer7 = new TCanvas("Layer7","Layer7");
+	hist2D_Layer7->Draw("colz");
 
 	TCanvas *canLayer8 = new TCanvas("Layer8","Layer8");
 	hist2D_Layer8->Draw("colz");
+
+		TCanvas *canLayer9 = new TCanvas("Layer9","Layer9");
+	hist2D_Layer9->Draw("colz");
 
 /*
 	new TCanvas("Hist_Of_Interpolated_Position_Layer1","Hist_Of_Interpolated_Position_Layer1");
@@ -340,7 +507,9 @@ int main(int argc, char *argv[]){
 */
 	hist2D_Layer5->Write();
 
+	hist2D_Layer7->Write();
 	hist2D_Layer8->Write();
+	hist2D_Layer9->Write();
 
 /*
 	zhist_Layer1->Write();

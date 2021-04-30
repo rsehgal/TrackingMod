@@ -111,6 +111,50 @@ lite_interface::Point3D* Get3DHitPointOnLayer(lite_interface::SingleMuonTrack *s
 }
 #endif
 
+std::vector<lite_interface::SingleMuonTrack*> GetMuonTracksVector(std::string filename,unsigned int numOfTracks){
+	lite_interface::SingleMuonTrack *smt = new lite_interface::SingleMuonTrack;
+
+        //lite_interface::Calibration *calib = lite_interface::Calibration::instance("completeCalib2.root");
+        //std::string filename = argv[1];
+
+        //std::string subFileName = filename.substr(13);
+
+        TFile *trackFile = new TFile(filename.c_str(),"READ");
+        TTree *trackTree = (TTree*)trackFile->Get("TracksTree");
+        trackTree->SetBranchAddress("MuonTracks",&smt);
+
+        Long64_t nentries = trackTree->GetEntries();
+
+        Long64_t nbytes = 0;
+
+        std::vector<lite_interface::SingleMuonTrack*> smtVec;
+
+        int counter = 0;
+        unsigned int testCounter = 0;
+
+	if(numOfTracks > 0)
+		nentries = numOfTracks;
+        for (Long64_t i=0; i<nentries;i++) {
+
+                nbytes += trackTree->GetEntry(i);
+                if(!(i % 1000000) && i!=0){
+                        std::cout << "Processed : " << i << " Tracks ........" << std::endl;
+                        testCounter++;
+                        /*if(testCounter==2)
+                                break;*/
+                }
+                testCounter++;
+                //if(testCounter==19500001)
+                  //      break;
+
+                smtVec.push_back(new lite_interface::SingleMuonTrack(*smt));
+        }
+
+	return smtVec;
+
+	
+}
+
 lite_interface::Point3D* ExtrapolatePointOnLayer(lite_interface::Point3D *startPt, 
 												 lite_interface::Point3D *endPt, 
 												 unsigned int layerIndex){
@@ -144,12 +188,38 @@ lite_interface::Point3D* ExtrapolatePointOnLayer(lite_interface::Point3D *startP
 Tracking::Vector3D<double> ExtrapolatePointOnLayer(Tracking::Vector3D<double> start, 
 												   Tracking::Vector3D<double> end,
 												   unsigned int layerIndex){
-	Tracking::Vector3D<double> dir = (end-start).Unit();
+	/*Tracking::Vector3D<double> dir = (end-start).Unit();
 	double yOnLayer = GetYOfLayer(layerIndex);
 	double dist = (yOnLayer-start.y())/dir.y();
 	double xExtraPolated = start.x()+dir.x()*dist;
 	double zExtraPolated = start.z()+dir.z()*dist;
 	return Tracking::Vector3D<double>(xExtraPolated,yOnLayer,zExtraPolated);
+	*/
+	double yOnLayer = GetYOfLayer(layerIndex);
+	return ExtrapolatePointOnLayer(start,end,yOnLayer);
+}
+
+
+Tracking::Vector3D<double> ExtrapolatePointOnLayer(Tracking::Vector3D<double> start, 
+                                                                                                   Tracking::Vector3D<double> end,
+                                                                                                   double destinationYval){
+        Tracking::Vector3D<double> dir = (end-start).Unit();
+	std::cout << "Direction =============== : " ; dir.Print();
+        double yOnLayer = destinationYval;
+        double dist = (yOnLayer-start.y())/dir.y();
+	std::cout << "Dist : " << dist << std::endl;
+        double xExtraPolated = start.x()+dir.x()*dist;
+        double zExtraPolated = start.z()+dir.z()*dist;
+        return Tracking::Vector3D<double>(xExtraPolated,yOnLayer,zExtraPolated);
+}
+
+lite_interface::Point3D* ExtrapolatePointOnLayer(lite_interface::Point3D *startPt, 
+                                                   lite_interface::Point3D *endPt,
+                                                   double destinationYval){
+	Tracking::Vector3D<double> start(startPt->GetX(),startPt->GetY(),startPt->GetZ());
+        Tracking::Vector3D<double> end(endPt->GetX(),endPt->GetY(),endPt->GetZ());
+	Tracking::Vector3D<double> extraPolatedPt = ExtrapolatePointOnLayer(start,end,destinationYval);
+        return (new lite_interface::Point3D(extraPolatedPt.x(),extraPolatedPt.y(),extraPolatedPt.z()));
 }
 
 Tracking::Vector3D<double> ExtrapolatePointOnLayer(Tracking::Vector3D<double> start,
@@ -252,9 +322,11 @@ lite_interface::Point3D* Get3DHitPointOnLayer(lite_interface::SingleMuonTrack *s
 				//Cross Layers
 
 				hitPointInInspectedLayer->SetXYZ(hitPointInInspectedLayer->GetZ(),hitPointInInspectedLayer->GetY(),xOrZ);
+				//hitPointInInspectedLayer->SetXYZ(xOrZ,hitPointInInspectedLayer->GetY(),hitPointInInspectedLayer->GetZ());
 			}else{
 				//Oblong layers
 				hitPointInInspectedLayer->SetXYZ(xOrZ,hitPointInInspectedLayer->GetY(),hitPointInInspectedLayer->GetZ());
+				//hitPointInInspectedLayer->SetXYZ(hitPointInInspectedLayer->GetZ(),hitPointInInspectedLayer->GetY(),xOrZ);
 			}
 		}
 
@@ -309,7 +381,8 @@ lite_interface::Point3D* Get3DHitPointOnLayer_Refined(lite_interface::SingleMuon
 		if(layerIndex==9 || layerIndex==7){
 			lite_interface::Point3D* temp = Get3DHitPointOnLayer(smt,8);
 			if(temp!=NULL)
-				endPt->SetXYZ(temp->GetZ(),temp->GetY(),temp->GetX());
+				endPt->SetXYZ(temp->GetX(),temp->GetY(),temp->GetZ());
+				//endPt->SetXYZ(temp->GetZ(),temp->GetY(),temp->GetX());
 		}
 		if(layerIndex==9){
 			lite_interface::Point3D* temp = GetHitPointOnLayer_FromParam(smt,7);

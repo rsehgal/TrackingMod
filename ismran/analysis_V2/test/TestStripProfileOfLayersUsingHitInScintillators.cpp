@@ -27,7 +27,7 @@ int main(int argc, char *argv[]){
 	lite_interface::PairFinder::numOfShots = lite_interface::Analyzer::numOfShots;
 	lite_interface::PairFinder::shotNo = lite_interface::Analyzer::shotNo;
 	//lite_interface::PairFinder pairFinder =  new lite_interface::PairFinder(argv[1]);
-	lite_interface::Analyzer analyzerObj(argv[1]);
+	lite_interface::Analyzer analyzerObj(argv[1],false);
 	std::vector<lite_interface::ScintillatorBar_V2*> scintBarVec = analyzerObj.GetVectorOfScintillators();
 
 /*

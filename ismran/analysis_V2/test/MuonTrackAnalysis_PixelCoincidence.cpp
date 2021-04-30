@@ -37,33 +37,9 @@ int main(int argc, char *argv[]){
 	lite_interface::Calibration *calib = lite_interface::Calibration::instance("completeCalib2.root");
 	std::string filename = argv[1];
 
-	TFile *trackFile = new TFile(filename.c_str(),"READ");
-	TTree *trackTree = (TTree*)trackFile->Get("TracksTree");
-	trackTree->SetBranchAddress("MuonTracks",&smt);
+	std::string subFileName = filename.substr(13);
 
-	Long64_t nentries = trackTree->GetEntries();
-
-	Long64_t nbytes = 0;
-
-	std::vector<lite_interface::SingleMuonTrack*> smtVec;
-
-	int counter = 0;
-	unsigned int testCounter = 0;
-	for (Long64_t i=0; i<nentries;i++) {
-
-		nbytes += trackTree->GetEntry(i);
-		if(!(i % 1000000) && i!=0){
-			std::cout << "Processed : " << i << " Tracks ........" << std::endl;
-			testCounter++;
-			/*if(testCounter==2)
-				break;*/
-		}
-		testCounter++;
-		if(testCounter==19500001)
-			break;
-
-		smtVec.push_back(new lite_interface::SingleMuonTrack(*smt));
-	}
+	std::vector<lite_interface::SingleMuonTrack*> smtVec = GetMuonTracksVector(filename);
 	TH2F *hist2D_Pixel_Layer3 = new TH2F("HitPointOnLayer_3","HitPointOnLayer_3",200,-50,50,200,-50,50);
 	TH2F *hist2D_Pixel_Layer8 = new TH2F("HitPointOnLayer_8","HitPointOnLayer_8",200,-50,50,200,-50,50);
 //	TH1F *histPixel_layer8 = new TH1F("HistOfPixelOnLayer8","HistOfPixelOnLayer8",numOfBarsInEachLayer*numOfBarsInEachLayer,0,numOfBarsInEachLayer*numOfBarsInEachLayer);
@@ -118,15 +94,15 @@ int main(int argc, char *argv[]){
 				lite_interface::ScintillatorBar_V2 *scintLayer4;
 				lite_interface::ScintillatorBar_V2 *scintLayer2;
 
-				bool check = smtVec[i]->CheckTrackForLayerNum(4,hittBarIndex);
+				bool check = smtVec[i]->CheckTrackForLayerNum(2,hittBarIndex);
 				if(check){
 					scintLayer4 = smtVec[i]->GetScintillator(hittBarIndex);
 				}
-				check &= smtVec[i]->CheckTrackForLayerNum(2,hittBarIndex);
+				check &= smtVec[i]->CheckTrackForLayerNum(0,hittBarIndex);
 				if(check){
 					scintLayer2 = smtVec[i]->GetScintillator(hittBarIndex);
 				}
-				check &= smtVec[i]->CheckTrackForLayerNum(3,hittBarIndex);
+				check &= smtVec[i]->CheckTrackForLayerNum(1,hittBarIndex);
 
 				if(check){
 					lite_interface::ScintillatorBar_V2 *scint = smtVec[i]->GetScintillator(hittBarIndex);
@@ -148,12 +124,22 @@ int main(int argc, char *argv[]){
 			if(layer3Pixel && layer8Pixel)
 			{
 				pixelCoincCounter++;
-				if(hitPointLayer8->GetX() < 9000. && hitPointLayer8->GetZ() < 9000){
+				/*
+				if(hitPointLayer8->GetX() < xyzLimit && hitPointLayer8->GetZ() < xyzLimit){
 					hist2D_Pixel_Layer8->Fill(hitPointLayer8->GetX(),hitPointLayer8->GetZ());
 				}
-				if(hitPointLayer3->GetX() < 9000. && hitPointLayer3->GetZ() < 9000){
+				if(hitPointLayer3->GetX() < xyzLimit && hitPointLayer3->GetZ() < xyzLimit){
 					hist2D_Pixel_Layer3->Fill(hitPointLayer3->GetX(),hitPointLayer3->GetZ());
 				}
+				*/
+
+				if(std::fabs(hitPointLayer8->GetX()) < xyzLimit && std::fabs(hitPointLayer8->GetZ()) < xyzLimit &&
+				   std::fabs(hitPointLayer3->GetX()) < xyzLimit && std::fabs(hitPointLayer3->GetZ()) < xyzLimit){
+
+                                        hist2D_Pixel_Layer8->Fill(hitPointLayer8->GetX(),hitPointLayer8->GetZ());
+                                        hist2D_Pixel_Layer3->Fill(hitPointLayer3->GetX(),hitPointLayer3->GetZ());
+                                }
+                                
 			}
 
 	}
@@ -165,7 +151,7 @@ int main(int argc, char *argv[]){
 	hist2D_Pixel_Layer8->Draw();
 
 
-	TFile *fp = new TFile("Pixel_Coinc.root","RECREATE");
+	TFile *fp = new TFile(("Pixel_Coinc"+subFileName+".root").c_str(),"RECREATE");
 	fp->cd();
 	hist2D_Pixel_Layer3->Write();
 	hist2D_Pixel_Layer8->Write();

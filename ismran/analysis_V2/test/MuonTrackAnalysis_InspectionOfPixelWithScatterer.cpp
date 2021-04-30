@@ -36,28 +36,12 @@ int main(int argc, char *argv[]){
 
 	lite_interface::Calibration *calib = lite_interface::Calibration::instance("completeCalib2.root");
 	std::string filename = argv[1];
-
-	TFile *trackFile = new TFile(filename.c_str(),"READ");
-	TTree *trackTree = (TTree*)trackFile->Get("TracksTree");
-	trackTree->SetBranchAddress("MuonTracks",&smt);
-
-	Long64_t nentries = trackTree->GetEntries();
-
-	Long64_t nbytes = 0;
-
-	std::vector<lite_interface::SingleMuonTrack*> smtVec;
-
-	int counter = 0;
-	for (Long64_t i=0; i<nentries;i++) {
-
-		nbytes += trackTree->GetEntry(i);
-		if(!(i % 100000) && i!=0)
-			std::cout << "Processed : " << i << " Tracks ........" << std::endl;
-
-		smtVec.push_back(new lite_interface::SingleMuonTrack(*smt));
-	}
+	
+	unsigned int numOfTracksToRead=0;//2000000;
+	std::vector<lite_interface::SingleMuonTrack*> smtVec = GetMuonTracksVector(filename,numOfTracksToRead);	
 	TH2F *hist2D_Layer3 = new TH2F("HitPointOnLayer_3","HitPointOnLayer_3",200,-50,50,200,-50,50);
 	TH2F *hist2D_Layer8 = new TH2F("HitPointOnLayer_8","HitPointOnLayer_8",200,-50,50,200,-50,50);
+	TH2F *hist2D_Pixel_Layer3 = new TH2F("Hist2D_Pixel_Count_Layer3","Hist2D_Pixel_Count_Layer3",numOfBarsInEachLayer,0,numOfBarsInEachLayer,numOfBarsInEachLayer,0,numOfBarsInEachLayer);
 	TH1F *histPixel = new TH1F("HistOfPixelOnLayer","HistOfPixelOnLayer",numOfBarsInEachLayer*numOfBarsInEachLayer,0,numOfBarsInEachLayer*numOfBarsInEachLayer);
 
 	for(unsigned int i = 0 ; i < smtVec.size() ; i++){
@@ -133,8 +117,10 @@ int main(int argc, char *argv[]){
 									}
 									}
 
-									if(scintLayer2->GetBarIndexInLayer()==scintLayer4->GetBarIndexInLayer())
+									if(scintLayer2->GetBarIndexInLayer()==scintLayer4->GetBarIndexInLayer()){
 										histPixel->Fill(scint->GetBarIndexInLayer()*numOfBarsInEachLayer+scintLayer2->GetBarIndexInLayer());
+										hist2D_Pixel_Layer3->Fill(scint->GetBarIndexInLayer(),scintLayer2->GetBarIndexInLayer());
+									}
 								}
 								//lite_interface::Point3D *hitPtLayer7 = scintLayer7->EstimateHitPosition_Param();
 								//lite_interface::Point3D *hitPtLayer9 = scintLayer9->EstimateHitPosition_Param();
@@ -157,6 +143,10 @@ int main(int argc, char *argv[]){
 	TCanvas *canPixel = new TCanvas("PixelHistLayer3","PixelHistLayer3");
 	histPixel->Draw();
 
+	TCanvas *canPixelCount = new TCanvas("Can_2D_PixelCount_Layer3","Can_2D_PixelCount_Layer3");
+	hist2D_Pixel_Layer3->Draw();
+
+
 
 	std::string matWithExt = filename.substr(13);
 	TFile *fp = new TFile(("HitPattern_Pixel"+matWithExt).c_str(),"RECREATE");
@@ -165,6 +155,7 @@ int main(int argc, char *argv[]){
 	hist2D_Layer3->Write();
 	hist2D_Layer8->Write();
 	histPixel->Write();
+	hist2D_Pixel_Layer3->Write();
 
 	fp->Close();
 

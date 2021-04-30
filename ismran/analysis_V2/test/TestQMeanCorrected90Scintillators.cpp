@@ -24,7 +24,7 @@ int main(int argc, char *argv[]){
 
 	lite_interface::Calibration *calib = lite_interface::Calibration::instance("completeCalib2.root");
 
-	lite_interface::Analyzer analyzerObj(argv[1]);
+	lite_interface::Analyzer analyzerObj(argv[1],false);
 	std::vector<lite_interface::ScintillatorBar_V2*> scintBarVec = analyzerObj.GetVectorOfScintillators();
 
 	/*std::vector<Histograms*> vecOfHists;
