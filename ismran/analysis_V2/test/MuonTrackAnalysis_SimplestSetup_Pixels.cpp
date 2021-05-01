@@ -26,6 +26,7 @@ int main(int argc, char *argv[]){
 	std::vector<lite_interface::SingleMuonTrack*> smtVec = GetMuonTracksVector(filename);
 	
 	TH2F *hist2D_Pixel_Layer8 = new TH2F("Hist_Pixel_Layer_8","Hist_Pixel_Layer8",200,-50.,50.,200, -50.,50.);
+	TH2F *hist2D_Pixel_Layer8_Masked_With_54 = new TH2F("Hist_Pixel_Layer_8_Masked_With_54","Hist_Pixel_Layer8_Masked_With_54",200,-50.,50.,200, -50.,50.);
 	TH2F *hist2D_Pixel_Layer3 = new TH2F("Hist_Pixel_Layer_3","Hist_Pixel_Layer3",200,-50.,50.,200, -50.,50.);
 	TH1F *histBarsUsed = new TH1F("Hist_Bars_Used","Hist_Bars_Used",90,0,90);
 
@@ -66,14 +67,23 @@ int main(int argc, char *argv[]){
 					histBarsUsed->Fill(scint->GetBarIndex());
 					histBarsUsed->Fill(scintLayer7->GetBarIndex());
 					histBarsUsed->Fill(scintLayer9->GetBarIndex());
+
+					if(smtVec[i]->CheckTrackForScintillator(53))
+						hist2D_Pixel_Layer8_Masked_With_54->Fill(hitPointLayer8->GetX(),hitPointLayer8->GetZ());
 				}
 			}
+
+			
 		}
 
 
 	}
 
 	std::cout << "Number of Tracks that passes through required scintillators : "  << counter << std::endl;
+
+	new TCanvas("Can_Pixel_Layer8_Masked_With_54","Can_Pixel_Layer8_Masked_With_54");
+	hist2D_Pixel_Layer8_Masked_With_54->Draw();
+
 
 	new TCanvas("Can_Bars-Used","Can_Bars_Used");
 	histBarsUsed->Draw();
@@ -84,6 +94,7 @@ int main(int argc, char *argv[]){
 	TFile *fp = new TFile("Pixel_Simplest.root","RECREATE");
 	fp->cd();
 	hist2D_Pixel_Layer8->Write();
+	hist2D_Pixel_Layer8_Masked_With_54->Write();
 	histBarsUsed->Write();
 	fp->Close();
 	
