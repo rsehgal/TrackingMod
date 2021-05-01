@@ -167,6 +167,8 @@ target_link_libraries(RollOverDetection ${ROOT_LIBRARIES} Tracklib)
 add_executable(MuonTrackAnalysis_SimplestSetup test/MuonTrackAnalysis_SimplestSetup.cpp ${sources} ${headers})
 target_link_libraries(MuonTrackAnalysis_SimplestSetup ${ROOT_LIBRARIES} Tracklib)
 
+add_executable(MuonTrackAnalysis_SimplestSetup_Pixels test/MuonTrackAnalysis_SimplestSetup_Pixels.cpp ${sources} ${headers})
+target_link_libraries(MuonTrackAnalysis_SimplestSetup_Pixels ${ROOT_LIBRARIES} Tracklib)
 
 add_executable(Rollover_Inspection test/Rollover_Inspection.cpp ${sources} ${headers})
 target_link_libraries(Rollover_Inspection ${ROOT_LIBRARIES} Tracklib)

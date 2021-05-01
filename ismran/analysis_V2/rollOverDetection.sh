@@ -1,7 +1,8 @@
 #!/bin/sh
 dir=$1
-dt=$2
-inputfilenames=`ls $dir/*$dt*.root`
+mat=$2
+dt=$3
+inputfilenames=`ls $dir/*$mat*$dt*.root`
 for eachfile in $inputfilenames
 do
 	./Rollover_Inspection $eachfile
