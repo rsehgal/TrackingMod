@@ -234,6 +234,17 @@ Tracking::Vector3D<double> ExtrapolatePointOnLayer(Tracking::Vector3D<double> st
 	return Tracking::Vector3D<double>(xExtraPolated,yOnLayer,zExtraPolated);
 }
 
+unsigned int NumOfEventsToRead(std::string file1, std::string file2, std::string treeName){
+	TFile *fp1 = new TFile(file1.c_str(),"READ");
+	TFile *fp2 = new TFile(file2.c_str(),"READ");
+	unsigned int numOfEventsFile1 = ((TTree*)fp1->Get(treeName.c_str()))->GetEntries();
+	unsigned int numOfEventsFile2 = ((TTree*)fp2->Get(treeName.c_str()))->GetEntries();
+	if(numOfEventsFile1 < numOfEventsFile2)
+		return numOfEventsFile1;
+	else
+		return numOfEventsFile2;
+}
+
 ushort GetStartIndex(unsigned int layerIndex){
 	return GetStartEndIndex(layerIndex,true);
 }

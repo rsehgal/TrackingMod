@@ -77,6 +77,7 @@ extern TF1* GetMuonPeakFitFormula(std::string barName);
 extern TVector3 GetTVector3(lite_interface::Point3D *start, lite_interface::Point3D *end);
 extern TVector3 GetTVector3(lite_interface::Point3D *pt);
 
+extern unsigned int NumOfEventsToRead(std::string file1, std::string file2, std::string treeName);
 
 class HelperFunctions {
 public:

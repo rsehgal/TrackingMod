@@ -170,6 +170,10 @@ target_link_libraries(MuonTrackAnalysis_SimplestSetup ${ROOT_LIBRARIES} Tracklib
 add_executable(MuonTrackAnalysis_SimplestSetup_Pixels test/MuonTrackAnalysis_SimplestSetup_Pixels.cpp ${sources} ${headers})
 target_link_libraries(MuonTrackAnalysis_SimplestSetup_Pixels ${ROOT_LIBRARIES} Tracklib)
 
+add_executable(MuonTrackAnalysis_SimplestSetup_Pixels_Compare test/MuonTrackAnalysis_SimplestSetup_Pixels_Compare.cpp ${sources} ${headers})
+target_link_libraries(MuonTrackAnalysis_SimplestSetup_Pixels_Compare ${ROOT_LIBRARIES} Tracklib)
+
+
 add_executable(Rollover_Inspection test/Rollover_Inspection.cpp ${sources} ${headers})
 target_link_libraries(Rollover_Inspection ${ROOT_LIBRARIES} Tracklib)
 
@@ -243,4 +247,7 @@ target_link_libraries(ReadCalibData3 ${ROOT_LIBRARIES} Tracklib)
 
 add_executable(TestWritingVecOfStruct test/TestWritingVecOfStruct.cpp ${sources} ${headers})
 target_link_libraries(TestWritingVecOfStruct ${ROOT_LIBRARIES} Tracklib)
+
+add_executable(ReadNumOfEvents test/coreHelpers/ReadNumOfEvents.cpp ${sources} ${headers})
+target_link_libraries(ReadNumOfEvents ${ROOT_LIBRARIES} Tracklib)
 
