@@ -79,6 +79,8 @@ extern TVector3 GetTVector3(lite_interface::Point3D *pt);
 
 extern unsigned int NumOfEventsToRead(std::string file1, std::string file2, std::string treeName);
 
+extern std::string GenerateSubFileName(char *exeName, char *processedFileName);
+extern std::string GenerateSubFileName(std::string exeName, std::string processedFileName);
 class HelperFunctions {
 public:
 	HelperFunctions();
