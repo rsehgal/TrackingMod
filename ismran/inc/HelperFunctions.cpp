@@ -134,7 +134,8 @@ std::vector<lite_interface::SingleMuonTrack*> GetMuonTracksVector(std::string fi
 
 	if(numOfTracks > 0)
 		nentries = numOfTracks;
-        for (Long64_t i=0; i<nentries;i++) {
+	Long64_t i = 0 ;
+        for (i=0; i<nentries;i++) {
 
                 nbytes += trackTree->GetEntry(i);
                 if(!(i % 1000000) && i!=0){
@@ -149,6 +150,7 @@ std::vector<lite_interface::SingleMuonTrack*> GetMuonTracksVector(std::string fi
 
                 smtVec.push_back(new lite_interface::SingleMuonTrack(*smt));
         }
+	std::cout << "Number of Muon Tracks Read from GetMuonTracksVector function : " << i <<std::endl;
 
 	return smtVec;
 

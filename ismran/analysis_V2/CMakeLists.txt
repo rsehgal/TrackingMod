@@ -215,6 +215,9 @@ target_link_libraries(MuonTrackAnalysis_Anticoincidence ${ROOT_LIBRARIES} Trackl
 add_executable(MuonTrackAnalysis_CoinicidenceCountBetweenTopAndBottomLayer test/MuonTrackAnalysis_CoinicidenceCountBetweenTopAndBottomLayer.cpp ${sources} ${headers})
 target_link_libraries(MuonTrackAnalysis_CoinicidenceCountBetweenTopAndBottomLayer ${ROOT_LIBRARIES} Tracklib)
 
+add_executable(MuonTrackAnalysis_CoincidenceSimplified test/MuonTrackAnalysis_CoincidenceSimplified.cpp ${sources} ${headers})
+target_link_libraries(MuonTrackAnalysis_CoincidenceSimplified ${ROOT_LIBRARIES} Tracklib)
+
 add_executable(MuonTrackAnalysis_HitPointOnLayers test/MuonTrackAnalysis_HitPointOnLayers.cpp ${sources} ${headers})
 target_link_libraries(MuonTrackAnalysis_HitPointOnLayers ${ROOT_LIBRARIES} Tracklib)
 
@@ -250,4 +253,11 @@ target_link_libraries(TestWritingVecOfStruct ${ROOT_LIBRARIES} Tracklib)
 
 add_executable(ReadNumOfEvents test/coreHelpers/ReadNumOfEvents.cpp ${sources} ${headers})
 target_link_libraries(ReadNumOfEvents ${ROOT_LIBRARIES} Tracklib)
+
+add_executable(MuonTrackAnalysis_CoreTest test/MuonTrackAnalysis_CoreTest.cpp ${sources} ${headers})
+target_link_libraries(MuonTrackAnalysis_CoreTest ${ROOT_LIBRARIES} Tracklib)
+
+add_executable(MuonTrackAnalysis_HitPointDisplacement test/MuonTrackAnalysis_HitPointDisplacement.cpp ${sources} ${headers})
+target_link_libraries(MuonTrackAnalysis_HitPointDisplacement ${ROOT_LIBRARIES} Tracklib)
+
 

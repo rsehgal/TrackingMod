@@ -176,6 +176,7 @@ bool SingleMuonTrack::HitInRequiredLayers(){
 		return hitInRequiredLayers;
 }
 
+#if(0)
 bool SingleMuonTrack::HitInRequiredLayers(std::vector<unsigned int> reqLayersVec){
 // return fHitInRequiredLayers;
 	std::vector<unsigned int> vecOfHittedLayers;
@@ -198,6 +199,25 @@ bool SingleMuonTrack::HitInRequiredLayers(std::vector<unsigned int> reqLayersVec
 		//std::cout << "*************************************" << std::endl;
 		for(unsigned int i = 0 ; i < reqLayersVec.size() ; i++){
 			hitInRequiredLayers &= (vecOfHittedLayers[reqLayersVec[i]] > 0);
+		}
+
+		return hitInRequiredLayers;
+}
+#endif
+bool SingleMuonTrack::HitInRequiredLayers(std::vector<unsigned int> reqLayersVec){
+		bool hitInRequiredLayers = true;
+		for(unsigned int i = 0 ; i < reqLayersVec.size() ; i++){
+			bool hitInCurrentLayer = false;
+			for(unsigned int index = 0 ; index < size() ; index++){
+				hitInCurrentLayer |= (fSingleMuonTrack[index]->GetLayerIndex() == reqLayersVec[i]);
+	                        if(hitInCurrentLayer)
+        	                        break;
+
+			}
+
+			hitInRequiredLayers &= hitInCurrentLayer;
+			if(!hitInRequiredLayers)
+				break;
 		}
 
 		return hitInRequiredLayers;
@@ -560,6 +580,8 @@ bool SingleMuonTrack::CheckTrackForRequiredScintillators(std::vector<unsigned in
 				break;
 		}
 		exist &= existLocal;
+		if(!exist)
+			break;
 	}
 	return exist;
 }
