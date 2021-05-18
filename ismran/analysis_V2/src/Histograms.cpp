@@ -88,7 +88,7 @@ Histograms::Histograms(std::string barName, unsigned int barIndex)
   fhistQMeanCorrected =
       new TH1D((barName + "-QMeanCorrected").c_str(), (barName + "-QMeanCorrected").c_str(), nbins, 0, 40);
   fhistDelTvsZ =
-      new TH2F((barName + "-DelTvsZ").c_str(), (barName + "-DelTvsZ").c_str(), 200, -25., 25., 200, -100., 100.);
+      new TH2F((barName + "-DelTvsZ").c_str(), (barName + "-DelTvsZ").c_str(), 500, -25., 25., 500, -100., 100.);
 }
 
 void Histograms::FillHistogram(lite_interface::ScintillatorBar_V2 *scintBar)

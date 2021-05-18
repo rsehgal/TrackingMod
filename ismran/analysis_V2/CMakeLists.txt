@@ -260,4 +260,7 @@ target_link_libraries(MuonTrackAnalysis_CoreTest ${ROOT_LIBRARIES} Tracklib)
 add_executable(MuonTrackAnalysis_HitPointDisplacement test/MuonTrackAnalysis_HitPointDisplacement.cpp ${sources} ${headers})
 target_link_libraries(MuonTrackAnalysis_HitPointDisplacement ${ROOT_LIBRARIES} Tracklib)
 
+add_executable(MuonTrackAnalysis_SystemHealth test/MuonTrackAnalysis_SystemHealth.cpp ${sources} ${headers})
+target_link_libraries(MuonTrackAnalysis_SystemHealth ${ROOT_LIBRARIES} Tracklib)
+
 
