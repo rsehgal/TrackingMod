@@ -121,6 +121,8 @@ G4VPhysicalVolume *MyDetectorConstruction::Construct() {
       std::cout << xval << "," << yval << "," << zval << std::endl;
 
 // vecOfScintXYCenter
+// vecOfLayersOrientation
+
 #define SPLITTED_SETUP
 #ifdef SPLITTED_SETUP
 #ifndef CROSS_GEOMETRY
@@ -128,12 +130,14 @@ G4VPhysicalVolume *MyDetectorConstruction::Construct() {
                         logicalPsBar, "PhysicalPsBar-" + std::to_string(xindex) + "-" + std::to_string(yindex),
                         logicWorld, false, counter, checkOverlaps);
 #else
-      if (!(yindex % 2)) //&& yindex == 1)
-        new G4PVPlacement(0, G4ThreeVector(xval, yval, zval), logicalPsBar,
+      //if (!(yindex % 2)) //&& yindex == 1)
+
+	if(vecOfLayersOrientation[yindex])
+        	new G4PVPlacement(0, G4ThreeVector(vecOfScintXYCenter[counter].x * cm, vecOfScintXYCenter[counter].y * cm, zval), logicalPsBar,
                           "PhysicalPsBar-" + std::to_string(xindex) + "-" + std::to_string(yindex), logicWorld, false,
                           counter, checkOverlaps);
       else { //  if(yindex == 4)
-        new G4PVPlacement(yRot, G4ThreeVector(zval, yval, xval), logicalPsBar,
+        new G4PVPlacement(yRot, G4ThreeVector(zval,vecOfScintXYCenter[counter].y * cm, vecOfScintXYCenter[counter].x * cm) , logicalPsBar,
                           "PhysicalPsBar-" + std::to_string(xindex) + "-" + std::to_string(yindex), logicWorld, false,
                           counter, checkOverlaps);
       }

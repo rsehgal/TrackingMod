@@ -33,6 +33,7 @@ extern std::vector<int> vecOfSourcePositions;
 extern std::vector<std::string> sequentialBarNames;
 extern std::vector<unsigned int> vecOfPeakPos;
 extern std::vector<double> vecOfLayersYPos;
+extern std::vector<bool> vecOfLayersOrientation;
 extern double GetYOfLayer(unsigned int layerIndex);
 
 struct Point2D{

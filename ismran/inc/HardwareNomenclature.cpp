@@ -237,6 +237,13 @@ std::vector<std::string> sequentialBarNames = {
 std::vector<Point2D> vecOfScintXYCenter;
 std::vector<double> vecOfLayersYPos;
 /*
+** Vector of orientation of different layers
+**
+** Oblong -> true
+** Cross  -> false
+*/
+std::vector<bool> vecOfLayersOrientation = {true, false, true, false, true, false, true, true, false, true};
+/*
 //Suitable when there is no split
 void GenerateScintMatrixXYCenters(){
         for(unsigned int i = 0 ; i < numOfLayers ; i++){
