@@ -26,30 +26,31 @@
 #include <iostream>
 #include <utility>
 
-int MySD::stepNum = 0;
+int MySD::stepNum               = 0;
 int MySD::numOfParticlesReached = 0;
-unsigned int MySD::evNo=0;
-std::vector< std::vector<lite_interface::ScintillatorBar_V2*> > MySD::eventsVec;
-std::vector< lite_interface::SingleMuonTrack* > MySD::muonTrackVec;
+unsigned int MySD::evNo         = 0;
+std::vector<std::vector<lite_interface::ScintillatorBar_V2 *>> MySD::eventsVec;
+std::vector<lite_interface::SingleMuonTrack *> MySD::muonTrackVec;
 unsigned int MySD::numOfStoppedParticles = 0;
-//std::vector<ScintillatorBar_V2*> MySD::psBarVec;
+// std::vector<ScintillatorBar_V2*> MySD::psBarVec;
 unsigned long int MySD::muonNum = -1;
 std::vector<G4ThreeVector> MySD::exactHitVector;
-double MySD::initialEnergy = 0;
+double MySD::initialEnergy   = 0;
 double MySD::depositedEnergy = 0;
-bool MySD::enteredMatrix = false;
-std::vector<std::pair<std::string,G4ThreeVector>> MySD::vecOfPairs;
+bool MySD::enteredMatrix     = false;
+std::vector<std::pair<std::string, G4ThreeVector>> MySD::vecOfPairs;
 double MySD::angle = -1.50;
 
-G4ThreeVector FindExactHitPoint(std::string barName){
-	for(unsigned short i = 0 ; i < MySD::vecOfPairs.size() ; i++){
-		if(MySD::vecOfPairs[i].first == barName){
-			return MySD::vecOfPairs[i].second;
-		}
-	}
+G4ThreeVector FindExactHitPoint(std::string barName)
+{
+  for (unsigned short i = 0; i < MySD::vecOfPairs.size(); i++) {
+    if (MySD::vecOfPairs[i].first == barName) {
+      return MySD::vecOfPairs[i].second;
+    }
+  }
 }
 
-bool verbose = false;
+bool verbose = true;
 // std::vector<ScintillatorBar*> MySD::eventsVec2;
 
 /*
@@ -58,345 +59,319 @@ bool verbose = false;
  */
 
 /*MySD::MySD() {
-	// TODO Auto-generated constructor stub
+  // TODO Auto-generated constructor stub
 
 }*/
 
-void MySD::Print(){
-		if(0){
-		std::cout << "9999999999 Printing eventsVec 999999999" << std::endl;
-		for(unsigned int i = 0 ; i < eventsVec.size() ; i++){
-			std::cout << "@@@@@@@ Printing event num : " << i <<" @@@@@@@" << std::endl;
-			for(unsigned int j = 0 ; j < eventsVec[i].size() ; j++){
-				eventsVec[i][j]->Print();
-			}
-		}
-		}
-	}
-
-MySD::~MySD() {
-	// TODO Auto-generated destructor stub
+void MySD::Print()
+{
+  if (0) {
+    std::cout << "9999999999 Printing eventsVec 999999999" << std::endl;
+    for (unsigned int i = 0; i < eventsVec.size(); i++) {
+      std::cout << "@@@@@@@ Printing event num : " << i << " @@@@@@@" << std::endl;
+      for (unsigned int j = 0; j < eventsVec[i].size(); j++) {
+        eventsVec[i][j]->Print();
+      }
+    }
+  }
 }
 
-void MySD::PrintVectorOfPsBars(){
-  if(verbose)
-	  std::cout << "===== Printing Vector of PsBars =======" << std::endl;
-  for (unsigned int i = 0 ; i < psBarVec.size() ; i++){
+MySD::~MySD()
+{
+  // TODO Auto-generated destructor stub
+}
+
+void MySD::PrintVectorOfPsBars()
+{
+  if (verbose) std::cout << "===== Printing Vector of PsBars =======" << std::endl;
+  for (unsigned int i = 0; i < psBarVec.size(); i++) {
     psBarVec[i]->Print();
   }
 }
 
-void MySD::InitializeVectorOfPsBars(){
+void MySD::InitializeVectorOfPsBars()
+{
 
-	if(verbose)
-		std::cout << "Initializing Vector of Scintillator Bars for the current event........." << std::endl;
-    if(psBarVec.size()){
-  	for(unsigned int i = 0 ; i < psBarVec.size() ; i++){
-  		delete psBarVec[i];
-  	}
-  	psBarVec.clear();
+  if (verbose) std::cout << "Initializing Vector of Scintillator Bars for the current event........." << std::endl;
+  if (psBarVec.size()) {
+    for (unsigned int i = 0; i < psBarVec.size(); i++) {
+      delete psBarVec[i];
+    }
+    psBarVec.clear();
   }
-	for (unsigned int layerNum = 0 ; layerNum < numOfLayers ; layerNum++){
-		for(unsigned int index = 0 ;  index < numOfBarsInEachLayer ; index++){
-			unsigned int barIndex = numOfBarsInEachLayer*layerNum+index;
-			psBarVec.push_back(new lite_interface::ScintillatorBar_V2(barIndex));
-		}
-	}
+  for (unsigned int layerNum = 0; layerNum < numOfLayers; layerNum++) {
+    for (unsigned int index = 0; index < numOfBarsInEachLayer; index++) {
+      unsigned int barIndex = numOfBarsInEachLayer * layerNum + index;
+      psBarVec.push_back(new lite_interface::ScintillatorBar_V2(barIndex));
+    }
+  }
 }
 
-MySD::MySD(const G4String& name, const G4String& hitsCollectionName)
- : G4VSensitiveDetector(name),
-   fHitsCollection(NULL)
+MySD::MySD(const G4String &name, const G4String &hitsCollectionName) : G4VSensitiveDetector(name), fHitsCollection(NULL)
 {
   collectionName.insert(hitsCollectionName);
 }
 
-void MySD::Initialize(G4HCofThisEvent* hce)
+void MySD::Initialize(G4HCofThisEvent *hce)
 {
   // Create hits collection
-  //muonNum++;
-	//if(verbose){
-	exactHitVector.clear();
-	initialEnergy = 0.;
-	depositedEnergy = 0.;
-	enteredMatrix = false;
+  // muonNum++;
+  // if(verbose){
+  exactHitVector.clear();
+  initialEnergy   = 0.;
+  depositedEnergy = 0.;
+  enteredMatrix   = false;
 
-	if(false){
-		std::cout <<" @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@" << std::endl;
-		std::cout <<"Processing Ev No : " << evNo << std::endl;
-		std::cout<<"RAMAN Entered Initialize Of SD" << std::endl;
-	}
-	InitializeVectorOfPsBars();
-	reachedSensitiveRegion = false;
+  if (false) {
+    std::cout << " @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@" << std::endl;
+    std::cout << "Processing Ev No : " << evNo << std::endl;
+    std::cout << "RAMAN Entered Initialize Of SD" << std::endl;
+  }
+  InitializeVectorOfPsBars();
+  reachedSensitiveRegion = false;
 
-	//Tomography::EventBreak::instance()->fEffEvNo++;
+  // Tomography::EventBreak::instance()->fEffEvNo++;
   numOfParticlesReached++;
-  fHitsCollection
-    = new MyHitsCollection(SensitiveDetectorName, collectionName[0]);
+  fHitsCollection = new MyHitsCollection(SensitiveDetectorName, collectionName[0]);
 
   // Add this collection in hce
 
-  G4int hcID
-    = G4SDManager::GetSDMpointer()->GetCollectionID(collectionName[0]);
-  hce->AddHitsCollection( hcID, fHitsCollection );
+  G4int hcID = G4SDManager::GetSDMpointer()->GetCollectionID(collectionName[0]);
+  hce->AddHitsCollection(hcID, fHitsCollection);
 
   evNo++;
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-G4bool MySD::ProcessHits(G4Step* aStep,
-                                     G4TouchableHistory*)
+G4bool MySD::ProcessHits(G4Step *aStep, G4TouchableHistory *)
 {
-//	std::cout<<"SEHGAL Entered ProcessHits Of SD" << std::endl;
+  //	std::cout<<"SEHGAL Entered ProcessHits Of SD" << std::endl;
   // energy deposit
 
-	//std::cout << "EvNo. : " << evNo <<" : Injected Energy : " << initialEnergy << std::endl;
+  // std::cout << "EvNo. : " << evNo <<" : Injected Energy : " << initialEnergy << std::endl;
 
-  //if (edep==0.) return false;
+  // if (edep==0.) return false;
 
-  MyHit* newHit = new MyHit();
+  MyHit *newHit = new MyHit();
 
-  G4Track* track = aStep->GetTrack();
-  //initialEnergy = track->GetVertexKineticEnergy();
-  //initialEnergy = track->GetTotalEnergy();
-  bool isPrimary = (track->GetParentID() == 0 );
+  G4Track *track = aStep->GetTrack();
+  // initialEnergy = track->GetVertexKineticEnergy();
+  // initialEnergy = track->GetTotalEnergy();
+  bool isPrimary = (track->GetParentID() == 0);
 
   G4TouchableHandle touchable;
   G4TouchableHandle touchable1;
-  if(isPrimary){
+  if (isPrimary) {
 
-  newHit->SetPosition(aStep->GetPostStepPoint()->GetPosition());
-  touchable= aStep->GetPreStepPoint()->GetTouchableHandle();
-  touchable1= aStep->GetPostStepPoint()->GetTouchableHandle();
-  std::string psBar = std::string(touchable1->GetVolume(0)->GetName());
-  std::string psSubBarName = psBar.substr(0,13);
+    newHit->SetPosition(aStep->GetPostStepPoint()->GetPosition());
+    touchable                = aStep->GetPreStepPoint()->GetTouchableHandle();
+    touchable1               = aStep->GetPostStepPoint()->GetTouchableHandle();
+    std::string psBar        = std::string(touchable1->GetVolume(0)->GetName());
+    std::string psSubBarName = psBar.substr(0, 13);
 
-  if(0){
-	  std::cout <<" @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@" << std::endl;
-	  std::cout <<" @@@@@@ RAMAN Processing Ev No : " << evNo << " @@@@@@@@@@" << std::endl;
-	  std::cout <<" @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@" << std::endl;
-	  std::cout << "SUBSTR : " << psSubBarName << " : " << touchable->GetVolume(0)->GetName() << std::endl;
-  }
+    if (0) {
+      std::cout << " @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@" << std::endl;
+      std::cout << " @@@@@@ RAMAN Processing Ev No : " << evNo << " @@@@@@@@@@" << std::endl;
+      std::cout << " @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@" << std::endl;
+      std::cout << "SUBSTR : " << psSubBarName << " : " << touchable->GetVolume(0)->GetName() << std::endl;
+    }
 
+    // if(std::string(touchable->GetVolume(0)->GetName()) ==  "World" && psSubBarName=="PhysicalPsBar"){
+    if (psSubBarName == "PhysicalPsBar") {
+      if (!enteredMatrix) {
+        // std::cout << "================== Entering in Top layer.............. With Energy : " <<
+        // track->GetKineticEnergy() <<  " : ===============  : Prestep is at " << touchable->GetVolume(0)->GetName() <<
+        // std::endl;
+        initialEnergy = track->GetKineticEnergy();
+        enteredMatrix = true;
+      }
+    }
+    newHit->SetName(touchable->GetVolume(0)->GetName());
+    newHit->SetCopyNum(touchable->GetVolume(0)->GetCopyNo());
+    G4String particleName = track->GetDefinition()->GetParticleName();
 
-  //if(std::string(touchable->GetVolume(0)->GetName()) ==  "World" && psSubBarName=="PhysicalPsBar"){
-  if(psSubBarName=="PhysicalPsBar"){
-	  if(!enteredMatrix)
-		  //std::cout << "================== Entering in Top layer.............. With Energy : " << track->GetKineticEnergy() <<  " : ===============  : Prestep is at " << touchable->GetVolume(0)->GetName() << std::endl;
-	  	  initialEnergy = track->GetKineticEnergy();
-	  	  enteredMatrix = true;
-  }
-  newHit->SetName(touchable->GetVolume(0)->GetName());
-  newHit->SetCopyNum(touchable->GetVolume(0)->GetCopyNo());
-  G4String particleName=track->GetDefinition()->GetParticleName() ;
+    if (aStep->GetPreStepPoint()->GetStepStatus() == fGeomBoundary) {
+      G4ThreeVector hitPt = aStep->GetPreStepPoint()->GetPosition();
+      exactHitVector.push_back(hitPt);
+      vecOfPairs.push_back(
+          std::pair<std::string, G4ThreeVector>(std::string(touchable->GetVolume(0)->GetName()), hitPt));
+      psBarVec[touchable->GetCopyNumber()]->fExactHitPosition->SetXYZ(hitPt.getX() / 10., hitPt.getY() / 10.,
+                                                                      hitPt.getZ() / 10.);
+      (psBarVec[touchable->GetCopyNumber()]->hitsVectorInAnEventInABar).push_back(new lite_interface::Point3D(hitPt.getX(),hitPt.getY(),hitPt.getZ()));
+      // std::cout << "Copy No. of Touchable : " << touchable->GetCopyNumber() << std::endl;
+      //	 / std::cout <<  hitPt << std::endl;
+    }
 
-  if(aStep->GetPreStepPoint()->GetStepStatus()==fGeomBoundary){
-	  G4ThreeVector hitPt = aStep->GetPreStepPoint()->GetPosition();
-	  exactHitVector.push_back(hitPt);
-	  vecOfPairs.push_back(std::pair<std::string,G4ThreeVector>(std::string(touchable->GetVolume(0)->GetName()),hitPt));
-	  psBarVec[touchable->GetCopyNumber()]->fExactHitPosition->SetXYZ(hitPt.getX()/10.,hitPt.getY()/10.,hitPt.getZ()/10.);
-	  //std::cout << "Copy No. of Touchable : " << touchable->GetCopyNumber() << std::endl;
-//	 / std::cout <<  hitPt << std::endl;
+    if (verbose) {
+      // if(evNo < 20)
+      if (false) {
+        std::cout << "Injected particle name : " << particleName << std::endl
+                  << "Geant4 Energy Conventions : "
+                     "  : MeV : "
+                  << MeV << " : KeV : " << keV << " : GeV : " << GeV << std::endl;
+      }
+    }
+    // if(verbose)
 
-  }
+    /*if(evNo < 20)
+      std::cout << "Energy deposited in current step in : "
+              << touchable->GetVolume(0)->GetName()
+          << " : " << aStep->GetTotalEnergyDeposit() << " : Current Energy : " << track->GetKineticEnergy()
+      <<std::endl;*/
+    newHit->SetEnergyDeposited(aStep->GetTotalEnergyDeposit());
+    fHitsCollection->insert(newHit);
 
-  if(verbose)
-  //if(evNo < 20)
-	  std::cout << particleName << "  : MeV : " << MeV << " : KeV : " << keV << " : GeV : " << GeV << std::endl;
-  //if(verbose)
-
-
-  /*if(evNo < 20)
-	  std::cout << "Energy deposited in current step in : "
-	  	  	  << touchable->GetVolume(0)->GetName()
-			  << " : " << aStep->GetTotalEnergyDeposit() << " : Current Energy : " << track->GetKineticEnergy() <<std::endl;*/
-  newHit->SetEnergyDeposited(aStep->GetTotalEnergyDeposit());
-  fHitsCollection->insert( newHit );
-
-	  if(track->GetKineticEnergy() == 0){
-		numOfStoppedParticles++;
-	  }
+    if (track->GetKineticEnergy() == 0) {
+      numOfStoppedParticles++;
+    }
   }
   //  std::cout << "New Hit position : " << newHit->GetPosition() << std::endl;
 
   return true;
 }
 
-void MySD::EndOfEvent(G4HCofThisEvent*)
+void MySD::EndOfEvent(G4HCofThisEvent *)
 {
-	/*
-	 * Angles that we want to store in Root file
-	 */
-	double angleCRY = -1.;
-	double angleReconsLinear = -1.;
-	double angleReconsParam = 0.;
-	double angleReconsMean = 0.;
-	double angleReconsExact = 0;
+  /*
+   * Angles that we want to store in Root file
+   */
+  double angleCRY          = -1.;
+  double angleReconsLinear = -1.;
+  double angleReconsParam  = 0.;
+  double angleReconsMean   = 0.;
+  double angleReconsExact  = 0;
 
-	//COMMENTING FOR THE TIME BEING
-	angleCRY = angle;
+  // COMMENTING FOR THE TIME BEING
+  angleCRY = angle;
 
-	//[p0]*sin(x)*cos(x)*pow(cos(x),[p1])
+  //[p0]*sin(x)*cos(x)*pow(cos(x),[p1])
 
-	if(verbose){
-  std::cout <<"++++"<<std::endl;
-  std::cout << "No of Hits : " << fHitsCollection->entries() << std::endl;
-  std::cout<<"RAMAN Entered EndOfEvent Of SD" << std::endl;
-	}
-  //if ( verboseLevel>1 ) {
-  if(1){
-     G4int nofHits = fHitsCollection->entries();
-     if(verbose)
-     G4cout << G4endl
-            << "-------->Hits Collection: in this event there are " << nofHits
-            << " hits  " << G4endl;
+  if (verbose) {
+    std::cout << "++++" << std::endl;
+    std::cout << "No of Hits : " << fHitsCollection->entries() << std::endl;
+    std::cout << "RAMAN Entered EndOfEvent Of SD" << std::endl;
+  }
+  // if ( verboseLevel>1 ) {
+  if (1) {
+    G4int nofHits = fHitsCollection->entries();
+    if (verbose)
+      G4cout << G4endl << "-------->Hits Collection: in this event there are " << nofHits << " hits  " << G4endl;
 
-     //std::cout << "No of Hits in Event num : " << evNo << " : " << nofHits << std::endl;
-     //std::cout << "Dissecting event no " << evNo << " : with num of hits : " << nofHits << " : Angle : " << angle << " .................." << std::endl;
-     for ( G4int i=0; i<nofHits; i++ ) {
+    // std::cout << "No of Hits in Event num : " << evNo << " : " << nofHits << std::endl;
+    // std::cout << "Dissecting event no " << evNo << " : with num of hits : " << nofHits << " : Angle : " << angle << "
+    // .................." << std::endl;
+    for (G4int i = 0; i < nofHits; i++) {
       (*fHitsCollection)[i]->Print();
-      psBarVec[(*fHitsCollection)[i]->GetCopyNum()]->fBarHitted=true;
+      psBarVec[(*fHitsCollection)[i]->GetCopyNum()]->fBarHitted = true;
 
       /*G4ThreeVector firstExactEntryHit =  FindExactHitPoint(std::string((*fHitsCollection)[i]->GetName()));
       //std::cout << (*fHitsCollection)[i]->GetName() << " : " << firstExactEntryHit << std::endl;
       std::cout << "Volume Name : " << (*fHitsCollection)[i]->GetName()
-    		    << " : Copy Num : " << (*fHitsCollection)[i]->GetCopyNum()
-				<< " : Exact Hit Point : " << firstExactEntryHit
-				<< std::endl;
+            << " : Copy Num : " << (*fHitsCollection)[i]->GetCopyNum()
+        << " : Exact Hit Point : " << firstExactEntryHit
+        << std::endl;
       //std::cout << (*fHitsCollection)[i]->GetName() << " : " << firstExactEntryHit << std::endl;
       psBarVec[(*fHitsCollection)[i]->GetCopyNum()]->fExactHitPosition->SetXYZ(firstExactEntryHit.getX()/10.,firstExactEntryHit.getY()/10.,firstExactEntryHit.getZ()/10.);
        */
       psBarVec[(*fHitsCollection)[i]->GetCopyNum()]->fQlongMean += (*fHitsCollection)[i]->GetEnergyDeposited();
       G4ThreeVector hitPosition = (*fHitsCollection)[i]->GetPosition();
-      //G4cout << "MuonNum : " << muonNum<< " : BarName : " << vecOfBarsNamess[(*fHitsCollection)[i]->GetCopyNum()]
-         //    << " : G4Hit Position : " <<  hitPosition << G4endl;
-      (psBarVec[(*fHitsCollection)[i]->GetCopyNum()]->hitsVectorInAnEventInABar).push_back(
-        new lite_interface::Point3D(hitPosition.x(),hitPosition.y(),hitPosition.z())
-      );
-
+      // G4cout << "MuonNum : " << muonNum<< " : BarName : " << vecOfBarsNamess[(*fHitsCollection)[i]->GetCopyNum()]
+      //    << " : G4Hit Position : " <<  hitPosition << G4endl;
+      (psBarVec[(*fHitsCollection)[i]->GetCopyNum()]->hitsVectorInAnEventInABar)
+          .push_back(new lite_interface::Point3D(hitPosition.x(), hitPosition.y(), hitPosition.z()));
     }
 
     /*-------------------------------------*/
     /*
      *Loop to maintain the correct muon numbers
      */
-    for(unsigned int i = 0 ; i < psBarVec.size() ; i++){
-      if(psBarVec[i]->fBarHitted){
+    for (unsigned int i = 0; i < psBarVec.size(); i++) {
+      if (psBarVec[i]->fBarHitted) {
         muonNum++;
         break;
       }
     }
 
-    //std::cout << "Length of HIT POINTs in an event : " << nofHits << std::endl;
-    std::vector<lite_interface::ScintillatorBar_V2*> onlyHittedBarVec;
-    //std::cout << "==================================" << std::endl;
-    for(unsigned int i = 0 ; i < psBarVec.size() ; i++){
-      if(psBarVec[i]->fBarHitted){
-    	 // std::cout << "BAR : " << i << "  Hitted : Energy Deposited : " << psBarVec[i]->GetQLongMean() << std::endl;
+    // std::cout << "Length of HIT POINTs in an event : " << nofHits << std::endl;
+    std::vector<lite_interface::ScintillatorBar_V2 *> onlyHittedBarVec;
+    // std::cout << "==================================" << std::endl;
+    for (unsigned int i = 0; i < psBarVec.size(); i++) {
+      if (psBarVec[i]->fBarHitted) {
+        // std::cout << "BAR : " << i << "  Hitted : Energy Deposited : " << psBarVec[i]->GetQLongMean() << std::endl;
 
-    	// std::cout <<"Going to insert hitted bar with index : " <<i <<  __FILE__ << " : "  << __LINE__ << std::endl;
+        // std::cout <<"Going to insert hitted bar with index : " <<i <<  __FILE__ << " : "  << __LINE__ << std::endl;
         lite_interface::ScintillatorBar_V2 *scintBar = new lite_interface::ScintillatorBar_V2(*psBarVec[i]);
         /*
          * PUTTING THE CUT ON THE ENERGY DEPOSITED
          *
          * tHIS GIVES SIMILAR MULTIPLICITY PICTURES AS WE ARE GETTING FROM DATA
          */
-        //if(scintBar->qlongMeanCorrected > 10000 && scintBar->qlongMeanCorrected < 35000){
+        // if(scintBar->qlongMeanCorrected > 10000 && scintBar->qlongMeanCorrected < 35000){
 
-        //DO WE REALLY NEED BELOW MENTIONED IF CONDITION, OR IT SHOULD BE HANDLED AT ANALYSIS LEVEL
-        //if(scintBar->GetQMeanCorrected() > 10 && scintBar->GetQMeanCorrected() < 35)
+        // DO WE REALLY NEED BELOW MENTIONED IF CONDITION, OR IT SHOULD BE HANDLED AT ANALYSIS LEVEL
+        // if(scintBar->GetQMeanCorrected() > 10 && scintBar->GetQMeanCorrected() < 35)
         {
-        	//onlyHittedBarVec.push_back(scintBar);
+          // onlyHittedBarVec.push_back(scintBar);
 
-        	//std::cout << "@@@@@@@@@@ Printing ScintBar : " ; scintBar->Print();
+          // std::cout << "@@@@@@@@@@ Printing ScintBar : " ; scintBar->Print();
 #ifdef USE_CALIBRATION
-       	scintBar->CalculateVariousPhysicalParameters(muonNum,B1RunAction::fCalib);
+          scintBar->CalculateVariousPhysicalParameters(muonNum, B1RunAction::fCalib);
 #else
-        scintBar->CalculateVariousPhysicalParameters(muonNum);
+          scintBar->CalculateVariousPhysicalParameters(muonNum);
 #endif
-        onlyHittedBarVec.push_back(scintBar);
-          //scintBar->CalculateVariousPhysicalParameters(muonNum,B1RunAction::fCalib);
+          onlyHittedBarVec.push_back(scintBar);
+          // scintBar->CalculateVariousPhysicalParameters(muonNum,B1RunAction::fCalib);
         }
-        if(onlyHittedBarVec.size() > 0){
-        	reachedSensitiveRegion |= true;
-          
+        if (onlyHittedBarVec.size() > 0) {
+          reachedSensitiveRegion |= true;
         }
       }
     }
 
-    //std::cout <<"++++++++++++++++++++++++++++++++++++++++++++++++++++++++++" << std::endl;
-    //verbose = true;
-    if(verbose){
-    //if(true){
-    std::cout<< "********** Printing onlyHittedBarVec ***********" << std::endl;
-    for(unsigned int i = 0 ; i < onlyHittedBarVec.size() ; i++){
-      onlyHittedBarVec[i]->Print();
-    }
-    //std::cout << "888888 Printing eventsVec2 888888888" << std::endl;
-    std::cout << "***********************************************" << std::endl;
+    // std::cout <<"++++++++++++++++++++++++++++++++++++++++++++++++++++++++++" << std::endl;
+    // verbose = true;
+    if (verbose) {
+      // if(true){
+      std::cout << "********** Printing onlyHittedBarVec ***********" << std::endl;
+      for (unsigned int i = 0; i < onlyHittedBarVec.size(); i++) {
+        onlyHittedBarVec[i]->Print();
+      }
+      // std::cout << "888888 Printing eventsVec2 888888888" << std::endl;
+      std::cout << "***********************************************" << std::endl;
     }
     eventsVec.push_back(onlyHittedBarVec);
     lite_interface::SingleMuonTrack *smt = new lite_interface::SingleMuonTrack(onlyHittedBarVec);
-    depositedEnergy = smt->GetEnergySum();
-    double exactHitZenithAngle = smt->GetZenithAngle_ExactHitPoint();
-    angleReconsExact = 3.14159-exactHitZenithAngle;
+    depositedEnergy                      = smt->GetEnergySum();
+    double exactHitZenithAngle           = smt->GetZenithAngle_ExactHitPoint();
+    angleReconsExact                     = 3.14159 - exactHitZenithAngle;
     /*if(exactHitZenithAngle > 0){
-    	angleCRY = angle;
+      angleCRY = angle;
     }*/
 
-
-    //smt->GetMean3DHitPointVector()
+    // smt->GetMean3DHitPointVector()
     angleReconsMean = 3.14159 - smt->GetZenithAngle_MeanHitPoint();
-    if(smt->size() > 8)
-    	angleReconsLinear = 3.14159 - smt->GetZenithAngle_Linear();
+    if (smt->size() > 8) angleReconsLinear = 3.14159 - smt->GetZenithAngle_Linear();
     angleReconsParam = 3.14159 - smt->GetZenithAngle_Param();
-    //angleReconsLinear = smt->GetZenithAngle_Linear();
+    // angleReconsLinear = smt->GetZenithAngle_Linear();
     /*
     angleReconsParam = smt->GetZenithAngle_Param();
     angleReconsMean = smt->GetZenithAngle_MeanHitPoint();
     angleReconsExact = smt->GetZenithAngle_ExactHitPoint();*/
-    //std::cout << "Size of Muon Track : " << (smt->fSingleMuonTrack).size() << std::endl;
-    if(reachedSensitiveRegion)
-    	muonTrackVec.push_back(smt);
+    // std::cout << "Size of Muon Track : " << (smt->fSingleMuonTrack).size() << std::endl;
+    if (reachedSensitiveRegion) muonTrackVec.push_back(smt);
     onlyHittedBarVec.clear();
-    /*if(!(Tomography::EventBreak::instance()->fEffEvNo % 10000) &&   Tomography::EventBreak::instance()->fEffEvNo != 0 && reachedSensitiveRegion){
-
-    	std::cout << "Processed : " << Tomography::EventBreak::instance()->fEffEvNo  << "  Events" << std::endl;
-    }*/
-
   }
 
   std::vector<double> xvec;
   std::vector<double> yvec;
   std::vector<double> zvec;
-  for(unsigned int i = 0 ; i < exactHitVector.size(); i++){
-	  xvec.push_back(exactHitVector[i].getX());
-	  yvec.push_back(exactHitVector[i].getY());
-	  zvec.push_back(exactHitVector[i].getZ());
-
-	  /*B1RunAction::xVec.push_back(exactHitVector[i].getX());
-	  B1RunAction::yVec.push_back(exactHitVector[i].getY());
-	  B1RunAction::zVec.push_back(exactHitVector[i].getZ());*/
-
+  for (unsigned int i = 0; i < exactHitVector.size(); i++) {
+    xvec.push_back(exactHitVector[i].getX());
+    yvec.push_back(exactHitVector[i].getY());
+    zvec.push_back(exactHitVector[i].getZ());
   }
-  //B1RunAction::fExactHitDataTree->Fill(xvec,yvec,zvec);
-  //B1RunAction::fExactHitDataTree->Fill(xvec,yvec,zvec,initialEnergy,depositedEnergy);
-  /*if(evNo < 20.){
-	  std::cout << "EvNo. : " << evNo <<" : Injected Energy : " << initialEnergy << std::endl;
-  }*/
-  //B1RunAction::fExactHitDataTree->Fill(xvec,yvec,zvec,initialEnergy,depositedEnergy,evNo);
-  B1RunAction::fExactHitDataTree->Fill(xvec,yvec,zvec,initialEnergy,depositedEnergy,evNo,angleCRY,angleReconsLinear, angleReconsParam, angleReconsMean, angleReconsExact);
-
-
-
-
-  //delete fHitsCollection;
-  //if(reachedSensitiveRegion)
-  //Tomography::EventBreak::instance()->fEffEvNo++;
-
- // std::cout << "DEBUG PRINTING>>>>>>>>>>>>>>>>>>>>>>>J::::::::::::::::K:POIK{PO{O{POL{L{" << std::endl;
-
-
+  // B1RunAction::fExactHitDataTree->Fill(xvec,yvec,zvec,initialEnergy,depositedEnergy,evNo);
+  B1RunAction::fExactHitDataTree->Fill(xvec, yvec, zvec, initialEnergy, depositedEnergy, evNo, angleCRY,
+                                       angleReconsLinear, angleReconsParam, angleReconsMean, angleReconsExact);
 }
-

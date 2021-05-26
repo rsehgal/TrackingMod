@@ -17,7 +17,7 @@
 #include "HardwareNomenclature.h"
 #include "MyDetectorConstruction.h"
 #include "MySD.h"
-#include <G4GDMLParser.hh>
+//#include <G4GDMLParser.hh>
 #include <G4RotationMatrix.hh>
 MyDetectorConstruction::MyDetectorConstruction() {}
 
@@ -36,7 +36,7 @@ G4VPhysicalVolume *MyDetectorConstruction::Construct() {
   //
   // World
   //
-  G4double world_sizeXYZ = 200 * cm;
+  G4double world_sizeXYZ = 500 * cm;
   G4double world_sizeXY = 1.2 * env_sizeXY;
   G4double world_sizeZ = 1.2 * env_sizeZ;
   G4Material *world_mat = nist->FindOrBuildMaterial("G4_AIR");

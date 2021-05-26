@@ -6,7 +6,8 @@
 #include "MyDetectorConstruction.h"
 #include "MyPrimaryGeneratorAction.h"
 #include "QBBC.hh"
-
+#include "G4VisExecutive.hh"
+#include "G4UIExecutive.hh"
 #ifdef G4VIS_USE
 #include "G4VisExecutive.hh"
 #endif
@@ -38,6 +39,10 @@
 #include "Randomize.hh"
 
 int main(int argc, char *argv[]) {
+G4UIExecutive* ui = 0;
+  if ( argc == 1 ) {
+    ui = new G4UIExecutive(argc, argv);
+  }
 
   GenerateScintMatrixXYCenters();
   lite_interface::IsSimulation = true;
@@ -65,17 +70,17 @@ int main(int argc, char *argv[]) {
 
   // User action initialization
   runManager->SetUserInitialization(new B1ActionInitialization());
-#ifdef G4VIS_USE
+//#ifdef G4VIS_USE
   // Visualization manager construction
   G4VisManager *visManager = new G4VisExecutive;
   // G4VisExecutive can take a verbosity argument - see /vis/verbose guidance.
   // G4VisManager* visManager = new G4VisExecutive("Quiet");
   visManager->Initialize();
-#endif
+//#endif
 
   // Get the pointer to the User Interface manager
   G4UImanager *UImanager = G4UImanager::GetUIpointer();
-
+/*
   if (argc > 1) {
     // execute an argument macro file if exist
     G4String command = "/control/execute ";
@@ -100,8 +105,24 @@ int main(int argc, char *argv[]) {
     delete ui;
 #endif
   }
+*/
+
+  // Process macro or start UI session
+  //
+  if ( ! ui ) {
+    // batch mode
+    G4String command = "/control/execute ";
+    G4String fileName = argv[1];
+    UImanager->ApplyCommand(command+fileName);
+  }
+  else {
+    // interactive mode
+    UImanager->ApplyCommand("/control/execute init_vis.mac");
+    ui->SessionStart();
+    delete ui;
+  }
 
   delete runManager;
-
+  delete visManager;
   return 0;
 }

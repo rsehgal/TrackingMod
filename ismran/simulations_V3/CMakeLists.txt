@@ -21,8 +21,15 @@ endif()
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${PROJECT_SOURCE_DIR}/cmake/modules)
 
 option(CRY "Enable CRY library for cosmic event generation" OFF)
+option(PRINT_EVENT_INFO "Printing some information from the event" OFF)
 option(USE_CALIBRATION "Use Calibration data for Sampling of time" OFF)
 option(CROSS_GEOMETRY "Simulation with Cross geometry" OFF)
+
+
+if(PRINT_EVENT_INFO)
+add_definitions(-DPRINT_EVENT_INFO)
+endif(PRINT_EVENT_INFO)
+
 
 if(CROSS_GEOMETRY)
 add_definitions(-DCROSS_GEOMETRY)
