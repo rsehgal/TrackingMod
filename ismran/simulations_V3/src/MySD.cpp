@@ -193,6 +193,7 @@ G4bool MySD::ProcessHits(G4Step *aStep, G4TouchableHistory *)
 
     if (aStep->GetPreStepPoint()->GetStepStatus() == fGeomBoundary) {
       G4ThreeVector hitPt = aStep->GetPreStepPoint()->GetPosition();
+      G4cout <<"G4 hitPoint : " << hitPt << G4endl;
       exactHitVector.push_back(hitPt);
       vecOfPairs.push_back(
           std::pair<std::string, G4ThreeVector>(std::string(touchable->GetVolume(0)->GetName()), hitPt));

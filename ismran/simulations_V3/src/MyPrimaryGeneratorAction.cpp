@@ -39,7 +39,7 @@ void MyPrimaryGeneratorAction::GeneratePrimaries(G4Event *event) {
   */
    //fParticleGun->SetParticlePosition(G4ThreeVector(50 * cm, 0., -120 * cm));
    //fParticleGun->GeneratePrimaryVertex(event);
-  double gunZ = 50*cm;
+  double gunZ = 80*cm;
   Muon *muon = new Muon(*lite_interface::MuonReader::instance()->GetMuon());
   B1RunAction::fEvNo++;
   if(!(B1RunAction::fEvNo % 10000))
