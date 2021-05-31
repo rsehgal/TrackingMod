@@ -69,6 +69,7 @@ include_directories(${PROJECT_SOURCE_DIR}/inc)
 include_directories(../..)
 include_directories(../inc)
 include_directories(../../base)
+include_directories(../ml)
 
 #ROOT_GENERATE_DICTIONARY(G__Tomo ../inc/Point3D.h LINKDEF ../inc/DictLinkDef.h)
 ROOT_GENERATE_DICTIONARY(G__Tomo ../inc/Point3D.h ../inc/ScintillatorBar_V2.h ../inc/SingleMuonTrack.h LINKDEF ../inc/DictLinkDef.h)
@@ -76,8 +77,8 @@ add_library(Tracklib SHARED ../src/ScintillatorBar_V2.cpp ../src/SingleMuonTrack
 target_link_libraries(Tracklib ${ROOT_LIBRARIES})
 
 
-file(GLOB sources ${PROJECT_SOURCE_DIR}/src/*.cpp  ../inc/*.cpp)
-file(GLOB headers ${PROJECT_SOURCE_DIR}/inc/*.h ../../base/Vector3D.h) 
+file(GLOB sources ${PROJECT_SOURCE_DIR}/src/*.cpp  ../inc/*.cpp ../ml/*.cpp)
+file(GLOB headers ${PROJECT_SOURCE_DIR}/inc/*.h ../../base/Vector3D.h ../ml/ml.h) 
 
 add_executable(AnalyzeData test/AnalyzeData.cpp ${sources} ${headers})
 target_link_libraries(AnalyzeData ${ROOT_LIBRARIES} ${TOMOLIB} Tracklib)

@@ -18,7 +18,7 @@
 #include <TSpectrum.h>
 #include "Histograms.h"
 #include <TH2F.h>
-
+#include "ml.h"
 int main(int argc, char *argv[])
 {
   GenerateScintMatrixXYCenters();
@@ -61,6 +61,10 @@ int main(int argc, char *argv[])
   //hist2D_Layer9_Exact->Write();
 #endif
   fp->Close();
+
+
+		std::cout << "$$$$$$$$$$$$$$  Going to Try ML Stuff $$$$$$$$$$$$$$$$$$" << std::endl;
+GenerateTrainingData(filename,8);
   // fApp->Run();
 
   return 0;
