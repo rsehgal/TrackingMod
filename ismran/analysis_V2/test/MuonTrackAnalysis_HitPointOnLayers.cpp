@@ -45,13 +45,17 @@ int main(int argc, char *argv[])
   ** Template of Filled histograms
   ** TH2F *hist2D_Layer0 = new TH2F("HitPointOnLayer_0","HitPointOnLayer_0",200,-50,50,200,-50,50);
   */
-  TH2F *hist2D_Layer8 = PlotHitPointOnLayer(smtVec, 8);
+  TH2F *hist2D_Layer8 = PlotHitPointOnLayer(smtVec, 3);
+#ifdef USE_FOR_SIMULATION
+  TH2F *hist2D_Layer8_Exact = PlotExactHitPointOnLayer(smtVec, 3);
+#endif
 
   std::string matWithExt = filename.substr(13);
   TFile *fp              = new TFile(("HitPattern" + matWithExt).c_str(), "RECREATE");
   fp->cd();
 
   hist2D_Layer8->Write();
+  hist2D_Layer8_Exact->Write();
   fp->Close();
   // fApp->Run();
 

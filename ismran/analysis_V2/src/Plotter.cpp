@@ -170,35 +170,69 @@ TH1F *PlotQ_0123(std::vector<lite_interface::ScintillatorBar_V2 *> scintBarVec, 
   return hist;
 }
 
-TH2F *PlotHitPointOnLayer(std::vector<lite_interface::SingleMuonTrack*> smtVec,unsigned int inspectedLayerIndex)
+TH2F *PlotHitPointOnLayer(std::vector<lite_interface::SingleMuonTrack *> smtVec, unsigned int inspectedLayerIndex)
 {
-  std::string name          = "HitPointOnLayer_" + std::to_string(inspectedLayerIndex);
-  TH2F *hist2D_Layer        = new TH2F(name.c_str(), name.c_str(), 200, -50, 50, 200, -50, 50);
-for (unsigned int i = 0; i < smtVec.size(); i++) {
-  unsigned int hittBarIndex = 10000;
-  ushort startIndex         = GetStartIndex(inspectedLayerIndex);
-  ushort endIndex           = GetEndIndex(inspectedLayerIndex);
-  bool check                = smtVec[i]->CheckTrackForLayerNum(startIndex, hittBarIndex);
-  lite_interface::ScintillatorBar_V2 *scintStart;
-  lite_interface::ScintillatorBar_V2 *scintEnd;
-  if (check) {
-    scintStart = smtVec[i]->GetScintillator(hittBarIndex);
-  }
-  check &= smtVec[i]->CheckTrackForLayerNum(endIndex, hittBarIndex);
-  if (check) {
-    scintEnd = smtVec[i]->GetScintillator(hittBarIndex);
-  }
-  check &= smtVec[i]->CheckTrackForLayerNum(inspectedLayerIndex, hittBarIndex);
-  if (check) {
-    lite_interface::Point3D *hitPoint = Get3DHitPointOnLayer(smtVec[i], inspectedLayerIndex);
-    if (hitPoint->GetX() < 9000. && hitPoint->GetZ() < 9000 &&
-        scintStart->GetBarIndexInLayer() == scintEnd->GetBarIndexInLayer()) {
-      hist2D_Layer->Fill(hitPoint->GetX(), hitPoint->GetZ());
+  std::string name   = "HitPointOnLayer_" + std::to_string(inspectedLayerIndex);
+  TH2F *hist2D_Layer = new TH2F(name.c_str(), name.c_str(), 200, -50, 50, 200, -50, 50);
+  for (unsigned int i = 0; i < smtVec.size(); i++) {
+    unsigned int hittBarIndex = 10000;
+    ushort startIndex         = GetStartIndex(inspectedLayerIndex);
+    ushort endIndex           = GetEndIndex(inspectedLayerIndex);
+    bool check                = smtVec[i]->CheckTrackForLayerNum(startIndex, hittBarIndex);
+    lite_interface::ScintillatorBar_V2 *scintStart;
+    lite_interface::ScintillatorBar_V2 *scintEnd;
+    if (check) {
+      scintStart = smtVec[i]->GetScintillator(hittBarIndex);
+    }
+    check &= smtVec[i]->CheckTrackForLayerNum(endIndex, hittBarIndex);
+    if (check) {
+      scintEnd = smtVec[i]->GetScintillator(hittBarIndex);
+    }
+    check &= smtVec[i]->CheckTrackForLayerNum(inspectedLayerIndex, hittBarIndex);
+    if (check) {
+      lite_interface::Point3D *hitPoint = Get3DHitPointOnLayer(smtVec[i], inspectedLayerIndex);
+      if (hitPoint->GetX() < 9000. && hitPoint->GetZ() < 9000 &&
+          scintStart->GetBarIndexInLayer() == scintEnd->GetBarIndexInLayer()) {
+        hist2D_Layer->Fill(hitPoint->GetX(), hitPoint->GetZ());
+      }
     }
   }
+  return hist2D_Layer;
 }
-return hist2D_Layer;
+
+#ifdef USE_FOR_SIMULATION
+TH2F *PlotExactHitPointOnLayer(std::vector<lite_interface::SingleMuonTrack *> smtVec, unsigned int inspectedLayerIndex)
+{
+  std::string name   = "ExactHitPointOnLayer_" + std::to_string(inspectedLayerIndex);
+  TH2F *hist2D_Layer = new TH2F(name.c_str(), name.c_str(), 200, -50, 50, 200, -50, 50);
+  for (unsigned int i = 0; i < smtVec.size(); i++) {
+    unsigned int hittBarIndex = 10000;
+    ushort startIndex         = GetStartIndex(inspectedLayerIndex);
+    ushort endIndex           = GetEndIndex(inspectedLayerIndex);
+    bool check                = smtVec[i]->CheckTrackForLayerNum(startIndex, hittBarIndex);
+    lite_interface::ScintillatorBar_V2 *scintStart;
+    lite_interface::ScintillatorBar_V2 *scintEnd;
+    if (check) {
+      scintStart = smtVec[i]->GetScintillator(hittBarIndex);
+    }
+    check &= smtVec[i]->CheckTrackForLayerNum(endIndex, hittBarIndex);
+    if (check) {
+      scintEnd = smtVec[i]->GetScintillator(hittBarIndex);
+    }
+    check &= smtVec[i]->CheckTrackForLayerNum(inspectedLayerIndex, hittBarIndex);
+    if (check) {
+      lite_interface::ScintillatorBar_V2 *scint = smtVec[i]->GetScintillator(hittBarIndex);
+      lite_interface::Point3D *hitPoint =
+          scint->GetExactHitPosition(); // Get3DHitPointOnLayer(smtVec[i], inspectedLayerIndex);
+      if (hitPoint->GetX() < 9000. && hitPoint->GetZ() < 9000 &&
+          scintStart->GetBarIndexInLayer() == scintEnd->GetBarIndexInLayer()) {
+        hist2D_Layer->Fill(hitPoint->GetX(), hitPoint->GetZ());
+      }
+    }
+  }
+  return hist2D_Layer;
 }
+#endif
 
 TH1F *PlotQMeanCorrected_V2(std::vector<ScintillatorBar_V2> scintBarVec, ushort barIndex)
 {

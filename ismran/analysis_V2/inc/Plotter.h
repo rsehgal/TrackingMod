@@ -137,6 +137,11 @@ TH1F *CalculateZResolution(std::vector<lite_interface::ScintillatorBar_V2 *> sci
 // Function to plot the hit point on a layer.
 extern TH2F *PlotHitPointOnLayer(std::vector<lite_interface::SingleMuonTrack *> smtVec,
                                  unsigned int inspectedLayerIndex);
+#ifdef USE_FOR_SIMULATION
+extern TH2F *PlotExactHitPointOnLayer(std::vector<lite_interface::SingleMuonTrack *> smtVec,
+                                 unsigned int inspectedLayerIndex);
+#endif
+
 
 } // namespace lite_interface
 #endif /* ISMRAN_ANALYSIS_V2_INC_PLOTTER_H_ */
