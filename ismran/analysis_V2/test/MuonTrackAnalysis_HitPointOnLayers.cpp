@@ -45,9 +45,10 @@ int main(int argc, char *argv[])
   ** Template of Filled histograms
   ** TH2F *hist2D_Layer0 = new TH2F("HitPointOnLayer_0","HitPointOnLayer_0",200,-50,50,200,-50,50);
   */
-  TH2F *hist2D_Layer8 = PlotHitPointOnLayer(smtVec, 3);
+  TH2F *hist2D_Layer8 = PlotHitPointOnLayer(smtVec, 8);
 #ifdef USE_FOR_SIMULATION
-  TH2F *hist2D_Layer8_Exact = PlotExactHitPointOnLayer(smtVec, 3);
+  TH2F *hist2D_Layer8_Exact = PlotExactHitPointOnLayer(smtVec, 8);
+  //TH2F *hist2D_Layer9_Exact = PlotExactHitPointOnLayer(smtVec, 9);
 #endif
 
   std::string matWithExt = filename.substr(13);
@@ -55,7 +56,10 @@ int main(int argc, char *argv[])
   fp->cd();
 
   hist2D_Layer8->Write();
+#ifdef USE_FOR_SIMULATION
   hist2D_Layer8_Exact->Write();
+  //hist2D_Layer9_Exact->Write();
+#endif
   fp->Close();
   // fApp->Run();
 

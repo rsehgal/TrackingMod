@@ -48,7 +48,7 @@ SingleMuonTrack::SingleMuonTrack(std::vector<ScintillatorBar_V2*> vecOfScintBars
 		vecOfHittedBarIndex[vecOfScintBars[i]->GetLayerIndex()]++;
 	}
 
-	std::cout << "====================================" << std::endl;
+	//std::cout << "====================================" << std::endl;
 	for(unsigned int i = 0 ; i < numOfLayers; i++){
 		fHitInAllLayers &= (vecOfHittedBarIndex[i] > 0);
 /*
@@ -65,7 +65,7 @@ SingleMuonTrack::SingleMuonTrack(std::vector<ScintillatorBar_V2*> vecOfScintBars
 
 	}
 
-	std::cout << "*************************************" << std::endl;
+	//std::cout << "*************************************" << std::endl;
 	for(unsigned int i = 0 ; i < vecOfRequiredLayers.size() ; i++){
 		/*if(vecOfHittedBarIndex[vecOfRequiredLayers[i]] > 0){
 			std::cout <<"hit found in layer : " << i << std::endl;
