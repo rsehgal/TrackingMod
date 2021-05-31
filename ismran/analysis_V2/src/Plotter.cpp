@@ -170,6 +170,36 @@ TH1F *PlotQ_0123(std::vector<lite_interface::ScintillatorBar_V2 *> scintBarVec, 
   return hist;
 }
 
+TH2F *PlotHitPointOnLayer(std::vector<lite_interface::SingleMuonTrack*> smtVec,unsigned int inspectedLayerIndex)
+{
+  std::string name          = "HitPointOnLayer_" + std::to_string(inspectedLayerIndex);
+  TH2F *hist2D_Layer        = new TH2F(name.c_str(), name.c_str(), 200, -50, 50, 200, -50, 50);
+for (unsigned int i = 0; i < smtVec.size(); i++) {
+  unsigned int hittBarIndex = 10000;
+  ushort startIndex         = GetStartIndex(inspectedLayerIndex);
+  ushort endIndex           = GetEndIndex(inspectedLayerIndex);
+  bool check                = smtVec[i]->CheckTrackForLayerNum(startIndex, hittBarIndex);
+  lite_interface::ScintillatorBar_V2 *scintStart;
+  lite_interface::ScintillatorBar_V2 *scintEnd;
+  if (check) {
+    scintStart = smtVec[i]->GetScintillator(hittBarIndex);
+  }
+  check &= smtVec[i]->CheckTrackForLayerNum(endIndex, hittBarIndex);
+  if (check) {
+    scintEnd = smtVec[i]->GetScintillator(hittBarIndex);
+  }
+  check &= smtVec[i]->CheckTrackForLayerNum(inspectedLayerIndex, hittBarIndex);
+  if (check) {
+    lite_interface::Point3D *hitPoint = Get3DHitPointOnLayer(smtVec[i], inspectedLayerIndex);
+    if (hitPoint->GetX() < 9000. && hitPoint->GetZ() < 9000 &&
+        scintStart->GetBarIndexInLayer() == scintEnd->GetBarIndexInLayer()) {
+      hist2D_Layer->Fill(hitPoint->GetX(), hitPoint->GetZ());
+    }
+  }
+}
+return hist2D_Layer;
+}
+
 TH1F *PlotQMeanCorrected_V2(std::vector<ScintillatorBar_V2> scintBarVec, ushort barIndex)
 {
   unsigned int nbins = 1000;
@@ -287,8 +317,8 @@ TH1F *PlotDelT(std::vector<lite_interface::ScintillatorBar_V2 *> scintBarVec, us
 
 TH1F *PlotPixelDelTCorrected(std::vector<lite_interface::SingleMuonTrack *> smtVec, ushort barIndex1, ushort barIndex2)
 {
-  std::string barName                    = vecOfBarsNamess[barIndex2].substr(0, 4) + "_DelT" + "_Corr";
-  TH1F *hist                             = new TH1F(barName.c_str(), barName.c_str(), 200, -25, 25); // Histogram with entries in nanosecond
+  std::string barName = vecOfBarsNamess[barIndex2].substr(0, 4) + "_DelT" + "_Corr";
+  TH1F *hist = new TH1F(barName.c_str(), barName.c_str(), 200, -25, 25); // Histogram with entries in nanosecond
   std::vector<unsigned int> vecOfScintId = {barIndex1, barIndex2};
   for (unsigned int i = 0; i < smtVec.size(); i++) {
     if (smtVec[i]->CheckTrackForRequiredScintillators(vecOfScintId)) {
@@ -310,8 +340,8 @@ TH1F *PlotPixelDelTCorrected(std::vector<lite_interface::SingleMuonTrack *> smtV
 TH1F *PlotPixelDelTBetweenBars(std::vector<lite_interface::SingleMuonTrack *> smtVec, ushort barIndex1,
                                ushort barIndex2)
 {
-  std::string barName                    = vecOfBarsNamess[barIndex2].substr(0, 4) + "_DelT" + "_Corr";
-  TH1F *hist                             = new TH1F(barName.c_str(), barName.c_str(), 100, -15000, 15000); // Histogram with entries in nanosecond
+  std::string barName = vecOfBarsNamess[barIndex2].substr(0, 4) + "_DelT" + "_Corr";
+  TH1F *hist = new TH1F(barName.c_str(), barName.c_str(), 100, -15000, 15000); // Histogram with entries in nanosecond
   std::vector<unsigned int> vecOfScintId = {barIndex1, barIndex2};
   for (unsigned int i = 0; i < smtVec.size(); i++) {
     if (smtVec[i]->CheckTrackForRequiredScintillators(vecOfScintId)) {
@@ -420,7 +450,7 @@ TH2F *PlotQMeanCorrectedCorrelationOfFirstBarWithRespectToSecond(std::vector<lit
 TH1F *PlotDelTCorrected(std::vector<lite_interface::SingleMuonTrack *> smtVec, ushort barIndex)
 {
   std::string barName = vecOfBarsNamess[barIndex].substr(0, 4) + "_DelT" + "_Corr";
-  TH1F *hist          = new TH1F(barName.c_str(), barName.c_str(), 200, -25, 25); // Histogram with entries in nanosecond
+  TH1F *hist = new TH1F(barName.c_str(), barName.c_str(), 200, -25, 25); // Histogram with entries in nanosecond
 
   for (unsigned int i = 0; i < smtVec.size(); i++) {
 
@@ -732,7 +762,7 @@ TH2F *PlotHitPointsOnLayerHist(std::vector<lite_interface::SingleMuonTrack *> sm
   vecOfLayers.push_back(layerIndex);
   vecOfLayers.push_back(layerIndex + 1);
   std::string Layer = "Layer_" + std::to_string(layerIndex);
-  TH2F *hist        = new TH2F(Layer.c_str(), Layer.c_str(), 10, -50, 50, 10, -50, 50); // Histogram with entries in nanosecond
+  TH2F *hist = new TH2F(Layer.c_str(), Layer.c_str(), 10, -50, 50, 10, -50, 50); // Histogram with entries in nanosecond
   for (unsigned int i = 0; i < smtVec.size(); i++) {
     // double xval=-100,yval=-100;
     std::vector<unsigned int> hittedBarVec = smtVec[i]->CheckTrackForRequiredLayers(vecOfLayers);
@@ -1324,25 +1354,25 @@ TH1F *PlotZenithAngle(std::vector<SingleMuonTrack *> muonTrackVec, int opt)
   //		double m = formula->GetParameter(1);
   //		delete formula;
 
-/*TH1F *solidAngleCorrectedHist = new TH1F("Solid angle corrected AngularDistribution ","Solid angle corrected
-AngularDistribution",numOfBins,0.2,0.96); solidAngleCorrectedHist->GetYaxis()->SetTitle("I_{#theta}  (
-cm^{-2}sec^{-1}st^{-1})"); solidAngleCorrectedHist->GetXaxis()->SetTitle("#theta (radian)");
+  /*TH1F *solidAngleCorrectedHist = new TH1F("Solid angle corrected AngularDistribution ","Solid angle corrected
+  AngularDistribution",numOfBins,0.2,0.96); solidAngleCorrectedHist->GetYaxis()->SetTitle("I_{#theta}  (
+  cm^{-2}sec^{-1}st^{-1})"); solidAngleCorrectedHist->GetXaxis()->SetTitle("#theta (radian)");
 
-for(int i =0  ; i < numOfBins ; i++){
-  double binCenter = zenithAngleHist->GetXaxis()->GetBinCenter(i);
-    double binContent = zenithAngleHist->GetBinContent(i);
-    //std::cout << "binContent : " << binContent << " : binCenter : " << binCenter << std::endl;
-    solidAngleCorrectedHist->SetBinContent(i,binContent/(2*M_PI*std::sin(binCenter)*std::cos(binCenter)));
-}
-//new TCanvas();
-TF1 *cosSqr = new TF1("cosSqr", "[0]*pow(cos(x),[1])", 0.2,0.96);
-solidAngleCorrectedHist->Fit(cosSqr,"r");
-//solidAngleCorrectedHist->Draw();
+  for(int i =0  ; i < numOfBins ; i++){
+    double binCenter = zenithAngleHist->GetXaxis()->GetBinCenter(i);
+      double binContent = zenithAngleHist->GetBinContent(i);
+      //std::cout << "binContent : " << binContent << " : binCenter : " << binCenter << std::endl;
+      solidAngleCorrectedHist->SetBinContent(i,binContent/(2*M_PI*std::sin(binCenter)*std::cos(binCenter)));
+  }
+  //new TCanvas();
+  TF1 *cosSqr = new TF1("cosSqr", "[0]*pow(cos(x),[1])", 0.2,0.96);
+  solidAngleCorrectedHist->Fit(cosSqr,"r");
+  //solidAngleCorrectedHist->Draw();
 
-//
-return solidAngleCorrectedHist;*/
+  //
+  return solidAngleCorrectedHist;*/
 
-// zenithAngleHist->Scale(1/zenithAngleHist->Integral());
+  // zenithAngleHist->Scale(1/zenithAngleHist->Integral());
     /*std::cout << "@@@@@@@@@@ Fitted Parameter for ZenithAngle Histogram @@@@@@@@@" << std::endl;
 		new TCanvas();
 		TF1 *zenForm = new TF1("zenForm", "[0]*sin(x)*pow(cos(x),[1])", 0.05,M_PI/2.);
