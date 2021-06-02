@@ -19,5 +19,9 @@
 
 extern void GenerateTrainingData(std::string filename, unsigned int inspectedLayerIndex,
                                  std::string outfileName = "training.txt");
+extern void GenerateTrainingData_9(std::string filename, unsigned int inspectedLayerIndex,
+                                   std::string outfileName = "training.txt");
+extern void GenerateTrainingData_All(std::string filename, unsigned int inspectedLayerIndex,
+                                     std::string outfileName = "training.txt");
 
 #endif

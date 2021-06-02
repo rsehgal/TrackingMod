@@ -2,11 +2,18 @@ import numpy as np
 import pandas as pd
 from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LinearRegression
-df = pd.read_csv('_simulated_10L_training.txt',names=['layer9_z','layer8_x','layer7_z','layer8_z'])
+import sys
+
+#df = pd.read_csv(sys.argv[1],names=['layer9_z','layer8_x','layer7_z','layer8_z'])
+df = pd.read_csv(sys.argv[1],names=['start','inspected_xz','end','inspected_zx'])
 #print(df.head(10))
 #print(df.info())
-x=df[['layer9_z','layer8_x','layer7_z']]
-y=df['layer8_z']
+
+#x=df[['layer9_z','layer8_x','layer7_z']]
+#y=df['layer8_z']
+x=df[['start','inspected_xz','end']]
+y=df['inspected_zx']
+
 print(x.head(10))
 
 #x_train,x_test,y_train,y_test=train_test_split(x,y,test_size=0.85)
@@ -22,14 +29,18 @@ model = LinearRegression()
 model.fit(x,y)
 #model.fit(x_train,y_train)
 
+#dftest = pd.read_csv(sys.argv[2],names=['layer9_z','layer8_x','layer7_z'])
+dftest = pd.read_csv(sys.argv[2],names=['start','inspected_xz','end'])
+#dftest = pd.read_csv('_17March_1_training.txt',names=['layer9_z','layer8_x','layer7_z'])
 
-
-dftest = pd.read_csv('_17March_1_training.txt',names=['layer9_z','layer8_x','layer7_z'])
 #dftest = pd.read_csv('_17March_1_training.txt',names=['layer9_z','layer8_x','layer7_z','layer8_z'])
 #dftest = pd.read_csv('_simulatedHome_training.txt',names=['layer9_z','layer8_x','layer7_z','layer8_z'])
 #print(df.head(10))
 #print(df.info())
-x_test=dftest[['layer9_z','layer8_x','layer7_z']]
+
+
+#x_test=dftest[['layer9_z','layer8_x','layer7_z']]
+x_test=dftest[['start','inspected_xz','end']]
 #y_test=dftest['layer8_z']
 
 
@@ -55,4 +66,4 @@ for i in range(len(x_test)):
     supList.append(subList)
 
 supListArray = np.array(supList)
-np.savetxt("output.txt", supListArray)
+np.savetxt("output_"+"Layer_"+sys.argv[3]+".txt", supListArray)
