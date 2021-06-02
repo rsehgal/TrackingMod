@@ -15,6 +15,7 @@ void GenerateTrainingData(std::string filename, unsigned int inspectedLayerIndex
   matWithExt             = matWithExt.substr(0, matWithExt.find("."));
   outfileName            = (matWithExt + "_" + outfileName);
   std::ofstream outfile(outfileName);
+  std::ofstream outfile2("interpolated.txt");
   for (unsigned int i = 0; i < smtVec.size(); i++) {
     unsigned int hittBarIndex = 10000;
     ushort startIndex         = GetStartIndex(inspectedLayerIndex);
@@ -32,18 +33,29 @@ void GenerateTrainingData(std::string filename, unsigned int inspectedLayerIndex
     check &= smtVec[i]->CheckTrackForLayerNum(inspectedLayerIndex, hittBarIndex);
     if (check) {
       lite_interface::ScintillatorBar_V2 *scint = smtVec[i]->GetScintillator(hittBarIndex);
-      lite_interface::Point3D *hitPoint =
-          scint->GetExactHitPosition(); // Get3DHitPointOnLayer(smtVec[i], inspectedLayerIndex);
+      // lite_interface::Point3D *hitPoint =
+      //  scint->GetExactHitPosition(); // Get3DHitPointOnLayer(smtVec[i], inspectedLayerIndex);
       /*if (hitPoint->GetX() < 9000. && hitPoint->GetZ() < 9000 &&
           scintStart->GetBarIndexInLayer() == scintEnd->GetBarIndexInLayer()) {
         hist2D_Layer->Fill(hitPoint->GetX(), hitPoint->GetZ());
       }*/
 
-      if (!vecOfLayersOrientation[inspectedLayerIndex]) {
+      if (!vecOfLayersOrientation[inspectedLayerIndex] && (scintStart->GetBarIndexInLayer() == scintEnd->GetBarIndexInLayer())) {
+#ifdef USE_FOR_SIMULATION
         outfile << scintStart->GetExactHitPosition()->GetZ() << "," << scint->GetExactHitPosition()->GetX() << ","
                 << scintEnd->GetExactHitPosition()->GetZ() << "," << scint->GetExactHitPosition()->GetZ() << std::endl;
+#else
+
+
+        outfile << scintStart->EstimateHitPosition_Param()->GetZ() << "," << scint->EstimateHitPosition_Param()->GetZ()
+                << "," << scintEnd->EstimateHitPosition_Param()->GetZ() << std::endl;
+        // << "," << scint->EstimateHitPosition_Param()->GetZ() << std::endl;
+        lite_interface::Point3D *hitPt = Get3DHitPointOnLayer(smtVec[i], inspectedLayerIndex);
+        outfile2 << hitPt->GetX() << "," << hitPt->GetZ() << std::endl;
+#endif
       }
     }
   }
   outfile.close();
+  outfile2.close();
 }

@@ -24,17 +24,35 @@ model.fit(x,y)
 
 
 
-dftest = pd.read_csv('_simulatedHome_training.txt',names=['layer9_z','layer8_x','layer7_z','layer8_z'])
+dftest = pd.read_csv('_17March_1_training.txt',names=['layer9_z','layer8_x','layer7_z'])
+#dftest = pd.read_csv('_17March_1_training.txt',names=['layer9_z','layer8_x','layer7_z','layer8_z'])
+#dftest = pd.read_csv('_simulatedHome_training.txt',names=['layer9_z','layer8_x','layer7_z','layer8_z'])
 #print(df.head(10))
 #print(df.info())
 x_test=dftest[['layer9_z','layer8_x','layer7_z']]
-y_test=dftest['layer8_z']
+#y_test=dftest['layer8_z']
+
+
+#print(x_test)
+print("Shape of Xtest : "+str(x_test.shape))
 y_predict = model.predict(x_test)
-r_sq=model.score(x_test,y_test)
-print('coefficient of determination:', r_sq)
+#r_sq=model.score(x_test,y_test)
+#print('coefficient of determination:', r_sq)
 
 print("==================================================")
 
-for i in range(20):
-    print((y_test[i],y_predict[i]))
+#for i in range(20):
+#    print((y_test[i],y_predict[i]))
 
+supList=[]
+x_test = x_test.to_numpy()
+for i in range(len(x_test)):
+    #print(i)
+    subList=[]
+    #print(x_test[i])
+    subList.append(x_test[i][1])
+    subList.append(y_predict[i])
+    supList.append(subList)
+
+supListArray = np.array(supList)
+np.savetxt("output.txt", supListArray)
