@@ -114,6 +114,7 @@ extern std::vector<double> GetFittedXorZ(TGraphErrors *gr, std::vector<lite_inte
  * Function to calculate the Zenith angle histograms
  */
 extern TH1F *PlotZenithAngle(std::vector<SingleMuonTrack *> muonTrackVec, int opt = 1);
+extern TH1F *PlotZenithAngle(std::vector<std::vector<lite_interface::Point3D *>> vecOfVecOfPoint3D);
 extern double GetZenithAngle(std::vector<lite_interface::Point3D *> vecOfPoint3D);
 extern double GetDeviation(std::vector<lite_interface::Point3D *> incoming,
                            std::vector<lite_interface::Point3D *> outgoing);

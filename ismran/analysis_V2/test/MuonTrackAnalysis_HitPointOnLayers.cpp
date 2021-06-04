@@ -37,36 +37,38 @@ int main(int argc, char *argv[])
   // lite_interface::Analyzer analyzerObj(filename);
   // analyzerObj->ReconstructMuonTrack();
 
-  TFile *trackFile                                      = new TFile(filename.c_str(), "READ");
-  std::vector<lite_interface::SingleMuonTrack *> smtVec = GetMuonTracksVector(filename); //,2000000);
+  //TFile *trackFile                                      = new TFile(filename.c_str(), "READ");
+  //std::vector<lite_interface::SingleMuonTrack *> smtVec = GetMuonTracksVector(filename); //,2000000);
 
-  std::cout << "Size of SMTVec : " << smtVec.size() << std::endl;
+  //std::cout << "Size of SMTVec : " << smtVec.size() << std::endl;
   /*
   ** Template of Filled histograms
   ** TH2F *hist2D_Layer0 = new TH2F("HitPointOnLayer_0","HitPointOnLayer_0",200,-50,50,200,-50,50);
   */
-  TH2F *hist2D_Layer8 = PlotHitPointOnLayer(smtVec, 8);
-#ifdef USE_FOR_SIMULATION
-  TH2F *hist2D_Layer8_Exact = PlotExactHitPointOnLayer(smtVec, 8);
-  //TH2F *hist2D_Layer9_Exact = PlotExactHitPointOnLayer(smtVec, 9);
-#endif
+  /*  TH2F *hist2D_Layer8 = PlotHitPointOnLayer(smtVec, 8);
+  #ifdef USE_FOR_SIMULATION
+    TH2F *hist2D_Layer8_Exact = PlotExactHitPointOnLayer(smtVec, 8);
+    //TH2F *hist2D_Layer9_Exact = PlotExactHitPointOnLayer(smtVec, 9);
+  #endif
 
-  std::string matWithExt = filename.substr(13);
-  TFile *fp              = new TFile(("HitPattern" + matWithExt).c_str(), "RECREATE");
-  fp->cd();
+    std::string matWithExt = filename.substr(13);
+    TFile *fp              = new TFile(("HitPattern" + matWithExt).c_str(), "RECREATE");
+    fp->cd();
 
-  hist2D_Layer8->Write();
-#ifdef USE_FOR_SIMULATION
-  hist2D_Layer8_Exact->Write();
-  //hist2D_Layer9_Exact->Write();
-#endif
-  fp->Close();
+    hist2D_Layer8->Write();
+  #ifdef USE_FOR_SIMULATION
+    hist2D_Layer8_Exact->Write();
+    //hist2D_Layer9_Exact->Write();
+  #endif
+    fp->Close();
 
-
-		std::cout << "$$$$$$$$$$$$$$  Going to Try ML Stuff $$$$$$$$$$$$$$$$$$" << std::endl;
-//GenerateTrainingData(filename,8);
-//GenerateTrainingData_9(filename,7);
-GenerateTrainingData_All(filename,9);
+  */
+  std::cout << "$$$$$$$$$$$$$$  Going to Try ML Stuff $$$$$$$$$$$$$$$$$$" << std::endl;
+  // GenerateTrainingData(filename,8);
+  // GenerateTrainingData_9(filename,7);
+  GenerateTrainingData_All(filename, std::atoi(argv[2]));
+  // GenerateTrainingData_All(filename,8);
+  // GenerateTrainingData_All(filename,9);
   // fApp->Run();
 
   return 0;

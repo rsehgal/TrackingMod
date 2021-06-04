@@ -269,4 +269,7 @@ target_link_libraries(MuonTrackAnalysis_HitPointDisplacement ${ROOT_LIBRARIES} T
 add_executable(MuonTrackAnalysis_SystemHealth test/MuonTrackAnalysis_SystemHealth.cpp ${sources} ${headers})
 target_link_libraries(MuonTrackAnalysis_SystemHealth ${ROOT_LIBRARIES} Tracklib)
 
+add_executable(PlotZenithAngle test/PlotZenithAngle.cpp ${sources} ${headers})
+target_link_libraries(PlotZenithAngle ${ROOT_LIBRARIES} Tracklib)
+
 

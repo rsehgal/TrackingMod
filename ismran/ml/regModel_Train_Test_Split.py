@@ -19,6 +19,11 @@ print(x.head(10))
 x_train,x_test,y_train,y_test=train_test_split(x,y,test_size=0.75)
 model = LinearRegression()
 model.fit(x_train,y_train)
+
+import pickle
+layerNo=sys.argv[2]
+pickle.dump(model,open("model_layer_"+layerNo+".sav",'wb'))
+
 r_sq=model.score(x_test,y_test)
 print('coefficient of determination:', r_sq)
 x_test = x_test.to_numpy()
@@ -38,7 +43,7 @@ for i in range(len(x_test)):
     supList.append(subList)
 
 supListArray = np.array(supList)
-np.savetxt("output.txt", supListArray)
+np.savetxt("sim_output_Layer_"+layerNo+".txt", supListArray)
 
 print("Shape Of y_predict : "+str(y_predict.shape))
 diff=[]

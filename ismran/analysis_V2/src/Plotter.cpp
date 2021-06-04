@@ -10,6 +10,18 @@
 
 namespace lite_interface {
 
+TH1F *PlotZenithAngle(std::vector<std::vector<lite_interface::Point3D *>> vecOfVecOfPoint3D)
+{
+  TVector3 ref(0., -1., 0.);
+  int numOfBins = 50;
+  std::vector<double> vecOfZenithAngle;
+  for (unsigned int i = 0; i < vecOfVecOfPoint3D.size(); i++) {
+    vecOfZenithAngle.push_back(M_PI-GetZenithAngle(vecOfVecOfPoint3D[i]));
+  }
+
+  return PlotZenithAngle(vecOfZenithAngle, 5);
+}
+
 ULong64_t GetMuonTrackTimeWindow(std::vector<lite_interface::ScintillatorBar_V2 *> scintBarVec)
 {
   ULong64_t timeWindow = 20000;
@@ -1309,7 +1321,8 @@ TH1F *PlotZenithAngle(std::vector<double> zenithAngleVect, int opt)
   if (opt == 1) title = "ZenithAngleLinear";
   if (opt == 2) title = "ZenithAngleParam";
   if (opt == 3) title = "ZenithAngleMeanHitPoint";
-  if (opt == 3) title = "ZenithAngleCRY";
+  if (opt == 4) title = "ZenithAngleCRY";
+  if (opt == 5) title = "ZenithAngle_ML";
   // TH1F *zenithAngleHist = new TH1F(title.c_str(), title.c_str(),numOfBins,0.05,M_PI/2.);
   TH1F *zenithAngleHist = new TH1F(title.c_str(), title.c_str(), numOfBins, startangle, endangle);
 
