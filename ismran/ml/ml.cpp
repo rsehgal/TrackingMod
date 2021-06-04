@@ -48,7 +48,7 @@ void GenerateTrainingData(std::string filename, unsigned int inspectedLayerIndex
 #endif
     }
   }
-}
+
 outfile.close();
 outfile2.close();
 }
@@ -149,10 +149,10 @@ void GenerateTrainingData_All(std::string filename, unsigned int inspectedLayerI
            scintStart->GetBarIndexInLayer() == scintEnd->GetBarIndexInLayer()) ||
           (scintStart->GetLayerIndex() > inspectedLayerIndex && scintEnd->GetLayerIndex() < inspectedLayerIndex &&
            scintStart->GetBarIndexInLayer() == scintEnd->GetBarIndexInLayer());
-#define USE_CRITICAL_COND
+//#define USE_CRITICAL_COND
 #ifdef USE_CRITICAL_COND
       if (fingerCondition)
-#else
+#endif
       {
 #ifdef USE_FOR_SIMULATION
         if (!vecOfLayersOrientation[inspectedLayerIndex]) {
@@ -180,9 +180,8 @@ void GenerateTrainingData_All(std::string filename, unsigned int inspectedLayerI
 
 #endif
       }
-#endif
     }
-  }
+ } 
   outfile.close();
   outfile2.close();
 }

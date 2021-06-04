@@ -26,6 +26,11 @@ option(USE_FOR_SIMULATION "Use Analyzer for simulated data" OFF)
 option(STAGGERED_GEOM "Use Scattered geometry configurtion" OFF)
 option(SINGLE_POINT_CALIBRATION "Use Single Point Muon Calibration" ON)
 option(WITH_GEANT4_UIVIS "Build example with Geant4 UI and Vis drivers" ON)
+option(FINGER_PATTERN_CONDITION "Flag to see the finger plot of layers" OFF)
+
+if(FINGER_PATTERN_CONDITION)
+add_definitions(-DUSE_CRITICAL_COND)
+endif(FINGER_PATTERN_CONDITION)
 
 if(WITH_GEANT4_UIVIS)
   find_package(Geant4 REQUIRED ui_all vis_all)
