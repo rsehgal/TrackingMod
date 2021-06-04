@@ -64,9 +64,9 @@ int main(int argc, char *argv[])
 
 
 		std::cout << "$$$$$$$$$$$$$$  Going to Try ML Stuff $$$$$$$$$$$$$$$$$$" << std::endl;
-GenerateTrainingData(filename,1);
+//GenerateTrainingData(filename,8);
 //GenerateTrainingData_9(filename,7);
-//GenerateTrainingData_All(filename,8);
+GenerateTrainingData_All(filename,9);
   // fApp->Run();
 
   return 0;
