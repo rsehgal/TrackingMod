@@ -16,7 +16,7 @@ y=df['inspected_zx']
 
 print(x.head(10))
 
-x_train,x_test,y_train,y_test=train_test_split(x,y,test_size=0.75)
+x_train,x_test,y_train,y_test=train_test_split(x,y,test_size=0.25)
 model = LinearRegression()
 model.fit(x_train,y_train)
 
