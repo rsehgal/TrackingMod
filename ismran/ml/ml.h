@@ -24,7 +24,8 @@ extern void GenerateTrainingData_9(std::string filename, unsigned int inspectedL
 extern void GenerateTrainingData_All(std::string filename, unsigned int inspectedLayerIndex,
                                      std::string outfileName = "training.txt");
 extern void GenerateTrainingData_All_V2(std::string filename, unsigned int inspectedLayerIndex,
-                                     std::string outfileName = "training.txt");
-
+                                        std::string outfileName = "training.txt");
+extern void GenerateTrainingData_All_Level1(std::string filename, unsigned int inspectedLayerIndex,
+                                            std::string outfileName = "training.txt");
 extern void GenerateModelForAngle(std::string filename, unsigned int inspectedLayerIndex, std::string outfileName);
 #endif

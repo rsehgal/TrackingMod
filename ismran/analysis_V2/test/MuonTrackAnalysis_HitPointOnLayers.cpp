@@ -66,8 +66,9 @@ int main(int argc, char *argv[])
   std::cout << "$$$$$$$$$$$$$$  Going to Try ML Stuff $$$$$$$$$$$$$$$$$$" << std::endl;
   // GenerateTrainingData(filename,8);
   // GenerateTrainingData_9(filename,7);
-  GenerateTrainingData_All_V2(filename, std::atoi(argv[2]));
-  // GenerateTrainingData_All(filename,8);
+  //GenerateTrainingData_All_V2(filename, std::atoi(argv[2]));
+  GenerateTrainingData_All_Level1(filename, std::atoi(argv[2]));
+   //GenerateTrainingData_All(filename,std::atoi(argv[2]));
   // GenerateTrainingData_All(filename,9);
   // fApp->Run();
 

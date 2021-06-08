@@ -19,8 +19,9 @@ from helpers import *
 #x=df[['start','inspected_xz','end']]
 #y=df['inspected_zx']
 if int(sys.argv[3])==1:
-	df = pd.read_csv(sys.argv[1],names=['start11','start2','ins1','ins2','end1','end2','ins3'])
-	x=df[['start11','start2','ins1','ins2','end1','end2','ins3']]
+	df = pd.read_csv(sys.argv[1],names=['start11','start2','startE','ins1','ins2','insE','end1','end2','endE','endz','ins3'])
+	#x=df[['start11','start2','ins1','ins2','end1','end2']]
+	x=df[['start11','start2','startE','ins1','ins2','insE','end1','end2','endE','endz']]
 	y=df[['ins3']]
 else:
 	df = pd.read_csv(sys.argv[1],names=['start','inspected_xz','end','inspected_zx'])

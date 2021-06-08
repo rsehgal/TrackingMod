@@ -53,6 +53,7 @@ for i in range(len(y_test)):
     #print(y_test[i])
     #print(y_predict[i])
 plt.hist(diff)
+print("SD : "+str(np.array(diff).std()))
 plt.show()
 
 
