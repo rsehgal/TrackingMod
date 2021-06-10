@@ -272,4 +272,6 @@ target_link_libraries(MuonTrackAnalysis_SystemHealth ${ROOT_LIBRARIES} Tracklib)
 add_executable(PlotZenithAngle test/PlotZenithAngle.cpp ${sources} ${headers})
 target_link_libraries(PlotZenithAngle ${ROOT_LIBRARIES} Tracklib)
 
-
+add_executable(MuonTrackAnalysis_ParamEstimation_ML test/MuonTrackAnalysis_ParamEstimation_ML.cpp ${sources} ${headers})
+target_link_libraries(MuonTrackAnalysis_ParamEstimation_ML ${ROOT_LIBRARIES} Tracklib)
+#MuonTrackAnalysis_ParamEstimation_ML.cpp

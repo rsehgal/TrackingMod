@@ -23,9 +23,10 @@ MyDetectorConstruction::MyDetectorConstruction() {}
 
 MyDetectorConstruction::~MyDetectorConstruction() {}
 
-G4VPhysicalVolume *MyDetectorConstruction::Construct() {
+G4VPhysicalVolume *MyDetectorConstruction::Construct()
+{
 
-  G4NistManager *nist = G4NistManager::Instance();
+  G4NistManager *nist  = G4NistManager::Instance();
   G4bool checkOverlaps = true;
 
   // Envelope params
@@ -37,9 +38,9 @@ G4VPhysicalVolume *MyDetectorConstruction::Construct() {
   // World
   //
   G4double world_sizeXYZ = 500 * cm;
-  G4double world_sizeXY = 1.2 * env_sizeXY;
-  G4double world_sizeZ = 1.2 * env_sizeZ;
-  G4Material *world_mat = nist->FindOrBuildMaterial("G4_AIR");
+  G4double world_sizeXY  = 1.2 * env_sizeXY;
+  G4double world_sizeZ   = 1.2 * env_sizeZ;
+  G4Material *world_mat  = nist->FindOrBuildMaterial("G4_AIR");
 
   G4Box *solidWorld = new G4Box("World",                                                        // its name
                                 0.5 * world_sizeXYZ, 0.5 * world_sizeXYZ, 0.5 * world_sizeXYZ); // its size
@@ -82,34 +83,44 @@ G4VPhysicalVolume *MyDetectorConstruction::Construct() {
   double halfYOneBar = 5. * cm;
   double halfZOneBar = 50. * cm;
   // Lets try to build one bar of 10cm X 10cm X 10cm
-  G4Box *psBar = new G4Box("PsBar", halfXOneBar, halfYOneBar, halfZOneBar);
+  G4Box *psBar                  = new G4Box("PsBar", halfXOneBar, halfYOneBar, halfZOneBar);
   G4LogicalVolume *logicalPsBar = new G4LogicalVolume(psBar, bar_mat, "LogicalPsBar");
-  MySD *mySD = new MySD("MySensitiveDetector", "MyBlockHitsCollection");
-  G4SDManager *sdman = G4SDManager::GetSDMpointer();
+  MySD *mySD                    = new MySD("MySensitiveDetector", "MyBlockHitsCollection");
+  G4SDManager *sdman            = G4SDManager::GetSDMpointer();
   sdman->AddNewDetector(mySD);
   logicalPsBar->SetSensitiveDetector(mySD);
-  /*
-   // Example to Place one PsBar at origin
-   G4VPhysicalVolume *phyPsBar = new G4PVPlacement(0,
-                            G4ThreeVector(),
-                            logicalPsBar,
-                            "PhysicalPsBar",
-                            logicWorld,
-                            false,
-                            0,
-                            checkOverlaps);
-  */
+/*
+ // Example to Place one PsBar at origin
+ G4VPhysicalVolume *phyPsBar = new G4PVPlacement(0,
+                          G4ThreeVector(),
+                          logicalPsBar,
+                          "PhysicalPsBar",
+                          logicWorld,
+                          false,
+                          0,
+                          checkOverlaps);
+*/
+
+/*Putting scatterer of 20 x 20 x 20 cm^3*/
+#if (0)
+  G4Box *pbBlock                  = new G4Box("PbBlock", 10. * cm, 10. * cm, 10. * cm);
+  G4Material *scat_mat            = nist->FindOrBuildMaterial("G4_Pb");
+  G4LogicalVolume *logicalPbBlock = new G4LogicalVolume(pbBlock, scat_mat, "LogicalPbBlock");
+  G4VPhysicalVolume *phyPbBlock   = new G4PVPlacement(0, G4ThreeVector(0., 10. * cm, 0.), logicalPbBlock,
+                                                    "PpBlockPhysical", logicWorld, false, 0, checkOverlaps);
+#endif
+
   /*
    * Lets try to build the full matrix of PsBars
    */
 
-  int barsInX = 9;
-  int barsInY = 10;
-  double zval = 0;
+  int barsInX   = 9;
+  int barsInY   = 10;
+  double zval   = 0;
   double xstart = -1. * barsInX * halfXOneBar;
   double ystart = -1. * barsInY * halfYOneBar;
   std::cout << "XStart : " << xstart << " : YStart : " << ystart << std::endl;
-  int counter = 0;
+  int counter            = 0;
   G4RotationMatrix *yRot = new G4RotationMatrix; // Rotates X and Z axes only
   // yRot-­>rotateY(M_PI/2.*rad);
   yRot->rotateY(M_PI / 2. * rad);
@@ -120,8 +131,8 @@ G4VPhysicalVolume *MyDetectorConstruction::Construct() {
       double xval = xstart + (2 * xindex + 1) * halfXOneBar;
       std::cout << xval << "," << yval << "," << zval << std::endl;
 
-// vecOfScintXYCenter
-// vecOfLayersOrientation
+      // vecOfScintXYCenter
+      // vecOfLayersOrientation
 
 #define SPLITTED_SETUP
 #ifdef SPLITTED_SETUP
@@ -130,16 +141,18 @@ G4VPhysicalVolume *MyDetectorConstruction::Construct() {
                         logicalPsBar, "PhysicalPsBar-" + std::to_string(xindex) + "-" + std::to_string(yindex),
                         logicWorld, false, counter, checkOverlaps);
 #else
-      //if (!(yindex % 2)) //&& yindex == 1)
+      // if (!(yindex % 2)) //&& yindex == 1)
 
-	if(vecOfLayersOrientation[yindex])
-        	new G4PVPlacement(0, G4ThreeVector(vecOfScintXYCenter[counter].x * cm, vecOfScintXYCenter[counter].y * cm, zval), logicalPsBar,
-                          "PhysicalPsBar-" + std::to_string(xindex) + "-" + std::to_string(yindex), logicWorld, false,
-                          counter, checkOverlaps);
+      if (vecOfLayersOrientation[yindex])
+        new G4PVPlacement(0,
+                          G4ThreeVector(vecOfScintXYCenter[counter].x * cm, vecOfScintXYCenter[counter].y * cm, zval),
+                          logicalPsBar, "PhysicalPsBar-" + std::to_string(xindex) + "-" + std::to_string(yindex),
+                          logicWorld, false, counter, checkOverlaps);
       else { //  if(yindex == 4)
-        new G4PVPlacement(yRot, G4ThreeVector(zval,vecOfScintXYCenter[counter].y * cm, vecOfScintXYCenter[counter].x * cm) , logicalPsBar,
-                          "PhysicalPsBar-" + std::to_string(xindex) + "-" + std::to_string(yindex), logicWorld, false,
-                          counter, checkOverlaps);
+        new G4PVPlacement(yRot,
+                          G4ThreeVector(zval, vecOfScintXYCenter[counter].y * cm, vecOfScintXYCenter[counter].x * cm),
+                          logicalPsBar, "PhysicalPsBar-" + std::to_string(xindex) + "-" + std::to_string(yindex),
+                          logicWorld, false, counter, checkOverlaps);
       }
 #endif
 

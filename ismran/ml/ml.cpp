@@ -120,7 +120,15 @@ void GenerateTrainingData_All(std::string filename, unsigned int inspectedLayerI
     unsigned int hittBarIndex = 10000;
     ushort startIndex         = GetStartIndex(inspectedLayerIndex);
     ushort endIndex           = GetEndIndex(inspectedLayerIndex);
-    bool check                = smtVec[i]->CheckTrackForLayerNum(startIndex, hittBarIndex);
+
+    /*Temporary stuff*/
+#if (0)
+    if (inspectedLayerIndex == 7) {
+      startIndex = 8;
+      endIndex   = 3;
+    }
+#endif
+    bool check = smtVec[i]->CheckTrackForLayerNum(startIndex, hittBarIndex);
     lite_interface::ScintillatorBar_V2 *scintStart;
     lite_interface::ScintillatorBar_V2 *scintEnd;
     if (check) {
@@ -164,6 +172,10 @@ void GenerateTrainingData_All(std::string filename, unsigned int inspectedLayerI
             outfile << scintStart->GetExactHitPosition()->GetZ() << "," << scint->GetExactHitPosition()->GetZ() << ","
                     << scintEnd->GetExactHitPosition()->GetX() << "," << scint->GetExactHitPosition()->GetX()
                     << std::endl;
+            /*outfile << scintStart->GetExactHitPosition()->GetX() << "," << scint->GetExactHitPosition()->GetZ() << ","
+                    << scintEnd->GetExactHitPosition()->GetX() << "," << scint->GetExactHitPosition()->GetX()
+                    << std::endl;*/
+
           } else {
             outfile << scintStart->GetExactHitPosition()->GetX() << "," << scint->GetExactHitPosition()->GetZ() << ","
                     << scintEnd->GetExactHitPosition()->GetX() << "," << scint->GetExactHitPosition()->GetX()
@@ -186,6 +198,56 @@ void GenerateTrainingData_All(std::string filename, unsigned int inspectedLayerI
   outfile2.close();
 }
 #endif
+
+void GenerateParamData(std::string filename, unsigned int inspectedLayerIndex)
+{
+  GenerateScintMatrixXYCenters();
+  lite_interface::Calibration *calib                    = lite_interface::Calibration::instance("completeCalib2.root");
+  std::vector<lite_interface::SingleMuonTrack *> smtVec = GetMuonTracksVector(filename);
+  std::cout << "Size of SMTVec : " << smtVec.size() << std::endl;
+  std::string matWithExt  = filename.substr(13);
+  matWithExt              = matWithExt.substr(0, matWithExt.find("."));
+  std::string outfileName = ("Layer" + std::to_string(inspectedLayerIndex) + matWithExt + ".txt");
+  std::ofstream outfile(outfileName);
+  lite_interface::ScintillatorBar_V2 *scint9;
+  lite_interface::ScintillatorBar_V2 *scint8;
+  lite_interface::ScintillatorBar_V2 *scint7;
+  for (unsigned int i = 0; i < smtVec.size(); i++) {
+
+    unsigned int hittBarIndex = 10000;
+    bool check                = smtVec[i]->CheckTrackForLayerNum(9, hittBarIndex);
+    if (check) {
+      scint9 = smtVec[i]->GetScintillator(hittBarIndex);
+    }
+    check &= smtVec[i]->CheckTrackForLayerNum(8, hittBarIndex);
+    if (check) {
+      scint8 = smtVec[i]->GetScintillator(hittBarIndex);
+    }
+    check &= smtVec[i]->CheckTrackForLayerNum(7, hittBarIndex);
+    if (check) {
+
+      scint7 = smtVec[i]->GetScintillator(hittBarIndex);
+    }
+    check &= smtVec[i]->CheckTrackForLayerNum(inspectedLayerIndex, hittBarIndex);
+    if (check) {
+      lite_interface::ScintillatorBar_V2 *scint = smtVec[i]->GetScintillator(hittBarIndex);
+#ifdef USE_FOR_SIMULATION
+      if (vecOfLayersOrientation[inspectedLayerIndex]) {
+        outfile << scint9->GetExactHitPosition()->GetZ() << "," << scint8->GetExactHitPosition()->GetX() << ","
+                << scint7->GetExactHitPosition()->GetZ() << "," << scint->GetExactHitPosition()->GetZ() << std::endl;
+      } else {
+        // TODO : Write similar condition for Cross layers as written above for Oblong one.
+      }
+#else
+      outfile << scint9->EstimateHitPosition_Param()->GetZ() << "," << scint8->EstimateHitPosition_Param()->GetZ()
+              << "," << scint7->EstimateHitPosition_Param()->GetZ() << "," << scint->EstimateHitPosition_Param()->GetZ()
+              << std::endl;
+// EstimateHitPosition_Param
+#endif
+    }
+  }
+  outfile.close();
+}
 
 /* Funtion to generate the Model to predict angle */
 #if (1)
@@ -443,7 +505,7 @@ void GenerateTrainingData_All_Level1(std::string filename, unsigned int inspecte
             outfile << scintStart->GetExactHitPosition()->GetZ() << "," << scint->GetExactHitPosition()->GetZ() << ","
                     << scintEnd->GetExactHitPosition()->GetX() << "," << scint->GetExactHitPosition()->GetX()
                     << std::endl;
-            
+
           } else {
             outfile << scintStart->GetExactHitPosition()->GetX() << "," << scint->GetExactHitPosition()->GetZ() << ","
                     << scintEnd->GetExactHitPosition()->GetX() << "," << scint->GetExactHitPosition()->GetX()

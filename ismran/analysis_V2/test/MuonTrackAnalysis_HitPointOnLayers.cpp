@@ -67,8 +67,8 @@ int main(int argc, char *argv[])
   // GenerateTrainingData(filename,8);
   // GenerateTrainingData_9(filename,7);
   //GenerateTrainingData_All_V2(filename, std::atoi(argv[2]));
-  GenerateTrainingData_All_Level1(filename, std::atoi(argv[2]));
-   //GenerateTrainingData_All(filename,std::atoi(argv[2]));
+  //GenerateTrainingData_All_Level1(filename, std::atoi(argv[2]));
+   GenerateTrainingData_All(filename,std::atoi(argv[2]));
   // GenerateTrainingData_All(filename,9);
   // fApp->Run();
 
