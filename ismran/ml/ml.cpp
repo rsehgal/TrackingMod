@@ -231,7 +231,9 @@ void GenerateParamData(std::string filename, unsigned int inspectedLayerIndex)
     check &= smtVec[i]->CheckTrackForLayerNum(inspectedLayerIndex, hittBarIndex);
     if (check) {
       lite_interface::ScintillatorBar_V2 *scint = smtVec[i]->GetScintillator(hittBarIndex);
+
 #ifdef USE_FOR_SIMULATION
+      // For the time being concerntrating on Oblong layer
       if (vecOfLayersOrientation[inspectedLayerIndex]) {
         outfile << scint9->GetExactHitPosition()->GetZ() << "," << scint8->GetExactHitPosition()->GetX() << ","
                 << scint7->GetExactHitPosition()->GetZ() << "," << scint->GetExactHitPosition()->GetZ() << std::endl;
@@ -239,9 +241,11 @@ void GenerateParamData(std::string filename, unsigned int inspectedLayerIndex)
         // TODO : Write similar condition for Cross layers as written above for Oblong one.
       }
 #else
-      outfile << scint9->EstimateHitPosition_Param()->GetZ() << "," << scint8->EstimateHitPosition_Param()->GetZ()
-              << "," << scint7->EstimateHitPosition_Param()->GetZ() << "," << scint->EstimateHitPosition_Param()->GetZ()
-              << std::endl;
+      // Concerntrating on Bar Index 23 on layer index 2 i.e third layer from bottom
+      if (scint->GetBarIndex() == 23)
+        outfile << scint9->EstimateHitPosition_Param()->GetZ() << "," << scint8->EstimateHitPosition_Param()->GetZ()
+                << "," << scint7->EstimateHitPosition_Param()->GetZ() << ","
+                << scint->EstimateHitPosition_Param()->GetZ() << "," << scint->GetDelTCorrected() / 1000. << std::endl;
 // EstimateHitPosition_Param
 #endif
     }
