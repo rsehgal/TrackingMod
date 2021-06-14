@@ -135,6 +135,7 @@ Calibration::Calibration(std::string fileName) {
 
 		TF1 *delTShift_F = (TF1*)fp->Get(Form("fdelt_shift_Cs137_%s_0cm",vecOfBarsNamess[barIndex].c_str()));
 		TF1 *paramertization_F = (TF1*)fp->Get(Form("fzparam_%s",vecOfBarsNamess[barIndex].c_str()));
+		TF1 *paramertization_F_Rev = (TF1*)fp->Get(Form("fzparam_Rev_%s",vecOfBarsNamess[barIndex].c_str()));
 		//TF1 *enerCalibFormula = (TF1*)fp->Get(Form("%s_Energy_F",vecOfBarsNamess[barIndex].c_str()));
 		TF1 *enerCalibFormula;
 		/*if(barIndex == 34)
@@ -151,7 +152,8 @@ Calibration::Calibration(std::string fileName) {
 			//std::cout << "Parameters of " << vecOfBarsNamess[barIndex] << " : " <<  enerCalibFormula->GetParameter(0) << " , " << enerCalibFormula->GetParameter(1) << std::endl;
 			//std::cout << "DelTparam : " << delTShift_F->GetParameter(1) << std::endl;
 
-		fVecOfCalibrationData.push_back(new CalibrationData( delTShift_F, paramertization_F ,enerCalibFormula));
+		//fVecOfCalibrationData.push_back(new CalibrationData( delTShift_F, paramertization_F ,enerCalibFormula));
+		fVecOfCalibrationData.push_back(new CalibrationData( delTShift_F, paramertization_F , paramertization_F_Rev, enerCalibFormula));
 
 	}
 }

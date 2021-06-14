@@ -24,6 +24,7 @@ struct CalibrationData{
 	float fDeltaTCorr;
 	TF1* fDelTCorr_F;
 	TF1* fParameterization_F;
+	TF1* fParameterization_F_Rev;
 	TF1* fEnergyCalibration_F;
 	TGraph* fParameterization_G;
 	TGraph* fGraphWithMuonPoint;
@@ -54,6 +55,17 @@ struct CalibrationData{
 		fEnergyCalibration_F = energyCalib_F;
 
 	}
+
+	CalibrationData(TF1* delTCorr_F, TF1* parameterization_F, TF1* parameterization_F_Rev, TF1* energyCalib_F){
+		fDelTCorr_F = delTCorr_F;
+		fParameterization_F = parameterization_F;
+		fParameterization_F_Rev = parameterization_F_Rev;
+		fDeltaTCorr = fDelTCorr_F->GetParameter(1);
+		//fEnergyCalibrationFactor = energyCalibrationFactor;
+		fEnergyCalibration_F = energyCalib_F;
+
+	}
+
 	CalibrationData(TF1* delTCorr, TF1* parameterization, TGraph* parameterization_g, float energyCalibrationFactor=1){
 			fDelTCorr_F = delTCorr;
 			fParameterization_F = parameterization;
