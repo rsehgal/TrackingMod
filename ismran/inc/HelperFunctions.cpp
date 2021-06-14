@@ -637,6 +637,13 @@ double Pol2(Double_t *x, Double_t *par)
   return fitval;
 }
 
+double Pol3(Double_t *x, Double_t *par)
+{
+
+  double fitval = par[0] + par[1] * x[0] + par[2] * pow(x[0], 2) + par[3] * pow(x[0], 3);
+  return fitval;
+}
+
 double Cos2ThetaFit(Double_t *x, Double_t *par)
 {
   double fitval = par[0] * pow(cos(x[0]), par[1]);
@@ -853,7 +860,7 @@ std::string GenerateSubFileName(char *exeName, char *processedFileName)
   std::string matWithExt = std::string(processedFileName).substr(13);
   return subExeName + matWithExt;
 }
-std::string GenerateSubFileName( std::string exeName, std::string processedFileName)
+std::string GenerateSubFileName(std::string exeName, std::string processedFileName)
 {
   std::string subExeName = exeName.substr(exeName.find("_"));
   std::string matWithExt = processedFileName.substr(13);

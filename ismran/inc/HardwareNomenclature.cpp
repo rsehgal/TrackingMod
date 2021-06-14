@@ -195,7 +195,7 @@ std::vector<int> vecOfFarThreshold = {6, 10, 6, 12, 12, 12, 20, 20, 13, 30, 30, 
         -45, -40, -30, -20, -10, 0, 10, 20, 30, 40, 45
 };*/
 
-std::vector<int> vecOfSourcePositions{-40, -30, -20, -10, 0, 10, 20, 30, 40};
+std::vector<int> vecOfSourcePositions = {-45, -40, -30, -20, -10, 0, 10, 20, 30, 40, 45};
 
 /*
  * Refernce bar names in sequence
@@ -257,7 +257,8 @@ void GenerateScintMatrixXYCenters(){
 }
 */
 
-void GenerateScintMatrixXYCenters() {
+void GenerateScintMatrixXYCenters()
+{
   for (unsigned int i = 0; i < numOfLowerLayers; i++) {
     double y = -1. * (numOfLowerLayers * barHeight) + barHeight / 2. + (i * barHeight);
     y += offsetYLowerDetectors;
@@ -285,23 +286,29 @@ void GenerateScintMatrixXYCenters() {
   vecOfLayersYPos.push_back(0.);
 }
 
-double GetYOfLayer(unsigned int layerIndex) { return vecOfLayersYPos[layerIndex]; }
+double GetYOfLayer(unsigned int layerIndex)
+{
+  return vecOfLayersYPos[layerIndex];
+}
 
-unsigned int GetPeakPos(std::string barName) {
+unsigned int GetPeakPos(std::string barName)
+{
   std::vector<std::string>::iterator it;
   unsigned int peakPos = 0;
-  it = std::find(sequentialBarNames.begin(), sequentialBarNames.end(), barName);
+  it                   = std::find(sequentialBarNames.begin(), sequentialBarNames.end(), barName);
   if (it != sequentialBarNames.end()) {
     unsigned int index = it - sequentialBarNames.begin();
-    peakPos = vecOfPeakPos[index];
+    peakPos            = vecOfPeakPos[index];
   }
   return peakPos;
 }
 
-HardWareNomenclature::~HardWareNomenclature() {
+HardWareNomenclature::~HardWareNomenclature()
+{
   // TODO Auto-generated destructor stub
 }
 
-HardWareNomenclature::HardWareNomenclature() {
+HardWareNomenclature::HardWareNomenclature()
+{
   // TODO Auto-generated constructor stub
 }

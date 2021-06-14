@@ -33,6 +33,7 @@ extern void DrawGrid(std::string t, Int_t ngx, Int_t ngy);
 extern void GetFittedXorZ(TGraph *gr);
 extern double LinearFit(Double_t *x,Double_t *par);
 extern double Pol2(Double_t *x,Double_t *par);
+extern double Pol3(Double_t *x,Double_t *par);
 extern double Cos2ThetaFit(Double_t *x, Double_t *par);
 extern double NewCos2ThetaFit(Double_t *x, Double_t *par);
 extern void PlotFittedLine(TGraph *gr);

@@ -12,6 +12,7 @@
 #include "HardwareNomenclature.h"
 #include <TSystemDirectory.h>
 #include <sstream>
+#include "HelperFunctions.h"
 int StrToInt(std::string s){
 	std::stringstream ss(s);
 	int val = 0;
@@ -26,11 +27,11 @@ Double_t Gaus(Double_t *x,Double_t *par) {
       return fitval;
 }
 
-Double_t Pol3(Double_t *x,Double_t *par) {
+/*Double_t Pol3(Double_t *x,Double_t *par) {
 
       Double_t fitval = par[0] + par[1]*x[0] + par[2]*pow(x[0],2) + par[3]*pow(x[0],3);
       return fitval;
-}
+}*/
 
 ReadCalibrationDataFile::ReadCalibrationDataFile(std::string dummy) {
 	fout = new TFile("calib.root","RECREATE");
