@@ -125,7 +125,8 @@ G4VPhysicalVolume *MyDetectorConstruction::Construct() {
 
 #define SPLITTED_SETUP
 #ifdef SPLITTED_SETUP
-#ifndef CROSS_GEOMETRY
+//#ifndef CROSS_GEOMETRY
+#ifndef STAGGERED_GEOM
       new G4PVPlacement(0, G4ThreeVector(vecOfScintXYCenter[counter].x * cm, vecOfScintXYCenter[counter].y * cm, zval),
                         logicalPsBar, "PhysicalPsBar-" + std::to_string(xindex) + "-" + std::to_string(yindex),
                         logicWorld, false, counter, checkOverlaps);
@@ -145,7 +146,8 @@ G4VPhysicalVolume *MyDetectorConstruction::Construct() {
 
 #else
 
-#ifndef CROSS_GEOMETRY
+//#ifndef CROSS_GEOMETRY
+#ifndef STAGGERED_GEOM
       new G4PVPlacement(0, G4ThreeVector(xval, yval, zval), logicalPsBar,
                         "PhysicalPsBar-" + std::to_string(xindex) + "-" + std::to_string(yindex), logicWorld, false,
                         counter, checkOverlaps);

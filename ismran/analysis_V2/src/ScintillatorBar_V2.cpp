@@ -286,7 +286,8 @@ Long_t ScintillatorBar_V2::GetDelTCorrected()
   if (IsSimulation) {
     // std::cout << "FROM IF : IS_SIMULATION SET TO TRUE : " << __FILE__ <<" : " << __LINE__ << std::endl;
 #ifdef USE_CALIBRATION
-    return (fDelTstamp - Calibration::instance()->GetCalibrationDataOf(fBarIndex)->fDeltaTCorr * 1000);
+    //return (fDelTstamp - Calibration::instance()->GetCalibrationDataOf(fBarIndex)->fDeltaTCorr * 1000);
+return fDelTstamp;
 #else
     return fDelTstamp;
 #endif
@@ -416,8 +417,17 @@ void ScintillatorBar_V2::CalculateVariousPhysicalParameters(unsigned long muonNu
   if (formulaIndex < 0) formulaIndex = 0;
   if (formulaIndex > 8) formulaIndex = 8;
   // std::cout << "FormulaIndex : " << formulaIndex << std::endl;
-  TF1 *formula = (calibDataOfScint->fVectorOfDelT_F)[formulaIndex];
-  fDelTstamp   = (formula->GetRandom()) * 1000.;
+
+  // TF1 *formula = (calibDataOfScint->fVectorOfDelT_F)[formulaIndex];
+  // fDelTstamp   = (formula->GetRandom()) * 1000.;
+  {
+    TF1 *formulaRev = calibDataOfScint->fParameterization_F_Rev;
+    //std::cout << "Mean Hit Position : "; fMeanHitPosition->Print();
+    double deltTstampValue = formulaRev->Eval(fMeanHitPosition->GetZ()/10.) * 1000.;
+    //std::cout << "DeltSTamp value from REV param : " << deltTstampValue << std::endl;
+    fDelTstamp      = deltTstampValue;
+  }
+fTSmallTimeStamp = (tstampNear < tstampFar) ? tstampNear : tstampFar;
   // std::cout << "DeltaTstamp : " << deltaTstamp << std::endl;
   // deltaTstampCorrected = deltaTstamp - calibDataOfScint->fDeltaTCorr;
 }
