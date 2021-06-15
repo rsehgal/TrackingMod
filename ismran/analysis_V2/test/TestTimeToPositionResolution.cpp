@@ -15,6 +15,7 @@
 #include <vector>
 #include <TApplication.h>
 #include <TStyle.h>
+#include "includes.h"
 int main(int argc, char *argv[]){
 	gStyle->SetOptStat(0);
 	TApplication *fApp = new TApplication("Test", NULL, NULL);
@@ -24,9 +25,15 @@ int main(int argc, char *argv[]){
 	std::string filename = argv[1];
 		TFile *fp = new TFile(filename.c_str(), "r");
 		TFile *fpCalib = new TFile("completeCalib2.root", "r");
-		TF1 *delTFormula = (TF1*)fpCalib->Get("fdelt_shift_Cs137_PS72_SF889_0cm");
-		TF1 *paramFormula = (TF1*)fpCalib->Get("fzparam_PS72_SF889");
+		std::string barName = vecOfBarsNamess[40];
+		TF1 *delTFormula = (TF1*)fpCalib->Get(("fdelt_shift_Cs137_"+barName+"_0cm").c_str());
+		TF1 *paramFormula = (TF1*)fpCalib->Get(("fzparam_"+barName).c_str());
 		double offsetVal = delTFormula->GetParameter(1);
+
+		TFile *paramNewFile = new TFile("Bar41.root","r");
+	        TF1 *paramNewFormula = (TF1*)paramNewFile->Get("fzparam_Rev_41PS41_S1AA6519");
+		// (TF1*)paramNewFile->Get(("fzparam_Rev_"+barName).c_str());
+                std::cout <<  paramNewFormula->GetParameter(0) <<"," << paramNewFormula->GetParameter(1) <<"," << paramNewFormula->GetParameter(2) <<"," <<paramNewFormula->GetParameter(3) << std::endl;
 
 		TTree *tr = (TTree*) fp->Get("ftree");
 
@@ -40,12 +47,14 @@ int main(int argc, char *argv[]){
 		TH1F *delTHist = new TH1F("delTHist","delTHist",100,-20,20);
 		delTHist->SetTitle("Histogram of #Delta T");
 		TH1F *zhist = new TH1F("zEstimation","zEstimation",100,-50,50);
+		TH1F *zhistNew = new TH1F("zEstimationNew","zEstimationNew",100,-50,50);
 		zhist->SetTitle("Histogram of estimated Z position");
 		for (Long64_t iev = 0; iev < nEntries; iev++) {
 			nb += tr->GetEntry(iev);
 			float corrDelT = delt/1000. - offsetVal; 
 			delTHist->Fill(corrDelT);
 			zhist->Fill(paramFormula->Eval(corrDelT));
+			zhistNew->Fill(paramNewFormula->Eval(corrDelT));
 		}
 		/*legend->AddEntry(delTHist);
 		delTHist->Scale(1/delTHist->Integral());
@@ -58,9 +67,15 @@ int main(int argc, char *argv[]){
 		new TCanvas("Histogram of Z Estimation","Histogram of Z Estimation");
 		zhist->Draw();
 
+		//new TCanvas("Histogram of Z Estimation New","Histogram of Z Estimation New");
+		zhistNew->SetLineColor(6);
+		zhistNew->Draw("same");
 
+	new TCanvas("parameterization","parameterization");
+paramFormula->Draw();
+paramNewFormula->SetLineColor(6);
+paramNewFormula->Draw("same");	
 	//legend->Draw("same");
 
 	fApp->Run();
 }
-
