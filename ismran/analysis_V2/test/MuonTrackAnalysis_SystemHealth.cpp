@@ -43,6 +43,7 @@ int main(int argc, char *argv[])
    */
 
   GenerateScintMatrixXYCenters();
+  AutoCallers();
   std::string outputRootFileName = "SystemHealth_" + getFileName(std::string(argv[1]));
   std::string delFile            = "rm -rf " + outputRootFileName + ".pdf";
   system(delFile.c_str());

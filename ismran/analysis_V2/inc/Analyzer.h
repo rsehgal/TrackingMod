@@ -17,7 +17,7 @@ namespace lite_interface {
 class PairFinder;
 class ScintillatorBar_V2;
 
-extern bool IsSimulation;
+//extern bool IsSimulation;
 
 class Analyzer {
 	std::string fDatafileName;

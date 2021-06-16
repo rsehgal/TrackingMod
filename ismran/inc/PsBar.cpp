@@ -6,7 +6,7 @@
  */
 
 #include "PsBar.h"
-
+bool IsSimulation = false;
 const int offset=0;
 const double kDelTBar = 32.0; //! ns
 TStopwatch timer;

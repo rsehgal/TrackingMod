@@ -15,6 +15,7 @@
 class Point3D;
 class Point2D;
 
+extern void AutoCallers();
 extern Tracking::Vector3D<double> ConvertToTomoVector3D(Point3D pt);
 
 template<typename T>

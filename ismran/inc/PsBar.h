@@ -9,7 +9,7 @@
 #define ISMRAN_INC_PSBAR_H_
 #include "includes.hh"
 //#include "Point3D.h"
-
+extern bool IsSimulation;
 //namespace ismran{
 extern const int offset ; //=0;
 extern const double kDelTBar ;//= 32.0; //! ns

@@ -13,6 +13,13 @@
 #include <bits/stdc++.h>
 #include "ScintillatorBar_V2.h"
 
+void AutoCallers()
+{
+#ifdef USE_FOR_SIMULATION
+  IsSimulation = true;
+#endif
+}
+
 std::vector<std::vector<unsigned long int>> myhist2D;
 #if (0)
 lite_interface::Point3D *Get3DHitPointOnLayer(lite_interface::SingleMuonTrack *smt, unsigned int layerIndex)

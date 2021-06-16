@@ -284,16 +284,16 @@ double ScintillatorBar_V2::GetOffsetCorrection()
 Long_t ScintillatorBar_V2::GetDelTCorrected()
 {
   if (IsSimulation) {
-    // std::cout << "FROM IF : IS_SIMULATION SET TO TRUE : " << __FILE__ <<" : " << __LINE__ << std::endl;
+    //std::cout << "FROM IF : IS_SIMULATION SET TO TRUE : " << __FILE__ << " : " << __LINE__ << std::endl;
 #ifdef USE_CALIBRATION
-    //return (fDelTstamp - Calibration::instance()->GetCalibrationDataOf(fBarIndex)->fDeltaTCorr * 1000);
-return fDelTstamp;
+    // return (fDelTstamp - Calibration::instance()->GetCalibrationDataOf(fBarIndex)->fDeltaTCorr * 1000);
+    return fDelTstamp;
 #else
     return fDelTstamp;
 #endif
   } else {
-    // std::cout << "FROM ELSE : " << Calibration::instance()->GetCalibrationDataOf(fBarIndex)->fDeltaTCorr*1000 << " :
-    // __FILE__ : " << __LINE__ << std::endl;
+    //std::cout << "FROM ELSE : " << Calibration::instance()->GetCalibrationDataOf(fBarIndex)->fDeltaTCorr * 1000 << " : "
+      //        << __FILE__ << " : " << __LINE__ << std::endl;
     return (fDelTstamp - Calibration::instance()->GetCalibrationDataOf(fBarIndex)->fDeltaTCorr * 1000);
   }
 }
@@ -422,12 +422,12 @@ void ScintillatorBar_V2::CalculateVariousPhysicalParameters(unsigned long muonNu
   // fDelTstamp   = (formula->GetRandom()) * 1000.;
   {
     TF1 *formulaRev = calibDataOfScint->fParameterization_F_Rev;
-    //std::cout << "Mean Hit Position : "; fMeanHitPosition->Print();
-    double deltTstampValue = formulaRev->Eval(fMeanHitPosition->GetZ()/10.) * 1000.;
-    //std::cout << "DeltSTamp value from REV param : " << deltTstampValue << std::endl;
-    fDelTstamp      = deltTstampValue;
+    // std::cout << "Mean Hit Position : "; fMeanHitPosition->Print();
+    double deltTstampValue = formulaRev->Eval(fMeanHitPosition->GetZ() / 10.) * 1000.;
+    // std::cout << "DeltSTamp value from REV param : " << deltTstampValue << std::endl;
+    fDelTstamp = deltTstampValue;
   }
-fTSmallTimeStamp = (tstampNear < tstampFar) ? tstampNear : tstampFar;
+  fTSmallTimeStamp = (tstampNear < tstampFar) ? tstampNear : tstampFar;
   // std::cout << "DeltaTstamp : " << deltaTstamp << std::endl;
   // deltaTstampCorrected = deltaTstamp - calibDataOfScint->fDeltaTCorr;
 }

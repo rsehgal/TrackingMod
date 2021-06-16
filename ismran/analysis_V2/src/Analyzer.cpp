@@ -16,7 +16,7 @@
 
 namespace lite_interface {
 
-bool IsSimulation = false;
+//bool IsSimulation = false;
 int Analyzer::numOfShots = 0;
 int Analyzer::shotNo = 0;
 
