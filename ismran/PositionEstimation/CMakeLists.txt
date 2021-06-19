@@ -90,6 +90,28 @@ target_link_libraries(Analysis ${ROOT_LIBRARIES} Tracklib)
 file(GLOB sources ${PROJECT_SOURCE_DIR}/src/*.cpp  ../inc/*.cpp ../ml/*.cpp)
 file(GLOB headers ${PROJECT_SOURCE_DIR}/inc/*.h ../../base/Vector3D.h ../ml/ml.h) 
 
-add_executable(TestTimeToPositionResolution test/TestTimeToPositionResolution.cpp ${sources} ${headers})
-target_link_libraries(TestTimeToPositionResolution ${ROOT_LIBRARIES} ${TOMOLIB} Analysis)
+SET(TESTSDIR ${TESTSDIR}
+${CMAKE_SOURCE_DIR}/test
+)
+
+#COLLECTING ALL TEST FILES
+macro(collect_tests TESTS)
+  foreach(TEST ${TESTS})
+    file(GLOB tests ${tests} ${TEST}/*.cpp)
+  endforeach()
+endmacro()
+
+macro(build_executables EXECUTABLES)
+  foreach(EXECUTABLE ${EXECUTABLES})
+    get_filename_component(TARGET_NAME ${EXECUTABLE} NAME_WE)
+    add_executable(${TARGET_NAME} ${EXECUTABLE} ${headers} ${sources})
+    target_link_libraries(${TARGET_NAME} ${ROOT_LIBRARIES} Analysis)
+ endforeach()
+endmacro()
+
+collect_tests("${TESTSDIR}")
+build_executables("${tests}")
+
+#add_executable(TestTimeToPositionResolution test/TestTimeToPositionResolution.cpp ${sources} ${headers})
+#target_link_libraries(TestTimeToPositionResolution ${ROOT_LIBRARIES} ${TOMOLIB} Analysis)
 

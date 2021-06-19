@@ -25,7 +25,7 @@ int main(int argc, char *argv[]){
 	std::string filename = argv[1];
 		TFile *fp = new TFile(filename.c_str(), "r");
 		TFile *fpCalib = new TFile("completeCalib2.root", "r");
-		std::string barName = vecOfBarsNamess[40];
+		std::string barName = vecOfBarsNamess[std::atoi(argv[2])];
 		TF1 *delTFormula = (TF1*)fpCalib->Get(("fdelt_shift_Cs137_"+barName+"_0cm").c_str());
 		TF1 *paramFormula = (TF1*)fpCalib->Get(("fzparam_"+barName).c_str());
 		double offsetVal = delTFormula->GetParameter(1);
