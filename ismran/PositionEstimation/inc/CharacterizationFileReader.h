@@ -46,6 +46,8 @@ struct Event {
     return (sQlong & maskingVal);
   }
 
+  float GetQMean() { return sqrt(GetQNear() * GetQFar()); }
+
   ULong64_t GetTNear() const { return sTstamp; }
 
   ULong64_t GetTFar() { return (sTstamp - sDelt); }
@@ -75,6 +77,8 @@ class CharacterizationFileReader {
 private:
   TFile *fp;
   TTree *fTree;
+  int fDelTOffset;
+
   std::string fFileName;
   UShort_t fBrch;    //! board #  and channel number ( its packed in as follows )     //! board*16 + chno.
   UInt_t fQlong;     //! integrated charge in long gate 88 nsec
@@ -95,6 +99,8 @@ public:
   int GetActualPosition();
   std::string GetBarName();
   unsigned int GetTotalNumOfEvents();
+  void CalculateDelTOffset();
+  int GetDelTOffset()const;
 
   /*Functions related to Training and Testing*/
   float fTestProportion;

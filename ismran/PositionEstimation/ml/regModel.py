@@ -5,12 +5,14 @@ from sklearn.linear_model import LinearRegression
 import sys
 import matplotlib.pyplot as plt
 
-df = pd.read_csv(sys.argv[1],names=['qnear','qfar','delt','actz'])
+df = pd.read_csv(sys.argv[1],names=['qnear','qfar','qmean','delt','actz'])
 #print(df.head(10))
 #print(df.info())
 
-x=df[['qnear','qfar','delt']]
+#x=df[['qnear','qfar','qmean','delt']]
+x=df[['qmean','delt']]
 y=df['actz']
+
 
 print(x.head(10))
 
@@ -24,36 +26,37 @@ print(x.head(10))
 #model = LinearRegression()
 
 from sklearn.neighbors import KNeighborsRegressor
-#model = KNeighborsRegressor(n_neighbors=100,weights='uniform')
+model = KNeighborsRegressor(n_neighbors=10,weights='uniform')
 
 from sklearn.tree import DecisionTreeRegressor
 #model=DecisionTreeRegressor(random_state=0)
 
 from sklearn.neural_network import MLPRegressor
-model=MLPRegressor(random_state=1, max_iter=10)
+#model=MLPRegressor(random_state=1, max_iter=10)
 
 model.fit(x,y)
 print("Training Done.......")
-dftest = pd.read_csv(sys.argv[2],names=['qnear','qfar','delt','actz'])
+dftest = pd.read_csv(sys.argv[2],names=['qnear','qfar','qmean','delt','actz'])
 #print(dftest.head(10))
 #print(dftest.info())
 
-x_test=dftest[['qnear','qfar','delt']]
+#x_test=dftest[['qnear','qfar','qmean','delt']]
+x_test=dftest[['qmean','delt']]
 y_test=dftest['actz']
 
 
 #print(x_test)
 print("Shape of Xtest : "+str(x_test.shape))
 y_predict = model.predict(x_test)
-#r_sq=model.score(x_test,y_test)
-#print('coefficient of determination:', r_sq)
+r_sq=model.score(x_test,y_test)
+print('coefficient of determination:', r_sq)
 print("==================================================")
 
-bins=np.linspace(-30,30,200)
+bins=np.linspace(-50,50,100)
 print("Mean : "+str(np.array(y_predict).mean()))
 print("SD : "+str(np.array(y_predict).std()))
-#plt.hist(y_predict)#,bins=bins)
-#plt.show()
+plt.hist(y_predict,bins=bins)
+plt.show()
 
 #for i in range(20):
 #    print((y_test[i],y_predict[i]))

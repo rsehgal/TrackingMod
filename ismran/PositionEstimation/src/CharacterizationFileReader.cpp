@@ -10,8 +10,21 @@ CharacterizationFileReader::CharacterizationFileReader(std::string filename)
   fFileName       = filename;
   fp              = new TFile(filename.c_str(), "r");
   ConnectTree();
+  CalculateDelTOffset();
 }
 
+void CharacterizationFileReader::CalculateDelTOffset()
+{
+  std::string barName = GetBarName();
+  TFile *fp = new TFile("completeCalib2.root","r");
+  TF1 *offsetFormula = (TF1*)fp->Get(("fdelt_shift_Cs137_"+barName+"_"+std::to_string(GetActualPosition())+"cm").c_str());
+  fDelTOffset = offsetFormula->GetParameter(1)*1000.;
+}
+
+int CharacterizationFileReader::GetDelTOffset() const
+{
+  return fDelTOffset;
+}
 void CharacterizationFileReader::ConnectTree(std::string treeName)
 {
   fTree = (TTree *)fp->Get("ftree");
@@ -35,7 +48,7 @@ TFile *CharacterizationFileReader::GetFilePointer() const
 Event *CharacterizationFileReader::GetEvent(unsigned int evNo)
 {
   fTree->GetEntry(evNo);
-  return (new Event(fBrch, fQlong, fTstamp, fTime, fDelt, GetActualPosition()));
+  return (new Event(fBrch, fQlong, fTstamp, fTime, fDelt - fDelTOffset, GetActualPosition()));
 }
 
 void CharacterizationFileReader::RandomizeIt()
@@ -66,7 +79,7 @@ std::vector<Event *> CharacterizationFileReader::GetTrainingData()
 std::vector<Event *> CharacterizationFileReader::GetTestingData()
 {
   unsigned int numOfEventsInTraining = (1 - fTestProportion) * fEventNumVec.size();
-  unsigned int numOfEventsInTesting = fTestProportion * fEventNumVec.size();
+  unsigned int numOfEventsInTesting  = fTestProportion * fEventNumVec.size();
   std::vector<Event *> testingEventsVec;
 
   std::cout << "======================================" << std::endl;
@@ -80,7 +93,7 @@ std::vector<Event *> CharacterizationFileReader::GetTestingData()
     testingEventNo++;
   }
   std::cout << "Going to return the testing vector of size : " << testingEventsVec.size() << std::endl;
-  return testingEventsVec; 
+  return testingEventsVec;
 }
 
 void CharacterizationFileReader::PrintRandom()
@@ -113,6 +126,7 @@ std::string CharacterizationFileReader::GetBarName()
   return barName;
 }
 
-unsigned int CharacterizationFileReader::GetTotalNumOfEvents(){
-return fTree->GetEntries();
+unsigned int CharacterizationFileReader::GetTotalNumOfEvents()
+{
+  return fTree->GetEntries();
 }

@@ -25,14 +25,15 @@ int main(int argc, char *argv[])
   std::ofstream outfileTraining(trainingFileName);
   for (unsigned int i = 0; i < trainingVec.size(); i++) {
     outfileTraining << trainingVec[i]->GetQNear() << "," << trainingVec[i]->GetQFar() << ","
-                    << trainingVec[i]->GetDelT() << "," << trainingVec[i]->GetActualSourcePosition() << std::endl;
+                    << trainingVec[i]->GetQMean() << "," << trainingVec[i]->GetDelT() << ","
+                    << trainingVec[i]->GetActualSourcePosition() << std::endl;
   }
   outfileTraining.close();
 
   std::ofstream outfileTesting(testingFileName);
   for (unsigned int i = 0; i < testingVec.size(); i++) {
-    outfileTesting << testingVec[i]->GetQNear() << "," << testingVec[i]->GetQFar() << "," << testingVec[i]->GetDelT()
-                   << "," << testingVec[i]->GetActualSourcePosition() << std::endl;
+    outfileTesting << testingVec[i]->GetQNear() << "," << testingVec[i]->GetQFar() << "," << testingVec[i]->GetQMean()
+                   << "," << testingVec[i]->GetDelT() << "," << testingVec[i]->GetActualSourcePosition() << std::endl;
   }
   outfileTesting.close();
 
