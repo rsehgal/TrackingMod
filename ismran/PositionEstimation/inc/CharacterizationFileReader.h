@@ -57,6 +57,11 @@ struct Event {
 
   double GetExpectedGammaPos() {}
 
+  double GetTempAttenuationCoeffForAnEvent()
+  {
+    return (1. / (2. * sActualSourcePos)) * log((1. * GetQFar()) / (1. * GetQNear()));
+  }
+
   void Print()
   {
     std::cout << "Branch : " << sBrch << std::endl
@@ -104,12 +109,14 @@ public:
   unsigned int GetTotalNumOfEvents();
   void CalculateDelTOffset();
   int GetDelTOffset() const;
+  double GetMeanAttenuationCoeff(unsigned int numOfEvents = 0);
 
   /*Functions related to Training and Testing*/
   float fTestProportion;
   void RandomizeIt();
   std::vector<Event *> GetTrainingData();
   std::vector<Event *> GetTestingData();
+  std::vector<Event *> GetAllEvents(unsigned int numOfEvents = 0);
   /*Function to Print few (10) random event number */
   void PrintRandom();
 };

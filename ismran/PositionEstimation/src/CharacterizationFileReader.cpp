@@ -11,14 +11,17 @@ CharacterizationFileReader::CharacterizationFileReader(std::string filename)
   fp              = new TFile(filename.c_str(), "r");
   ConnectTree();
   CalculateDelTOffset();
+  fEventNumVec.resize(fTree->GetEntries());
+  std::iota(fEventNumVec.begin(), fEventNumVec.end(), 0);
 }
 
 void CharacterizationFileReader::CalculateDelTOffset()
 {
   std::string barName = GetBarName();
-  TFile *fp = new TFile("completeCalib2.root","r");
-  TF1 *offsetFormula = (TF1*)fp->Get(("fdelt_shift_Cs137_"+barName+"_"+std::to_string(GetActualPosition())+"cm").c_str());
-  fDelTOffset = offsetFormula->GetParameter(1)*1000.;
+  TFile *fp           = new TFile("completeCalib2.root", "r");
+  TF1 *offsetFormula =
+      (TF1 *)fp->Get(("fdelt_shift_Cs137_" + barName + "_" + std::to_string(GetActualPosition()) + "cm").c_str());
+  fDelTOffset = offsetFormula->GetParameter(1) * 1000.;
 }
 
 int CharacterizationFileReader::GetDelTOffset() const
@@ -53,8 +56,8 @@ Event *CharacterizationFileReader::GetEvent(unsigned int evNo)
 
 void CharacterizationFileReader::RandomizeIt()
 {
-  fEventNumVec.resize(fTree->GetEntries());
-  std::iota(fEventNumVec.begin(), fEventNumVec.end(), 0);
+  /*  fEventNumVec.resize(fTree->GetEntries());
+    std::iota(fEventNumVec.begin(), fEventNumVec.end(), 0);*/
   unsigned seed = time(0);
   std::shuffle(fEventNumVec.begin(), fEventNumVec.end(), std::default_random_engine(seed));
 }
@@ -96,6 +99,26 @@ std::vector<Event *> CharacterizationFileReader::GetTestingData()
   return testingEventsVec;
 }
 
+std::vector<Event *> CharacterizationFileReader::GetAllEvents(unsigned int numOfEvents)
+{
+  std::vector<Event *> eventsVec;
+  unsigned int numOfEventsToProcess = 0;
+  if (numOfEvents == 0)
+    numOfEventsToProcess = fEventNumVec.size();
+  else
+    numOfEventsToProcess = numOfEvents;
+  std::cout << "======================================" << std::endl;
+  std::cout << "Size of Events  Data : " << numOfEventsToProcess << std::endl;
+  std::cout << "======================================" << std::endl;
+  for (unsigned int i = 0; i < numOfEventsToProcess; i++) {
+    if (!(i % 50000) && i != 0)
+      std::cout << "Processed Testing Event : " << i << " : Tree Entry : " << fEventNumVec[i] << std::endl;
+    eventsVec.push_back(GetEvent(fEventNumVec[i]));
+  }
+  std::cout << "Going to return the testing vector of size : " << eventsVec.size() << std::endl;
+  return eventsVec;
+}
+
 void CharacterizationFileReader::PrintRandom()
 {
   RandomizeIt();
@@ -129,4 +152,23 @@ std::string CharacterizationFileReader::GetBarName()
 unsigned int CharacterizationFileReader::GetTotalNumOfEvents()
 {
   return fTree->GetEntries();
+}
+
+double CharacterizationFileReader::GetMeanAttenuationCoeff(unsigned int numOfEvents)
+{
+  std::vector<Event *> eventsVec = GetAllEvents(numOfEvents);
+  /*double meanAttenCoeff          = 0.;
+  for (unsigned int i = 0; i < eventsVec.size(); i++) {
+    meanAttenCoeff += eventsVec[i]->GetTempAttenuationCoeffForAnEvent();
+  }
+
+  meanAttenCoeff /= eventsVec.size();
+  return meanAttenCoeff;*/
+
+  TH1F *hist = new TH1F("attenCoeff", "attenCoeff", 100, -0.3, 0.3);
+  for (unsigned int i = 0; i < eventsVec.size(); i++) {
+    hist->Fill(eventsVec[i]->GetTempAttenuationCoeffForAnEvent());
+  }
+  return hist->GetMean();
+
 }
