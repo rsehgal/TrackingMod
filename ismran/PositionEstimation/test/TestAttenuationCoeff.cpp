@@ -27,6 +27,13 @@ int main(int argc, char *argv[])
     hist->Fill(eventsVec[i]->GetTempAttenuationCoeffForAnEvent());
   }
 
+  FillAttenCoeffVec();
+
+  for (unsigned int i = 0; i < vecOfBarsNamess.size(); i++) {
+    std::cout << vecOfAttenCoeff[i] << " , ";
+    if (!((i + 1) % 9)) std::cout << std::endl;
+  }
+
   hist->Draw();
   fApp->Run();
   return 0;

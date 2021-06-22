@@ -873,6 +873,26 @@ std::string GenerateSubFileName(std::string exeName, std::string processedFileNa
   std::string matWithExt = processedFileName.substr(13);
   return subExeName + matWithExt;
 }
+
+void FillAttenCoeffVec()
+{
+
+  for (unsigned int i = 0; i < vecOfBarsNamess.size(); i++) {
+    if (i == 54)
+      vecOfAttenCoeff.push_back(0.0068);
+    else {
+      if (i == 74)
+        vecOfAttenCoeff.push_back(0.0128);
+      else {
+        if (i == 64)
+          vecOfAttenCoeff.push_back(0.00584123);
+        else
+          vecOfAttenCoeff.push_back(0.);
+      }
+    }
+  }
+}
+
 HelperFunctions::HelperFunctions()
 {
   // TODO Auto-generated constructor stub

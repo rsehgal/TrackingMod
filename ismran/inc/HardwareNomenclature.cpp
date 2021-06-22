@@ -234,6 +234,8 @@ std::vector<std::string> sequentialBarNames = {
     "PS79_SF883",    "PS80_SF877",    "PS81_SF879",    "PS82_SF885",    "PS83_SF890",    "PS84_SF882",
     "PS85_SF881",    "PS86_SF884",    "PS87_SF876",    "PS88_SF880",    "PS89_SF873",    "PS90_SF875"};
 
+std::vector<double> vecOfAttenCoeff;
+
 std::vector<Point2D> vecOfScintXYCenter;
 std::vector<double> vecOfLayersYPos;
 /*
@@ -301,6 +303,19 @@ unsigned int GetPeakPos(std::string barName)
     peakPos            = vecOfPeakPos[index];
   }
   return peakPos;
+}
+
+unsigned int GetIndexFromBarName(std::string barName)
+{
+  auto it            = find(vecOfBarsNamess.begin(), vecOfBarsNamess.end(), barName);
+  unsigned int index = 10000;
+  // If element was found
+  if (it != vecOfBarsNamess.end()) {
+    // calculating the index of barName
+    index = it - vecOfBarsNamess.begin();
+    // cout << index << endl;
+  }
+  return index;
 }
 
 HardWareNomenclature::~HardWareNomenclature()

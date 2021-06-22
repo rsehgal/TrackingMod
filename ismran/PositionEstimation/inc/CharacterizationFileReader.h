@@ -16,6 +16,7 @@ struct Event {
   UInt_t sTime;      //! real computer time in sec
   int sDelt;
   int sActualSourcePos;
+  std::string sBarName;
 
   Event(UShort_t brch, UInt_t qlong, ULong64_t tstamp, UInt_t tme, int delt)
   {
@@ -34,6 +35,16 @@ struct Event {
     sTime            = tme;
     sDelt            = delt;
     sActualSourcePos = actualSourcePos;
+  }
+  Event(UShort_t brch, UInt_t qlong, ULong64_t tstamp, UInt_t tme, int delt, int actualSourcePos, std::string barName)
+  {
+    sBrch            = brch;
+    sQlong           = qlong;
+    sTstamp          = tstamp;
+    sTime            = tme;
+    sDelt            = delt;
+    sActualSourcePos = actualSourcePos;
+    sBarName         = barName;
   }
 
   int GetDelT() const { return sDelt; }
@@ -60,6 +71,15 @@ struct Event {
   double GetTempAttenuationCoeffForAnEvent()
   {
     return (1. / (2. * sActualSourcePos)) * log((1. * GetQFar()) / (1. * GetQNear()));
+  }
+
+  double GetZFromQ()
+  {
+    double zval =
+        (1. / (2. * vecOfAttenCoeff[GetIndexFromBarName(sBarName)])) * log((1. * GetQFar()) / (1. * GetQNear()));
+    // double zval= log((1. * GetQFar()) / (1. * GetQNear()));
+    // std::cout << "ZVal : " << zval << std::endl;
+    return zval;
   }
 
   void Print()

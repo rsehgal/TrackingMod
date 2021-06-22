@@ -51,7 +51,7 @@ TFile *CharacterizationFileReader::GetFilePointer() const
 Event *CharacterizationFileReader::GetEvent(unsigned int evNo)
 {
   fTree->GetEntry(evNo);
-  return (new Event(fBrch, fQlong, fTstamp, fTime, fDelt - fDelTOffset, GetActualPosition()));
+  return (new Event(fBrch, fQlong, fTstamp, fTime, fDelt - fDelTOffset, GetActualPosition(),GetBarName()));
 }
 
 void CharacterizationFileReader::RandomizeIt()

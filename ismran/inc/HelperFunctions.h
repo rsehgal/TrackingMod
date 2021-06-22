@@ -89,4 +89,10 @@ public:
 	virtual ~HelperFunctions();
 };
 
+/* 
+** Temporary function to fill the "vecOfAttenCoeff" vector
+*/
+
+extern void FillAttenCoeffVec();
+
 #endif /* ISMRAN_ANALYSIS_INC_HELPERFUNCTIONS_H_ */

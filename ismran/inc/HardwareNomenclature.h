@@ -35,7 +35,7 @@ extern std::vector<unsigned int> vecOfPeakPos;
 extern std::vector<double> vecOfLayersYPos;
 extern std::vector<bool> vecOfLayersOrientation;
 extern double GetYOfLayer(unsigned int layerIndex);
-
+extern std::vector<double> vecOfAttenCoeff;
 struct Point2D{
 	double x;
 	double y;
@@ -58,7 +58,7 @@ struct Point2D{
 extern std::vector<Point2D> vecOfScintXYCenter;
 extern void GenerateScintMatrixXYCenters();
 extern unsigned int GetPeakPos(std::string barName);
-
+extern unsigned int GetIndexFromBarName(std::string barName);
 class HardWareNomenclature {
 public:
 	virtual ~HardWareNomenclature();
