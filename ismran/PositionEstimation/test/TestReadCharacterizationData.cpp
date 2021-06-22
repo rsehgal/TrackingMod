@@ -26,14 +26,16 @@ int main(int argc, char *argv[])
   for (unsigned int i = 0; i < trainingVec.size(); i++) {
     outfileTraining << trainingVec[i]->GetQNear() << "," << trainingVec[i]->GetQFar() << ","
                     << trainingVec[i]->GetQMean() << "," << trainingVec[i]->GetDelT() << ","
-                    << trainingVec[i]->GetActualSourcePosition() << std::endl;
+                    << trainingVec[i]->GetExpectedGammaPos() << "," << trainingVec[i]->GetActualSourcePosition()
+                    << std::endl;
   }
   outfileTraining.close();
 
   std::ofstream outfileTesting(testingFileName);
   for (unsigned int i = 0; i < testingVec.size(); i++) {
     outfileTesting << testingVec[i]->GetQNear() << "," << testingVec[i]->GetQFar() << "," << testingVec[i]->GetQMean()
-                   << "," << testingVec[i]->GetDelT() << "," << testingVec[i]->GetActualSourcePosition() << std::endl;
+                   << "," << testingVec[i]->GetDelT() << "," << testingVec[i]->GetExpectedGammaPos() << ","
+                   << testingVec[i]->GetActualSourcePosition() << std::endl;
   }
   outfileTesting.close();
 

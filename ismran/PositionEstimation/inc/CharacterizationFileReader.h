@@ -8,6 +8,7 @@
 
 #include "includes.h"
 #include <string>
+#include <climits>
 struct Event {
   UShort_t sBrch;    //! board #  and channel number ( its packed in as follows )     //! board*16 + chno.
   UInt_t sQlong;     //! integrated charge in long gate 88 nsec
@@ -53,6 +54,8 @@ struct Event {
   ULong64_t GetTFar() { return (sTstamp - sDelt); }
 
   int GetActualSourcePosition() const { return sActualSourcePos; }
+
+  double GetExpectedGammaPos() {}
 
   void Print()
   {
@@ -100,7 +103,7 @@ public:
   std::string GetBarName();
   unsigned int GetTotalNumOfEvents();
   void CalculateDelTOffset();
-  int GetDelTOffset()const;
+  int GetDelTOffset() const;
 
   /*Functions related to Training and Testing*/
   float fTestProportion;
