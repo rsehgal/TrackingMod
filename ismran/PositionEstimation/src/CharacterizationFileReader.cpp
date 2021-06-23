@@ -175,7 +175,7 @@ double CharacterizationFileReader::GetMeanAttenuationCoeff(unsigned int numOfEve
 double CharacterizationFileReader::GetMeanOfQValues(unsigned int numOfEvents)
 {
 
-  std::vector<Event *> eventsVec = GetAllEvents(numOfEvents);
+  std::vector<Event *> eventsVec = GetTrainingData();//GetAllEvents(numOfEvents);
   TH1F *hist                     = new TH1F("HistQ", "HistQ", 100, -5., 5.);
   for (unsigned int i = 0; i < eventsVec.size(); i++) {
     hist->Fill(eventsVec[i]->GetLogQNearByQFar());
