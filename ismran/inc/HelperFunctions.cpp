@@ -12,6 +12,9 @@
 #include "HardwareNomenclature.h"
 #include <bits/stdc++.h>
 #include "ScintillatorBar_V2.h"
+#include <TSystemDirectory.h>
+#include <TList.h>
+#include <TSystemFile.h>
 
 void AutoCallers()
 {
@@ -886,13 +889,37 @@ void FillAttenCoeffVec()
       else {
         if (i == 64)
           vecOfAttenCoeff.push_back(0.00584123);
-        else
-          vecOfAttenCoeff.push_back(0.);
+        else {
+          if (i == 79)
+            vecOfAttenCoeff.push_back(0.0116217);
+          else
+            vecOfAttenCoeff.push_back(0.);
+        }
       }
     }
   }
 }
 
+std::vector<std::string> GetVectorOfFiles(const char *dirname, const char *ext)
+{
+  std::vector<std::string> vecOfFileNames;
+  TSystemDirectory dir(dirname, dirname);
+  TList *files = dir.GetListOfFiles();
+  if (files) {
+    TSystemFile *file;
+    TString fname;
+    TIter next(files);
+    while ((file = (TSystemFile *)next())) {
+      fname = file->GetName();
+      if (!file->IsDirectory() && fname.EndsWith(ext)) {
+        //std::cout << (fname.Data()) << std::endl;
+        //std::cout << std::string(fname.Data()) << std::endl;
+        vecOfFileNames.push_back(std::string(fname.Data()));
+      }
+    }
+  }
+return vecOfFileNames;
+}
 HelperFunctions::HelperFunctions()
 {
   // TODO Auto-generated constructor stub

@@ -68,15 +68,13 @@ struct Event {
 
   double GetExpectedGammaPos() {}
 
-  double GetTempAttenuationCoeffForAnEvent()
-  {
-    return (1. / (2. * sActualSourcePos)) * log((1. * GetQFar()) / (1. * GetQNear()));
-  }
+  double GetLogQNearByQFar() { return log((1. * GetQFar()) / (1. * GetQNear())); }
+
+  double GetTempAttenuationCoeffForAnEvent() { return (1. / (2. * sActualSourcePos)) * GetLogQNearByQFar(); }
 
   double GetZFromQ()
   {
-    double zval =
-        (1. / (2. * vecOfAttenCoeff[GetIndexFromBarName(sBarName)])) * log((1. * GetQFar()) / (1. * GetQNear()));
+    double zval = (1. / (2. * vecOfAttenCoeff[GetIndexFromBarName(sBarName)])) * GetLogQNearByQFar();
     // double zval= log((1. * GetQFar()) / (1. * GetQNear()));
     // std::cout << "ZVal : " << zval << std::endl;
     return zval;

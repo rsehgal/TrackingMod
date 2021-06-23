@@ -83,6 +83,8 @@ extern unsigned int NumOfEventsToRead(std::string file1, std::string file2, std:
 
 extern std::string GenerateSubFileName(char *exeName, char *processedFileName);
 extern std::string GenerateSubFileName(std::string exeName, std::string processedFileName);
+
+extern std::vector<std::string> GetVectorOfFiles(const char *dirname="/home/", const char *ext=".root");
 class HelperFunctions {
 public:
 	HelperFunctions();
