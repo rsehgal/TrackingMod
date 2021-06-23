@@ -51,7 +51,7 @@ TFile *CharacterizationFileReader::GetFilePointer() const
 Event *CharacterizationFileReader::GetEvent(unsigned int evNo)
 {
   fTree->GetEntry(evNo);
-  return (new Event(fBrch, fQlong, fTstamp, fTime, fDelt - fDelTOffset, GetActualPosition(),GetBarName()));
+  return (new Event(fBrch, fQlong, fTstamp, fTime, fDelt - fDelTOffset, GetActualPosition(), GetBarName()));
 }
 
 void CharacterizationFileReader::RandomizeIt()
@@ -170,5 +170,15 @@ double CharacterizationFileReader::GetMeanAttenuationCoeff(unsigned int numOfEve
     hist->Fill(eventsVec[i]->GetTempAttenuationCoeffForAnEvent());
   }
   return hist->GetMean();
+}
 
+double CharacterizationFileReader::GetMeanOfQValues(unsigned int numOfEvents)
+{
+
+  std::vector<Event *> eventsVec = GetAllEvents(numOfEvents);
+  TH1F *hist                     = new TH1F("HistQ", "HistQ", 100, -5., 5.);
+  for (unsigned int i = 0; i < eventsVec.size(); i++) {
+    hist->Fill(eventsVec[i]->GetLogQNearByQFar());
+  }
+  return hist->GetMean();
 }

@@ -18,7 +18,7 @@ int main(int argc, char *argv[])
   CharacterizationFileReader cfReader(filename);
   FillAttenCoeffVec();
   std::vector<Event *> eventsVec = cfReader.GetAllEvents(std::atoi(argv[2]));
-  TH1F *hist                     = new TH1F("HistLogQNearByQFar", "HistLogQNearByQFar", 100, -1., 1.);
+  TH1F *hist                     = new TH1F("HistLogQNearByQFar", "HistLogQNearByQFar", 100, -5., 5.);
   for (unsigned int i = 0; i < eventsVec.size(); i++) {
     //std::cout << eventsVec[i]->GetLogQNearByQFar() << std::endl;
     hist->Fill(eventsVec[i]->GetLogQNearByQFar());

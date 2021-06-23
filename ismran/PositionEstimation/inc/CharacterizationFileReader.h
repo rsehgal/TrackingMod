@@ -128,6 +128,7 @@ public:
   void CalculateDelTOffset();
   int GetDelTOffset() const;
   double GetMeanAttenuationCoeff(unsigned int numOfEvents = 0);
+  double GetMeanOfQValues(unsigned int numOfEvents = 0);
 
   /*Functions related to Training and Testing*/
   float fTestProportion;
