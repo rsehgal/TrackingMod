@@ -117,7 +117,7 @@ public:
   CharacterizationFileReader();
   CharacterizationFileReader(std::string filename);
   void ConnectTree(std::string treeName = "ftree");
-
+  void ResetWith(std::string filename);
   /*Required Getters*/
   TTree *GetTree() const;
   TFile *GetFilePointer() const;

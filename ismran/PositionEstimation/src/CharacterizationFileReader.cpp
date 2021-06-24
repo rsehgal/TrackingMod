@@ -15,6 +15,18 @@ CharacterizationFileReader::CharacterizationFileReader(std::string filename)
   std::iota(fEventNumVec.begin(), fEventNumVec.end(), 0);
 }
 
+void CharacterizationFileReader::ResetWith(std::string filename)
+{
+  fFileName = filename;
+  fEventNumVec.clear();
+  //if (fp != NULL) delete fp;
+  fp = new TFile(filename.c_str(), "r");
+  ConnectTree();
+  CalculateDelTOffset();
+  fEventNumVec.resize(fTree->GetEntries());
+  std::iota(fEventNumVec.begin(), fEventNumVec.end(), 0);
+}
+
 void CharacterizationFileReader::CalculateDelTOffset()
 {
   std::string barName = GetBarName();
@@ -142,7 +154,7 @@ int CharacterizationFileReader::GetActualPosition()
 std::string CharacterizationFileReader::GetBarName()
 {
   std::string justFileName = fFileName.substr(fFileName.find_last_of("/") + 1);
-  // std::cout << "JUST FILE NAME : " << justFileName << std::endl;
+  //std::cout << "JUST FILE NAME : " << justFileName << std::endl;
   unsigned int locationOfPS      = justFileName.find("PS");
   unsigned int locationOfCouples = justFileName.find("Couples");
   std::string barName            = justFileName.substr(locationOfPS, locationOfCouples - 7);
@@ -175,7 +187,7 @@ double CharacterizationFileReader::GetMeanAttenuationCoeff(unsigned int numOfEve
 double CharacterizationFileReader::GetMeanOfQValues(unsigned int numOfEvents)
 {
 
-  std::vector<Event *> eventsVec = GetTrainingData();//GetAllEvents(numOfEvents);
+  std::vector<Event *> eventsVec = GetTrainingData(); // GetAllEvents(numOfEvents);
   TH1F *hist                     = new TH1F("HistQ", "HistQ", 100, -5., 5.);
   for (unsigned int i = 0; i < eventsVec.size(); i++) {
     hist->Fill(eventsVec[i]->GetLogQNearByQFar());

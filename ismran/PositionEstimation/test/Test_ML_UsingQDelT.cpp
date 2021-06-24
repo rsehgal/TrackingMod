@@ -23,9 +23,9 @@ int main(int argc, char *argv[])
   // TLegend *legend = new TLegend();
   std::string filename = argv[1];
   CharacterizationFileReader cfReader(filename);
-  FillAttenCoeffVec();
+  //FillAttenCoeffVec();
   std::string barName = cfReader.GetBarName();
-  cfReader.RandomizeIt();
+  //cfReader.RandomizeIt();
 
   TFile *fpCalib    = new TFile("calibQ.root", "r");
   TF1 *paramFormula = (TF1 *)fpCalib->Get(("fQparam_" + barName).c_str());

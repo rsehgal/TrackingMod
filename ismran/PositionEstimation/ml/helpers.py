@@ -37,6 +37,13 @@ def create_polynomial_regression_model(x,y,degree):
 	# fit the transformed features to Linear Regression
 	poly_model = LinearRegression()
 	poly_model.fit(x_train_poly, y_train)
+	print("====================================================================")
+	print("================ PRINTING MODEL HYPER PARAMETERS ===================")
+	print(poly_model.coef_)
+	print(poly_model.intercept_)
+	print("====================================================================")
+	print("============ Num Of Parameters :"+str(len(poly_model.coef_))+" ============")
+	print("====================================================================")
 
 	# predicting on training data-set
 	y_train_predicted = poly_model.predict(x_train_poly)
@@ -90,9 +97,9 @@ def PlotDiffHist(x_test,y_test,y_predict):
 	mu, sigma = scipy.stats.norm.fit(y_predict)
 	print((mu,sigma))
 	best_fit_line = scipy.stats.norm.pdf(bins, mu, sigma)
-	plt.plot(bins, best_fit_line)
-	#plt.hist(y_predict)
-	#plt.show()
+	#plt.plot(bins, best_fit_line)
+	plt.hist(y_predict,bins=bins,facecolor='magenta')
+	plt.show()
 
 	supList=[]
 	print("Shape Of Y_test : "+str(y_test.shape))
