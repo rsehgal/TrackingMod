@@ -7,6 +7,15 @@ import pickle
 from matplotlib import pyplot as plt
 from sklearn.metrics import mean_squared_error, r2_score
 from scipy.stats import norm
+#-------------------------------
+from sklearn.linear_model import LinearRegression
+from sklearn.linear_model import Ridge
+from sklearn.linear_model import Lasso
+from sklearn.linear_model import ElasticNet
+from sklearn.neighbors import KNeighborsRegressor
+from sklearn.tree import DecisionTreeRegressor
+from sklearn.svm import SVR
+from sklearn.ensemble import RandomForestRegressor
 
 modelfilePrefix = "model_layer_"
 
@@ -110,4 +119,33 @@ def PlotDiffHist(x_test,y_test,y_predict):
 	supListArr=np.array(supList)
 	#print(supListArr)
 	np.savetxt("output.csv",supListArr,delimiter=',')
-	
+
+def ProcessIt(model,x,y):
+	x_train,x_test,y_train,y_test=train_test_split(x,y,test_size=0.75)
+	model.fit(x_train, y_train)
+	# predicting on test data-set
+	y_predict = model.predict(x_test)
+
+	# evaluating the model on test dataset
+	rmse_test = np.sqrt(mean_squared_error(y_test, y_predict))
+	r2_test = r2_score(y_test, y_predict)
+
+	print("\n")
+
+	print("The model performance for the test set")
+	print("-------------------------------------------")
+	print("RMSE of test set is {}".format(rmse_test))
+	print("R2 score of test set is {}".format(r2_test))
+	PlotDiffHist(x_test,y_test,y_predict)
+
+def KNN(x,y,numOfNeigh):
+	model = KNeighborsRegressor(n_neighbors=numOfNeigh,weights='uniform')
+	ProcessIt(model,x,y)
+
+def DecisionTreeRegression(x,y,depth=8):
+	dtree = DecisionTreeRegressor(max_depth=depth, min_samples_leaf=0.13, random_state=3)
+	ProcessIt(dtree,x,y)
+
+def RandomForest(x,y,n_est=10,ran_state=100):
+	model_rf = RandomForestRegressor(n_estimators=n_est, oob_score=True, random_state=ran_state)
+	ProcessIt(model_rf,x,y)
