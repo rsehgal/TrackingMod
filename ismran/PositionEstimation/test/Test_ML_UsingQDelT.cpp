@@ -17,7 +17,7 @@
 int main(int argc, char *argv[])
 {
   gStyle->SetOptStat(0);
-  TApplication *fApp = new TApplication("Test", NULL, NULL);
+//  TApplication *fApp = new TApplication("Test", NULL, NULL);
 
   new TCanvas();
   // TLegend *legend = new TLegend();
@@ -25,31 +25,32 @@ int main(int argc, char *argv[])
   CharacterizationFileReader cfReader(filename);
   //FillAttenCoeffVec();
   std::string barName = cfReader.GetBarName();
+  int pos = cfReader.GetActualPosition();
   //cfReader.RandomizeIt();
 
   TFile *fpCalib    = new TFile("calibQ.root", "r");
   TF1 *paramFormula = (TF1 *)fpCalib->Get(("fQparam_" + barName).c_str());
 
   std::vector<Event *> eventsVec = cfReader.GetTrainingData(); // AllEvents(0);//std::atoi(argv[2]));
-  std::ofstream outfileTrain("ml_q_delt_training.txt");
+  std::ofstream outfileTrain(barName+"_"+std::to_string(pos)+"_training.txt");
   for (unsigned int i = 0; i < eventsVec.size(); i++) {
     double logQNearbyQFar = eventsVec[i]->GetLogQNearByQFar();
     double delt           = eventsVec[i]->GetDelT();
     double estimatedZ     = paramFormula->Eval(logQNearbyQFar);
-    outfileTrain << logQNearbyQFar << "," << delt << "," << estimatedZ << std::endl;
+    outfileTrain << logQNearbyQFar << "," << delt << "," << estimatedZ << "," << pos << std::endl;
   }
   outfileTrain.close();
 
   eventsVec.clear();
   eventsVec = cfReader.GetTestingData();
-  std::ofstream outfileTest("ml_q_delt_testing.txt");
+  std::ofstream outfileTest(barName+"_"+std::to_string(pos)+"_testing.txt");
   for (unsigned int i = 0; i < eventsVec.size(); i++) {
     double logQNearbyQFar = eventsVec[i]->GetLogQNearByQFar();
     double delt           = eventsVec[i]->GetDelT();
     double estimatedZ     = paramFormula->Eval(logQNearbyQFar);
-    outfileTest << logQNearbyQFar << "," << delt << "," << estimatedZ << std::endl;
+    outfileTest << logQNearbyQFar << "," << delt << "," << estimatedZ << "," << pos << std::endl;
   }
   outfileTest.close();
   std::cout << "Training and Testing files generated........." << std::endl;
-  fApp->Run(); 
+//  fApp->Run(); 
 }
