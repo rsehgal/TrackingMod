@@ -10,12 +10,12 @@ df = pd.read_csv(sys.argv[1],names=['Q','DelT','zQ'])
 x=df[['Q','DelT']]
 y=df['zQ']
 
-#df = pd.read_csv(sys.argv[1],names=['Q','DelT','zQ'])
-#x=df[['Q']]
-#y=df['zQ']
+df = pd.read_csv(sys.argv[2],names=['Q','DelT','zQ'])
+xtest=df[['Q','DelT']]
+ytest=df['zQ']
 
-create_polynomial_regression_model(x,y,int(sys.argv[2]))
-#NN(x,y,int(sys.argv[2]))
-#DecisionTreeRegression(x,y,int(sys.argv[2]))
-#RandomForest(x,y,n_est=int(sys.argv[2]))
+create_polynomial_regression_model_2(x,y,xtest,ytest,int(sys.argv[3]))
+#KNN(x,y,xtest,ytest,int(sys.argv[3]))
+#DecisionTreeRegression(x,y,xtest,ytest,int(sys.argv[3]))
+#RandomForest(x,y,xtest,ytest,n_est=int(sys.argv[3]))
 #LinearSVR(x,y)

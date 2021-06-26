@@ -19,4 +19,4 @@ ytest=dftest['actz']
 #NN(x,y,int(sys.argv[2]))
 #DecisionTreeRegression(x,y,int(sys.argv[2]))
 #RandomForest(x,y,n_est=int(sys.argv[2]))
-NearestNeighbours(x,y,xtest,ytest,3)
+NearestNeighbours(x,y,xtest,ytest,3,modelName="model_PS_55")
