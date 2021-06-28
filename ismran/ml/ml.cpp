@@ -194,7 +194,7 @@ void GenerateTrainingData_All(std::string filename, unsigned int inspectedLayerI
 */
 #if (1)
 void GenerateTrainingData_All(std::string filename, unsigned int inspectedLayerIndex, unsigned int startIndex,
-                              unsigned int endIndex)
+                              unsigned int endIndex, bool qparam)
 {
   GenerateScintMatrixXYCenters();
   lite_interface::Calibration *calib                    = lite_interface::Calibration::instance("completeCalib2.root");
@@ -247,10 +247,10 @@ void GenerateTrainingData_All(std::string filename, unsigned int inspectedLayerI
 #endif
       {
 #ifdef USE_FOR_SIMULATION
-        outfile << scintStart->GetExactHitPosition()->GetZ() << "," << scintEnd->GetExactHitPosition()->GetZ() << ","
-                << scint->GetExactHitPosition()->GetZ() << std::endl;
+        /*outfile << scintStart->GetExactHitPosition()->GetZ() << "," << scintEnd->GetExactHitPosition()->GetZ() << ","
+                << scint->GetExactHitPosition()->GetZ() << std::endl;*/
 
-        /* //Commenting for the time being
+         //Commenting for the time being
           if (!vecOfLayersOrientation[inspectedLayerIndex]) {
             outfile << scintStart->GetExactHitPosition()->GetZ() << "," << scint->GetExactHitPosition()->GetX() << ","
                     << scintEnd->GetExactHitPosition()->GetZ() << "," << scint->GetExactHitPosition()->GetZ()
@@ -265,16 +265,31 @@ void GenerateTrainingData_All(std::string filename, unsigned int inspectedLayerI
                       << scintEnd->GetExactHitPosition()->GetX() << "," << scint->GetExactHitPosition()->GetX()
                       << std::endl;
             }
-          }*/
+          }
 #else
         /*//Commenting for the time being
                 outfile << scintStart->EstimateHitPosition_Param()->GetZ() << "," <<
            scint->EstimateHitPosition_Param()->GetZ()
                         << "," << scintEnd->EstimateHitPosition_Param()->GetZ() << std::endl;*/
-        outfile << scintStart->EstimateHitPosition_Param()->GetZ() << ","
-                << scintEnd->EstimateHitPosition_Param()->GetZ() << "," << scint->EstimateHitPosition_Param()->GetZ()
-                << "," << scint->GetDelTCorrected() << "," << scint->GetBarIndex() << std::endl;
-
+        if (qparam)
+          outfile << scintStart->EstimateHitPosition_QParam()->GetZ() << ","
+                  << scint->EstimateHitPosition_QParam()->GetZ() << "," << scintEnd->EstimateHitPosition_QParam()->GetZ()
+                  << std::endl;
+        else
+          outfile << scintStart->EstimateHitPosition_Param()->GetZ() << ","
+                  << scint->EstimateHitPosition_Param()->GetZ() << "," << scintEnd->EstimateHitPosition_Param()->GetZ()
+                  << std::endl;
+        /*if(qparam)
+                outfile << scintStart->EstimateHitPosition_Param()->GetZ() << ","
+                        << scintEnd->EstimateHitPosition_Param()->GetZ() << "," <<
+        scint->EstimateHitPosition_Param()->GetZ()
+                        << "," << scint->GetDelTCorrected() << "," << scint->GetBarIndex() << std::endl;
+        else
+             outfile << scintStart->EstimateHitPosition_QParam()->GetZ() << ","
+                        << scintEnd->EstimateHitPosition_QParam()->GetZ() << "," <<
+        scint->EstimateHitPosition_QParam()->GetZ()
+                        << "," << scint->GetDelTCorrected() << "," << scint->GetBarIndex() << std::endl;
+        */
         // << "," << scint->EstimateHitPosition_Param()->GetZ() << std::endl;
         lite_interface::Point3D *hitPt = Get3DHitPointOnLayer(smtVec[i], inspectedLayerIndex);
         outfile2 << hitPt->GetX() << "," << hitPt->GetZ() << std::endl;

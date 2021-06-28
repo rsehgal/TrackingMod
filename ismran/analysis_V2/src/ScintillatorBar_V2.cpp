@@ -144,6 +144,30 @@ lite_interface::Point3D *ScintillatorBar_V2::EstimateHitPosition_Param()
 #endif
 }
 
+lite_interface::Point3D *ScintillatorBar_V2::EstimateHitPosition_QParam()
+{
+  TF1 *param     = lite_interface::Calibration::instance()->GetCalibrationDataOf(fBarIndex)->fQParameterization_F;
+  double zval    = 0.;
+  double xOrZval = 0.;
+
+  double qval = log((1. * GetQLongNear()) / (1. * GetQLongFar()));
+  if (IsSimulation)
+    xOrZval = param->Eval(qval);
+  else
+    xOrZval = param->Eval(qval);
+
+#ifdef STAGGERED_GEOM
+  if (GetLayerIndex() % 2) {
+    return (new lite_interface::Point3D(xOrZval, vecOfScintXYCenter[fBarIndex].y, vecOfScintXYCenter[fBarIndex].x));
+  } else {
+    return (new lite_interface::Point3D(vecOfScintXYCenter[fBarIndex].x, vecOfScintXYCenter[fBarIndex].y, xOrZval));
+  }
+
+#else
+  return (new lite_interface::Point3D(vecOfScintXYCenter[fBarIndex].x, vecOfScintXYCenter[fBarIndex].y, xOrZval));
+#endif
+}
+
 void ScintillatorBar_V2::EstimateHitPositionAlongX() {}
 
 void ScintillatorBar_V2::EstimateHitPositionAlongX(Point3D *temp, Point3D *tempError)
@@ -284,7 +308,7 @@ double ScintillatorBar_V2::GetOffsetCorrection()
 Long_t ScintillatorBar_V2::GetDelTCorrected()
 {
   if (IsSimulation) {
-    //std::cout << "FROM IF : IS_SIMULATION SET TO TRUE : " << __FILE__ << " : " << __LINE__ << std::endl;
+    // std::cout << "FROM IF : IS_SIMULATION SET TO TRUE : " << __FILE__ << " : " << __LINE__ << std::endl;
 #ifdef USE_CALIBRATION
     // return (fDelTstamp - Calibration::instance()->GetCalibrationDataOf(fBarIndex)->fDeltaTCorr * 1000);
     return fDelTstamp;
@@ -292,8 +316,9 @@ Long_t ScintillatorBar_V2::GetDelTCorrected()
     return fDelTstamp;
 #endif
   } else {
-    //std::cout << "FROM ELSE : " << Calibration::instance()->GetCalibrationDataOf(fBarIndex)->fDeltaTCorr * 1000 << " : "
-      //        << __FILE__ << " : " << __LINE__ << std::endl;
+    // std::cout << "FROM ELSE : " << Calibration::instance()->GetCalibrationDataOf(fBarIndex)->fDeltaTCorr * 1000 << "
+    // : "
+    //        << __FILE__ << " : " << __LINE__ << std::endl;
     return (fDelTstamp - Calibration::instance()->GetCalibrationDataOf(fBarIndex)->fDeltaTCorr * 1000);
   }
 }

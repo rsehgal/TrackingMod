@@ -21,6 +21,8 @@
 #include "ml.h"
 int main(int argc, char *argv[])
 {
+  std::cout << "ARGC : " << argc << std::endl;
+  //return 0;
   GenerateScintMatrixXYCenters();
   for (unsigned int i = 0; i < vecOfScintXYCenter.size(); i++) {
     if (!(i % 9)) std::cout << "=================================" << std::endl;
@@ -68,6 +70,9 @@ int main(int argc, char *argv[])
   // GenerateTrainingData_9(filename,7);
   //GenerateTrainingData_All_V2(filename, std::atoi(argv[2]));
   // GenerateTrainingData_All(filename,8);
+if(argc==6)
+  GenerateTrainingData_All(filename,std::atoi(argv[2]),std::atoi(argv[3]),std::atoi(argv[4]),true);
+else
   GenerateTrainingData_All(filename,std::atoi(argv[2]),std::atoi(argv[3]),std::atoi(argv[4]));
   // GenerateTrainingData_All(filename,9);
   // fApp->Run();
