@@ -21,15 +21,19 @@ print("=========================================================")
 print("========= Loading models at different positions =========")
 print("=========================================================")
 
-barName="PS_55"
-classificationModel = LoadClassificationModel(barName)
+barName=sys.argv[1]
+modelPath="../datasets/"+barName+"/model_Classification_neighbors_5_"+barName+".sav"
+classificationModel = LoadClassificationModel(modelPath)
 
 
 modelList=[]
 for posValue in posList:
-	modelList.append(LoadRegressionModel(barName,posValue))
+	regModelPath="../datasets/"+barName+"/model_Regression_"+barName+"_"+str(posValue)+".sav"
+	if posValue >= 0:
+		regModelPath="../datasets/"+barName+"/model_Regression_"+barName+"_+"+str(posValue)+".sav"
+	modelList.append(LoadRegressionModel(regModelPath))
 
-dftest = pd.read_csv(sys.argv[1],names=['Q','DelT','zQ','actz'])
+dftest = pd.read_csv(sys.argv[2],names=['Q','DelT','zQ','actz'])
 xtestClassifcation=dftest[['Q','DelT','zQ']]
 ytest=dftest['actz']
 xtestRegression=dftest[['Q','DelT']]
@@ -37,6 +41,10 @@ xtestRegression=dftest[['Q','DelT']]
 xtestClassifcation = xtestClassifcation.to_numpy()
 xtestRegression = xtestRegression.to_numpy()
 predictedZ = []
+
+PlotConfusionMatrix(classificationModel,xtestClassifcation,ytest)
+plt.show()
+
 bins=np.linspace(-80,80,160)
 #for xtest in xtestClassifcation:
 print("============= Starting Predictions ====================")

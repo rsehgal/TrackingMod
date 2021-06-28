@@ -16,6 +16,7 @@ from sklearn.neighbors import KNeighborsRegressor
 from sklearn.tree import DecisionTreeRegressor
 from sklearn.svm import SVR
 from sklearn.ensemble import RandomForestRegressor
+from sklearn.metrics import plot_confusion_matrix
 
 modelfilePrefix = "model_layer_"
 
@@ -92,6 +93,8 @@ def create_polynomial_regression_model_2(x,y,xtest,ytest,degree):
 
 def save_regression_model(x,y,barName,location,degree=4):
 	modelName="model_Regression_"+barName+"_"+str(location)+".sav"
+	if location >= 0:
+		modelName="model_Regression_"+barName+"_+"+str(location)+".sav"
 	"Creates a polynomial regression model for the given degree"
 	poly_features = PolynomialFeatures(degree=degree)
 
@@ -104,7 +107,7 @@ def save_regression_model(x,y,barName,location,degree=4):
 	print("========= Model built ===========")
 	pickle.dump(poly_model,open(modelName,'wb'))
 	print("Model saved as : "+modelName)
-
+'''
 def LoadRegressionModel(barName,pos):
 	#modelName="model_Regression_"+barName+"_"+str(pos)+".sav"
 	modelName="model_Regression_"+barName+"_"+str(pos)+"_degree_4.sav"
@@ -112,12 +115,29 @@ def LoadRegressionModel(barName,pos):
 	loaded_model = pickle.load(open(modelName, 'rb'))
 	return loaded_model
 
+'''
+'''
 def LoadClassificationModel(barName):
         #modelName="model_Classification_"+barName+".sav"
-        modelName="model_Classification_"+barName+"_neigh_3.sav"
+        modelName="model_Classification_neighbors_5"+barName+".sav"
         print("Loaded model : "+modelName)
         loaded_model = pickle.load(open(modelName, 'rb'))
         return loaded_model
+'''
+def LoadRegressionModel(modelPath):
+	#modelName="model_Regression_"+barName+"_"+str(pos)+".sav"
+	#modelName="model_Regression_"+barName+"_"+str(pos)+"_degree_4.sav"
+	print("Loaded Regression model : "+modelPath)
+	loaded_model = pickle.load(open(modelPath, 'rb'))
+	return loaded_model
+
+def LoadClassificationModel(modelPath):
+        #modelName="model_Classification_"+barName+".sav"
+        #modelName="model_Classification_neighbors_5"+barName+".sav"
+        print("Loaded Classification model : "+modelPath)
+        loaded_model = pickle.load(open(modelPath, 'rb'))
+        return loaded_model
+
 
 def create_polynomial_regression_model(x,y,degree):
 	"Creates a polynomial regression model for the given degree"
@@ -247,3 +267,8 @@ def LinearSVR(x,y):
 	from sklearn.preprocessing import StandardScaler
 	regr = make_pipeline(StandardScaler(),LinearSVR(random_state=0, tol=1e-5))
 	ProcessIt(regr,x,y)
+
+def PlotConfusionMatrix(model,x_test,y_test):
+	score = model.score(x_test, y_test)
+	print(score)
+	plot_confusion_matrix(model, x_test, y_test,normalize='true')

@@ -31,8 +31,14 @@ int main(int argc, char *argv[])
   TFile *fpCalib    = new TFile("calibQ.root", "r");
   TF1 *paramFormula = (TF1 *)fpCalib->Get(("fQparam_" + barName).c_str());
 
+  std::string subFileName="";
+  if(pos >=0 )
+	subFileName = barName+"_+"+std::to_string(pos);
+  else
+	subFileName = barName+"_"+std::to_string(pos);
   std::vector<Event *> eventsVec = cfReader.GetTrainingData(); // AllEvents(0);//std::atoi(argv[2]));
-  std::ofstream outfileTrain(barName+"_"+std::to_string(pos)+"_training.txt");
+  //std::ofstream outfileTrain(barName+"_"+std::to_string(pos)+"_training.txt");
+  std::ofstream outfileTrain(subFileName+"_training.txt");
   for (unsigned int i = 0; i < eventsVec.size(); i++) {
     double logQNearbyQFar = eventsVec[i]->GetLogQNearByQFar();
     double delt           = eventsVec[i]->GetDelT();
@@ -43,7 +49,8 @@ int main(int argc, char *argv[])
 
   eventsVec.clear();
   eventsVec = cfReader.GetTestingData();
-  std::ofstream outfileTest(barName+"_"+std::to_string(pos)+"_testing.txt");
+  //std::ofstream outfileTest(barName+"_"+std::to_string(pos)+"_testing.txt");
+  std::ofstream outfileTest(subFileName+"_testing.txt");
   for (unsigned int i = 0; i < eventsVec.size(); i++) {
     double logQNearbyQFar = eventsVec[i]->GetLogQNearByQFar();
     double delt           = eventsVec[i]->GetDelT();

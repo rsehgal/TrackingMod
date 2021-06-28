@@ -5,7 +5,9 @@ from sklearn.linear_model import LinearRegression
 import sys
 from matplotlib import pyplot as plt
 from helpers import *
-
+import colorama
+from colorama import Fore
+print(Fore.RED+"Processing File :"+sys.argv[1])
 df = pd.read_csv(sys.argv[1],names=['Q','DelT','zQ','pos'])
 x=df[['Q','DelT']]
 y=df['zQ']
