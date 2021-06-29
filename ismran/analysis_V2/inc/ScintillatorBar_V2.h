@@ -106,6 +106,7 @@ public:
 	ushort GetBarIndexInLayer();
 	UInt_t GetQLongNear()const;
 	UInt_t GetQLongFar();
+  	double GetLogQNearByQFar() { return log((1. * GetQLongFar()) / (1. * GetQLongNear())); }
 	Double_t GetQLongMean() const;
 	ULong64_t GetTSmallTimestamp() const;
 	ULong64_t GetTNearCorr() ;

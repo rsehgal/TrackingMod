@@ -150,7 +150,7 @@ lite_interface::Point3D *ScintillatorBar_V2::EstimateHitPosition_QParam()
   double zval    = 0.;
   double xOrZval = 0.;
 
-  double qval = log((1. * GetQLongNear()) / (1. * GetQLongFar()));
+  double qval = GetLogQNearByQFar() ;
   if (IsSimulation)
     xOrZval = param->Eval(qval);
   else
