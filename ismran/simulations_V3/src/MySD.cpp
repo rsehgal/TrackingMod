@@ -116,7 +116,6 @@ void MySD::Initialize(G4HCofThisEvent *hce)
 {
   // Create hits collection
   // muonNum++;
-  // if(verbose){
   exactHitVector.clear();
   initialEnergy   = 0.;
   depositedEnergy = 0.;
@@ -177,7 +176,7 @@ G4bool MySD::ProcessHits(G4Step *aStep, G4TouchableHistory *)
       std::cout << "SUBSTR : " << psSubBarName << " : " << touchable->GetVolume(0)->GetName() << std::endl;
     }
 
-    // if(std::string(touchable->GetVolume(0)->GetName()) ==  "World" && psSubBarName=="PhysicalPsBar"){
+    // if(std::string(touchable->GetVolume(0)->GetName()) ==  "World" && psSubBarName=="PhysicalPsBar")
     if (psSubBarName == "PhysicalPsBar") {
       if (!enteredMatrix) {
         // std::cout << "================== Entering in Top layer.............. With Energy : " <<
@@ -193,13 +192,14 @@ G4bool MySD::ProcessHits(G4Step *aStep, G4TouchableHistory *)
 
     if (aStep->GetPreStepPoint()->GetStepStatus() == fGeomBoundary) {
       G4ThreeVector hitPt = aStep->GetPreStepPoint()->GetPosition();
-      //G4cout <<"G4 hitPoint : " << hitPt << G4endl;
+      // G4cout <<"G4 hitPoint : " << hitPt << G4endl;
       exactHitVector.push_back(hitPt);
       vecOfPairs.push_back(
           std::pair<std::string, G4ThreeVector>(std::string(touchable->GetVolume(0)->GetName()), hitPt));
       psBarVec[touchable->GetCopyNumber()]->fExactHitPosition->SetXYZ(hitPt.getX() / 10., hitPt.getY() / 10.,
                                                                       hitPt.getZ() / 10.);
-      (psBarVec[touchable->GetCopyNumber()]->hitsVectorInAnEventInABar).push_back(new lite_interface::Point3D(hitPt.getX(),hitPt.getY(),hitPt.getZ()));
+      (psBarVec[touchable->GetCopyNumber()]->hitsVectorInAnEventInABar)
+          .push_back(new lite_interface::Point3D(hitPt.getX(), hitPt.getY(), hitPt.getZ()));
       // std::cout << "Copy No. of Touchable : " << touchable->GetCopyNumber() << std::endl;
       //	 / std::cout <<  hitPt << std::endl;
     }
@@ -253,7 +253,7 @@ void MySD::EndOfEvent(G4HCofThisEvent *)
     std::cout << "No of Hits : " << fHitsCollection->entries() << std::endl;
     std::cout << "RAMAN Entered EndOfEvent Of SD" << std::endl;
   }
-  // if ( verboseLevel>1 ) {
+  // if ( verboseLevel>1 )
   if (1) {
     G4int nofHits = fHitsCollection->entries();
     if (verbose)
@@ -308,7 +308,7 @@ void MySD::EndOfEvent(G4HCofThisEvent *)
          *
          * tHIS GIVES SIMILAR MULTIPLICITY PICTURES AS WE ARE GETTING FROM DATA
          */
-        // if(scintBar->qlongMeanCorrected > 10000 && scintBar->qlongMeanCorrected < 35000){
+        // if(scintBar->qlongMeanCorrected > 10000 && scintBar->qlongMeanCorrected < 35000)
 
         // DO WE REALLY NEED BELOW MENTIONED IF CONDITION, OR IT SHOULD BE HANDLED AT ANALYSIS LEVEL
         // if(scintBar->GetQMeanCorrected() > 10 && scintBar->GetQMeanCorrected() < 35)
@@ -333,7 +333,7 @@ void MySD::EndOfEvent(G4HCofThisEvent *)
     // std::cout <<"++++++++++++++++++++++++++++++++++++++++++++++++++++++++++" << std::endl;
     // verbose = true;
     if (verbose) {
-      // if(true){
+      // if(true)
       std::cout << "********** Printing onlyHittedBarVec ***********" << std::endl;
       for (unsigned int i = 0; i < onlyHittedBarVec.size(); i++) {
         onlyHittedBarVec[i]->Print();
@@ -346,10 +346,7 @@ void MySD::EndOfEvent(G4HCofThisEvent *)
     depositedEnergy                      = smt->GetEnergySum();
     double exactHitZenithAngle           = smt->GetZenithAngle_ExactHitPoint();
     angleReconsExact                     = 3.14159 - exactHitZenithAngle;
-    /*if(exactHitZenithAngle > 0){
-      angleCRY = angle;
-    }*/
-
+    /*if(exactHitZenithAngle > 0){angleCRY = angle;  }*/
     // smt->GetMean3DHitPointVector()
     angleReconsMean = 3.14159 - smt->GetZenithAngle_MeanHitPoint();
     if (smt->size() > 8) angleReconsLinear = 3.14159 - smt->GetZenithAngle_Linear();
