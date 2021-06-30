@@ -313,7 +313,7 @@ void GenerateTrainingData_All(std::string filename, unsigned int inspectedLayerI
   std::cout << "OutfileName : " << outfileName << std::endl;
   // return;
   std::ofstream outfile(outfileName);
-  std::ofstream outfile2("interpolated_Layer9.txt");
+  std::ofstream outfile2("interpolated_Layer_"+std::to_string(inspectedLayerIndex)+".txt");
   for (unsigned int i = 0; i < smtVec.size(); i++) {
     unsigned int hittBarIndex = 10000;
     /*ushort startIndex         = GetStartIndex(inspectedLayerIndex);
