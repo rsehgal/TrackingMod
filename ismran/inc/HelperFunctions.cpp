@@ -905,13 +905,19 @@ std::vector<std::string> GetVectorOfFiles(const char *dirname, const char *ext)
     while ((file = (TSystemFile *)next())) {
       fname = file->GetName();
       if (!file->IsDirectory() && fname.EndsWith(ext)) {
-        //std::cout << (fname.Data()) << std::endl;
-        //std::cout << std::string(fname.Data()) << std::endl;
+        // std::cout << (fname.Data()) << std::endl;
+        // std::cout << std::string(fname.Data()) << std::endl;
         vecOfFileNames.push_back(std::string(fname.Data()));
       }
     }
   }
-return vecOfFileNames;
+  return vecOfFileNames;
+}
+
+double GetGaussianRandomSample(double mean, double sigma)
+{
+  TRandom3 *grandom = new TRandom3();
+  return grandom->Gaus(mean, sigma);
 }
 HelperFunctions::HelperFunctions()
 {

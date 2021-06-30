@@ -45,7 +45,7 @@ G4UIExecutive* ui = 0;
   }
 
   GenerateScintMatrixXYCenters();
-  lite_interface::IsSimulation = true;
+  IsSimulation = true;
 
   // lite_interface::Calibration *calib =
   // lite_interface::Calibration::instance("/home/rsehgal/BackBoneSoftwares/ismranData/completeCalib.root");

@@ -96,6 +96,9 @@ extern std::string GenerateSubFileName(char *exeName, char *processedFileName);
 extern std::string GenerateSubFileName(std::string exeName, std::string processedFileName);
 
 extern std::vector<std::string> GetVectorOfFiles(const char *dirname = "/home/", const char *ext = ".root");
+
+extern double GetGaussianRandomSample(double mean, double sigma);
+
 class HelperFunctions {
 public:
   HelperFunctions();

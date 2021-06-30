@@ -150,7 +150,7 @@ lite_interface::Point3D *ScintillatorBar_V2::EstimateHitPosition_QParam()
   double zval    = 0.;
   double xOrZval = 0.;
 
-  double qval = GetLogQNearByQFar() ;
+  double qval = GetLogQNearByQFar();
   if (IsSimulation)
     xOrZval = param->Eval(qval);
   else
@@ -385,33 +385,6 @@ lite_interface::Point3D *ScintillatorBar_V2::GetExactHitPosition()
 
 void ScintillatorBar_V2::CalculateVariousPhysicalParameters(unsigned long muonNum, lite_interface::Calibration *calib)
 {
-  /*
-    qlongMeanCorrected = qlongMean*1000.;
-      meanHitPosition.x = 0.;
-      meanHitPosition.y = 0.;
-      meanHitPosition.z = 0.;
-      for(unsigned int i = 0 ; i < hitsVectorInAnEventInABar.size() ; i++){
-        //std::cout << "Hit point Vec from ScintillatorBar_V2 : "; hitsVectorInAnEventInABar[i]->Print();
-        meanHitPosition.x += hitsVectorInAnEventInABar[i]->x;
-        meanHitPosition.y += hitsVectorInAnEventInABar[i]->y;
-        meanHitPosition.z += hitsVectorInAnEventInABar[i]->z;
-      }
-      meanHitPosition.x /= hitsVectorInAnEventInABar.size();
-      meanHitPosition.y /= hitsVectorInAnEventInABar.size();
-      meanHitPosition.z /= hitsVectorInAnEventInABar.size();
-
-      unsigned long int startTime = muonNum*timeBetweenTwoMuonTracks;
-      //std::cout << "Muon Number : " << muonNum << " : startTime : " << startTime << " : " << __FILE__ <<" : " <<
-    __LINE__ << std::endl;
-      //std::cout << "hitsVector.size() : " << hitsVectorInAnEventInABar.size() << std::endl;
-      //meanHitPosition.Print();
-
-      tstampNear = startTime + ((barLength/2. * cm + meanHitPosition.z)/(barLength*cm))*timeDiffNearFar;
-      tstampFar = startTime + ((barLength/2. * cm - meanHitPosition.z)/(barLength*cm))*timeDiffNearFar;
-  */
-  // std::cout << "TimeStampNear : " << tstampNear <<" : TimeStampFar : " << tstampFar << std::endl;
-  //		tsmallTimeStamp = (tstampNear < tstampFar) ? tstampNear : tstampFar;
-
   fMeanHitPosition = new Point3D();
   fMeanHitPosition->SetZero();
   for (unsigned int i = 0; i < hitsVectorInAnEventInABar.size(); i++) {
@@ -442,13 +415,16 @@ void ScintillatorBar_V2::CalculateVariousPhysicalParameters(unsigned long muonNu
   if (formulaIndex < 0) formulaIndex = 0;
   if (formulaIndex > 8) formulaIndex = 8;
   // std::cout << "FormulaIndex : " << formulaIndex << std::endl;
-
   // TF1 *formula = (calibDataOfScint->fVectorOfDelT_F)[formulaIndex];
   // fDelTstamp   = (formula->GetRandom()) * 1000.;
   {
     TF1 *formulaRev = calibDataOfScint->fParameterization_F_Rev;
     // std::cout << "Mean Hit Position : "; fMeanHitPosition->Print();
-    double deltTstampValue = formulaRev->Eval(fMeanHitPosition->GetZ() / 10.) * 1000.;
+    double delTMeanFromParam  = formulaRev->Eval(fMeanHitPosition->GetZ() / 10.) * 1000.;
+    double delTSigmaFromParam = calibDataOfScint->fDelTCorr_F->GetParameter(2) * 1000.;
+    double deltTstampValue    = GetGaussianRandomSample(delTMeanFromParam, delTSigmaFromParam);
+    // formulaRev->Eval(fMeanHitPosition->GetZ() / 10.) * 1000.;
+
     // std::cout << "DeltSTamp value from REV param : " << deltTstampValue << std::endl;
     fDelTstamp = deltTstampValue;
   }
