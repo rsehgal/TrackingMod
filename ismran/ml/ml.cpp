@@ -134,11 +134,6 @@ void GenerateTrainingData_All(std::string filename, unsigned int inspectedLayerI
     check &= smtVec[i]->CheckTrackForLayerNum(inspectedLayerIndex, hittBarIndex);
     if (check) {
       lite_interface::ScintillatorBar_V2 *scint = smtVec[i]->GetScintillator(hittBarIndex);
-      // if (!vecOfLayersOrientation[inspectedLayerIndex] && (scintStart->GetBarIndexInLayer() ==
-      // scintEnd->GetBarIndexInLayer())) {
-      // if ((scintStart->GetBarIndexInLayer() == scint->GetBarIndexInLayer()))
-      // if ((scintStart->GetBarIndexInLayer() == scintEnd->GetBarIndexInLayer()))
-
       /*Critical condition just to see the scintillators fingers*/
       bool fingerCondition = false;
       fingerCondition =
@@ -336,11 +331,6 @@ void GenerateTrainingData_All(std::string filename, unsigned int inspectedLayerI
     check &= smtVec[i]->CheckTrackForLayerNum(inspectedLayerIndex, hittBarIndex);
     if (check) {
       lite_interface::ScintillatorBar_V2 *scint = smtVec[i]->GetScintillator(hittBarIndex);
-      // if (!vecOfLayersOrientation[inspectedLayerIndex] && (scintStart->GetBarIndexInLayer() ==
-      // scintEnd->GetBarIndexInLayer())) {
-      // if ((scintStart->GetBarIndexInLayer() == scint->GetBarIndexInLayer()))
-      // if ((scintStart->GetBarIndexInLayer() == scintEnd->GetBarIndexInLayer()))
-
       /*Critical condition just to see the scintillators fingers*/
       bool fingerCondition = false;
       fingerCondition =
@@ -444,11 +434,6 @@ void GenerateModelForAngle(std::string filename, unsigned int inspectedLayerInde
     check &= smtVec[i]->CheckTrackForLayerNum(inspectedLayerIndex, hittBarIndex);
     if (check) {
       lite_interface::ScintillatorBar_V2 *scint = smtVec[i]->GetScintillator(hittBarIndex);
-      // if (!vecOfLayersOrientation[inspectedLayerIndex] && (scintStart->GetBarIndexInLayer() ==
-      // scintEnd->GetBarIndexInLayer())) {
-      // if ((scintStart->GetBarIndexInLayer() == scint->GetBarIndexInLayer()))
-      // if ((scintStart->GetBarIndexInLayer() == scintEnd->GetBarIndexInLayer()))
-
       /*Critical condition just to see the scintillators fingers*/
       bool fingerCondition = false;
       fingerCondition =
@@ -530,11 +515,6 @@ void GenerateTrainingData_All_V2(std::string filename, unsigned int inspectedLay
     check &= smtVec[i]->CheckTrackForLayerNum(inspectedLayerIndex, hittBarIndex);
     if (check) {
       lite_interface::ScintillatorBar_V2 *scint = smtVec[i]->GetScintillator(hittBarIndex);
-      // if (!vecOfLayersOrientation[inspectedLayerIndex] && (scintStart->GetBarIndexInLayer() ==
-      // scintEnd->GetBarIndexInLayer())) {
-      // if ((scintStart->GetBarIndexInLayer() == scint->GetBarIndexInLayer()))
-      // if ((scintStart->GetBarIndexInLayer() == scintEnd->GetBarIndexInLayer()))
-
       /*Critical condition just to see the scintillators fingers*/
       bool fingerCondition = false;
       fingerCondition =
