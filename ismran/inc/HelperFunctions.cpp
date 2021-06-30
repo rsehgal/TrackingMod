@@ -32,9 +32,7 @@ lite_interface::Point3D *Get3DHitPointOnLayer(lite_interface::SingleMuonTrack *s
   // std::vector<unsigned int>
   // if(smt->IfPassThroughOneOrMoreOfScintillators())
   {
-    // if(smt->HitInAllLayers()){
     if (smt->HitInRequiredLayers()) {
-      // if(layerIndex > 0 && layerIndex < numOfLayers-1){
       if (layerIndex < numOfLayers - 1) {
         /*ushort belowIndex = 0;
         ushort upperIndex = 0;*/
@@ -61,8 +59,6 @@ lite_interface::Point3D *Get3DHitPointOnLayer(lite_interface::SingleMuonTrack *s
             endIndex   = layerIndex - 1;
           }
         }
-        // if(smt->SingleHitInLayer(layerIndex-1) && smt->SingleHitInLayer(layerIndex+1)){
-        // if(smt->SingleHitInLayer(belowIndex) && smt->SingleHitInLayer(upperIndex)){
         if (smt->SingleHitInLayer(startIndex) && smt->SingleHitInLayer(endIndex)) {
           unsigned int barIndexInInspectedLayer = 100000;
           /*unsigned int barIndexInBelowLayer = 100000;
@@ -305,7 +301,6 @@ lite_interface::Point3D *Get3DHitPointOnLayer(lite_interface::SingleMuonTrack *s
   // std::vector<unsigned int>
   // if(smt->IfPassThroughOneOrMoreOfScintillators())
   {
-    // if(smt->HitInAllLayers()){
     if (smt->HitInRequiredLayers()) {
       if (layerIndex < numOfLayers - 1) {
         ushort startIndex = 0;
@@ -451,7 +446,6 @@ lite_interface::Point3D *Get3DHitPointOnLayer(lite_interface::SingleMuonTrack *s
   // std::vector<unsigned int>
   // if(smt->IfPassThroughOneOrMoreOfScintillators())
   {
-    // if(smt->HitInAllLayers()){
     if (smt->HitInRequiredLayers()) {
       if (layerIndex < numOfLayers - 1) {
         ushort startIndex = 0;
@@ -522,7 +516,6 @@ lite_interface::Point3D *Get3DHitPointOnLayer(lite_interface::SingleMuonTrack *s
   // std::vector<unsigned int>
   // if(smt->IfPassThroughOneOrMoreOfScintillators())
   {
-    // if(smt->HitInAllLayers()){
     if (smt->HitInRequiredLayers()) {
       if (layerIndex < numOfLayers - 1) {
         ushort startIndex = 0;
