@@ -16,6 +16,7 @@ print("========== Testing Position To Index Conversion =========")
 print("=========================================================")
 print("Index of : "+str(posList[0])+" : "+str(PositionToIndex(posList[0])))
 indexList=[]
+layersIndexToProcess=[2,1,0]
 for i in range(1,len(posList)-1):
 	print("Index of : "+str(posList[i])+" : "+str(PositionToIndex(posList[i])))
 	indexList.append(PositionToIndex(posList[i]))
@@ -25,7 +26,8 @@ print("========= Loading models at different positions =========")
 print("=========================================================")
 
 modelDict={}
-for layerNo in range(3):
+#for layerNo in range(3):
+for layerNo in layersIndexToProcess:
 	for barName in layer[layerNo]:
 		regModelList=[]
 		for posValue in posList:
@@ -133,7 +135,7 @@ for i in range(len(startPtClass)):
 	supList.append(subList)
 
 print("Shape of output : "+str(np.array(supList).shape))	
-np.savetxt("ML_Layer2.txt",np.array(supList),delimiter=",")
+np.savetxt("ML_Layer"+str(sys.argv[2])+".txt",np.array(supList),delimiter=",")
 
 #plt.plot([1,2,3,4],[1,2,3,4])
 #plt.show()
