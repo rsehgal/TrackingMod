@@ -443,7 +443,7 @@ void ScintillatorBar_V2::CalculateVariousPhysicalParameters(unsigned long muonNu
   fMeanHitPosition->SetZero();
   for (unsigned int i = 0; i < hitsVectorInAnEventInABar.size(); i++) {
     lite_interface::Point3D *hitpt = hitsVectorInAnEventInABar[i];
-    // if(i==(hitsVectorInAnEventInABar.size()-1)){
+    // if(i==(hitsVectorInAnEventInABar.size()-1))
     //		if(i==0){
     //			std::cout << "================ Bar Index : " << fBarIndex << " =========================" << std::endl;
     //			//std::cout << "First Hit : " ; hitpt->Print() ;
@@ -469,4 +469,30 @@ void ScintillatorBar_V2::CalculateVariousPhysicalParameters(unsigned long muonNu
   fDelTstamp       = tstampNear - tstampFar;
 }
 #endif
+
+double ScintillatorBar_V2::GetSmearedZ()
+{
+  lite_interface::Calibration *calib                = lite_interface::Calibration::instance();
+  lite_interface::CalibrationData *calibDataOfScint = calib->GetCalibrationDataVector()[fBarIndex];
+  TF1 *zparam                                       = calibDataOfScint->fParameterization_F;
+  if (vecOfLayersOrientation[GetLayerIndex()])
+    return zparam->Eval(fDelTstamp / 1000.);
+  else {
+    return GetGaussianRandomSample(vecOfScintXYCenter[barIndex].x * 10, 20);
+  }
+}
+
+double ScintillatorBar_V2::GetSmearedX() {
+  lite_interface::Calibration *calib                = lite_interface::Calibration::instance();
+  lite_interface::CalibrationData *calibDataOfScint = calib->GetCalibrationDataVector()[fBarIndex];
+  TF1 *zparam                                       = calibDataOfScint->fParameterization_F;
+  if (vecOfLayersOrientation[GetLayerIndex()])
+    return GetGaussianRandomSample(vecOfScintXYCenter[barIndex].x * 10, 20);
+  else {
+    return zparam->Eval(fDelTstamp / 1000.);
+  }
+
+}
+
+double ScintillatorBar_V2::GetRandomValueAlongWidth() {}
 } // namespace lite_interface

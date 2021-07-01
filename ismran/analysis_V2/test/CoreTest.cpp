@@ -7,6 +7,10 @@ int main()
 {
 
   GenerateScintMatrixXYCenters();
+
+  for (unsigned int i = 0; i < vecOfBarsNamess.size(); i++) {
+    vecOfScintXYCenter[i].Print();
+  }
   for (unsigned int i = 10; i > 0; i--) {
 
     std::cout << "Y of layer : " << i - 1 << " : " << GetYOfLayer(i - 1) << std::endl;

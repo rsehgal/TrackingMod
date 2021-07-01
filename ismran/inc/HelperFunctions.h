@@ -57,6 +57,7 @@ extern double Interpolate(Point2D p1, Point2D p2, double y);
 extern double Interpolate(lite_interface::Point3D *startPoint, lite_interface::Point3D *endPoint,
                           lite_interface::Point3D *pointOnInspectedLayer);
 extern lite_interface::Point3D *Get3DHitPointOnLayer(lite_interface::SingleMuonTrack *smt, unsigned int layerIndex);
+extern lite_interface::Point3D *Get3DHitPointOnLayer(lite_interface::SingleMuonTrack *smt, unsigned int layerIndex, unsigned int startIndex, unsigned int endIndex);
 extern lite_interface::Point3D *Get3DHitPointOnLayer(lite_interface::SingleMuonTrack *smt, unsigned int layerIndex,
                                                      lite_interface::Point3D *extrapolatedPt, unsigned int onLayer);
 extern lite_interface::Point3D *Get3DHitPointOnLayer(lite_interface::SingleMuonTrack *smt, unsigned int layerIndex,
@@ -98,6 +99,7 @@ extern std::string GenerateSubFileName(std::string exeName, std::string processe
 extern std::vector<std::string> GetVectorOfFiles(const char *dirname = "/home/", const char *ext = ".root");
 
 extern double GetGaussianRandomSample(double mean, double sigma);
+extern double GetUniformRandomSample(double lower, double upper);
 
 class HelperFunctions {
 public:

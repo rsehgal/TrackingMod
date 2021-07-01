@@ -301,7 +301,8 @@ lite_interface::Point3D *Get3DHitPointOnLayer(lite_interface::SingleMuonTrack *s
   // std::vector<unsigned int>
   // if(smt->IfPassThroughOneOrMoreOfScintillators())
   {
-    if (smt->HitInRequiredLayers()) {
+    // if (smt->HitInRequiredLayers())
+    {
       if (layerIndex < numOfLayers - 1) {
         ushort startIndex = 0;
         ushort endIndex   = 0;
@@ -337,6 +338,7 @@ lite_interface::Point3D *Get3DHitPointOnLayer(lite_interface::SingleMuonTrack *s
             hitPointInInspectedLayer         = scintillatorInInspectedLayer->EstimateHitPosition_Param();
 
             double xOrZ = Interpolate(startPt, endPt, hitPointInInspectedLayer);
+            std::cout << "Interpolated XorZ : " << xOrZ << std::endl;
 
             if (layerIndex == 1 || layerIndex == 3 || layerIndex == 5 || layerIndex == 8) {
               // Cross Layers
@@ -819,9 +821,10 @@ double Interpolate(lite_interface::Point3D *startPoint, lite_interface::Point3D 
   Tracking::Vector3D<double> endPt(endPoint->GetX(), endPoint->GetY(), endPoint->GetZ());
   Tracking::Vector3D<double> inspectedLayerPt(pointOnInspectedLayer->GetX(), pointOnInspectedLayer->GetY(),
                                               pointOnInspectedLayer->GetZ());
-  Tracking::Vector3D<double> dir = (endPt - startPt).Unit();
+  /*Tracking::Vector3D<double> dir = (endPt - startPt).Unit();
   double dist                    = (inspectedLayerPt.y() - startPt.y()) / dir.y();
-  double retval                  = startPt.z() + dir.z() * dist;
+  double retval                  = startPt.z() + dir.z() * dist;*/
+  double retval = ( ( (inspectedLayerPt.y()-startPt.y())*(endPt.z()-startPt.z()) )/(endPt.y()-startPt.y()) )+startPt.z();
   return retval;
 }
 
@@ -918,6 +921,10 @@ double GetGaussianRandomSample(double mean, double sigma)
 {
   TRandom3 *grandom = new TRandom3();
   return grandom->Gaus(mean, sigma);
+}
+
+double GetUniformRandomSample(double lower, double upper){
+
 }
 HelperFunctions::HelperFunctions()
 {

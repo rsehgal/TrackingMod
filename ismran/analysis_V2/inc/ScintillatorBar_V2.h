@@ -151,7 +151,9 @@ public:
 #endif
 	void CalculateVariousPhysicalParameters(unsigned long muonNum);
 #endif
-
+	double GetRandomValueAlongWidth();
+	double GetSmearedZ();
+	double GetSmearedX();
 #ifndef FOR_SIMULATION
 	ClassDef(ScintillatorBar_V2,1)
 #endif
