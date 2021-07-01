@@ -478,7 +478,7 @@ double ScintillatorBar_V2::GetSmearedZ()
   if (vecOfLayersOrientation[GetLayerIndex()])
     return zparam->Eval(fDelTstamp / 1000.);
   else {
-    return GetGaussianRandomSample(vecOfScintXYCenter[barIndex].x * 10, 20);
+    return GetGaussianRandomSample(vecOfScintXYCenter[fBarIndex].x * 10, 20);
   }
 }
 
@@ -487,7 +487,7 @@ double ScintillatorBar_V2::GetSmearedX() {
   lite_interface::CalibrationData *calibDataOfScint = calib->GetCalibrationDataVector()[fBarIndex];
   TF1 *zparam                                       = calibDataOfScint->fParameterization_F;
   if (vecOfLayersOrientation[GetLayerIndex()])
-    return GetGaussianRandomSample(vecOfScintXYCenter[barIndex].x * 10, 20);
+    return GetGaussianRandomSample(vecOfScintXYCenter[fBarIndex].x * 10, 20);
   else {
     return zparam->Eval(fDelTstamp / 1000.);
   }
