@@ -14,6 +14,10 @@ ClassImp(lite_interface::Point3D);
 #endif
 namespace lite_interface {
 
+Point3D* Point3D::InCm(){
+return (new Point3D(fX/10.,fY/10.,fZ/10.));
+}
+
 Point3D::Point3D() {
 	// TODO Auto-generated constructor stub
 	fX = 10000 ; fY = 10000.; fZ=10000.;

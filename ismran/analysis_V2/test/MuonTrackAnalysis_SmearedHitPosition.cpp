@@ -17,10 +17,10 @@
 #include <TSpectrum.h>
 #include "Histograms.h"
 #include <TH2F.h>
-
+#include "colors.h"
 int main(int argc, char *argv[])
 {
-  // TApplication *fApp = new TApplication("Test", NULL, NULL);
+  TApplication *fApp = new TApplication("Test", NULL, NULL);
   GenerateScintMatrixXYCenters();
   lite_interface::Calibration *calib = lite_interface::Calibration::instance("completeCalib2.root");
   std::string filename               = argv[1];
@@ -28,18 +28,42 @@ int main(int argc, char *argv[])
 
   // unsigned int numOfEventsToRead = NumOfEventsToRead(filename,otherfile,std::string("TracksTree"));
   std::vector<lite_interface::SingleMuonTrack *> smtVec = GetMuonTracksVector(filename);
-
+  TH1F *smearanceHist                                   = new TH1F("SmearanceHist", "SmearanceHist", 250, -60., 60.);
   for (unsigned int i = 0; i < smtVec.size(); i++) {
+if(i<10){
+    std::cout << "************* Printing Track : " << i << " *************************" << std::endl;
     std::vector<lite_interface::ScintillatorBar_V2 *> vecOfScint = smtVec[i]->GetMuonTrack();
-    if (i < 10) {
-      std::cout << "**************************************" << std::endl;
-      for (unsigned int j = 0; j < vecOfScint.size(); j++) {
-        std::cout << "Exact Hit Point : BarIndex : " << vecOfScint[j]->GetBarIndex() << " : LayerIndex : " << vecOfScint[j]->GetLayerIndex() << " : ";
-        vecOfScint[j]->GetExactHitPosition()->Print();
-        std::cout << "Smeared Hit Point : BarIndex : " << vecOfScint[j]->GetBarIndex() << " : LayerIndex : " << vecOfScint[j]->GetLayerIndex() << " : ";
-        vecOfScint[j]->GetSmearedHitPosition()->Print();
+    for (unsigned int j = 0; j < vecOfScint.size(); j++) {
+	std::cout << "OBLONG  : " <<  vecOfLayersOrientation[vecOfScint[j]->GetLayerIndex()] <<" : " ;
+	vecOfScint[j]->Print();
+    }
+}
+#if (0)
+    for (unsigned int j = 0; j < vecOfScint.size(); j++) {
+      // if (i < 10)
+      {
+        if (j == 0) std::cout << "**************************************" << std::endl;
+        if (vecOfLayersOrientation[vecOfScint[j]->GetLayerIndex()])
+          std::cout << BLUE;
+        else
+          std::cout << RED;
+        std::cout << "Exact Hit Point : BarIndex : " << vecOfScint[j]->GetBarIndex()
+                  << " : LayerIndex : " << vecOfScint[j]->GetLayerIndex() << " : ";
+        vecOfScint[j]->GetExactHitPosition()->InCm()->Print();
+        std::cout << "Smeared Hit Point : BarIndex : " << vecOfScint[j]->GetBarIndex()
+                  << " : LayerIndex : " << vecOfScint[j]->GetLayerIndex() << " : ";
+        vecOfScint[j]->GetSmearedHitPosition()->InCm()->Print();
+        std::cout << RESET;
+      }
+
+      if (vecOfScint[j]->GetBarIndex() == 85) {
+        // std::cout << "Bar Center : " << vecOfScintXYCenter[vecOfScint[j]->GetBarIndex()].x << std::endl;
+        smearanceHist->Fill(vecOfScint[j]->GetSmearedHitPosition()->InCm()->GetX() -
+                            vecOfScint[j]->GetExactHitPosition()->InCm()->GetX());
       }
     }
+#endif
   }
-  // fApp->Run();
+  smearanceHist->Draw();
+  fApp->Run();
 }
