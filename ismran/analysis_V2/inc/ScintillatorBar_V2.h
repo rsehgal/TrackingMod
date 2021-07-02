@@ -118,6 +118,7 @@ public:
 	Long_t GetDelT() const;
 	Long_t GetDelTCorrected();
 	Double_t GetQMeanCorrected();
+	double GetY();
 
 	//void EstimateHitPosition_V2(Calibration *fCalib);
 
@@ -134,6 +135,7 @@ public:
 
 	lite_interface::Point3D* GetMeanHitPosition();
 	lite_interface::Point3D* GetExactHitPosition();
+	lite_interface::Point3D* GetSmearedHitPosition();
 
 #if defined(FOR_SIMULATION) || defined(USE_FOR_SIMULATION)
 	//Only for Simulation

@@ -478,20 +478,30 @@ double ScintillatorBar_V2::GetSmearedZ()
   if (vecOfLayersOrientation[GetLayerIndex()])
     return zparam->Eval(fDelTstamp / 1000.);
   else {
-    return GetGaussianRandomSample(vecOfScintXYCenter[fBarIndex].x * 10, 20);
+    return GetGaussianRandomSample(vecOfScintXYCenter[fBarIndex].x * 10, 20)/10.;
   }
 }
 
-double ScintillatorBar_V2::GetSmearedX() {
+double ScintillatorBar_V2::GetSmearedX()
+{
   lite_interface::Calibration *calib                = lite_interface::Calibration::instance();
   lite_interface::CalibrationData *calibDataOfScint = calib->GetCalibrationDataVector()[fBarIndex];
   TF1 *zparam                                       = calibDataOfScint->fParameterization_F;
   if (vecOfLayersOrientation[GetLayerIndex()])
-    return GetGaussianRandomSample(vecOfScintXYCenter[fBarIndex].x * 10, 20);
+    return GetGaussianRandomSample(vecOfScintXYCenter[fBarIndex].x * 10, 20)/10.;
   else {
     return zparam->Eval(fDelTstamp / 1000.);
   }
+}
 
+lite_interface::Point3D *ScintillatorBar_V2::GetSmearedHitPosition()
+{
+  return new lite_interface::Point3D(GetSmearedX(), GetY(), GetSmearedZ());
+}
+
+double ScintillatorBar_V2::GetY()
+{
+  return vecOfLayersYPos[GetLayerIndex()];
 }
 
 double ScintillatorBar_V2::GetRandomValueAlongWidth() {}
