@@ -287,3 +287,6 @@ target_link_libraries(MuonTrackAnalysis_GenerateDataFor_Classification ${ROOT_LI
 add_executable(MuonTrackAnalysis_SmearedHitPosition test/MuonTrackAnalysis_SmearedHitPosition.cpp ${sources} ${headers})
 target_link_libraries(MuonTrackAnalysis_SmearedHitPosition ${ROOT_LIBRARIES} Tracklib)
 
+add_executable(MuonTrackAnalysis_PlotMuonTracks test/MuonTrackAnalysis_PlotMuonTracks.cpp ${sources} ${headers})
+target_link_libraries(MuonTrackAnalysis_PlotMuonTracks ${ROOT_LIBRARIES} Tracklib)
+

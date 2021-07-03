@@ -100,7 +100,7 @@ extern std::vector<std::string> GetVectorOfFiles(const char *dirname = "/home/",
 
 extern double GetGaussianRandomSample(double mean, double sigma);
 extern double GetUniformRandomSample(double lower, double upper);
-
+extern std::vector<lite_interface::Point3D*> InCm(std::vector<lite_interface::Point3D*> vecOfPt3D);
 class HelperFunctions {
 public:
   HelperFunctions();

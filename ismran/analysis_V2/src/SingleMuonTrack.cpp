@@ -356,8 +356,20 @@ std::vector<lite_interface::Point3D*>  SingleMuonTrack::GetExact3DHitPointVector
 	}
 	return vectorOf3DHitPoint;
 }
-#endif
 
+
+#endif
+std::vector<lite_interface::Point3D*>  SingleMuonTrack::GetSmeared3DHitPointVector(){
+	std::vector<lite_interface::Point3D*> vectorOf3DHitPoint;
+	std::vector<ScintillatorBar_V2*>::iterator itr;
+	//int count = 0 ;
+	for(itr = fSingleMuonTrack.begin() ; itr != fSingleMuonTrack.end() ; itr++){
+
+		vectorOf3DHitPoint.push_back((*itr)->GetSmearedHitPosition());
+
+	}
+	return vectorOf3DHitPoint;
+}
 std::vector<lite_interface::Point3D*> SingleMuonTrack::Get3DHitPointVector(){
 	std::vector<lite_interface::Point3D*> vectorOf3DHitPoint;
 	std::vector<ScintillatorBar_V2*>::iterator itr;

@@ -683,8 +683,8 @@ void DrawGrid(std::string t, Int_t ngx, Int_t ngy)
   // new TCanvas();
   Double_t x1 = -45;
   Double_t x2 = 45;
-  Double_t y1 = -45;
-  Double_t y2 = 45;
+  Double_t y1 = -150;
+  Double_t y2 = 100;
   Double_t xs = (x2 - x1) / ngx;
   Double_t ys = (y2 - y1) / ngy;
   Int_t i;
@@ -824,7 +824,8 @@ double Interpolate(lite_interface::Point3D *startPoint, lite_interface::Point3D 
   /*Tracking::Vector3D<double> dir = (endPt - startPt).Unit();
   double dist                    = (inspectedLayerPt.y() - startPt.y()) / dir.y();
   double retval                  = startPt.z() + dir.z() * dist;*/
-  double retval = ( ( (inspectedLayerPt.y()-startPt.y())*(endPt.z()-startPt.z()) )/(endPt.y()-startPt.y()) )+startPt.z();
+  double retval =
+      (((inspectedLayerPt.y() - startPt.y()) * (endPt.z() - startPt.z())) / (endPt.y() - startPt.y())) + startPt.z();
   return retval;
 }
 
@@ -923,9 +924,17 @@ double GetGaussianRandomSample(double mean, double sigma)
   return grandom->Gaus(mean, sigma);
 }
 
-double GetUniformRandomSample(double lower, double upper){
+double GetUniformRandomSample(double lower, double upper) {}
 
+std::vector<lite_interface::Point3D *> InCm(std::vector<lite_interface::Point3D *> vecOfPt3D)
+{
+  std::vector<lite_interface::Point3D *> cmPointVec;
+  for (unsigned int i = 0; i < vecOfPt3D.size(); i++) {
+    cmPointVec.push_back(vecOfPt3D[i]->InCm());
+  }
+  return cmPointVec;
 }
+
 HelperFunctions::HelperFunctions()
 {
   // TODO Auto-generated constructor stub

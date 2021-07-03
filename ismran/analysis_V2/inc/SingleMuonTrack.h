@@ -52,6 +52,7 @@ public:
 	/*
 	 * Function to get the hit point vector .i.e vector<Point3D>
 	 */
+	std::vector<lite_interface::Point3D*>  GetSmeared3DHitPointVector();
 	std::vector<lite_interface::Point3D*>  GetExact3DHitPointVector();
 	std::vector<lite_interface::Point3D*> Get3DHitPointVector();
 	std::vector<lite_interface::Point3D*> Get3DHitPointVector_Param();
