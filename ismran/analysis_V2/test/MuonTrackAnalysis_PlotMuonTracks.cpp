@@ -49,22 +49,31 @@ int main(int argc, char *argv[])
 
         std::string title = "Event Num : " + std::to_string(i);
         TCanvas *can      = new TCanvas(title.c_str(), title.c_str());
-        can->Divide(2, 2);
+        can->Divide(3, 2);
         can->cd(1);
         DrawGrid("Exact Muon Track in XY plane; X axis ; Y axis", 10, 20);
         lite_interface::PlotMuonTrackXY(InCm(smtVec[i]->GetExact3DHitPointVector()))->Draw("p");
 
         can->cd(2);
-        DrawGrid("Exact Muon Track in ZY plane; Z axis ; Y axis", 10, 20);
-        lite_interface::PlotMuonTrackZY(InCm(smtVec[i]->GetExact3DHitPointVector()))->Draw("p");
-
-        can->cd(3);
         DrawGrid("Smeared Muon Track in XY plane; Z axis ; Y axis", 10, 20);
         lite_interface::PlotMuonTrackXY(InCm(smtVec[i]->GetSmeared3DHitPointVector()))->Draw("p");
 
+        can->cd(3);
+        DrawGrid("Fitted Muon Track in XY plane; Z axis ; Y axis", 10, 20);
+        lite_interface::PlotMuonTrackXY(InCm(CreateFittedTrack(smtVec[i]->GetSmeared3DHitPointVector())))->Draw("p");
+
         can->cd(4);
+        DrawGrid("Exact Muon Track in ZY plane; Z axis ; Y axis", 10, 20);
+        lite_interface::PlotMuonTrackZY(InCm(smtVec[i]->GetExact3DHitPointVector()))->Draw("p");
+
+        can->cd(5);
         DrawGrid("Smeared Muon Track in ZY plane; Z axis ; Y axis", 10, 20);
-        lite_interface::PlotMuonTrackZY(InCm(smtVec[i]->GetSmeared3DHitPointVector()))->Draw("p");
+       lite_interface::PlotMuonTrackZY(InCm(smtVec[i]->GetSmeared3DHitPointVector()))->Draw("p");
+ 
+        can->cd(6);
+        DrawGrid("Fitted Muon Track in ZY plane; Z axis ; Y axis", 10, 20);
+        lite_interface::PlotMuonTrackZY(InCm(CreateFittedTrack(smtVec[i]->GetSmeared3DHitPointVector())))->Draw("p");
+
       }
     }
   }
