@@ -196,8 +196,12 @@ G4bool MySD::ProcessHits(G4Step *aStep, G4TouchableHistory *)
       exactHitVector.push_back(hitPt);
       vecOfPairs.push_back(
           std::pair<std::string, G4ThreeVector>(std::string(touchable->GetVolume(0)->GetName()), hitPt));
-      psBarVec[touchable->GetCopyNumber()]->fExactHitPosition->SetXYZ(hitPt.getX() / 10., hitPt.getY() / 10.,
-                                                                      hitPt.getZ() / 10.);
+      /*psBarVec[touchable->GetCopyNumber()]->fExactHitPosition->SetXYZ(hitPt.getX() / 10., hitPt.getY() / 10.,
+                                                                      hitPt.getZ() / 10.);*/
+	//storing in mm and NOT in cm
+	psBarVec[touchable->GetCopyNumber()]->fExactHitPosition->SetXYZ(hitPt.getX() , hitPt.getY() ,
+                                                                      hitPt.getZ() );
+
       (psBarVec[touchable->GetCopyNumber()]->hitsVectorInAnEventInABar)
           .push_back(new lite_interface::Point3D(hitPt.getX(), hitPt.getY(), hitPt.getZ()));
       // std::cout << "Copy No. of Touchable : " << touchable->GetCopyNumber() << std::endl;
@@ -303,6 +307,7 @@ void MySD::EndOfEvent(G4HCofThisEvent *)
 
         // std::cout <<"Going to insert hitted bar with index : " <<i <<  __FILE__ << " : "  << __LINE__ << std::endl;
         lite_interface::ScintillatorBar_V2 *scintBar = new lite_interface::ScintillatorBar_V2(*psBarVec[i]);
+	//scintBar->Print();
         /*
          * PUTTING THE CUT ON THE ENERGY DEPOSITED
          *
@@ -321,6 +326,7 @@ void MySD::EndOfEvent(G4HCofThisEvent *)
 #else
           scintBar->CalculateVariousPhysicalParameters(muonNum);
 #endif
+	//scintBar->Print();
           onlyHittedBarVec.push_back(scintBar);
           // scintBar->CalculateVariousPhysicalParameters(muonNum,B1RunAction::fCalib);
         }

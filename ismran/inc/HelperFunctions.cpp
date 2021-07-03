@@ -919,7 +919,7 @@ std::vector<std::string> GetVectorOfFiles(const char *dirname, const char *ext)
 
 double GetGaussianRandomSample(double mean, double sigma)
 {
-  TRandom3 *grandom = new TRandom3();
+  TRandom3 *grandom = new TRandom3(0);
   return grandom->Gaus(mean, sigma);
 }
 

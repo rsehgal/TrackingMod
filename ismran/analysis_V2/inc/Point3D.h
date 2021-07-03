@@ -35,6 +35,7 @@ public:
 	void Print();
 	virtual ~Point3D();
 	unsigned int GetLayer();
+	Point3D* InCm();
 
 	//Point3D operator += (Point3D obj);
 	//Point3D* operator += (Point3D *obj);

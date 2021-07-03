@@ -418,15 +418,17 @@ void ScintillatorBar_V2::CalculateVariousPhysicalParameters(unsigned long muonNu
   // TF1 *formula = (calibDataOfScint->fVectorOfDelT_F)[formulaIndex];
   // fDelTstamp   = (formula->GetRandom()) * 1000.;
   {
+    TF1 *formulaFor = calibDataOfScint->fParameterization_F;
     TF1 *formulaRev = calibDataOfScint->fParameterization_F_Rev;
     // std::cout << "Mean Hit Position : "; fMeanHitPosition->Print();
     double delTMeanFromParam  = formulaRev->Eval(fMeanHitPosition->GetZ() / 10.) * 1000.;
     double delTSigmaFromParam = calibDataOfScint->fDelTCorr_F->GetParameter(2) * 1000.;
     double deltTstampValue    = GetGaussianRandomSample(delTMeanFromParam, delTSigmaFromParam);
-    // formulaRev->Eval(fMeanHitPosition->GetZ() / 10.) * 1000.;
-
-    // std::cout << "DeltSTamp value from REV param : " << deltTstampValue << std::endl;
-    fDelTstamp = deltTstampValue;
+    if (vecOfLayersOrientation[GetLayerIndex()]) {
+      fDelTstamp = formulaFor->GetX(fMeanHitPosition->GetZ() / 10.) * 1000.;
+    } else {
+      fDelTstamp = formulaFor->GetX(fMeanHitPosition->GetX() / 10.) * 1000.;
+    }
   }
   fTSmallTimeStamp = (tstampNear < tstampFar) ? tstampNear : tstampFar;
   // std::cout << "DeltaTstamp : " << deltaTstamp << std::endl;
@@ -475,10 +477,16 @@ double ScintillatorBar_V2::GetSmearedZ()
   lite_interface::Calibration *calib                = lite_interface::Calibration::instance();
   lite_interface::CalibrationData *calibDataOfScint = calib->GetCalibrationDataVector()[fBarIndex];
   TF1 *zparam                                       = calibDataOfScint->fParameterization_F;
-  if (vecOfLayersOrientation[GetLayerIndex()])
+  /*if (vecOfLayersOrientation[GetLayerIndex()])
     return zparam->Eval(fDelTstamp / 1000.);
   else {
-    return GetGaussianRandomSample(vecOfScintXYCenter[fBarIndex].x * 10, 20)/10.;
+    return GetGaussianRandomSample(vecOfScintXYCenter[fBarIndex].x * 10, 20) / 10.;
+  }*/
+
+  if (vecOfLayersOrientation[GetLayerIndex()]) {
+    return GetExactHitPosition()->GetZ(); // zparam->Eval(fDelTstamp / 1000.) * 10.;
+  } else {
+    return GetGaussianRandomSample(vecOfScintXYCenter[fBarIndex].x * 10, 15);
   }
 }
 
@@ -487,10 +495,16 @@ double ScintillatorBar_V2::GetSmearedX()
   lite_interface::Calibration *calib                = lite_interface::Calibration::instance();
   lite_interface::CalibrationData *calibDataOfScint = calib->GetCalibrationDataVector()[fBarIndex];
   TF1 *zparam                                       = calibDataOfScint->fParameterization_F;
-  if (vecOfLayersOrientation[GetLayerIndex()])
-    return GetGaussianRandomSample(vecOfScintXYCenter[fBarIndex].x * 10, 20)/10.;
+  /*if (vecOfLayersOrientation[GetLayerIndex()])
+    return GetGaussianRandomSample(vecOfScintXYCenter[fBarIndex].x * 10, 20) / 10.;
   else {
     return zparam->Eval(fDelTstamp / 1000.);
+  }*/
+
+  if (vecOfLayersOrientation[GetLayerIndex()])
+    return GetGaussianRandomSample(vecOfScintXYCenter[fBarIndex].x * 10, 15.);
+  else {
+    return GetExactHitPosition()->GetX(); // zparam->Eval(fDelTstamp / 1000.) * 10.;
   }
 }
 

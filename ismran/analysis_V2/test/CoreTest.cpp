@@ -2,13 +2,15 @@
 #include "base/Vector3D.h"
 #include "HardwareNomenclature.h"
 #include "Point3D.h"
+#include <TApplication.h>
 // using  lite_interface::Point3D;
 int main()
 {
-
+TApplication *fApp = new TApplication("Test", NULL, NULL);
   GenerateScintMatrixXYCenters();
 
   for (unsigned int i = 0; i < vecOfBarsNamess.size(); i++) {
+std::cout << vecOfBarsNamess[i] <<" : ";
     vecOfScintXYCenter[i].Print();
   }
   for (unsigned int i = 10; i > 0; i--) {
@@ -32,5 +34,14 @@ int main()
     std::cout << "For Inspected Layer : " << i << " :: StartIndex : " << GetStartIndex(i)
               << " : EndIndex : " << GetEndIndex(i) << std::endl;
   }
+
+  TH1F *hist = new TH1F("hist","hist",300,-150.,150.);
+  for(unsigned int i = 0 ; i < 10000 ; i++){
+double val = GetGaussianRandomSample(0., 100.);
+//std::cout << val << std::endl;
+hist->Fill(val);
+} 
+hist->Draw();
+fApp->Run();
   return 0;
 }
