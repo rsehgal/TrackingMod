@@ -3,6 +3,7 @@
 #include "HardwareNomenclature.h"
 #include "Point3D.h"
 #include "Analyzer.h"
+#include "colors.h"
 #define cm 10
 #ifndef FOR_SIMULATION
 ClassImp(lite_interface::ScintillatorBar_V2);
@@ -387,13 +388,18 @@ void ScintillatorBar_V2::CalculateVariousPhysicalParameters(unsigned long muonNu
 {
   fMeanHitPosition = new Point3D();
   fMeanHitPosition->SetZero();
+
+  // std::cout << "############# Hits Vector in Bar : " << fBarIndex << " #################" << std::endl;
   for (unsigned int i = 0; i < hitsVectorInAnEventInABar.size(); i++) {
     lite_interface::Point3D *hitpt = hitsVectorInAnEventInABar[i];
+    // hitpt->Print();
     fMeanHitPosition->SetXYZ((fMeanHitPosition->GetX() + hitpt->GetX()), (fMeanHitPosition->GetY() + hitpt->GetY()),
                              fMeanHitPosition->GetZ() + hitpt->GetZ());
   }
   int n = hitsVectorInAnEventInABar.size();
   fMeanHitPosition->Divide(n);
+  // std::cout << "--------------------------------------" << std::endl;
+  // std::cout <<"Mean Hit Position : " ; fMeanHitPosition->Print();
 
   unsigned long int startTime = muonNum * timeBetweenTwoMuonTracks;
 
@@ -424,10 +430,27 @@ void ScintillatorBar_V2::CalculateVariousPhysicalParameters(unsigned long muonNu
     double delTMeanFromParam  = formulaRev->Eval(fMeanHitPosition->GetZ() / 10.) * 1000.;
     double delTSigmaFromParam = calibDataOfScint->fDelTCorr_F->GetParameter(2) * 1000.;
     double deltTstampValue    = GetGaussianRandomSample(delTMeanFromParam, delTSigmaFromParam);
+    double smeared            = 510.;
     if (vecOfLayersOrientation[GetLayerIndex()]) {
-      fDelTstamp = formulaFor->GetX(fMeanHitPosition->GetZ() / 10.) * 1000.;
+      smeared = 510;
+      while (smeared > 500. || smeared < -500)
+        smeared = GetGaussianRandomSample(fExactHitPosition->GetZ(), 140);
+        //smeared = GetGaussianRandomSample(fMeanHitPosition->GetZ(), 140);
+
+      // smeared = fMeanHitPosition->GetZ();//GetGaussianRandomSample(fMeanHitPosition->GetZ(), 10);
+      // std::cout << RED << "Smeared Value of Z : " << smeared << RESET << std::endl;
+      fDelTstamp = formulaFor->GetX(smeared / 10.) * 1000.;
+      // fDelTstamp = formulaFor->GetX(fMeanHitPosition->GetZ() / 10.) * 1000.;
     } else {
-      fDelTstamp = formulaFor->GetX(fMeanHitPosition->GetX() / 10.) * 1000.;
+      smeared = 510;
+      // fDelTstamp = formulaFor->GetX(fMeanHitPosition->GetX() / 10.) * 1000.;
+      while (smeared > 500. || smeared < -500.)
+        smeared = GetGaussianRandomSample(fExactHitPosition->GetX(), 140);
+        //smeared = GetGaussianRandomSample(fMeanHitPosition->GetX(), 140);
+
+      // smeared = fMeanHitPosition->GetX();//GetGaussianRandomSample(fMeanHitPosition->GetX(), 10);
+      // std::cout << BLUE << "Smeared Value of X : " << smeared << RESET << std::endl;
+      fDelTstamp = formulaFor->GetX(smeared / 10.) * 1000.;
     }
   }
   fTSmallTimeStamp = (tstampNear < tstampFar) ? tstampNear : tstampFar;
@@ -484,7 +507,8 @@ double ScintillatorBar_V2::GetSmearedZ()
   }*/
 
   if (vecOfLayersOrientation[GetLayerIndex()]) {
-    return GetExactHitPosition()->GetZ(); // zparam->Eval(fDelTstamp / 1000.) * 10.;
+    // return GetExactHitPosition()->GetZ(); // zparam->Eval(fDelTstamp / 1000.) * 10.;
+    return zparam->Eval(fDelTstamp / 1000.) * 10.;
   } else {
     return GetGaussianRandomSample(vecOfScintXYCenter[fBarIndex].x * 10, 15);
   }
@@ -504,7 +528,8 @@ double ScintillatorBar_V2::GetSmearedX()
   if (vecOfLayersOrientation[GetLayerIndex()])
     return GetGaussianRandomSample(vecOfScintXYCenter[fBarIndex].x * 10, 15.);
   else {
-    return GetExactHitPosition()->GetX(); // zparam->Eval(fDelTstamp / 1000.) * 10.;
+    // return GetExactHitPosition()->GetX(); // zparam->Eval(fDelTstamp / 1000.) * 10.;
+    return zparam->Eval(fDelTstamp / 1000.) * 10.;
   }
 }
 
@@ -515,7 +540,7 @@ lite_interface::Point3D *ScintillatorBar_V2::GetSmearedHitPosition()
 
 double ScintillatorBar_V2::GetY()
 {
-  return vecOfLayersYPos[GetLayerIndex()];
+  return vecOfLayersYPos[GetLayerIndex()]*10.;
 }
 
 double ScintillatorBar_V2::GetRandomValueAlongWidth() {}

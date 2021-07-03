@@ -85,7 +85,8 @@ void B1RunAction::WriteData()
       for (unsigned int j = 0; j < singleMuonTrack->size(); j++) {
         lite_interface::ScintillatorBar_V2 *scint = (singleMuonTrack->fSingleMuonTrack)[j];
 
-        scint->fMeanHitPosition->Divide(10);
+	/*Storing fMeanHitPosition in mm and NOT in cm*/
+        //scint->fMeanHitPosition->Divide(10);
         fDataTree->Fill(scint->fQlongNear, scint->fQlongMean, scint->fTSmallTimeStamp, scint->fDelTstamp,
                         scint->fBarIndex, scint->fMeanHitPosition, scint->fExactHitPosition);
       }
