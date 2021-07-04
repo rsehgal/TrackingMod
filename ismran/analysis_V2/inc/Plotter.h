@@ -91,6 +91,9 @@ extern TGraphErrors *PlotMuonTrack(std::vector<lite_interface::Point3D *> vecOfP
 extern TGraphErrors *PlotMuonTrackXY(std::vector<lite_interface::Point3D *> vecOfPoint3D);
 extern TGraphErrors *PlotMuonTrackZY(std::vector<lite_interface::Point3D *> vecOfPoint3D);
 extern TGraphErrors *PlotMuonTrack(std::vector<Double_t> xVec, std::vector<Double_t> yVec);
+extern TF1 *GetFittedMuonTrackFormula(std::vector<lite_interface::Point3D *> vecOfPoint3D, bool exact, bool xy);
+extern TF1 *GetFittedMuonTrackFormulaXY(std::vector<lite_interface::Point3D *> vecOfPoint3D, bool exact);
+extern TF1 *GetFittedMuonTrackFormulaZY(std::vector<lite_interface::Point3D *> vecOfPoint3D, bool exact);
 
 /*
  * Histogram to plot energy sum
@@ -140,9 +143,8 @@ extern TH2F *PlotHitPointOnLayer(std::vector<lite_interface::SingleMuonTrack *> 
                                  unsigned int inspectedLayerIndex);
 #ifdef USE_FOR_SIMULATION
 extern TH2F *PlotExactHitPointOnLayer(std::vector<lite_interface::SingleMuonTrack *> smtVec,
-                                 unsigned int inspectedLayerIndex);
+                                      unsigned int inspectedLayerIndex);
 #endif
-
 
 } // namespace lite_interface
 #endif /* ISMRAN_ANALYSIS_V2_INC_PLOTTER_H_ */

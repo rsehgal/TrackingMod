@@ -54,6 +54,13 @@ extern double fwhm; // = 2.355 * 5.66353 ;
 extern double errorX;
 extern double errorY;
 
+extern double errorX_Exact;
+extern double errorY_Exact;
+extern double errorZ_Exact;
+extern double errorX_Smeared;
+extern double errorY_Smeared;
+extern double errorZ_Smeared;
+
 struct Point3D {
   double x;
   double y;

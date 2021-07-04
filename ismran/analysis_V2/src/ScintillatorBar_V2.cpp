@@ -510,7 +510,7 @@ double ScintillatorBar_V2::GetSmearedZ()
     // return GetExactHitPosition()->GetZ(); // zparam->Eval(fDelTstamp / 1000.) * 10.;
     return zparam->Eval(fDelTstamp / 1000.) * 10.;
   } else {
-    return GetGaussianRandomSample(vecOfScintXYCenter[fBarIndex].x * 10, 15);
+    return GetGaussianRandomSample(vecOfScintXYCenter[fBarIndex].x * 10, 50.);
   }
 }
 
@@ -526,7 +526,7 @@ double ScintillatorBar_V2::GetSmearedX()
   }*/
 
   if (vecOfLayersOrientation[GetLayerIndex()])
-    return GetGaussianRandomSample(vecOfScintXYCenter[fBarIndex].x * 10, 15.);
+    return GetGaussianRandomSample(vecOfScintXYCenter[fBarIndex].x * 10, 50.);
   else {
     // return GetExactHitPosition()->GetX(); // zparam->Eval(fDelTstamp / 1000.) * 10.;
     return zparam->Eval(fDelTstamp / 1000.) * 10.;

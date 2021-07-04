@@ -21,6 +21,7 @@
 
 int main(int argc, char *argv[])
 {
+  bool verbose       = false;
   TApplication *fApp = new TApplication("Test", NULL, NULL);
   GenerateScintMatrixXYCenters();
   lite_interface::Calibration *calib = lite_interface::Calibration::instance("completeCalib2.root");
@@ -32,6 +33,8 @@ int main(int argc, char *argv[])
   TH1F *smearanceHistZ                                  = new TH1F("SmearanceHistZ", "SmearanceHistZ", 250, -60., 60.);
   TH1F *smearanceHistX                                  = new TH1F("SmearanceHistX", "SmearanceHistX", 250, -60., 60.);
   unsigned int counter                                  = 0;
+  TH1F *hist_Diff_M                                     = new TH1F("HistDiff_M", "HistDiff_M", 200, -25., 25.);
+  TH1F *hist_Diff_C                                     = new TH1F("HistDiff_C", "HistDiff_C", 200, -25., 25.);
   for (unsigned int i = 0; i < smtVec.size(); i++) {
 
     if (smtVec[i]->size() >= 6) {
@@ -68,14 +71,31 @@ int main(int argc, char *argv[])
 
         can->cd(5);
         DrawGrid("Smeared Muon Track in ZY plane; Z axis ; Y axis", 10, 20);
-       lite_interface::PlotMuonTrackZY(InCm(smtVec[i]->GetSmeared3DHitPointVector()))->Draw("p");
- 
+        lite_interface::PlotMuonTrackZY(InCm(smtVec[i]->GetSmeared3DHitPointVector()))->Draw("p");
+
         can->cd(6);
         DrawGrid("Fitted Muon Track in ZY plane; Z axis ; Y axis", 10, 20);
         lite_interface::PlotMuonTrackZY(InCm(CreateFittedTrack(smtVec[i]->GetSmeared3DHitPointVector())))->Draw("p");
-
       }
+
+      std::vector<lite_interface::Point3D *> vecOfPoint3D_Exact   = InCm(smtVec[i]->GetExact3DHitPointVector());
+      std::vector<lite_interface::Point3D *> vecOfPoint3D_Smeared = InCm(smtVec[i]->GetSmeared3DHitPointVector());
+      TF1 *formulaXY_Exact   = lite_interface::GetFittedMuonTrackFormulaZY(vecOfPoint3D_Exact,true);
+      TF1 *formulaXY_Smeared = lite_interface::GetFittedMuonTrackFormulaZY(vecOfPoint3D_Smeared,false);
+      if (verbose)
+        std::cout << "M : " << formulaXY_Exact->GetParameter(1) << " : C : " << formulaXY_Exact->GetParameter(0)
+                  << std::endl;
+      double diff_m = formulaXY_Exact->GetParameter(1) - formulaXY_Smeared->GetParameter(1);
+      double diff_c = formulaXY_Exact->GetParameter(0) - formulaXY_Smeared->GetParameter(0);
+      if (verbose) std::cout << "Diff_M : " << diff_m << " : Diff_C : " << diff_c << std::endl;
+      hist_Diff_M->Fill(diff_m);
+      hist_Diff_C->Fill(diff_c);
     }
   }
+
+  new TCanvas("Diff_M", "Diff_M");
+  hist_Diff_M->Draw();
+  new TCanvas("Diff_C", "Diff_C");
+  hist_Diff_C->Draw();
   fApp->Run();
 }

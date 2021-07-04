@@ -16,7 +16,7 @@ TH1F *PlotZenithAngle(std::vector<std::vector<lite_interface::Point3D *>> vecOfV
   int numOfBins = 50;
   std::vector<double> vecOfZenithAngle;
   for (unsigned int i = 0; i < vecOfVecOfPoint3D.size(); i++) {
-    vecOfZenithAngle.push_back(M_PI-GetZenithAngle(vecOfVecOfPoint3D[i]));
+    vecOfZenithAngle.push_back(M_PI - GetZenithAngle(vecOfVecOfPoint3D[i]));
   }
 
   return PlotZenithAngle(vecOfZenithAngle, 5);
@@ -1149,6 +1149,49 @@ std::vector<TH1D *> PlotEnergyDistributionWithMultiplicity_Old(std::vector<Singl
 
   // histEnergyWithMultiplicity->Draw();
 }
+
+TF1 *GetFittedMuonTrackFormulaXY(std::vector<lite_interface::Point3D *> vecOfPoint3D, bool exact)
+{
+  return GetFittedMuonTrackFormula(vecOfPoint3D, exact, true);
+}
+
+TF1 *GetFittedMuonTrackFormulaZY(std::vector<lite_interface::Point3D *> vecOfPoint3D, bool exact)
+{
+  return GetFittedMuonTrackFormula(vecOfPoint3D, exact, false);
+}
+
+TF1 *GetFittedMuonTrackFormula(std::vector<lite_interface::Point3D *> vecOfPoint3D, bool exact, bool xy)
+{
+  std::vector<Double_t> xVec, yVec, zVec;
+  std::vector<Double_t> xVecErr, yVecErr, zVecErr;
+  std::vector<lite_interface::Point3D *>::iterator itr;
+  for (itr = vecOfPoint3D.begin(); itr != vecOfPoint3D.end(); itr++) {
+    xVec.push_back((*itr)->GetX());
+    yVec.push_back((*itr)->GetY());
+    zVec.push_back((*itr)->GetZ());
+    if (exact) {
+      xVecErr.push_back(errorX_Exact);
+      yVecErr.push_back(errorY_Exact);
+      zVecErr.push_back(errorZ_Exact);
+    } else {
+      xVecErr.push_back(errorX_Smeared);
+      yVecErr.push_back(errorY_Smeared);
+      zVecErr.push_back(errorZ_Smeared);
+    }
+  }
+  TGraphErrors *gr;
+  if (xy)
+    gr = new TGraphErrors(xVec.size(), &xVec[0], &yVec[0], &xVecErr[0], &yVecErr[0]);
+  else
+    gr = new TGraphErrors(zVec.size(), &zVec[0], &yVec[0], &zVecErr[0], &yVecErr[0]);
+
+  TF1 *formula = new TF1("Formula", LinearFit, -45, 45, 2);
+  gr->Fit(formula, "qn");
+  // gr->Fit(formula,"r");
+  // double c = formula->GetParameter(0);
+  // double m = formula->GetParameter(1);
+  return formula;
+}
 std::vector<lite_interface::Point3D *> CreateFittedTrack(std::vector<lite_interface::Point3D *> vecOfPoint3D)
 {
   std::vector<Double_t> xVec, yVec, zVec;
@@ -1158,11 +1201,11 @@ std::vector<lite_interface::Point3D *> CreateFittedTrack(std::vector<lite_interf
     // std::cout <<"=================" << std::endl;
     //(*itr)->Print();
     xVec.push_back((*itr)->GetX());
-    xVecErr.push_back(5.);
+    xVecErr.push_back(errorX);
     yVec.push_back((*itr)->GetY());
-    yVecErr.push_back(5.);
+    yVecErr.push_back(errorY);
     zVec.push_back((*itr)->GetZ());
-    zVecErr.push_back(5.);
+    zVecErr.push_back(10.);
   }
   // std::cout <<"================= Trying to create the Fitted Track from Class FittedTracks ==================== : "
   // << __FILE__ << " : " << __LINE__ << std::endl;

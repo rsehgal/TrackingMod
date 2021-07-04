@@ -51,7 +51,16 @@ std::vector<unsigned int> outgoingLayerIndices={4,3,2,1,0};
 
 
 double errorX = 5.;
-double errorY = 5.;
+double errorY = 0.000005;
+
+double errorX_Exact = 0.000005;
+double errorY_Exact = 0.000005;
+double errorZ_Exact = 0.000005;
+
+double errorX_Smeared = 5.;
+double errorY_Smeared = 0.000005;
+double errorZ_Smeared = 10.;
+
 
 
 //std::string FileFrag[]={
