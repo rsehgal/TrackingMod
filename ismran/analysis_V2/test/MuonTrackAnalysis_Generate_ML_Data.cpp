@@ -38,28 +38,30 @@ int main(int argc, char *argv[])
   for (unsigned int i = 0; i < smtVec.size(); i++) {
     /*if (smtVec[i]->size() >= 6) {
     }*/
-    if (i < 5) {
-
-      std::cout << "---------------------------------------------------------------" << std::endl;
-      std::vector<lite_interface::ScintillatorBar_V2 *> vecOfScint = smtVec[i]->GetMuonTrack();
-      for (unsigned int j = 0; j < vecOfScint.size(); j++) {
-        auto color = BLACK;
-        if (vecOfLayersOrientation[vecOfScint[j]->GetLayerIndex()])
-          color = BLUE;
-        else
-          color = RED;
-        std::cout << color << "LayeIndex : " << vecOfScint[j]->GetLayerIndex() << " : "
-                  << "BarIndex : " << vecOfScint[j]->GetBarIndex() << " : "
-                  << "Q : " << vecOfScint[j]->GetLogQNearByQFar_ForSimulation() << " : "
-                  << "DelT : " << vecOfScint[j]->GetDelTCorrected() << RESET << std::endl;
+    if (smtVec[i]->HitInRequiredLayers()) {
+      if (counter < 5) {
+        counter++;
+        std::cout << "---------------------------------------------------------------" << std::endl;
+        std::vector<lite_interface::ScintillatorBar_V2 *> vecOfScint = smtVec[i]->GetMuonTrack();
+        for (unsigned int j = 0; j < vecOfScint.size(); j++) {
+          auto color = BLACK;
+          if (vecOfLayersOrientation[vecOfScint[j]->GetLayerIndex()])
+            color = BLUE;
+          else
+            color = RED;
+          std::cout << color << "LayeIndex : " << vecOfScint[j]->GetLayerIndex() << " : "
+                    << "BarIndex : " << vecOfScint[j]->GetBarIndex() << " : "
+                    << "Q : " << vecOfScint[j]->GetLogQNearByQFar_ForSimulation() << " : "
+                    << "DelT : " << vecOfScint[j]->GetDelTCorrected() << RESET << std::endl;
+        }
+        std::cout << "---------------------------------------------------------------" << std::endl;
+        TF1 *formula_Exact   = smtVec[i]->GetFitFormula(1, false);
+        TF1 *formula_Smeared = smtVec[i]->GetFitFormula(2, false);
+        std::cout << MAGENTA << "Fit Parameter For Exact Track : C : " << formula_Exact->GetParameter(0)
+                  << " : M : " << formula_Exact->GetParameter(1) << RESET << std::endl;
+        std::cout << MAGENTA << "Fit Parameter For Smeared Track : C : " << formula_Smeared->GetParameter(0)
+                  << " : M : " << formula_Smeared->GetParameter(1) << RESET << std::endl;
       }
-      std::cout << "---------------------------------------------------------------" << std::endl;
-      TF1 *formula_Exact   = smtVec[i]->GetFitFormula(1, false);
-      TF1 *formula_Smeared = smtVec[i]->GetFitFormula(2, false);
-      std::cout << MAGENTA << "Fit Parameter For Exact Track : C : " << formula_Exact->GetParameter(0)
-                << " : M : " << formula_Exact->GetParameter(1) << RESET << std::endl;
-      std::cout << MAGENTA << "Fit Parameter For Smeared Track : C : " << formula_Smeared->GetParameter(0)
-                << " : M : " << formula_Smeared->GetParameter(1) << RESET << std::endl;
     }
   }
   fApp->Run();

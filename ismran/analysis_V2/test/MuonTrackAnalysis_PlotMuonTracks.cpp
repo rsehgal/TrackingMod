@@ -37,7 +37,8 @@ int main(int argc, char *argv[])
   TH1F *hist_Diff_C                                     = new TH1F("HistDiff_C", "HistDiff_C", 200, -25., 25.);
   for (unsigned int i = 0; i < smtVec.size(); i++) {
 
-    if (smtVec[i]->size() >= 6) {
+    if (smtVec[i]->HitInRequiredLayers()) {
+    //if (smtVec[i]->size() >= 6) 
       if (counter < 5) {
         counter++;
         /* new TCanvas("Exact_XY");
