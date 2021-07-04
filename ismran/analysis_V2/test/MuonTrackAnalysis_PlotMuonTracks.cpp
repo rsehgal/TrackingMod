@@ -78,15 +78,24 @@ int main(int argc, char *argv[])
         lite_interface::PlotMuonTrackZY(InCm(CreateFittedTrack(smtVec[i]->GetSmeared3DHitPointVector())))->Draw("p");
       }
 
+      /*
+      //Working Block
       std::vector<lite_interface::Point3D *> vecOfPoint3D_Exact   = InCm(smtVec[i]->GetExact3DHitPointVector());
       std::vector<lite_interface::Point3D *> vecOfPoint3D_Smeared = InCm(smtVec[i]->GetSmeared3DHitPointVector());
       TF1 *formulaXY_Exact   = lite_interface::GetFittedMuonTrackFormulaZY(vecOfPoint3D_Exact,true);
-      TF1 *formulaXY_Smeared = lite_interface::GetFittedMuonTrackFormulaZY(vecOfPoint3D_Smeared,false);
+      TF1 *formulaXY_Smeared = lite_interface::GetFittedMuonTrackFormulaZY(vecOfPoint3D_Smeared,false);*/
+
+      /*
+      ** if Second argument set to true then give formula for track generated using XY planes
+      ** otherwise return formula for track generated using ZY planes
+      */
+      TF1 *formula_Exact   = smtVec[i]->GetFitFormula(1, false);
+      TF1 *formula_Smeared = smtVec[i]->GetFitFormula(2, false);
       if (verbose)
-        std::cout << "M : " << formulaXY_Exact->GetParameter(1) << " : C : " << formulaXY_Exact->GetParameter(0)
+        std::cout << "M : " << formula_Exact->GetParameter(1) << " : C : " << formula_Exact->GetParameter(0)
                   << std::endl;
-      double diff_m = formulaXY_Exact->GetParameter(1) - formulaXY_Smeared->GetParameter(1);
-      double diff_c = formulaXY_Exact->GetParameter(0) - formulaXY_Smeared->GetParameter(0);
+      double diff_m = formula_Exact->GetParameter(1) - formula_Smeared->GetParameter(1);
+      double diff_c = formula_Exact->GetParameter(0) - formula_Smeared->GetParameter(0);
       if (verbose) std::cout << "Diff_M : " << diff_m << " : Diff_C : " << diff_c << std::endl;
       hist_Diff_M->Fill(diff_m);
       hist_Diff_C->Fill(diff_c);

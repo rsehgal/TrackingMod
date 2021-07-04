@@ -61,6 +61,12 @@ extern double errorX_Smeared;
 extern double errorY_Smeared;
 extern double errorZ_Smeared;
 
+extern unsigned short exactTrack;
+extern unsigned short smearedTrack;
+
+extern bool planeXY;
+extern bool planeZY;
+
 struct Point3D {
   double x;
   double y;

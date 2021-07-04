@@ -290,3 +290,6 @@ target_link_libraries(MuonTrackAnalysis_SmearedHitPosition ${ROOT_LIBRARIES} Tra
 add_executable(MuonTrackAnalysis_PlotMuonTracks test/MuonTrackAnalysis_PlotMuonTracks.cpp ${sources} ${headers})
 target_link_libraries(MuonTrackAnalysis_PlotMuonTracks ${ROOT_LIBRARIES} Tracklib)
 
+add_executable(MuonTrackAnalysis_Generate_ML_Data test/MuonTrackAnalysis_Generate_ML_Data.cpp ${sources} ${headers})
+target_link_libraries(MuonTrackAnalysis_Generate_ML_Data ${ROOT_LIBRARIES} Tracklib)
+

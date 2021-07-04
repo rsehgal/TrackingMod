@@ -435,7 +435,7 @@ void ScintillatorBar_V2::CalculateVariousPhysicalParameters(unsigned long muonNu
       smeared = 510;
       while (smeared > 500. || smeared < -500)
         smeared = GetGaussianRandomSample(fExactHitPosition->GetZ(), 140);
-        //smeared = GetGaussianRandomSample(fMeanHitPosition->GetZ(), 140);
+      // smeared = GetGaussianRandomSample(fMeanHitPosition->GetZ(), 140);
 
       // smeared = fMeanHitPosition->GetZ();//GetGaussianRandomSample(fMeanHitPosition->GetZ(), 10);
       // std::cout << RED << "Smeared Value of Z : " << smeared << RESET << std::endl;
@@ -446,7 +446,7 @@ void ScintillatorBar_V2::CalculateVariousPhysicalParameters(unsigned long muonNu
       // fDelTstamp = formulaFor->GetX(fMeanHitPosition->GetX() / 10.) * 1000.;
       while (smeared > 500. || smeared < -500.)
         smeared = GetGaussianRandomSample(fExactHitPosition->GetX(), 140);
-        //smeared = GetGaussianRandomSample(fMeanHitPosition->GetX(), 140);
+      // smeared = GetGaussianRandomSample(fMeanHitPosition->GetX(), 140);
 
       // smeared = fMeanHitPosition->GetX();//GetGaussianRandomSample(fMeanHitPosition->GetX(), 10);
       // std::cout << BLUE << "Smeared Value of X : " << smeared << RESET << std::endl;
@@ -540,8 +540,20 @@ lite_interface::Point3D *ScintillatorBar_V2::GetSmearedHitPosition()
 
 double ScintillatorBar_V2::GetY()
 {
-  return vecOfLayersYPos[GetLayerIndex()]*10.;
+  return vecOfLayersYPos[GetLayerIndex()] * 10.;
 }
 
 double ScintillatorBar_V2::GetRandomValueAlongWidth() {}
+
+double ScintillatorBar_V2::GetLogQNearByQFar_ForSimulation()
+{
+  lite_interface::Calibration *calib                = lite_interface::Calibration::instance();
+  lite_interface::CalibrationData *calibDataOfScint = calib->GetCalibrationDataVector()[fBarIndex];
+  TF1 *zparam                                       = calibDataOfScint->fParameterization_F;
+  TF1 *qparam                                       = calibDataOfScint->fQParameterization_F;
+  double smearedZ_InCm                              = zparam->Eval(fDelTstamp / 1000.);
+  double qval                                       = qparam->GetX(smearedZ_InCm);
+  return qval;
+}
+
 } // namespace lite_interface
