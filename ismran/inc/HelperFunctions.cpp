@@ -935,12 +935,49 @@ std::vector<lite_interface::Point3D *> InCm(std::vector<lite_interface::Point3D 
   return cmPointVec;
 }
 
+/*template <typename T>
+int GetIndex(std::vector<T> v, T K)
+{
+  auto it = find(v.begin(), v.end(), K);
+  // If element was found
+  if (it != v.end()) {
+    // calculating the index of K
+    int index = it - v.begin();
+    // cout << index << endl;
+    return index;
+  } else {
+    // If the element is not present in the vector
+    // cout << "-1" << endl;
+    return -1;
+  }
+}*/
+
 HelperFunctions::HelperFunctions()
 {
   // TODO Auto-generated constructor stub
 }
 
 HelperFunctions::~HelperFunctions()
+{
+  // TODO Auto-generated destructor stub
+}
+
+OfStream::OfStream(std::string filename)
+{
+  fOutfile.open(filename);//, std::ios::out);
+  // TODO Auto-generated constructor stub
+}
+
+std::ofstream OfStream::GetFilePointer() const
+{
+//  return fOutfile;
+}
+OfStream::OfStream()
+{
+  // TODO Auto-generated constructor stub
+}
+
+OfStream::~OfStream()
 {
   // TODO Auto-generated destructor stub
 }

@@ -39,7 +39,7 @@ int main(int argc, char *argv[])
   for (unsigned int i = 0; i < smtVec.size(); i++) {
     /*if (smtVec[i]->size() >= 6) {
     }*/
-    if (smtVec[i]->HitInRequiredLayers()) {
+    if (smtVec[i]->HitInRequiredLayers() && smtVec[i]->SingleHitInEachLayer()) {
       if (counter < 5) {
         counter++;
         std::cout << "---------------------------------------------------------------" << std::endl;

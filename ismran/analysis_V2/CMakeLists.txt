@@ -293,3 +293,6 @@ target_link_libraries(MuonTrackAnalysis_PlotMuonTracks ${ROOT_LIBRARIES} Trackli
 add_executable(MuonTrackAnalysis_Generate_ML_Data test/MuonTrackAnalysis_Generate_ML_Data.cpp ${sources} ${headers})
 target_link_libraries(MuonTrackAnalysis_Generate_ML_Data ${ROOT_LIBRARIES} Tracklib)
 
+add_executable(MuonTrackAnalysis_Generate_ML_Data_ForEachLayer test/MuonTrackAnalysis_Generate_ML_Data_ForEachLayer.cpp ${sources} ${headers})
+target_link_libraries(MuonTrackAnalysis_Generate_ML_Data_ForEachLayer ${ROOT_LIBRARIES} Tracklib)
+

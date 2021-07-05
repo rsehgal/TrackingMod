@@ -57,7 +57,8 @@ extern double Interpolate(Point2D p1, Point2D p2, double y);
 extern double Interpolate(lite_interface::Point3D *startPoint, lite_interface::Point3D *endPoint,
                           lite_interface::Point3D *pointOnInspectedLayer);
 extern lite_interface::Point3D *Get3DHitPointOnLayer(lite_interface::SingleMuonTrack *smt, unsigned int layerIndex);
-extern lite_interface::Point3D *Get3DHitPointOnLayer(lite_interface::SingleMuonTrack *smt, unsigned int layerIndex, unsigned int startIndex, unsigned int endIndex);
+extern lite_interface::Point3D *Get3DHitPointOnLayer(lite_interface::SingleMuonTrack *smt, unsigned int layerIndex,
+                                                     unsigned int startIndex, unsigned int endIndex);
 extern lite_interface::Point3D *Get3DHitPointOnLayer(lite_interface::SingleMuonTrack *smt, unsigned int layerIndex,
                                                      lite_interface::Point3D *extrapolatedPt, unsigned int onLayer);
 extern lite_interface::Point3D *Get3DHitPointOnLayer(lite_interface::SingleMuonTrack *smt, unsigned int layerIndex,
@@ -100,7 +101,37 @@ extern std::vector<std::string> GetVectorOfFiles(const char *dirname = "/home/",
 
 extern double GetGaussianRandomSample(double mean, double sigma);
 extern double GetUniformRandomSample(double lower, double upper);
-extern std::vector<lite_interface::Point3D*> InCm(std::vector<lite_interface::Point3D*> vecOfPt3D);
+extern std::vector<lite_interface::Point3D *> InCm(std::vector<lite_interface::Point3D *> vecOfPt3D);
+
+/* Function to return the index of an element from std::vector */
+template <typename T>
+int GetIndex(std::vector<T> v, T K)
+{
+  auto it = find(v.begin(), v.end(), K);
+  // If element was found
+  if (it != v.end()) {
+    // calculating the index of K
+    int index = it - v.begin();
+    // cout << index << endl;
+    return index;
+  } else {
+    // If the element is not present in the vector
+    // cout << "-1" << endl;
+    return -1;
+  }
+}
+
+class OfStream {
+public:
+  std::ofstream fOutfile;
+
+public:
+  OfStream();
+  OfStream(std::string filename);
+  virtual ~OfStream();
+  std::ofstream GetFilePointer() const;
+};
+
 class HelperFunctions {
 public:
   HelperFunctions();
