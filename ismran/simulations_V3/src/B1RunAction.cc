@@ -87,8 +87,13 @@ void B1RunAction::WriteData()
 
 	/*Storing fMeanHitPosition in mm and NOT in cm*/
         //scint->fMeanHitPosition->Divide(10);
-        fDataTree->Fill(scint->fQlongNear, scint->fQlongMean, scint->fTSmallTimeStamp, scint->fDelTstamp,
-                        scint->fBarIndex, scint->fMeanHitPosition, scint->fExactHitPosition);
+
+
+        /*fDataTree->Fill(scint->fQlongNear, scint->fQlongMean, scint->fTSmallTimeStamp, scint->fDelTstamp,
+                        scint->fBarIndex, scint->fMeanHitPosition, scint->fExactHitPosition);*/
+	fDataTree->Fill(scint->fQlongNear, scint->fQlongMean, scint->fTSmallTimeStamp, scint->fDelTstamp,
+                        scint->fBarIndex, scint->fMeanHitPosition, scint->fExactHitPosition,scint->fLogQFarByQNear);
+
       }
     }
   }

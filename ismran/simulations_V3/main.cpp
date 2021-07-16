@@ -47,6 +47,17 @@ G4UIExecutive* ui = 0;
   GenerateScintMatrixXYCenters();
   IsSimulation = true;
 
+CLHEP::HepRandom::setTheEngine(new CLHEP::RanecuEngine);
+  
+  long seeds[2]={12334457,1239075};
+  time_t systime = time(NULL);
+    seeds[0] = (long) systime;
+    seeds[1] = (long) (systime*G4UniformRand());
+
+  G4cout << "seed1: " << seeds[0] << "; seed2: " << seeds[1] << G4endl;
+  CLHEP::HepRandom::setTheSeeds(seeds);
+  CLHEP::HepRandom::showEngineStatus();
+
   // lite_interface::Calibration *calib =
   // lite_interface::Calibration::instance("/home/rsehgal/BackBoneSoftwares/ismranData/completeCalib.root");
   lite_interface::Calibration *calib = lite_interface::Calibration::instance("completeCalib2.root");
