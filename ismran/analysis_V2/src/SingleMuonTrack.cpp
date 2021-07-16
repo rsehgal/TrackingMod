@@ -346,7 +346,9 @@ ClassImp(lite_interface::SingleMuonTrack)
     return vectorOf3DHitPoint;
   }
 
-  std::vector<lite_interface::Point3D *> SingleMuonTrack::GetExact3DHitPointVector()
+#endif 
+
+ std::vector<lite_interface::Point3D *> SingleMuonTrack::GetExact3DHitPointVector()
   {
     std::vector<lite_interface::Point3D *> vectorOf3DHitPoint;
     std::vector<ScintillatorBar_V2 *>::iterator itr;
@@ -358,7 +360,6 @@ ClassImp(lite_interface::SingleMuonTrack)
     return vectorOf3DHitPoint;
   }
 
-#endif
   std::vector<lite_interface::Point3D *> SingleMuonTrack::GetSmeared3DHitPointVector()
   {
     std::vector<lite_interface::Point3D *> vectorOf3DHitPoint;

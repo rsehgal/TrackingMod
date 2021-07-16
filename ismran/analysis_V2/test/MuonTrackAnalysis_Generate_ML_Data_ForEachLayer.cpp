@@ -3,6 +3,13 @@
 **	2021-07-05
 **	username : rsehgal
 */
+
+//DOCBEGIN
+/*
+** The code to generate the data file using the ProcessedData_xyz.root Files
+** ./MuonTrackAnalysis_Generate_ML_Data_ForEachLayer ProcessedData_xyz.root
+*/
+//DOCEND
 #include <iostream>
 #include <vector>
 #include "PairFinder.h"
@@ -28,11 +35,14 @@ int main(int argc, char *argv[])
   lite_interface::Calibration *calib                    = lite_interface::Calibration::instance("completeCalib2.root");
   std::string filename                                  = argv[1];
   std::vector<lite_interface::SingleMuonTrack *> smtVec = GetMuonTracksVector(filename);
+  std::string fileSubName                               = filename.substr(13, filename.find(".") - 13);
+  // std::cout << fileSubName << std::endl;
+  // return 0;
 
   // std::vector<std::ofstream> vecOfFilePointer;
   std::vector<OfStream *> vecOfFilePointer;
   for (unsigned int i = 0; i < vecOfRequiredLayers.size(); i++) {
-    std::string filename = "ML_Data_Layer_" + std::to_string(vecOfRequiredLayers[i]) + ".txt";
+    std::string filename = "ML_Data_Layer_" + std::to_string(vecOfRequiredLayers[i]) + fileSubName + ".txt";
     vecOfFilePointer.push_back(new OfStream(filename));
   }
 
@@ -48,8 +58,9 @@ int main(int argc, char *argv[])
           vecOfFilePointer[fileIndex]->fOutfile
               << vecOfScint[j]->GetLayerIndex() << "," << vecOfScint[j]->GetBarIndex() << ","
               << vecOfScint[j]->GetLogQNearByQFar_ForSimulation() << "," << vecOfScint[j]->GetDelTCorrected() << ","
-              << vecOfScint[j]->GetExactHitPosition()->GetX() << "," << vecOfScint[j]->GetExactHitPosition()->GetZ()
-              << std::endl;
+              << vecOfScint[j]->GetSmearedHitPosition()->GetX() << "," << vecOfScint[j]->GetSmearedHitPosition()->GetZ()
+              << "," << vecOfScint[j]->GetExactHitPosition()->GetX() << ","
+              << vecOfScint[j]->GetExactHitPosition()->GetZ() << std::endl;
       }
     }
   }

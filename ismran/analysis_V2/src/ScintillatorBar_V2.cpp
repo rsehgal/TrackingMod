@@ -77,6 +77,17 @@ ScintillatorBar_V2::ScintillatorBar_V2(ushort barIndex, ushort qlongNear, ushort
   */
   // Print();
 }
+ScintillatorBar_V2::ScintillatorBar_V2(ushort barIndex, ushort qlongNear, ushort qlongMean, ULong64_t tstampSmall,
+                                       Long_t delTStamp, double hitx, double hity, double hitz, double exacthitX,
+                                       double exacthitY, double exacthitZ,double logQFarByQNear)
+    : fBarIndex(barIndex), fQlongNear(qlongNear), fQlongMean(qlongMean), fTSmallTimeStamp(tstampSmall),
+      fDelTstamp(delTStamp), hitX(hitx), hitY(hity), hitZ(hitz), exactHitX(exacthitX), exactHitY(exacthitY),
+      exactHitZ(exacthitZ),fLogQFarByQNear(logQFarByQNear)
+{
+//std::cout <<"@@@@@@@@@ PRINT FROM NEW CONSTRUCTOR @@@@@@@@@@@@@" << std::endl;
+//Print();
+}
+
 #endif
 
 ScintillatorBar_V2::ScintillatorBar_V2(const ScintillatorBar_V2 &sbar)
@@ -89,6 +100,7 @@ ScintillatorBar_V2::ScintillatorBar_V2(const ScintillatorBar_V2 &sbar)
   fQlongMean       = sbar.fQlongMean;
   fTSmallTimeStamp = sbar.fTSmallTimeStamp;
   fDelTstamp       = sbar.fDelTstamp;
+  fLogQFarByQNear  = sbar.fLogQFarByQNear;
   // fittedLinear = sbar.fittedLinear;
   // fittedParam = sbar.fittedParam;
 #if defined(FOR_SIMULATION) || defined(USE_FOR_SIMULATION)
@@ -151,7 +163,12 @@ lite_interface::Point3D *ScintillatorBar_V2::EstimateHitPosition_QParam()
   double zval    = 0.;
   double xOrZval = 0.;
 
+#ifdef USE_FOR_SIMULATION
+  double qval = GetLogQNearByQFar_ForSimulation();
+#else
+
   double qval = GetLogQNearByQFar();
+#endif
   if (IsSimulation)
     xOrZval = param->Eval(qval);
   else
@@ -161,6 +178,8 @@ lite_interface::Point3D *ScintillatorBar_V2::EstimateHitPosition_QParam()
   if (GetLayerIndex() % 2) {
     return (new lite_interface::Point3D(xOrZval, vecOfScintXYCenter[fBarIndex].y, vecOfScintXYCenter[fBarIndex].x));
   } else {
+	//lite_interface::Point3D *pt = new lite_interface::Point3D(vecOfScintXYCenter[fBarIndex].x, vecOfScintXYCenter[fBarIndex].y, xOrZval);
+	//pt->Print();
     return (new lite_interface::Point3D(vecOfScintXYCenter[fBarIndex].x, vecOfScintXYCenter[fBarIndex].y, xOrZval));
   }
 
@@ -195,6 +214,7 @@ void ScintillatorBar_V2::Print()
 #ifdef USE_FOR_SIMULATION
   std::cout << "Mean Hit Position : " << hitX << " , " << hitY << " , " << hitZ << std::endl;
   std::cout << "Exact Hit Position individual : " << exactHitX << " , " << exactHitY << " , " << exactHitZ << std::endl;
+  std::cout << "LogQFarByQNear : Stored Value  : " << fLogQFarByQNear <<" : Calculated value : " << GetLogQNearByQFar_ForSimulation() << std::endl;
   // std::cout << "Fitted Mean Hit position : " ; fittedMean->Print();
 #else
 #ifdef FOR_SIMULATION
@@ -425,6 +445,7 @@ void ScintillatorBar_V2::CalculateVariousPhysicalParameters(unsigned long muonNu
   // fDelTstamp   = (formula->GetRandom()) * 1000.;
   {
     TF1 *formulaFor = calibDataOfScint->fParameterization_F;
+    TF1 *formulaForQ = calibDataOfScint->fQParameterization_F;
     TF1 *formulaRev = calibDataOfScint->fParameterization_F_Rev;
     // std::cout << "Mean Hit Position : "; fMeanHitPosition->Print();
     double delTMeanFromParam  = formulaRev->Eval(fMeanHitPosition->GetZ() / 10.) * 1000.;
@@ -434,7 +455,10 @@ void ScintillatorBar_V2::CalculateVariousPhysicalParameters(unsigned long muonNu
     if (vecOfLayersOrientation[GetLayerIndex()]) {
       smeared = 510;
       while (smeared > 500. || smeared < -500)
-        smeared = GetGaussianRandomSample(fExactHitPosition->GetZ(), 140);
+        // smeared = GenRandom(fExactHitPosition->GetZ()-220, fExactHitPosition->GetZ()+220);
+        // Should be GAUSSIAN SAMPLING
+        smeared = GetGaussianRandomSample(fExactHitPosition->GetZ(), 180);
+
       // smeared = GetGaussianRandomSample(fMeanHitPosition->GetZ(), 140);
 
       // smeared = fMeanHitPosition->GetZ();//GetGaussianRandomSample(fMeanHitPosition->GetZ(), 10);
@@ -445,7 +469,12 @@ void ScintillatorBar_V2::CalculateVariousPhysicalParameters(unsigned long muonNu
       smeared = 510;
       // fDelTstamp = formulaFor->GetX(fMeanHitPosition->GetX() / 10.) * 1000.;
       while (smeared > 500. || smeared < -500.)
-        smeared = GetGaussianRandomSample(fExactHitPosition->GetX(), 140);
+        // smeared = GetGaussianRandomSample(fExactHitPosition->GetX()-220, fExactHitPosition->GetX()+220);
+        // Should be GAUSSIAN SAMPLING
+        smeared = GetGaussianRandomSample(fExactHitPosition->GetX(), 180);
+   	fLogQFarByQNear = formulaForQ->GetX(smeared/10.);
+        //std::cout << MAGENTA << __FILE__ << " : " << __LINE__ <<" : LogQFarByQNear from Param : " << fLogQFarByQNear << RESET << std::endl;
+
       // smeared = GetGaussianRandomSample(fMeanHitPosition->GetX(), 140);
 
       // smeared = fMeanHitPosition->GetX();//GetGaussianRandomSample(fMeanHitPosition->GetX(), 10);
@@ -510,7 +539,9 @@ double ScintillatorBar_V2::GetSmearedZ()
     // return GetExactHitPosition()->GetZ(); // zparam->Eval(fDelTstamp / 1000.) * 10.;
     return zparam->Eval(fDelTstamp / 1000.) * 10.;
   } else {
-    return GetGaussianRandomSample(vecOfScintXYCenter[fBarIndex].x * 10, 50.);
+    // return GetGaussianRandomSample(vecOfScintXYCenter[fBarIndex].x * 10, 50.);
+    double center = vecOfScintXYCenter[fBarIndex].x * 10;
+    return GenRandom(center - 50, center + 50.);
   }
 }
 
@@ -525,9 +556,11 @@ double ScintillatorBar_V2::GetSmearedX()
     return zparam->Eval(fDelTstamp / 1000.);
   }*/
 
-  if (vecOfLayersOrientation[GetLayerIndex()])
-    return GetGaussianRandomSample(vecOfScintXYCenter[fBarIndex].x * 10, 50.);
-  else {
+  if (vecOfLayersOrientation[GetLayerIndex()]) {
+    // return GetGaussianRandomSample(vecOfScintXYCenter[fBarIndex].x * 10, 50.);
+    double center = vecOfScintXYCenter[fBarIndex].x * 10;
+    return GenRandom(center - 50, center + 50.);
+  } else {
     // return GetExactHitPosition()->GetX(); // zparam->Eval(fDelTstamp / 1000.) * 10.;
     return zparam->Eval(fDelTstamp / 1000.) * 10.;
   }
@@ -537,7 +570,6 @@ lite_interface::Point3D *ScintillatorBar_V2::GetSmearedHitPosition()
 {
   return new lite_interface::Point3D(GetSmearedX(), GetY(), GetSmearedZ());
 }
-
 double ScintillatorBar_V2::GetY()
 {
   return vecOfLayersYPos[GetLayerIndex()] * 10.;

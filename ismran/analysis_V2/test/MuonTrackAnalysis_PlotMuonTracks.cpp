@@ -34,11 +34,16 @@ int main(int argc, char *argv[])
   TH1F *smearanceHistX                                  = new TH1F("SmearanceHistX", "SmearanceHistX", 250, -60., 60.);
   unsigned int counter                                  = 0;
   TH1F *hist_Diff_M                                     = new TH1F("HistDiff_M", "HistDiff_M", 200, -25., 25.);
-  TH1F *hist_Diff_C                                     = new TH1F("HistDiff_C", "HistDiff_C", 200, -25., 25.);
+  TH1F *hist_Diff_C = new TH1F("HistDiff_C", "HistDiff_C", 200, -25., 25.);
+  TH1F *diffXHist                                       = new TH1F("diffXHist", "diffXHist", 100, -50., 50.);
+  TH1F *diffZHist                                       = new TH1F("diffZHist", "diffZHist", 100, -50., 50.);
+  TH1F *diffXHist_1                                       = new TH1F("diffXHistBeforeFitting", "diffXHistBeforeFitting", 100, -50., 50.);
+  TH1F *diffZHist_1                                       = new TH1F("diffZHistBeforeFitting", "diffZHistBeforeFitting", 100, -50., 50.);
+
   for (unsigned int i = 0; i < smtVec.size(); i++) {
 
-    if (smtVec[i]->HitInRequiredLayers()) {
-    //if (smtVec[i]->size() >= 6) 
+    if (smtVec[i]->HitInRequiredLayers() && smtVec[i]->SingleHitInEachLayer()) {
+      // if (smtVec[i]->size() >= 6)
       if (counter < 5) {
         counter++;
         /* new TCanvas("Exact_XY");
@@ -79,6 +84,18 @@ int main(int argc, char *argv[])
         lite_interface::PlotMuonTrackZY(InCm(CreateFittedTrack(smtVec[i]->GetSmeared3DHitPointVector())))->Draw("p");
       }
 
+      std::vector<lite_interface::Point3D *> vecOfExactHit = InCm(smtVec[i]->GetExact3DHitPointVector());
+      std::vector<lite_interface::Point3D *> vecOfSmearedHit = InCm(smtVec[i]->GetSmeared3DHitPointVector());
+      std::vector<lite_interface::Point3D *> vecOfFittedHit =
+          InCm(CreateFittedTrack(smtVec[i]->GetSmeared3DHitPointVector()));
+
+      unsigned int layerToInspect = 8;// 9-std::atoi(argv[2]);
+      //std::cout << "Y of inspected layer : " << vecOfExactHit[layerToInspect]->GetY() << std::endl;
+      diffXHist->Fill(vecOfExactHit[layerToInspect]->GetX() - vecOfFittedHit[layerToInspect]->GetX());
+      diffZHist->Fill(vecOfExactHit[layerToInspect]->GetZ() - vecOfFittedHit[layerToInspect]->GetZ());
+      diffXHist_1->Fill(vecOfExactHit[layerToInspect]->GetX()-vecOfSmearedHit[layerToInspect]->GetX());
+      diffZHist_1->Fill(vecOfExactHit[layerToInspect]->GetZ()-vecOfSmearedHit[layerToInspect]->GetZ());
+
       /*
       //Working Block
       std::vector<lite_interface::Point3D *> vecOfPoint3D_Exact   = InCm(smtVec[i]->GetExact3DHitPointVector());
@@ -103,7 +120,20 @@ int main(int argc, char *argv[])
     }
   }
 
-  new TCanvas("Diff_M", "Diff_M");
+  new TCanvas("DiffXHist", "DiffXHist");
+  diffXHist->Draw();
+
+  new TCanvas("DiffZHist", "DiffZHist");
+  diffZHist->Draw();
+
+  new TCanvas("DiffXHistBeforeFitting", "DiffXHistBeforeFitting");
+  diffXHist_1->Draw();
+
+  new TCanvas("DiffZHistBeforeFitting", "DiffZHistBeforeFitting");
+  diffZHist_1->Draw();
+
+
+ new TCanvas("Diff_M", "Diff_M");
   hist_Diff_M->Draw();
   new TCanvas("Diff_C", "Diff_C");
   hist_Diff_C->Draw();

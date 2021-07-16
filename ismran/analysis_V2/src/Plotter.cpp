@@ -10,6 +10,25 @@
 
 namespace lite_interface {
 
+TF1* GetFitFormula(std::vector<lite_interface::Point3D*> vecOfPoint3D, unsigned int trackType, bool planeType){
+TF1 *formula;
+    if (trackType == exactTrack) {
+      if (planeType)
+        formula = lite_interface::GetFittedMuonTrackFormulaXY(vecOfPoint3D, true);
+      else
+        formula = lite_interface::GetFittedMuonTrackFormulaZY(vecOfPoint3D, true);
+    } else {
+      if (trackType == smearedTrack) {
+        if (planeType)
+          formula = lite_interface::GetFittedMuonTrackFormulaXY(vecOfPoint3D, false);
+        else
+          formula = lite_interface::GetFittedMuonTrackFormulaZY(vecOfPoint3D, false);
+      }
+    }
+    return formula;
+
+}
+
 TH1F *PlotZenithAngle(std::vector<std::vector<lite_interface::Point3D *>> vecOfVecOfPoint3D)
 {
   TVector3 ref(0., -1., 0.);

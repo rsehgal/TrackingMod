@@ -111,6 +111,7 @@ extern std::vector<TH1D *> PlotEnergyDistributionWithMultiplicity(std::vector<un
  *
  */
 extern std::vector<lite_interface::Point3D *> CreateFittedTrack(std::vector<lite_interface::Point3D *> vecOfPoint3D);
+extern TF1* GetFitFormula(std::vector<lite_interface::Point3D*> vecOfPoint3D,unsigned int trackType, bool planeType);
 extern std::vector<double> GetFittedXorZ(TGraphErrors *gr, std::vector<lite_interface::Point3D *> vecOfPoint3D);
 
 /*

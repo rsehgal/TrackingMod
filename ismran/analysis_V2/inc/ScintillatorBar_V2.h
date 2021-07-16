@@ -41,6 +41,7 @@ public:
 	 //! time stamp in pico sec.
 	Long_t fDelTstamp;
 
+
 	//Only for Simulation
 	double hitX;
 	double hitY;
@@ -49,6 +50,7 @@ public:
 	double exactHitX;
 	double exactHitY;
 	double exactHitZ;
+	double fLogQFarByQNear;
 
 #if defined(FOR_SIMULATION) || defined(USE_FOR_SIMULATION)
 
@@ -150,6 +152,11 @@ public:
 									ULong64_t tstampSmall, Long_t delTStamp,
 									double hitx, double hity, double hitz,
 									double exactHitX,double exactHity,double exactHitZ);
+ScintillatorBar_V2(ushort barIndex, ushort qlongNear, ushort qlongMean,
+									ULong64_t tstampSmall, Long_t delTStamp,
+									double hitx, double hity, double hitz,
+									double exactHitX,double exactHity,double exactHitZ,double logQNearByQFar);
+
 	/*lite_interface::Point3D* GetMeanHitPosition();
 	lite_interface::Point3D* GetExactHitPosition();*/
 #ifdef USE_CALIBRATION

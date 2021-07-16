@@ -296,3 +296,33 @@ target_link_libraries(MuonTrackAnalysis_Generate_ML_Data ${ROOT_LIBRARIES} Track
 add_executable(MuonTrackAnalysis_Generate_ML_Data_ForEachLayer test/MuonTrackAnalysis_Generate_ML_Data_ForEachLayer.cpp ${sources} ${headers})
 target_link_libraries(MuonTrackAnalysis_Generate_ML_Data_ForEachLayer ${ROOT_LIBRARIES} Tracklib)
 
+add_executable(MuonTrackAnalysis_Generate_ML_Data_Geometrical_Bounded test/MuonTrackAnalysis_Generate_ML_Data_Geometrical_Bounded.cpp ${sources} ${headers})
+target_link_libraries(MuonTrackAnalysis_Generate_ML_Data_Geometrical_Bounded ${ROOT_LIBRARIES} Tracklib)
+
+add_executable(MuonTrackAnalysis_FittedTracks_FromFile test/MuonTrackAnalysis_FittedTracks_FromFile.cpp ${sources} ${headers})
+target_link_libraries(MuonTrackAnalysis_FittedTracks_FromFile ${ROOT_LIBRARIES} Tracklib)
+
+add_executable(MuonTrackAnalysis_FittedTracks_FromFile2 test/MuonTrackAnalysis_FittedTracks_FromFile2.cpp ${sources} ${headers})
+target_link_libraries(MuonTrackAnalysis_FittedTracks_FromFile2 ${ROOT_LIBRARIES} Tracklib)
+
+add_executable(MuonTrackAnalysis_AnalyzeScint test/MuonTrackAnalysis_AnalyzeScint.cpp ${sources} ${headers})
+target_link_libraries(MuonTrackAnalysis_AnalyzeScint ${ROOT_LIBRARIES} Tracklib)
+
+add_executable(MuonTrackAnalysis_MuonClassficatonData test/MuonTrackAnalysis_MuonClassficatonData.cpp ${sources} ${headers})
+target_link_libraries(MuonTrackAnalysis_MuonClassficatonData ${ROOT_LIBRARIES} Tracklib)
+
+add_executable(MuonTrackAnalysis_MuonResolutionData test/MuonTrackAnalysis_MuonResolutionData.cpp ${sources} ${headers})
+target_link_libraries(MuonTrackAnalysis_MuonResolutionData ${ROOT_LIBRARIES} Tracklib)
+
+add_executable(MuonTrackAnalysis_ParameterizationUsingMuon test/MuonTrackAnalysis_ParameterizationUsingMuon.cpp ${sources} ${headers})
+target_link_libraries(MuonTrackAnalysis_ParameterizationUsingMuon ${ROOT_LIBRARIES} Tracklib)
+
+add_executable(MuonTrackAnalysis_TestMuonParam test/MuonTrackAnalysis_TestMuonParam.cpp ${sources} ${headers})
+target_link_libraries(MuonTrackAnalysis_TestMuonParam ${ROOT_LIBRARIES} Tracklib)
+
+add_executable(MuonTrackAnalysis_Generate_ML_Data_UsingCosmicMuons test/MuonTrackAnalysis_Generate_ML_Data_UsingCosmicMuons.cpp ${sources} ${headers})
+target_link_libraries(MuonTrackAnalysis_Generate_ML_Data_UsingCosmicMuons ${ROOT_LIBRARIES} Tracklib)
+
+add_executable(MuonTrackAnalysis_Dissection test/MuonTrackAnalysis_Dissection.cpp ${sources} ${headers})
+target_link_libraries(MuonTrackAnalysis_Dissection ${ROOT_LIBRARIES} Tracklib)
+

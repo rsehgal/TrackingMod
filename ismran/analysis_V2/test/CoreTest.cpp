@@ -40,7 +40,16 @@ std::cout << vecOfBarsNamess[i] <<" : ";
 double val = GetGaussianRandomSample(0., 100.);
 //std::cout << val << std::endl;
 hist->Fill(val);
-} 
+}
+
+std::cout <<"Testing Split string functionality...." << std::endl;
+std::string s="Hello Raman how r you.";
+std::vector<std::string> v = SplitString(s);
+
+for(unsigned int i = 0 ; i < v.size() ; i++){
+std::cout << v[i] << std::endl;
+}
+ 
 hist->Draw();
 fApp->Run();
   return 0;

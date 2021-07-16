@@ -13,7 +13,7 @@
 #include "Plotter.h"
 #include "TCanvas.h"
 #include "HardwareNomenclature.h"
-
+#include "colors.h"
 namespace lite_interface {
 
 // bool IsSimulation = false;
@@ -177,6 +177,7 @@ void Analyzer::CreateScintillatorVector_FromSimulation()
   Double_t exactHitX;
   Double_t exactHitY;
   Double_t exactHitZ;
+  Double_t logQFarByQNear;
 
   // Set branch addresses.
   ftree->SetBranchAddress("qlongNear", &qlongNear);
@@ -199,7 +200,7 @@ void Analyzer::CreateScintillatorVector_FromSimulation()
   ftree->SetBranchAddress("exactHitX", &exactHitX);
   ftree->SetBranchAddress("exactHitY", &exactHitY);
   ftree->SetBranchAddress("exactHitZ", &exactHitZ);
-
+  ftree->SetBranchAddress("logQFarByQNear", &logQFarByQNear);
   /*
        exactHitX /= 10.;
        exactHitY /= 10.;
@@ -216,8 +217,9 @@ void Analyzer::CreateScintillatorVector_FromSimulation()
     // hitX, hitY, hitZ); std::cout << " exactHitX,exactHitY,exactHitZ : " << exactHitX << "," << exactHitY << "," <<
     // exactHitZ << std::endl;
     if (qlongMean > 10 && qlongMean < 35) {
+	//std::cout << RED<< "PRINTING FROM : " << __FILE__ <<" : " << __LINE__ <<" : " << logQFarByQNear << RESET<< std::endl;
       ScintillatorBar_V2 *scint = new ScintillatorBar_V2(barIndex, qlongNear, qlongMean, tsmallTimeStamp, deltaTstamp,
-                                                         hitX, hitY, hitZ, exactHitX, exactHitY, exactHitZ);
+                                                         hitX, hitY, hitZ, exactHitX, exactHitY, exactHitZ,logQFarByQNear);
       fVecOfScintillatorBar.push_back(scint);
     }
     // fVecOfScintillatorBar[i]->Print();
