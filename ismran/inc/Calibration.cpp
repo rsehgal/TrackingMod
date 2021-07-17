@@ -139,12 +139,21 @@ Calibration::Calibration(std::string fileName)
 {
   fFileName              = fileName;
   TFile *fp              = new TFile(fileName.c_str(), "r");
+  TFile *fpMuon              = new TFile("muonParam.root", "r");
   unsigned int numOfBars = vecOfBarsNamess.size(); // vecOfBarsName.size();
   for (unsigned int barIndex = 0; barIndex < numOfBars; barIndex++) {
 
     TF1 *delTShift_F           = (TF1 *)fp->Get(Form("fdelt_shift_Cs137_%s_0cm", vecOfBarsNamess[barIndex].c_str()));
+   /* 
+    //Source based stuff
     TF1 *paramertization_F     = (TF1 *)fp->Get(Form("fzparam_%s", vecOfBarsNamess[barIndex].c_str()));
     TF1 *q_paramertization_F   = (TF1 *)fp->Get(Form("fQparam_%s", vecOfBarsNamess[barIndex].c_str()));
+   */
+
+    //Muon based stuff
+    TF1 *paramertization_F     = (TF1 *)fpMuon->Get("fzparam_Muon_DelTPS14_S2AB1014");
+    TF1 *q_paramertization_F   = (TF1 *)fpMuon->Get("fzparam_Muon_QPS14_S2AB1014");
+
     TF1 *paramertization_F_Rev = (TF1 *)fp->Get(Form("fzparam_Rev_%s", vecOfBarsNamess[barIndex].c_str()));
     // TF1 *enerCalibFormula = (TF1*)fp->Get(Form("%s_Energy_F",vecOfBarsNamess[barIndex].c_str()));
     TF1 *enerCalibFormula;

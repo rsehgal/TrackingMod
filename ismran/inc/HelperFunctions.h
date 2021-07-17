@@ -103,6 +103,11 @@ extern double GetGaussianRandomSample(double mean, double sigma);
 extern double GetUniformRandomSample(double lower, double upper);
 extern std::vector<lite_interface::Point3D *> InCm(std::vector<lite_interface::Point3D *> vecOfPt3D);
 
+extern std::vector<std::string> SplitString(std::string s);
+
+extern double GenRandom(double min, double max);
+
+extern int GetClass(unsigned int barIndexInLayer);
 /* Function to return the index of an element from std::vector */
 template <typename T>
 int GetIndex(std::vector<T> v, T K)
@@ -121,6 +126,10 @@ int GetIndex(std::vector<T> v, T K)
   }
 }
 
+extern std::vector<TF1 *> GenerateParameterizationUsingMuons(std::string filename, unsigned int barIndex = 13);
+extern std::vector<TH1F *> EvaluateMuonParameterization(std::string filename, unsigned int pixelNo = 10000,
+                                                        unsigned int barIndex = 13, unsigned int numOfEv = 0);
+extern void GenerateTrainingDataUsingCosmicMuon(std::string filename, unsigned int barIndex = 13);
 class OfStream {
 public:
   std::ofstream fOutfile;

@@ -34,12 +34,13 @@ int main(int argc, char *argv[])
 
   lite_interface::Calibration *calib = lite_interface::Calibration::instance("completeCalib2.root");
   std::string filename               = argv[1];
+  unsigned int numOfEv               = std::atoi(argv[2]);
   std::cout << "$$$$$$$$$$$$$$  Going to Generated Muon Classification data $$$$$$$$$$$$$$$$$$" << std::endl;
 
   // GenerateMuonTestData(filename,std::atoi(argv[2]),std::atoi(argv[3]),std::atoi(argv[4]),true,std::atoi(argv[5]));
   // GenerateParameterizationUsingMuons(filename,13);
 
-  std::vector<TH1F *> vecOfHist = EvaluateMuonParameterization(filename, 5, 13);
+  std::vector<TH1F *> vecOfHist = EvaluateMuonParameterization(filename, 2, 13, numOfEv);
 
   new TCanvas("ZUsing_Q", "ZUsing_Q");
   vecOfHist[0]->Draw();
@@ -52,11 +53,13 @@ int main(int argc, char *argv[])
   new TCanvas("ZUsing_DelT", "ZUsing_DelT");
   vecOfHist[1]->Draw();
 
+  new TCanvas("Q_Can", "Q_Can");
+  vecOfHist[2]->Draw();
+
 #ifdef USE_FOR_SIMULATION
   new TCanvas("ZUsing_Mean", "ZUsing_Mean");
-  vecOfHist[2]->Draw();
+  vecOfHist[3]->Draw();
 #endif
-
 
   fApp->Run();
   return 0;

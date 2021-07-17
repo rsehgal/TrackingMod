@@ -45,6 +45,7 @@ class DataTree{
 	double exactHitX;
 	double exactHitY;
 	double exactHitZ;
+	double logQFarByQNear;
 
 
 	/*TTree object*/
@@ -62,6 +63,10 @@ public:
 	void Fill(UInt_t qlongnear, Double_t qlongmean,
 		      ULong64_t tsmalltimestamp,	 Long64_t deltatstamp,
 			  unsigned short barindex, lite_interface::Point3D* hitPt, lite_interface::Point3D* exactHitPt );
+void Fill(UInt_t qlongnear, Double_t qlongmean,
+		      ULong64_t tsmalltimestamp,	 Long64_t deltatstamp,
+			  unsigned short barindex, lite_interface::Point3D* hitPt, lite_interface::Point3D* exactHitPt,double qfarByQnear );
+
 #if(0)
 	void Fill(const char *scintname,UInt_t qlongnear,UInt_t qlongfar, Double_t qlongmean,
 					Double_t qlongmeancorrected, ULong64_t tstampnear, ULong64_t tstampfar,

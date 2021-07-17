@@ -19,4 +19,7 @@
 #include "Histograms.h"
 #include <TH2F.h>
 #include "ml.h"
+#include "colors.h"
+#include <TApplication.h>
+#include <TGraph.h>
 #endif

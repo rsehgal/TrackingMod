@@ -79,13 +79,13 @@ ScintillatorBar_V2::ScintillatorBar_V2(ushort barIndex, ushort qlongNear, ushort
 }
 ScintillatorBar_V2::ScintillatorBar_V2(ushort barIndex, ushort qlongNear, ushort qlongMean, ULong64_t tstampSmall,
                                        Long_t delTStamp, double hitx, double hity, double hitz, double exacthitX,
-                                       double exacthitY, double exacthitZ,double logQFarByQNear)
+                                       double exacthitY, double exacthitZ, double logQFarByQNear)
     : fBarIndex(barIndex), fQlongNear(qlongNear), fQlongMean(qlongMean), fTSmallTimeStamp(tstampSmall),
       fDelTstamp(delTStamp), hitX(hitx), hitY(hity), hitZ(hitz), exactHitX(exacthitX), exactHitY(exacthitY),
-      exactHitZ(exacthitZ),fLogQFarByQNear(logQFarByQNear)
+      exactHitZ(exacthitZ), fLogQFarByQNear(logQFarByQNear)
 {
-//std::cout <<"@@@@@@@@@ PRINT FROM NEW CONSTRUCTOR @@@@@@@@@@@@@" << std::endl;
-//Print();
+  // std::cout <<"@@@@@@@@@ PRINT FROM NEW CONSTRUCTOR @@@@@@@@@@@@@" << std::endl;
+  // Print();
 }
 
 #endif
@@ -178,8 +178,8 @@ lite_interface::Point3D *ScintillatorBar_V2::EstimateHitPosition_QParam()
   if (GetLayerIndex() % 2) {
     return (new lite_interface::Point3D(xOrZval, vecOfScintXYCenter[fBarIndex].y, vecOfScintXYCenter[fBarIndex].x));
   } else {
-	//lite_interface::Point3D *pt = new lite_interface::Point3D(vecOfScintXYCenter[fBarIndex].x, vecOfScintXYCenter[fBarIndex].y, xOrZval);
-	//pt->Print();
+    // lite_interface::Point3D *pt = new lite_interface::Point3D(vecOfScintXYCenter[fBarIndex].x,
+    // vecOfScintXYCenter[fBarIndex].y, xOrZval); pt->Print();
     return (new lite_interface::Point3D(vecOfScintXYCenter[fBarIndex].x, vecOfScintXYCenter[fBarIndex].y, xOrZval));
   }
 
@@ -214,7 +214,8 @@ void ScintillatorBar_V2::Print()
 #ifdef USE_FOR_SIMULATION
   std::cout << "Mean Hit Position : " << hitX << " , " << hitY << " , " << hitZ << std::endl;
   std::cout << "Exact Hit Position individual : " << exactHitX << " , " << exactHitY << " , " << exactHitZ << std::endl;
-  std::cout << "LogQFarByQNear : Stored Value  : " << fLogQFarByQNear <<" : Calculated value : " << GetLogQNearByQFar_ForSimulation() << std::endl;
+  std::cout << "LogQFarByQNear : Stored Value  : " << fLogQFarByQNear
+            << " : Calculated value : " << GetLogQNearByQFar_ForSimulation() << std::endl;
   // std::cout << "Fitted Mean Hit position : " ; fittedMean->Print();
 #else
 #ifdef FOR_SIMULATION
@@ -328,7 +329,7 @@ double ScintillatorBar_V2::GetOffsetCorrection()
 
 Long_t ScintillatorBar_V2::GetDelTCorrected()
 {
-  if (IsSimulation) {
+/*  if (IsSimulation) {
     // std::cout << "FROM IF : IS_SIMULATION SET TO TRUE : " << __FILE__ << " : " << __LINE__ << std::endl;
 #ifdef USE_CALIBRATION
     // return (fDelTstamp - Calibration::instance()->GetCalibrationDataOf(fBarIndex)->fDeltaTCorr * 1000);
@@ -337,11 +338,17 @@ Long_t ScintillatorBar_V2::GetDelTCorrected()
     return fDelTstamp;
 #endif
   } else {
-    // std::cout << "FROM ELSE : " << Calibration::instance()->GetCalibrationDataOf(fBarIndex)->fDeltaTCorr * 1000 << "
-    // : "
-    //        << __FILE__ << " : " << __LINE__ << std::endl;
+     std::cout << "FROM ELSE : " << Calibration::instance()->GetCalibrationDataOf(fBarIndex)->fDeltaTCorr * 1000 << " : "
+            << __FILE__ << " : " << __LINE__ << std::endl;
     return (fDelTstamp - Calibration::instance()->GetCalibrationDataOf(fBarIndex)->fDeltaTCorr * 1000);
-  }
+  }*/
+
+#ifdef USE_FOR_SIMULATION
+return fDelTstamp;
+#else
+
+    return (fDelTstamp - Calibration::instance()->GetCalibrationDataOf(fBarIndex)->fDeltaTCorr * 1000);
+#endif
 }
 Double_t ScintillatorBar_V2::GetQMeanCorrected()
 {
@@ -444,9 +451,9 @@ void ScintillatorBar_V2::CalculateVariousPhysicalParameters(unsigned long muonNu
   // TF1 *formula = (calibDataOfScint->fVectorOfDelT_F)[formulaIndex];
   // fDelTstamp   = (formula->GetRandom()) * 1000.;
   {
-    TF1 *formulaFor = calibDataOfScint->fParameterization_F;
+    TF1 *formulaFor  = calibDataOfScint->fParameterization_F;
     TF1 *formulaForQ = calibDataOfScint->fQParameterization_F;
-    TF1 *formulaRev = calibDataOfScint->fParameterization_F_Rev;
+    TF1 *formulaRev  = calibDataOfScint->fParameterization_F_Rev;
     // std::cout << "Mean Hit Position : "; fMeanHitPosition->Print();
     double delTMeanFromParam  = formulaRev->Eval(fMeanHitPosition->GetZ() / 10.) * 1000.;
     double delTSigmaFromParam = calibDataOfScint->fDelTCorr_F->GetParameter(2) * 1000.;
@@ -454,32 +461,29 @@ void ScintillatorBar_V2::CalculateVariousPhysicalParameters(unsigned long muonNu
     double smeared            = 510.;
     if (vecOfLayersOrientation[GetLayerIndex()]) {
       smeared = 510;
-      while (smeared > 500. || smeared < -500)
-        // smeared = GenRandom(fExactHitPosition->GetZ()-220, fExactHitPosition->GetZ()+220);
+      while (smeared > 500. || smeared < -500) {
         // Should be GAUSSIAN SAMPLING
-        smeared = GetGaussianRandomSample(fExactHitPosition->GetZ(), 180);
-
-      // smeared = GetGaussianRandomSample(fMeanHitPosition->GetZ(), 140);
-
-      // smeared = fMeanHitPosition->GetZ();//GetGaussianRandomSample(fMeanHitPosition->GetZ(), 10);
+        smeared = GetGaussianRandomSample(fExactHitPosition->GetZ(), 50);
+      }
       // std::cout << RED << "Smeared Value of Z : " << smeared << RESET << std::endl;
       fDelTstamp = formulaFor->GetX(smeared / 10.) * 1000.;
       // fDelTstamp = formulaFor->GetX(fMeanHitPosition->GetZ() / 10.) * 1000.;
     } else {
-      smeared = 510;
+      double smeared_DelT = 510;
+      double smeared_Q = 510;
       // fDelTstamp = formulaFor->GetX(fMeanHitPosition->GetX() / 10.) * 1000.;
-      while (smeared > 500. || smeared < -500.)
-        // smeared = GetGaussianRandomSample(fExactHitPosition->GetX()-220, fExactHitPosition->GetX()+220);
+      while (smeared_DelT > 500. || smeared_DelT < -500.) {
         // Should be GAUSSIAN SAMPLING
-        smeared = GetGaussianRandomSample(fExactHitPosition->GetX(), 180);
-   	fLogQFarByQNear = formulaForQ->GetX(smeared/10.);
-        //std::cout << MAGENTA << __FILE__ << " : " << __LINE__ <<" : LogQFarByQNear from Param : " << fLogQFarByQNear << RESET << std::endl;
+        smeared_DelT = GetGaussianRandomSample(fExactHitPosition->GetX(), 68);
+      }
 
-      // smeared = GetGaussianRandomSample(fMeanHitPosition->GetX(), 140);
+	while (smeared_Q > 500. || smeared_Q < -500.) {
+        // Should be GAUSSIAN SAMPLING
+        smeared_Q = GetGaussianRandomSample(fExactHitPosition->GetX(), 39.8);
+      }
 
-      // smeared = fMeanHitPosition->GetX();//GetGaussianRandomSample(fMeanHitPosition->GetX(), 10);
-      // std::cout << BLUE << "Smeared Value of X : " << smeared << RESET << std::endl;
-      fDelTstamp = formulaFor->GetX(smeared / 10.) * 1000.;
+      fLogQFarByQNear = formulaForQ->GetX(smeared_Q / 10.);
+      fDelTstamp = formulaFor->GetX(smeared_DelT / 10.) * 1000.;
     }
   }
   fTSmallTimeStamp = (tstampNear < tstampFar) ? tstampNear : tstampFar;
@@ -579,13 +583,14 @@ double ScintillatorBar_V2::GetRandomValueAlongWidth() {}
 
 double ScintillatorBar_V2::GetLogQNearByQFar_ForSimulation()
 {
-  lite_interface::Calibration *calib                = lite_interface::Calibration::instance();
+  /*lite_interface::Calibration *calib                = lite_interface::Calibration::instance();
   lite_interface::CalibrationData *calibDataOfScint = calib->GetCalibrationDataVector()[fBarIndex];
   TF1 *zparam                                       = calibDataOfScint->fParameterization_F;
   TF1 *qparam                                       = calibDataOfScint->fQParameterization_F;
   double smearedZ_InCm                              = zparam->Eval(fDelTstamp / 1000.);
   double qval                                       = qparam->GetX(smearedZ_InCm);
-  return qval;
+  return qval;*/
+  return fLogQFarByQNear;
 }
 
 } // namespace lite_interface

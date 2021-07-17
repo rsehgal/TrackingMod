@@ -30,6 +30,12 @@ extern void GenerateTrainingData_All(std::string filename, unsigned int inspecte
                                      unsigned int endIndex, bool qparam = false);
 extern void GenerateModelForAngle(std::string filename, unsigned int inspectedLayerIndex, std::string outfileName);
 
-extern void GenerateDataForClassification(std::string filename, unsigned int inspectedLayerIndex, unsigned int startIndex,
-                                   unsigned int endIndex);
+extern void GenerateDataForClassification(std::string filename, unsigned int inspectedLayerIndex,
+                                          unsigned int startIndex, unsigned int endIndex);
+extern void GenerateData_GeometricalBoundation(std::string filename, unsigned int inspectedLayerIndex,
+                                               unsigned int startIndex, unsigned int endIndex);
+extern void GenerateMuonTestData(std::string filename, unsigned int inspectedLayerIndex, unsigned int startIndex,
+                                 unsigned int endIndex, bool qparam, unsigned int numOfEvents = 0);
+extern std::vector<TH1F *> QAnalysis(std::string filename, unsigned int inspectedLayerIndex, unsigned int startIndex,
+                                     unsigned int endIndex, unsigned int numOfEvents = 0);
 #endif
