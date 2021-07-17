@@ -1252,9 +1252,17 @@ std::vector<TH1F *> EvaluateMuonParameterization(std::string filename, unsigned 
 
         //std::cout << "======================================" << std::endl;
         // scint->GetMeanHitPosition()->Print();
-        outfile << scint->GetLayerIndex() << "," << scint->GetBarIndex() << "," << scint->GetLogQNearByQFar() << ","
-                << scint->GetDelTCorrected() / 1000. << "," << scint->EstimateHitPosition_QParam()->GetX() << ","
+#ifdef USE_FOR_SIMULATION
+
+        outfile << scint->GetLayerIndex() << "," << scint->GetBarIndex() << "," << scint->GetLogQNearByQFar_ForSimulation() << ","
+	        << scint->GetDelTCorrected()  << "," << scint->EstimateHitPosition_QParam()->GetX() << ","
                 << scintStart->GetBarIndexInLayer() << std::endl;
+
+#else
+        outfile << scint->GetLayerIndex() << "," << scint->GetBarIndex() << "," << scint->GetLogQNearByQFar() << ","
+                << scint->GetDelTCorrected()  << "," << scint->EstimateHitPosition_QParam()->GetX() << ","
+                << scintStart->GetBarIndexInLayer() << std::endl;
+#endif
         unsigned int pixelIndex = scintStart->GetBarIndexInLayer();
         if (pixelNo == 10000) {
 #ifdef USE_FOR_SIMULATION
