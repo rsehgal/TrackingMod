@@ -61,6 +61,8 @@ double errorX_Smeared = 5.;
 double errorY_Smeared = 0.000005;
 double errorZ_Smeared = 10.;
 
+std::vector<double> zCorrOffsetVector={-19.24,-14.6,-9.76,-4.84,0.145,5.28,10.27,14.57,18.7};
+
 unsigned short exactTrack   = 1;
 unsigned short smearedTrack = 2;
 

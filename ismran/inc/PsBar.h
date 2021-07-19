@@ -61,6 +61,8 @@ extern double errorX_Smeared;
 extern double errorY_Smeared;
 extern double errorZ_Smeared;
 
+extern std::vector<double> zCorrOffsetVector;
+
 extern unsigned short exactTrack;
 extern unsigned short smearedTrack;
 
