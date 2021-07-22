@@ -127,6 +127,7 @@ int GetIndex(std::vector<T> v, T K)
 }
 
 extern std::vector<TF1 *> GenerateParameterizationUsingMuons(std::string filename, unsigned int barIndex = 13);
+extern std::vector<TF1 *> GenerateParameterizationUsingMuons_2(std::string filename, unsigned int barIndex = 13);
 extern std::vector<TH1F *> EvaluateMuonParameterization(std::string filename, unsigned int pixelNo = 10000,
                                                         unsigned int barIndex = 13, unsigned int numOfEv = 0);
 extern void GenerateTrainingDataUsingCosmicMuon(std::string filename, unsigned int barIndex = 13);

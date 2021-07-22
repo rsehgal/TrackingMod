@@ -37,6 +37,7 @@ int main(int argc, char *argv[])
   std::cout << "$$$$$$$$$$$$$$  Going to Generated Muon Classification data $$$$$$$$$$$$$$$$$$" << std::endl;
 
    //GenerateMuonTestData(filename,std::atoi(argv[2]),std::atoi(argv[3]),std::atoi(argv[4]),true,std::atoi(argv[5]));
-  GenerateParameterizationUsingMuons(filename,13);
+  //GenerateParameterizationUsingMuons(filename,13);
+  GenerateParameterizationUsingMuons_2(filename,std::atoi(argv[2]));
   return 0;
 }

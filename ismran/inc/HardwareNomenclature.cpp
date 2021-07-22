@@ -246,6 +246,23 @@ std::vector<double> vecOfAttenCoeff = {
     0.0138521,  0.0111161,  0.0118085,  0.0124936,  0.0106633,  0.0129433,  0.0126373,  0.0110458,  0.0105746,
     0.0112549,  0.0121836,  0.012613,   0.0123335,  0.0143947,  0.0148561,  0.012949,   0.0125504,  0.0121067};
 
+std::vector<bool> vecOfMuonCalibIndex = {
+					 false,false,false,false,false,false,false,false,false,
+					 //true,true,true,true,true,true,true,true,true,
+		  			 true,true,true,true,true,true,true,true,true,
+		  			 true,true,true,true,true,true,true,true,true,
+					 //false,false,false,false,false,false,false,false,false,
+		  			 //true,true,true,true,true,true,true,true,true,
+		  			 true,true,true,true,true,true,true,true,true,
+					 //false,false,false,false,false,false,false,false,false,
+					 false,false,false,false,false,false,false,false,false,
+					 false,false,false,false,false,false,false,false,false,
+					 false,false,false,false,false,false,false,false,false,
+					 false,false,false,false,false,false,false,false,false,
+					 false,false,false,false,false,false,false,false,false,
+					 false,false,false,false,false,false,false,false,false
+					};
+
 std::vector<Point2D> vecOfScintXYCenter;
 std::vector<double> vecOfLayersYPos;
 /*

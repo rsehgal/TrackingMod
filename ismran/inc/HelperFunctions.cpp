@@ -15,7 +15,7 @@
 #include <TSystemDirectory.h>
 #include <TList.h>
 #include <TSystemFile.h>
-
+#include "colors.h"
 void AutoCallers()
 {
 #ifdef USE_FOR_SIMULATION
@@ -1117,6 +1117,144 @@ std::vector<TF1 *> GenerateCorrectionParameterizationUsingMuons(std::string file
 }
 */
 
+/*
+Function to generate parameterization for any bar
+*/
+std::vector<TF1 *> GenerateParameterizationUsingMuons_2(std::string filename, unsigned int barIndex)
+{
+  std::ofstream outfile("testOut.txt");
+  unsigned int startIndex          = 4;
+  unsigned int endIndex            = 2;
+  unsigned int inspectedLayerIndex = 3;
+  unsigned int numOfEvents         = 1000000;
+
+  std::vector<TH1F *> vecOfHist_DelT;
+  std::vector<TH1F *> vecOfHist_Z;
+  std::vector<TH1F *> vecOfHist_Q;
+
+  for (unsigned int i = 0; i < numOfBarsInEachLayer; i++) {
+    std::string histNameDelT = "Hist_delT_Pixel_" + std::to_string(i);
+    std::string histNameZ    = "Hist_Z_Pixel_" + std::to_string(i);
+    std::string histNameQ    = "Hist_Q_Pixel_" + std::to_string(i);
+    vecOfHist_DelT.push_back(new TH1F(histNameDelT.c_str(), histNameDelT.c_str(), 200, -50., 50.));
+    vecOfHist_Z.push_back(new TH1F(histNameZ.c_str(), histNameZ.c_str(), 160, -80., 80.));
+    vecOfHist_Q.push_back(new TH1F(histNameQ.c_str(), histNameQ.c_str(), 100, -5., 5.));
+  }
+
+  GenerateScintMatrixXYCenters();
+
+  lite_interface::Calibration *calib                    = lite_interface::Calibration::instance("completeCalib2.root");
+  std::vector<lite_interface::SingleMuonTrack *> smtVec = GetMuonTracksVector(filename, numOfEvents);
+  std::cout << "Size of SMTVec : " << smtVec.size() << std::endl;
+  for (unsigned int i = 0; i < smtVec.size(); i++) {
+    unsigned int hittBarIndex = 10000;
+    bool check                = smtVec[i]->CheckTrackForLayerNum(startIndex, hittBarIndex);
+    lite_interface::ScintillatorBar_V2 *scintStart;
+    lite_interface::ScintillatorBar_V2 *scintEnd;
+    if (check) {
+      scintStart = smtVec[i]->GetScintillator(hittBarIndex);
+    }
+    check &= smtVec[i]->CheckTrackForLayerNum(endIndex, hittBarIndex);
+    if (check) {
+      scintEnd = smtVec[i]->GetScintillator(hittBarIndex);
+    }
+    check &= smtVec[i]->CheckTrackForLayerNum(inspectedLayerIndex, hittBarIndex);
+    if (check) {
+      lite_interface::ScintillatorBar_V2 *scint = smtVec[i]->GetScintillator(hittBarIndex);
+      bool fingerCondition                      = false;
+      fingerCondition =
+          (scintStart->GetLayerIndex() < inspectedLayerIndex && scintEnd->GetLayerIndex() < inspectedLayerIndex &&
+           scintStart->GetBarIndexInLayer() == scint->GetBarIndexInLayer()) ||
+          (scintStart->GetLayerIndex() > inspectedLayerIndex && scintEnd->GetLayerIndex() > inspectedLayerIndex &&
+           scintStart->GetBarIndexInLayer() == scint->GetBarIndexInLayer()) ||
+          (scintStart->GetLayerIndex() < inspectedLayerIndex && scintEnd->GetLayerIndex() > inspectedLayerIndex &&
+           scintStart->GetBarIndexInLayer() == scintEnd->GetBarIndexInLayer()) ||
+          (scintStart->GetLayerIndex() > inspectedLayerIndex && scintEnd->GetLayerIndex() < inspectedLayerIndex &&
+           scintStart->GetBarIndexInLayer() == scintEnd->GetBarIndexInLayer());
+
+      if (scint->GetBarIndex() == barIndex && fingerCondition) {
+        outfile << scint->GetLayerIndex() << "," << scint->GetBarIndex() << "," << scint->GetLogQNearByQFar() << ","
+                << scint->GetDelTCorrected() / 1000. << "," << scint->EstimateHitPosition_QParam()->GetX() << ","
+                << scintStart->GetBarIndexInLayer() << std::endl;
+	std::cout << RED << "FILLING HIST" << RESET << std::endl;
+        unsigned int pixelIndex = scintStart->GetBarIndexInLayer();
+        vecOfHist_DelT[pixelIndex]->Fill(scint->GetDelTCorrected() / 1000.);
+        vecOfHist_Z[pixelIndex]->Fill(scint->EstimateHitPosition_QParam()->GetX());
+        vecOfHist_Q[pixelIndex]->Fill(scint->GetLogQNearByQFar());
+      }
+    }
+  }
+
+  outfile.close();
+  std::vector<double> vecOfMean_DelT;
+  std::vector<double> vecOfMean_Q;
+  std::vector<double> vecOfMean_Z;
+
+  TFile *fp = new TFile(("muonParam_"+std::to_string(barIndex)+".root").c_str(), "RECREATE");
+
+  std::cout << "--------------------------------------" << std::endl;
+  std::vector<double> vecOfPixelPos = {-40., -30., -20., -10., 0., 10., 20., 30., 40.};
+  for (unsigned int i = 0; i < numOfBarsInEachLayer; i++) {
+    vecOfHist_DelT[i]->Write();
+    vecOfHist_Z[i]->Write();
+    vecOfHist_Q[i]->Write();
+
+    TF1 *formulaDelT = new TF1("FormulaDelT", "gaus", -50., 50.);
+    formulaDelT->SetParameters(vecOfHist_DelT[i]->GetMaximum(), vecOfHist_DelT[i]->GetMean(),
+                               vecOfHist_DelT[i]->GetRMS());
+    vecOfHist_DelT[i]->Fit(formulaDelT, "qn");
+    vecOfMean_DelT.push_back(formulaDelT->GetParameter(1));
+    std::cout << "DelT Gauss Parameter at pixel : " << i << " : " << formulaDelT->GetParameter(0) << " : "
+              << formulaDelT->GetParameter(1) << " : " << formulaDelT->GetParameter(2) << std::endl;
+
+    TF1 *formulaQ = new TF1("FormulaQ", "gaus", -5., 5.);
+    formulaQ->SetParameters(vecOfHist_Q[i]->GetMaximum(), vecOfHist_Q[i]->GetMean(), vecOfHist_Q[i]->GetStdDev());
+    //formulaQ->SetParameters(vecOfHist_Q[i]->GetMaximum(), vecOfHist_Q[i]->GetMean(), vecOfHist_Q[i]->GetRMS());
+    vecOfHist_Q[i]->Fit(formulaQ, "qn");
+    vecOfMean_Q.push_back(formulaQ->GetParameter(1));
+    std::cout << "Q Gauss Parameter at pixel : " << i << " : " << formulaQ->GetParameter(0) << " : "
+              << formulaQ->GetParameter(1) << " : " << formulaQ->GetParameter(2) << std::endl;
+
+    TF1 *formulaZ = new TF1("FormulaZ", "gaus", -50., 50.);
+    formulaZ->SetParameters(vecOfHist_Z[i]->GetMaximum(), vecOfHist_Z[i]->GetMean(), vecOfHist_Z[i]->GetRMS());
+    vecOfHist_Z[i]->Fit(formulaZ, "qn");
+    vecOfMean_Z.push_back(formulaZ->GetParameter(1));
+    std::cout << "Z Gauss Parameter at pixel : " << i << " : " << formulaZ->GetParameter(0) << " : "
+              << formulaZ->GetParameter(1) << " : " << formulaZ->GetParameter(2) << std::endl;
+  }
+
+  std::cout << "--------------------------------------" << std::endl;
+  TGraph *grQ_pos = new TGraph(vecOfPixelPos.size(), &vecOfPixelPos[0], &vecOfMean_Q[0]);
+  grQ_pos->SetName("Q_as_function_of_Pixel_Position");
+  grQ_pos->SetMarkerStyle(4);
+  TGraph *grDelT_Z = new TGraph(vecOfMean_DelT.size(), &vecOfMean_DelT[0], &vecOfPixelPos[0]);
+  //TGraph *grDelT_Z = new TGraph(vecOfMean_DelT.size(), &vecOfMean_DelT[0], &vecOfMean_Z[0]);
+  grDelT_Z->SetName("Z_as_function_of_Mean_DelT");
+  grDelT_Z->SetMarkerStyle(4);
+  TGraph *grQ_Z = new TGraph(vecOfMean_Q.size(), &vecOfMean_Q[0], &vecOfPixelPos[0]);
+  //TGraph *grQ_Z = new TGraph(vecOfMean_Q.size(), &vecOfMean_Q[0], &vecOfMean_Z[0]);
+  grQ_Z->SetName("Z_as_function_of_Mean_Q");
+  grQ_Z->SetMarkerStyle(4);
+  TF1 *formula_DelT_Z = new TF1(("fzparam_Muon_DelT_" + vecOfBarsNamess[barIndex]).c_str(), Pol3, -10, 10, 4);
+  TF1 *formula_Q_Z    = new TF1(("fzparam_Muon_Q_" + vecOfBarsNamess[barIndex]).c_str(), Pol3, -3., 3., 4);
+  grDelT_Z->Fit(formula_DelT_Z, "qn");
+  grQ_Z->Fit(formula_Q_Z, "qn");
+
+  std::vector<TF1 *> vecOfParam;
+  vecOfParam.push_back(formula_DelT_Z);
+  vecOfParam.push_back(formula_Q_Z);
+  // TFile *fp = new TFile("muonParam.root", "RECREATE");
+  fp->cd();
+  grQ_pos->Write();
+  grDelT_Z->Write();
+  grQ_Z->Write();
+  formula_DelT_Z->Write();
+  formula_Q_Z->Write();
+  fp->Close();
+  return vecOfParam;
+}
+
+
 std::vector<TF1 *> GenerateParameterizationUsingMuons(std::string filename, unsigned int barIndex)
 {
   std::ofstream outfile("testOut.txt");
@@ -1352,8 +1490,8 @@ std::vector<TH1F *> EvaluateMuonParameterization(std::string filename, unsigned 
   GenerateScintMatrixXYCenters();
 
   TFile *fp        = new TFile("muonParam.root", "r");
-  TF1 *delTFormula = (TF1 *)fp->Get("fzparam_Muon_DelTPS14_S2AB1014");
-  TF1 *qFormula    = (TF1 *)fp->Get("fzparam_Muon_QPS14_S2AB1014");
+  TF1 *delTFormula = (TF1 *)fp->Get(("fzparam_Muon_DelT_"+vecOfBarsNamess[barIndex]).c_str());
+  TF1 *qFormula    = (TF1 *)fp->Get(("fzparam_Muon_Q_"+vecOfBarsNamess[barIndex]).c_str());
 
   lite_interface::Calibration *calib                    = lite_interface::Calibration::instance("completeCalib2.root");
   std::vector<lite_interface::SingleMuonTrack *> smtVec = GetMuonTracksVector(filename, numOfEvents);
@@ -1384,7 +1522,12 @@ std::vector<TH1F *> EvaluateMuonParameterization(std::string filename, unsigned 
           (scintStart->GetLayerIndex() > inspectedLayerIndex && scintEnd->GetLayerIndex() < inspectedLayerIndex &&
            scintStart->GetBarIndexInLayer() == scintEnd->GetBarIndexInLayer());
 
-      if (scint->GetBarIndex() == 13 && fingerCondition) {
+
+      //if (scint->GetBarIndex() == 13 && fingerCondition) {
+      if (scint->GetBarIndex() == 13) {
+if(fingerCondition)
+{
+
 
         //std::cout << "======================================" << std::endl;
         // scint->GetMeanHitPosition()->Print();
@@ -1439,6 +1582,7 @@ std::vector<TH1F *> EvaluateMuonParameterization(std::string filename, unsigned 
           }
         }
       }
+}
     }
   }
   std::vector<TH1F *> vecOfHist = {histZ_Q, histZ_DelT, histQ, histZ_Mean, histDiff};

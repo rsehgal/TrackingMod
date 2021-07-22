@@ -40,7 +40,7 @@ int main(int argc, char *argv[])
   // GenerateMuonTestData(filename,std::atoi(argv[2]),std::atoi(argv[3]),std::atoi(argv[4]),true,std::atoi(argv[5]));
   // GenerateParameterizationUsingMuons(filename,13);
 
-  std::vector<TH1F *> vecOfHist = EvaluateMuonParameterization(filename, 2, 13, numOfEv);
+  std::vector<TH1F *> vecOfHist = EvaluateMuonParameterization(filename, 10000, std::atoi(argv[3]), numOfEv);
 
   new TCanvas("ZUsing_Q", "ZUsing_Q");
   vecOfHist[0]->Draw();
@@ -59,6 +59,9 @@ int main(int argc, char *argv[])
 #ifdef USE_FOR_SIMULATION
   new TCanvas("ZUsing_Mean", "ZUsing_Mean");
   vecOfHist[3]->Draw();
+  new TCanvas("Diff_Hist_C", "Diff_Hist_C");
+  vecOfHist[4]->Draw();
+
 #endif
 
   fApp->Run();

@@ -11,7 +11,7 @@
 #include "includes.hh"
 #include "HardwareNomenclature.h"
 #include <TH1D.h>
-
+#include "colors.h"
 namespace lite_interface {
 
 Calibration *Calibration::s_instance = 0;
@@ -144,15 +144,19 @@ Calibration::Calibration(std::string fileName)
   for (unsigned int barIndex = 0; barIndex < numOfBars; barIndex++) {
 
     TF1 *delTShift_F           = (TF1 *)fp->Get(Form("fdelt_shift_Cs137_%s_0cm", vecOfBarsNamess[barIndex].c_str()));
-    
+   TF1 *paramertization_F;
+   TF1 *q_paramertization_F; 
+if(!vecOfMuonCalibIndex[barIndex]) {
     //Source based stuff
-    /*TF1 *paramertization_F     = (TF1 *)fp->Get(Form("fzparam_%s", vecOfBarsNamess[barIndex].c_str()));
-    TF1 *q_paramertization_F   = (TF1 *)fp->Get(Form("fQparam_%s", vecOfBarsNamess[barIndex].c_str()));*/
-   
+    paramertization_F     = (TF1 *)fp->Get(Form("fzparam_%s", vecOfBarsNamess[barIndex].c_str()));
+    q_paramertization_F   = (TF1 *)fp->Get(Form("fQparam_%s", vecOfBarsNamess[barIndex].c_str()));
+}else{
 
+    std::cout << RED << "Read Muon Calibration for Barindex : " << barIndex << " : BarName : " << vecOfBarsNamess[barIndex] << RESET << std::endl;
     //Muon based stuff
-    TF1 *paramertization_F     = (TF1 *)fpMuon->Get("fzparam_Muon_DelTPS14_S2AB1014");
-    TF1 *q_paramertization_F   = (TF1 *)fpMuon->Get("fzparam_Muon_QPS14_S2AB1014");
+    paramertization_F     = (TF1 *)fpMuon->Get(("fzparam_Muon_DelT_"+vecOfBarsNamess[barIndex]).c_str());
+    q_paramertization_F   = (TF1 *)fpMuon->Get(("fzparam_Muon_Q_"+vecOfBarsNamess[barIndex]).c_str());
+}
 
     TF1 *paramertization_F_Rev = (TF1 *)fp->Get(Form("fzparam_Rev_%s", vecOfBarsNamess[barIndex].c_str()));
     // TF1 *enerCalibFormula = (TF1*)fp->Get(Form("%s_Energy_F",vecOfBarsNamess[barIndex].c_str()));
