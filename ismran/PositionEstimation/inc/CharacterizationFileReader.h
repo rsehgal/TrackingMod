@@ -66,7 +66,9 @@ struct Event {
 
   int GetActualSourcePosition() const { return sActualSourcePos; }
 
-  double GetExpectedGammaPos() {}
+  int GetBarIndex() { return GetIndex<std::string>(vecOfBarsNamess, sBarName); }
+
+  double GetExpectedGammaPos() { return ((1 / (2 * vecOfAttenCoeff[GetBarIndex()])) * GetLogQNearByQFar()); }
 
   double GetLogQNearByQFar() { return log((1. * GetQFar()) / (1. * GetQNear())); }
 
@@ -127,8 +129,11 @@ public:
   unsigned int GetTotalNumOfEvents();
   void CalculateDelTOffset();
   int GetDelTOffset() const;
+  double GetMean();
+  double GetSigma();
   double GetMeanAttenuationCoeff(unsigned int numOfEvents = 0);
   double GetMeanOfQValues(unsigned int numOfEvents = 0);
+  TF1* GetEnergyCalibFormula();
 
   /*Functions related to Training and Testing*/
   float fTestProportion;

@@ -6,34 +6,62 @@ CharacterizationFileReader::CharacterizationFileReader() {}
 
 CharacterizationFileReader::CharacterizationFileReader(std::string filename)
 {
-  fTestProportion = 0.25;
+  fTestProportion = 0.75;
   fFileName       = filename;
   fp              = new TFile(filename.c_str(), "r");
   ConnectTree();
   CalculateDelTOffset();
   fEventNumVec.resize(fTree->GetEntries());
   std::iota(fEventNumVec.begin(), fEventNumVec.end(), 0);
+  // RandomizeIt(); //Not required coz the  source emits random event and there is not correlation between.
 }
 
 void CharacterizationFileReader::ResetWith(std::string filename)
 {
   fFileName = filename;
   fEventNumVec.clear();
-  //if (fp != NULL) delete fp;
+  // if (fp != NULL) delete fp;
   fp = new TFile(filename.c_str(), "r");
   ConnectTree();
   CalculateDelTOffset();
   fEventNumVec.resize(fTree->GetEntries());
   std::iota(fEventNumVec.begin(), fEventNumVec.end(), 0);
+  // RandomizeIt(); //Not required coz the  source emits random event and there is not correlation between.
+}
+
+TF1* CharacterizationFileReader::GetEnergyCalibFormula(){
+  std::string barName    = GetBarName();
+  TFile *fp              = new TFile("completeCalib2.root", "r");
+  std::string formString  = barName+"_Energy_F";
+  TF1 *energyFormula = (TF1*)fp->Get(formString.c_str()); 
+  return energyFormula;
 }
 
 void CharacterizationFileReader::CalculateDelTOffset()
 {
-  std::string barName = GetBarName();
-  TFile *fp           = new TFile("completeCalib2.root", "r");
-  TF1 *offsetFormula =
-      (TF1 *)fp->Get(("fdelt_shift_Cs137_" + barName + "_" + std::to_string(GetActualPosition()) + "cm").c_str());
-  fDelTOffset = offsetFormula->GetParameter(1) * 1000.;
+  std::string barName    = GetBarName();
+  TFile *fp              = new TFile("completeCalib2.root", "r");
+  //std::string formString = "fdelt_shift_Cs137_" + barName + "_" + std::to_string(GetActualPosition()) + "cm";
+  std::string formString = "fdelt_shift_Cs137_" + barName + "_0cm";
+  TF1 *offsetFormula     = (TF1 *)fp->Get(formString.c_str());
+  fDelTOffset            = offsetFormula->GetParameter(1) * 1000.;
+}
+double CharacterizationFileReader::GetMean()
+{
+  std::string barName    = GetBarName();
+  TFile *fp              = new TFile("completeCalib2.root", "r");
+  std::string formString = "fdelt_shift_Cs137_" + barName + "_" + std::to_string(GetActualPosition()) + "cm";
+  TF1 *formula     = (TF1 *)fp->Get(formString.c_str());
+  return formula->GetParameter(1)-fDelTOffset/1000.;
+}
+
+double CharacterizationFileReader::GetSigma()
+{
+  std::string barName    = GetBarName();
+  TFile *fp              = new TFile("completeCalib2.root", "r");
+  std::string formString = "fdelt_shift_Cs137_" + barName + "_" + std::to_string(GetActualPosition()) + "cm";
+  TF1 *formula     = (TF1 *)fp->Get(formString.c_str());
+  return formula->GetParameter(2);
 }
 
 int CharacterizationFileReader::GetDelTOffset() const
@@ -154,10 +182,13 @@ int CharacterizationFileReader::GetActualPosition()
 std::string CharacterizationFileReader::GetBarName()
 {
   std::string justFileName = fFileName.substr(fFileName.find_last_of("/") + 1);
-  //std::cout << "JUST FILE NAME : " << justFileName << std::endl;
+  // std::cout << "JUST FILE NAME : " << justFileName << std::endl;
   unsigned int locationOfPS      = justFileName.find("PS");
+  std::string source             = justFileName.substr(0, locationOfPS - 1);
   unsigned int locationOfCouples = justFileName.find("Couples");
-  std::string barName            = justFileName.substr(locationOfPS, locationOfCouples - 7);
+  std::string barName            = "";
+  if (source == "Cs137") barName = justFileName.substr(locationOfPS, locationOfCouples - 7);
+  if (source == "Na22") barName = justFileName.substr(locationOfPS, locationOfCouples - 6);
   return barName;
 }
 
