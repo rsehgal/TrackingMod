@@ -16,16 +16,16 @@
 
 int main(int argc, char *argv[])
 {
-  TApplication *fApp = new TApplication("Test", NULL, NULL);
-   std::string dirsPath = argv[1];
+  TApplication *fApp                = new TApplication("Test", NULL, NULL);
+  std::string dirsPath              = argv[1];
   TFile *paramFile                  = new TFile("calibQ.root", "RECREATE");
-  std::vector<std::string> vecOfDir = {"PS55_S1AA6646", "PS65_S3AA1782", "PS75_SF887", "PS80_SF877"};
+  std::vector<std::string> vecOfDir = {"PS55_S1AA6646"};//, "PS65_S3AA1782", "PS75_SF887", "PS80_SF877"};
   std::vector<double> vecOfActualPos;
   std::vector<double> vecOfMeanOfQ;
   std::string barName = "";
 
   for (unsigned int dirIndex = 0; dirIndex < vecOfDir.size(); dirIndex++) {
-    std::string currentDir = dirsPath+"/"+vecOfDir[dirIndex];
+    std::string currentDir = dirsPath + "/" + vecOfDir[dirIndex];
     vecOfActualPos.clear();
     vecOfMeanOfQ.clear();
     std::vector<std::string> vecOfFileNames = GetVectorOfFiles(currentDir.c_str());
@@ -37,12 +37,19 @@ int main(int argc, char *argv[])
       delete obj;
     }
 
+    std::cout << "======================================" << std::endl;
+    for (unsigned int i = 0; i < vecOfActualPos.size(); i++) {
+      std::cout << "Location of actual source pos : " << vecOfActualPos[i] << std::endl;
+    }
+    std::cout << "======================================" << std::endl;
+
     TGraph *gr = new TGraph(vecOfActualPos.size(), &vecOfMeanOfQ[0], &vecOfActualPos[0]);
     gr->Draw("ap");
     TF1 *formula = new TF1(Form("fQparam_%s", barName.c_str()), Pol3, -5., 5., 4);
     gr->Fit(formula, "rq");
     paramFile->cd();
     formula->Write();
+    gr->Write();
   }
   paramFile->Close();
   fApp->Run();
