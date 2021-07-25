@@ -346,9 +346,9 @@ ClassImp(lite_interface::SingleMuonTrack)
     return vectorOf3DHitPoint;
   }
 
-#endif 
+#endif
 
- std::vector<lite_interface::Point3D *> SingleMuonTrack::GetExact3DHitPointVector()
+  std::vector<lite_interface::Point3D *> SingleMuonTrack::GetExact3DHitPointVector()
   {
     std::vector<lite_interface::Point3D *> vectorOf3DHitPoint;
     std::vector<ScintillatorBar_V2 *>::iterator itr;
@@ -691,6 +691,18 @@ ClassImp(lite_interface::SingleMuonTrack)
     }
     return formula;
   }
+
+  SingleMuonTrack *SingleMuonTrack::GetTrackSubset(std::vector<unsigned int> reqLayersVec) {
+	  std::vector<ScintillatorBar_V2*> vecOfScint;
+	  for(unsigned int i = 0 ; i < reqLayersVec.size() ; i++){
+		unsigned int hittedBarIndex = 10000;
+		bool check = CheckTrackForLayerNum(reqLayersVec[i],hittedBarIndex);
+		if(check){
+			vecOfScint.push_back(GetScintillator(hittedBarIndex));
+		}
+	}
+	return new SingleMuonTrack(vecOfScint);
+}
 
 //#ifdef USE_FOR_SIMULATION
 #if defined(USE_FOR_SIMULATION) || defined(FOR_SIMULATION)

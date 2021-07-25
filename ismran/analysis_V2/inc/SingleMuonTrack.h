@@ -117,6 +117,7 @@ public:
   bool HitInAllLayers();
   bool HitInRequiredLayers();
   bool HitInRequiredLayers(std::vector<unsigned int> reqLayersVec);
+  SingleMuonTrack* GetTrackSubset(std::vector<unsigned int> reqLayersVec);
 
   /*
    * Function to detect the number of Hitted Scintillators in the specified layer
