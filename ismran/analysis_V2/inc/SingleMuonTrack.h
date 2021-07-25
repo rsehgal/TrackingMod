@@ -57,6 +57,7 @@ public:
   std::vector<lite_interface::Point3D *> GetExact3DHitPointVector();
   std::vector<lite_interface::Point3D *> Get3DHitPointVector();
   std::vector<lite_interface::Point3D *> Get3DHitPointVector_Param();
+  std::vector<lite_interface::Point3D *> Get3DHitPointVector_QParam();
   std::vector<std::string> GetBarNamesVector();
 
   /*
@@ -118,7 +119,7 @@ public:
   bool HitInRequiredLayers();
   bool HitInRequiredLayers(std::vector<unsigned int> reqLayersVec);
   SingleMuonTrack* GetTrackSubset(std::vector<unsigned int> reqLayersVec);
-
+  double GetChisquareByNDF(std::vector<unsigned int> reqLayersVec,bool xy=true);
   /*
    * Function to detect the number of Hitted Scintillators in the specified layer
    */

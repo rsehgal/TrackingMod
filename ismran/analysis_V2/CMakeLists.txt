@@ -326,3 +326,7 @@ target_link_libraries(MuonTrackAnalysis_Generate_ML_Data_UsingCosmicMuons ${ROOT
 add_executable(MuonTrackAnalysis_Dissection test/MuonTrackAnalysis_Dissection.cpp ${sources} ${headers})
 target_link_libraries(MuonTrackAnalysis_Dissection ${ROOT_LIBRARIES} Tracklib)
 
+add_executable(MuonTrackAnalysis_For_Chi2_Test test/MuonTrackAnalysis_For_Chi2_Test.cpp ${sources} ${headers})
+target_link_libraries(MuonTrackAnalysis_For_Chi2_Test ${ROOT_LIBRARIES} Tracklib)
+
+

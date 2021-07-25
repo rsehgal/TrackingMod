@@ -15,6 +15,7 @@
 #include "Plotter.h"
 #include <algorithm>
 #include <TF1.h>
+#include "HelperFunctions.h"
 #ifndef FOR_SIMULATION
 ClassImp(lite_interface::SingleMuonTrack)
 #endif
@@ -390,6 +391,15 @@ ClassImp(lite_interface::SingleMuonTrack)
     }
     return vectorOf3DHitPoint;
   }
+  std::vector<lite_interface::Point3D *> SingleMuonTrack::Get3DHitPointVector_QParam()
+  {
+    std::vector<lite_interface::Point3D *> vectorOf3DHitPoint;
+    std::vector<ScintillatorBar_V2 *>::iterator itr;
+    for (itr = fSingleMuonTrack.begin(); itr != fSingleMuonTrack.end(); itr++) {
+      vectorOf3DHitPoint.push_back((*itr)->EstimateHitPosition_QParam());
+    }
+    return vectorOf3DHitPoint;
+  }
 
   std::vector<lite_interface::Point3D *> SingleMuonTrack::GetFittedTrack(int opt)
   {
@@ -692,17 +702,65 @@ ClassImp(lite_interface::SingleMuonTrack)
     return formula;
   }
 
-  SingleMuonTrack *SingleMuonTrack::GetTrackSubset(std::vector<unsigned int> reqLayersVec) {
-	  std::vector<ScintillatorBar_V2*> vecOfScint;
-	  for(unsigned int i = 0 ; i < reqLayersVec.size() ; i++){
-		unsigned int hittedBarIndex = 10000;
-		bool check = CheckTrackForLayerNum(reqLayersVec[i],hittedBarIndex);
-		if(check){
-			vecOfScint.push_back(GetScintillator(hittedBarIndex));
-		}
+  SingleMuonTrack *SingleMuonTrack::GetTrackSubset(std::vector<unsigned int> reqLayersVec)
+  {
+    std::vector<ScintillatorBar_V2 *> vecOfScint;
+    bool check = true;
+    for (unsigned int i = 0; i < reqLayersVec.size(); i++) {
+      unsigned int hittedBarIndex = 10000;
+      check &= CheckTrackForLayerNum(reqLayersVec[i], hittedBarIndex);
+      if (check) {
+        vecOfScint.push_back(GetScintillator(hittedBarIndex));
+      }
+    }
+    if (check)
+      return new SingleMuonTrack(vecOfScint);
+    else
+      return NULL;
+  }
+
+  double SingleMuonTrack::GetChisquareByNDF(std::vector<unsigned int> reqLayersVec,bool xy)
+  {
+    SingleMuonTrack *smt       = GetTrackSubset(reqLayersVec);
+    std::vector<double> yerror;// = {0., 0., 0., 0.};
+    std::vector<double> xerror;
+    std::vector<double> zerror;
+    std::vector<double> xval;
+    std::vector<double> yval;
+    std::vector<double> zval;
+
+    if (smt != NULL) {
+      std::vector<lite_interface::Point3D *> vecOf3DPoint = smt->Get3DHitPointVector_QParam();
+      for (unsigned int i = 0; i < reqLayersVec.size(); i++) {
+        xval.push_back(vecOf3DPoint[i]->GetX());
+        yval.push_back(vecOf3DPoint[i]->GetY());
+        zval.push_back(vecOf3DPoint[i]->GetZ());
+        yerror.push_back(5.);
+        if (vecOfLayersOrientation[reqLayersVec[i]]) {
+          xerror.push_back(5.);
+          zerror.push_back(0.);
+        } else {
+          xerror.push_back(0.);
+          zerror.push_back(5.);
+        }
+      }
+      auto grZY = new TGraphErrors(reqLayersVec.size(), &zval[0], &yval[0], &zerror[0], &yerror[0]);
+      auto grXY = new TGraphErrors(reqLayersVec.size(), &xval[0], &yval[0], &xerror[0], &yerror[0]);
+
+      //new TCanvas();
+      grZY->SetMarkerStyle(8);
+      //grZY->Draw("ap");
+	TF1 *formula = new TF1("Formula_Linear", LinearFit, -80, 80, 2);
+  	if(xy){
+		grXY->Fit(formula,"qn");
+	}else{
+		grZY->Fit(formula,"qn");
 	}
-	return new SingleMuonTrack(vecOfScint);
-}
+      formula->Draw("same");
+	return (formula->GetChisquare()/formula->GetNDF());
+    }
+	return -10000;
+  }
 
 //#ifdef USE_FOR_SIMULATION
 #if defined(USE_FOR_SIMULATION) || defined(FOR_SIMULATION)
