@@ -1,0 +1,1334 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<gdml xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://service-spi.web.cern.ch/service-spi/app/releases/GDML/schema/gdml.xsd">
+
+  <define/>
+
+  <materials>
+    <isotope N="12" Z="6" name="C120x55b6dd451bd0">
+      <atom unit="g/mole" value="12"/>
+    </isotope>
+    <isotope N="13" Z="6" name="C130x55b6db018de0">
+      <atom unit="g/mole" value="13.0034"/>
+    </isotope>
+    <element name="C0x55b6dd4514a0">
+      <fraction n="0.9893" ref="C120x55b6dd451bd0"/>
+      <fraction n="0.0107" ref="C130x55b6db018de0"/>
+    </element>
+    <isotope N="1" Z="1" name="H10x55b6dd445d20">
+      <atom unit="g/mole" value="1.00782503081372"/>
+    </isotope>
+    <isotope N="2" Z="1" name="H20x55b6dd461130">
+      <atom unit="g/mole" value="2.01410199966617"/>
+    </isotope>
+    <element name="H0x55b6dd4611a0">
+      <fraction n="0.999885" ref="H10x55b6dd445d20"/>
+      <fraction n="0.000115" ref="H20x55b6dd461130"/>
+    </element>
+    <isotope N="35" Z="17" name="Cl350x55b6dd461350">
+      <atom unit="g/mole" value="34.9689"/>
+    </isotope>
+    <isotope N="37" Z="17" name="Cl370x55b6dd4613a0">
+      <atom unit="g/mole" value="36.9659"/>
+    </isotope>
+    <element name="Cl0x55b6dd461410">
+      <fraction n="0.7578" ref="Cl350x55b6dd461350"/>
+      <fraction n="0.2422" ref="Cl370x55b6dd4613a0"/>
+    </element>
+    <material name="G4_POLYVINYL_CHLORIDE0x55b6dd460f60" state="solid">
+      <T unit="K" value="293.15"/>
+      <MEE unit="eV" value="108.2"/>
+      <D unit="g/cm3" value="1.3"/>
+      <fraction n="0.384356672764272" ref="C0x55b6dd4514a0"/>
+      <fraction n="0.0483828062386325" ref="H0x55b6dd4611a0"/>
+      <fraction n="0.567260520997095" ref="Cl0x55b6dd461410"/>
+    </material>
+    <isotope N="14" Z="7" name="N140x55b6daf6ba80">
+      <atom unit="g/mole" value="14.0031"/>
+    </isotope>
+    <isotope N="15" Z="7" name="N150x55b6dd3dcd40">
+      <atom unit="g/mole" value="15.0001"/>
+    </isotope>
+    <element name="N0x55b6dd451600">
+      <fraction n="0.99632" ref="N140x55b6daf6ba80"/>
+      <fraction n="0.00368" ref="N150x55b6dd3dcd40"/>
+    </element>
+    <isotope N="16" Z="8" name="O160x55b6dd451cf0">
+      <atom unit="g/mole" value="15.9949"/>
+    </isotope>
+    <isotope N="17" Z="8" name="O170x55b6dd44aa20">
+      <atom unit="g/mole" value="16.9991"/>
+    </isotope>
+    <isotope N="18" Z="8" name="O180x55b6dd3df9b0">
+      <atom unit="g/mole" value="17.9992"/>
+    </isotope>
+    <element name="O0x55b6dd451760">
+      <fraction n="0.99757" ref="O160x55b6dd451cf0"/>
+      <fraction n="0.00038" ref="O170x55b6dd44aa20"/>
+      <fraction n="0.00205" ref="O180x55b6dd3df9b0"/>
+    </element>
+    <isotope N="36" Z="18" name="Ar360x55b6dd450fb0">
+      <atom unit="g/mole" value="35.9675"/>
+    </isotope>
+    <isotope N="38" Z="18" name="Ar380x55b6dd3e2f90">
+      <atom unit="g/mole" value="37.9627"/>
+    </isotope>
+    <isotope N="40" Z="18" name="Ar400x55b6db019130">
+      <atom unit="g/mole" value="39.9624"/>
+    </isotope>
+    <element name="Ar0x55b6dd450720">
+      <fraction n="0.003365" ref="Ar360x55b6dd450fb0"/>
+      <fraction n="0.000632" ref="Ar380x55b6dd3e2f90"/>
+      <fraction n="0.996003" ref="Ar400x55b6db019130"/>
+    </element>
+    <material name="G4_AIR0x55b6dd439860" state="gas">
+      <T unit="K" value="293.15"/>
+      <MEE unit="eV" value="85.7"/>
+      <D unit="g/cm3" value="0.00120479"/>
+      <fraction n="0.000124000124000124" ref="C0x55b6dd4514a0"/>
+      <fraction n="0.755267755267755" ref="N0x55b6dd451600"/>
+      <fraction n="0.231781231781232" ref="O0x55b6dd451760"/>
+      <fraction n="0.0128270128270128" ref="Ar0x55b6dd450720"/>
+    </material>
+  </materials>
+
+  <solids>
+    <box lunit="mm" name="PsBar0x55b6dd461d40" x="100" y="100" z="1000"/>
+    <tube aunit="deg" deltaphi="360" lunit="mm" name="scint0x55b6dd44e530" rmax="30" rmin="20" startphi="0" z="100"/>
+    <box lunit="mm" name="World0x55b6dd445690" x="5000" y="5000" z="5000"/>
+  </solids>
+
+  <structure>
+    <volume name="LogicalPsBar0x55b6dd461dc0">
+      <materialref ref="G4_POLYVINYL_CHLORIDE0x55b6dd460f60"/>
+      <solidref ref="PsBar0x55b6dd461d40"/>
+    </volume>
+    <volume name="LogicalScint0x55b6dd4431e0">
+      <materialref ref="G4_POLYVINYL_CHLORIDE0x55b6dd460f60"/>
+      <solidref ref="scint0x55b6dd44e530"/>
+    </volume>
+    <volume name="World0x55b6db019060">
+      <materialref ref="G4_AIR0x55b6dd439860"/>
+      <solidref ref="World0x55b6dd445690"/>
+      <physvol name="PhysicalPsBar-0-00x55b6dd445bb0">
+        <volumeref ref="LogicalPsBar0x55b6dd461dc0"/>
+        <position name="PhysicalPsBar-0-00x55b6dd445bb0_pos" unit="mm" x="-400" y="-650" z="0"/>
+      </physvol>
+      <physvol name="PhysicalScint-0-00x55b6dd443560">
+        <volumeref ref="LogicalScint0x55b6dd4431e0"/>
+        <position name="PhysicalScint-0-00x55b6dd443560_pos" unit="mm" x="-400" y="-650" z="-550"/>
+      </physvol>
+      <physvol name="PhysicalScint-0-00x55b6dd477520">
+        <volumeref ref="LogicalScint0x55b6dd4431e0"/>
+        <position name="PhysicalScint-0-00x55b6dd477520_pos" unit="mm" x="-400" y="-650" z="550"/>
+      </physvol>
+      <physvol copynumber="1" name="PhysicalPsBar-1-00x55b6dd3e3fd0">
+        <volumeref ref="LogicalPsBar0x55b6dd461dc0"/>
+        <position name="PhysicalPsBar-1-00x55b6dd3e3fd0_pos" unit="mm" x="-300" y="-650" z="0"/>
+      </physvol>
+      <physvol copynumber="1" name="PhysicalScint-1-00x55b6dd3e4570">
+        <volumeref ref="LogicalScint0x55b6dd4431e0"/>
+        <position name="PhysicalScint-1-00x55b6dd3e4570_pos" unit="mm" x="-300" y="-650" z="-550"/>
+      </physvol>
+      <physvol copynumber="1" name="PhysicalScint-1-00x55b6dd3e3710">
+        <volumeref ref="LogicalScint0x55b6dd4431e0"/>
+        <position name="PhysicalScint-1-00x55b6dd3e3710_pos" unit="mm" x="-300" y="-650" z="550"/>
+      </physvol>
+      <physvol copynumber="2" name="PhysicalPsBar-2-00x55b6dd3e3c00">
+        <volumeref ref="LogicalPsBar0x55b6dd461dc0"/>
+        <position name="PhysicalPsBar-2-00x55b6dd3e3c00_pos" unit="mm" x="-200" y="-650" z="0"/>
+      </physvol>
+      <physvol copynumber="2" name="PhysicalScint-2-00x55b6dd476350">
+        <volumeref ref="LogicalScint0x55b6dd4431e0"/>
+        <position name="PhysicalScint-2-00x55b6dd476350_pos" unit="mm" x="-200" y="-650" z="-550"/>
+      </physvol>
+      <physvol copynumber="2" name="PhysicalScint-2-00x55b6dd476650">
+        <volumeref ref="LogicalScint0x55b6dd4431e0"/>
+        <position name="PhysicalScint-2-00x55b6dd476650_pos" unit="mm" x="-200" y="-650" z="550"/>
+      </physvol>
+      <physvol copynumber="3" name="PhysicalPsBar-3-00x55b6dd4765d0">
+        <volumeref ref="LogicalPsBar0x55b6dd461dc0"/>
+        <position name="PhysicalPsBar-3-00x55b6dd4765d0_pos" unit="mm" x="-100" y="-650" z="0"/>
+      </physvol>
+      <physvol copynumber="3" name="PhysicalScint-3-00x55b6dd47bb40">
+        <volumeref ref="LogicalScint0x55b6dd4431e0"/>
+        <position name="PhysicalScint-3-00x55b6dd47bb40_pos" unit="mm" x="-100" y="-650" z="-550"/>
+      </physvol>
+      <physvol copynumber="3" name="PhysicalScint-3-00x55b6dd476cd0">
+        <volumeref ref="LogicalScint0x55b6dd4431e0"/>
+        <position name="PhysicalScint-3-00x55b6dd476cd0_pos" unit="mm" x="-100" y="-650" z="550"/>
+      </physvol>
+      <physvol copynumber="4" name="PhysicalPsBar-4-00x55b6dd47ad80">
+        <volumeref ref="LogicalPsBar0x55b6dd461dc0"/>
+        <position name="PhysicalPsBar-4-00x55b6dd47ad80_pos" unit="mm" x="0" y="-650" z="0"/>
+      </physvol>
+      <physvol copynumber="4" name="PhysicalScint-4-00x55b6dd47b100">
+        <volumeref ref="LogicalScint0x55b6dd4431e0"/>
+        <position name="PhysicalScint-4-00x55b6dd47b100_pos" unit="mm" x="0" y="-650" z="-550"/>
+      </physvol>
+      <physvol copynumber="4" name="PhysicalScint-4-00x55b6dd47a250">
+        <volumeref ref="LogicalScint0x55b6dd4431e0"/>
+        <position name="PhysicalScint-4-00x55b6dd47a250_pos" unit="mm" x="0" y="-650" z="550"/>
+      </physvol>
+      <physvol copynumber="5" name="PhysicalPsBar-5-00x55b6dd477400">
+        <volumeref ref="LogicalPsBar0x55b6dd461dc0"/>
+        <position name="PhysicalPsBar-5-00x55b6dd477400_pos" unit="mm" x="100" y="-650" z="0"/>
+      </physvol>
+      <physvol copynumber="5" name="PhysicalScint-5-00x55b6dd47bdd0">
+        <volumeref ref="LogicalScint0x55b6dd4431e0"/>
+        <position name="PhysicalScint-5-00x55b6dd47bdd0_pos" unit="mm" x="100" y="-650" z="-550"/>
+      </physvol>
+      <physvol copynumber="5" name="PhysicalScint-5-00x55b6dd47bff0">
+        <volumeref ref="LogicalScint0x55b6dd4431e0"/>
+        <position name="PhysicalScint-5-00x55b6dd47bff0_pos" unit="mm" x="100" y="-650" z="550"/>
+      </physvol>
+      <physvol copynumber="6" name="PhysicalPsBar-6-00x55b6dd47c650">
+        <volumeref ref="LogicalPsBar0x55b6dd461dc0"/>
+        <position name="PhysicalPsBar-6-00x55b6dd47c650_pos" unit="mm" x="200" y="-650" z="0"/>
+      </physvol>
+      <physvol copynumber="6" name="PhysicalScint-6-00x55b6dd47d4c0">
+        <volumeref ref="LogicalScint0x55b6dd4431e0"/>
+        <position name="PhysicalScint-6-00x55b6dd47d4c0_pos" unit="mm" x="200" y="-650" z="-550"/>
+      </physvol>
+      <physvol copynumber="6" name="PhysicalScint-6-00x55b6dd47c960">
+        <volumeref ref="LogicalScint0x55b6dd4431e0"/>
+        <position name="PhysicalScint-6-00x55b6dd47c960_pos" unit="mm" x="200" y="-650" z="550"/>
+      </physvol>
+      <physvol copynumber="7" name="PhysicalPsBar-7-00x55b6dd47a500">
+        <volumeref ref="LogicalPsBar0x55b6dd461dc0"/>
+        <position name="PhysicalPsBar-7-00x55b6dd47a500_pos" unit="mm" x="300" y="-650" z="0"/>
+      </physvol>
+      <physvol copynumber="7" name="PhysicalScint-7-00x55b6dd47cc00">
+        <volumeref ref="LogicalScint0x55b6dd4431e0"/>
+        <position name="PhysicalScint-7-00x55b6dd47cc00_pos" unit="mm" x="300" y="-650" z="-550"/>
+      </physvol>
+      <physvol copynumber="7" name="PhysicalScint-7-00x55b6dd481ab0">
+        <volumeref ref="LogicalScint0x55b6dd4431e0"/>
+        <position name="PhysicalScint-7-00x55b6dd481ab0_pos" unit="mm" x="300" y="-650" z="550"/>
+      </physvol>
+      <physvol copynumber="8" name="PhysicalPsBar-8-00x55b6dd47ce60">
+        <volumeref ref="LogicalPsBar0x55b6dd461dc0"/>
+        <position name="PhysicalPsBar-8-00x55b6dd47ce60_pos" unit="mm" x="400" y="-650" z="0"/>
+      </physvol>
+      <physvol copynumber="8" name="PhysicalScint-8-00x55b6dd449ad0">
+        <volumeref ref="LogicalScint0x55b6dd4431e0"/>
+        <position name="PhysicalScint-8-00x55b6dd449ad0_pos" unit="mm" x="400" y="-650" z="-550"/>
+      </physvol>
+      <physvol copynumber="8" name="PhysicalScint-8-00x55b6dd448790">
+        <volumeref ref="LogicalScint0x55b6dd4431e0"/>
+        <position name="PhysicalScint-8-00x55b6dd448790_pos" unit="mm" x="400" y="-650" z="550"/>
+      </physvol>
+      <physvol copynumber="9" name="PhysicalPsBar-0-10x55b6dd448af0">
+        <volumeref ref="LogicalPsBar0x55b6dd461dc0"/>
+        <position name="PhysicalPsBar-0-10x55b6dd448af0_pos" unit="mm" x="0" y="-550" z="-400"/>
+        <rotation name="PhysicalPsBar-0-10x55b6dd448af0_rot" unit="deg" x="0" y="90" z="0"/>
+      </physvol>
+      <physvol copynumber="9" name="PhysicalScint-0-10x55b6dd4490b0">
+        <volumeref ref="LogicalScint0x55b6dd4431e0"/>
+        <position name="PhysicalScint-0-10x55b6dd4490b0_pos" unit="mm" x="-550" y="-550" z="-400"/>
+        <rotation name="PhysicalScint-0-10x55b6dd4490b0_rot" unit="deg" x="0" y="90" z="0"/>
+      </physvol>
+      <physvol copynumber="9" name="PhysicalScint-0-10x55b6dd4493a0">
+        <volumeref ref="LogicalScint0x55b6dd4431e0"/>
+        <position name="PhysicalScint-0-10x55b6dd4493a0_pos" unit="mm" x="550" y="-550" z="-400"/>
+        <rotation name="PhysicalScint-0-10x55b6dd4493a0_rot" unit="deg" x="0" y="90" z="0"/>
+      </physvol>
+      <physvol copynumber="10" name="PhysicalPsBar-1-10x55b6dd482660">
+        <volumeref ref="LogicalPsBar0x55b6dd461dc0"/>
+        <position name="PhysicalPsBar-1-10x55b6dd482660_pos" unit="mm" x="0" y="-550" z="-300"/>
+        <rotation name="PhysicalPsBar-1-10x55b6dd482660_rot" unit="deg" x="0" y="90" z="0"/>
+      </physvol>
+      <physvol copynumber="10" name="PhysicalScint-1-10x55b6dd482a40">
+        <volumeref ref="LogicalScint0x55b6dd4431e0"/>
+        <position name="PhysicalScint-1-10x55b6dd482a40_pos" unit="mm" x="-550" y="-550" z="-300"/>
+        <rotation name="PhysicalScint-1-10x55b6dd482a40_rot" unit="deg" x="0" y="90" z="0"/>
+      </physvol>
+      <physvol copynumber="10" name="PhysicalScint-1-10x55b6dd449470">
+        <volumeref ref="LogicalScint0x55b6dd4431e0"/>
+        <position name="PhysicalScint-1-10x55b6dd449470_pos" unit="mm" x="550" y="-550" z="-300"/>
+        <rotation name="PhysicalScint-1-10x55b6dd449470_rot" unit="deg" x="0" y="90" z="0"/>
+      </physvol>
+      <physvol copynumber="11" name="PhysicalPsBar-2-10x55b6dd481c60">
+        <volumeref ref="LogicalPsBar0x55b6dd461dc0"/>
+        <position name="PhysicalPsBar-2-10x55b6dd481c60_pos" unit="mm" x="0" y="-550" z="-200"/>
+        <rotation name="PhysicalPsBar-2-10x55b6dd481c60_rot" unit="deg" x="0" y="90" z="0"/>
+      </physvol>
+      <physvol copynumber="11" name="PhysicalScint-2-10x55b6dd4820c0">
+        <volumeref ref="LogicalScint0x55b6dd4431e0"/>
+        <position name="PhysicalScint-2-10x55b6dd4820c0_pos" unit="mm" x="-550" y="-550" z="-200"/>
+        <rotation name="PhysicalScint-2-10x55b6dd4820c0_rot" unit="deg" x="0" y="90" z="0"/>
+      </physvol>
+      <physvol copynumber="11" name="PhysicalScint-2-10x55b6dd449640">
+        <volumeref ref="LogicalScint0x55b6dd4431e0"/>
+        <position name="PhysicalScint-2-10x55b6dd449640_pos" unit="mm" x="550" y="-550" z="-200"/>
+        <rotation name="PhysicalScint-2-10x55b6dd449640_rot" unit="deg" x="0" y="90" z="0"/>
+      </physvol>
+      <physvol copynumber="12" name="PhysicalPsBar-3-10x55b6dd483ca0">
+        <volumeref ref="LogicalPsBar0x55b6dd461dc0"/>
+        <position name="PhysicalPsBar-3-10x55b6dd483ca0_pos" unit="mm" x="0" y="-550" z="-100"/>
+        <rotation name="PhysicalPsBar-3-10x55b6dd483ca0_rot" unit="deg" x="0" y="90" z="0"/>
+      </physvol>
+      <physvol copynumber="12" name="PhysicalScint-3-10x55b6dd483240">
+        <volumeref ref="LogicalScint0x55b6dd4431e0"/>
+        <position name="PhysicalScint-3-10x55b6dd483240_pos" unit="mm" x="-550" y="-550" z="-100"/>
+        <rotation name="PhysicalScint-3-10x55b6dd483240_rot" unit="deg" x="0" y="90" z="0"/>
+      </physvol>
+      <physvol copynumber="12" name="PhysicalScint-3-10x55b6dd479cf0">
+        <volumeref ref="LogicalScint0x55b6dd4431e0"/>
+        <position name="PhysicalScint-3-10x55b6dd479cf0_pos" unit="mm" x="550" y="-550" z="-100"/>
+        <rotation name="PhysicalScint-3-10x55b6dd479cf0_rot" unit="deg" x="0" y="90" z="0"/>
+      </physvol>
+      <physvol copynumber="13" name="PhysicalPsBar-4-10x55b6dd483460">
+        <volumeref ref="LogicalPsBar0x55b6dd461dc0"/>
+        <position name="PhysicalPsBar-4-10x55b6dd483460_pos" unit="mm" x="0" y="-550" z="0"/>
+        <rotation name="PhysicalPsBar-4-10x55b6dd483460_rot" unit="deg" x="0" y="90" z="0"/>
+      </physvol>
+      <physvol copynumber="13" name="PhysicalScint-4-10x55b6dd479880">
+        <volumeref ref="LogicalScint0x55b6dd4431e0"/>
+        <position name="PhysicalScint-4-10x55b6dd479880_pos" unit="mm" x="-550" y="-550" z="0"/>
+        <rotation name="PhysicalScint-4-10x55b6dd479880_rot" unit="deg" x="0" y="90" z="0"/>
+      </physvol>
+      <physvol copynumber="13" name="PhysicalScint-4-10x55b6dd449b60">
+        <volumeref ref="LogicalScint0x55b6dd4431e0"/>
+        <position name="PhysicalScint-4-10x55b6dd449b60_pos" unit="mm" x="550" y="-550" z="0"/>
+        <rotation name="PhysicalScint-4-10x55b6dd449b60_rot" unit="deg" x="0" y="90" z="0"/>
+      </physvol>
+      <physvol copynumber="14" name="PhysicalPsBar-5-10x55b6dd478910">
+        <volumeref ref="LogicalPsBar0x55b6dd461dc0"/>
+        <position name="PhysicalPsBar-5-10x55b6dd478910_pos" unit="mm" x="0" y="-550" z="100"/>
+        <rotation name="PhysicalPsBar-5-10x55b6dd478910_rot" unit="deg" x="0" y="90" z="0"/>
+      </physvol>
+      <physvol copynumber="14" name="PhysicalScint-5-10x55b6dd477fa0">
+        <volumeref ref="LogicalScint0x55b6dd4431e0"/>
+        <position name="PhysicalScint-5-10x55b6dd477fa0_pos" unit="mm" x="-550" y="-550" z="100"/>
+        <rotation name="PhysicalScint-5-10x55b6dd477fa0_rot" unit="deg" x="0" y="90" z="0"/>
+      </physvol>
+      <physvol copynumber="14" name="PhysicalScint-5-10x55b6dd478320">
+        <volumeref ref="LogicalScint0x55b6dd4431e0"/>
+        <position name="PhysicalScint-5-10x55b6dd478320_pos" unit="mm" x="550" y="-550" z="100"/>
+        <rotation name="PhysicalScint-5-10x55b6dd478320_rot" unit="deg" x="0" y="90" z="0"/>
+      </physvol>
+      <physvol copynumber="15" name="PhysicalPsBar-6-10x55b6dd489460">
+        <volumeref ref="LogicalPsBar0x55b6dd461dc0"/>
+        <position name="PhysicalPsBar-6-10x55b6dd489460_pos" unit="mm" x="0" y="-550" z="200"/>
+        <rotation name="PhysicalPsBar-6-10x55b6dd489460_rot" unit="deg" x="0" y="90" z="0"/>
+      </physvol>
+      <physvol copynumber="15" name="PhysicalScint-6-10x55b6dd488910">
+        <volumeref ref="LogicalScint0x55b6dd4431e0"/>
+        <position name="PhysicalScint-6-10x55b6dd488910_pos" unit="mm" x="-550" y="-550" z="200"/>
+        <rotation name="PhysicalScint-6-10x55b6dd488910_rot" unit="deg" x="0" y="90" z="0"/>
+      </physvol>
+      <physvol copynumber="15" name="PhysicalScint-6-10x55b6dd456160">
+        <volumeref ref="LogicalScint0x55b6dd4431e0"/>
+        <position name="PhysicalScint-6-10x55b6dd456160_pos" unit="mm" x="550" y="-550" z="200"/>
+        <rotation name="PhysicalScint-6-10x55b6dd456160_rot" unit="deg" x="0" y="90" z="0"/>
+      </physvol>
+      <physvol copynumber="16" name="PhysicalPsBar-7-10x55b6dd488b70">
+        <volumeref ref="LogicalPsBar0x55b6dd461dc0"/>
+        <position name="PhysicalPsBar-7-10x55b6dd488b70_pos" unit="mm" x="0" y="-550" z="300"/>
+        <rotation name="PhysicalPsBar-7-10x55b6dd488b70_rot" unit="deg" x="0" y="90" z="0"/>
+      </physvol>
+      <physvol copynumber="16" name="PhysicalScint-7-10x55b6dd4546f0">
+        <volumeref ref="LogicalScint0x55b6dd4431e0"/>
+        <position name="PhysicalScint-7-10x55b6dd4546f0_pos" unit="mm" x="-550" y="-550" z="300"/>
+        <rotation name="PhysicalScint-7-10x55b6dd4546f0_rot" unit="deg" x="0" y="90" z="0"/>
+      </physvol>
+      <physvol copynumber="16" name="PhysicalScint-7-10x55b6dd454910">
+        <volumeref ref="LogicalScint0x55b6dd4431e0"/>
+        <position name="PhysicalScint-7-10x55b6dd454910_pos" unit="mm" x="550" y="-550" z="300"/>
+        <rotation name="PhysicalScint-7-10x55b6dd454910_rot" unit="deg" x="0" y="90" z="0"/>
+      </physvol>
+      <physvol copynumber="17" name="PhysicalPsBar-8-10x55b6dd456230">
+        <volumeref ref="LogicalPsBar0x55b6dd461dc0"/>
+        <position name="PhysicalPsBar-8-10x55b6dd456230_pos" unit="mm" x="0" y="-550" z="400"/>
+        <rotation name="PhysicalPsBar-8-10x55b6dd456230_rot" unit="deg" x="0" y="90" z="0"/>
+      </physvol>
+      <physvol copynumber="17" name="PhysicalScint-8-10x55b6dd454e50">
+        <volumeref ref="LogicalScint0x55b6dd4431e0"/>
+        <position name="PhysicalScint-8-10x55b6dd454e50_pos" unit="mm" x="-550" y="-550" z="400"/>
+        <rotation name="PhysicalScint-8-10x55b6dd454e50_rot" unit="deg" x="0" y="90" z="0"/>
+      </physvol>
+      <physvol copynumber="17" name="PhysicalScint-8-10x55b6dd455f00">
+        <volumeref ref="LogicalScint0x55b6dd4431e0"/>
+        <position name="PhysicalScint-8-10x55b6dd455f00_pos" unit="mm" x="550" y="-550" z="400"/>
+        <rotation name="PhysicalScint-8-10x55b6dd455f00_rot" unit="deg" x="0" y="90" z="0"/>
+      </physvol>
+      <physvol copynumber="18" name="PhysicalPsBar-0-20x55b6dd455f60">
+        <volumeref ref="LogicalPsBar0x55b6dd461dc0"/>
+        <position name="PhysicalPsBar-0-20x55b6dd455f60_pos" unit="mm" x="-400" y="-450" z="0"/>
+      </physvol>
+      <physvol copynumber="18" name="PhysicalScint-0-20x55b6dd483970">
+        <volumeref ref="LogicalScint0x55b6dd4431e0"/>
+        <position name="PhysicalScint-0-20x55b6dd483970_pos" unit="mm" x="-400" y="-450" z="-550"/>
+      </physvol>
+      <physvol copynumber="18" name="PhysicalScint-0-20x55b6dd48e060">
+        <volumeref ref="LogicalScint0x55b6dd4431e0"/>
+        <position name="PhysicalScint-0-20x55b6dd48e060_pos" unit="mm" x="-400" y="-450" z="550"/>
+      </physvol>
+      <physvol copynumber="19" name="PhysicalPsBar-1-20x55b6dd483f00">
+        <volumeref ref="LogicalPsBar0x55b6dd461dc0"/>
+        <position name="PhysicalPsBar-1-20x55b6dd483f00_pos" unit="mm" x="-300" y="-450" z="0"/>
+      </physvol>
+      <physvol copynumber="19" name="PhysicalScint-1-20x55b6dd4551b0">
+        <volumeref ref="LogicalScint0x55b6dd4431e0"/>
+        <position name="PhysicalScint-1-20x55b6dd4551b0_pos" unit="mm" x="-300" y="-450" z="-550"/>
+      </physvol>
+      <physvol copynumber="19" name="PhysicalScint-1-20x55b6dd48e9d0">
+        <volumeref ref="LogicalScint0x55b6dd4431e0"/>
+        <position name="PhysicalScint-1-20x55b6dd48e9d0_pos" unit="mm" x="-300" y="-450" z="550"/>
+      </physvol>
+      <physvol copynumber="20" name="PhysicalPsBar-2-20x55b6dd4909d0">
+        <volumeref ref="LogicalPsBar0x55b6dd461dc0"/>
+        <position name="PhysicalPsBar-2-20x55b6dd4909d0_pos" unit="mm" x="-200" y="-450" z="0"/>
+      </physvol>
+      <physvol copynumber="20" name="PhysicalScint-2-20x55b6dd4556e0">
+        <volumeref ref="LogicalScint0x55b6dd4431e0"/>
+        <position name="PhysicalScint-2-20x55b6dd4556e0_pos" unit="mm" x="-200" y="-450" z="-550"/>
+      </physvol>
+      <physvol copynumber="20" name="PhysicalScint-2-20x55b6dd4903d0">
+        <volumeref ref="LogicalScint0x55b6dd4431e0"/>
+        <position name="PhysicalScint-2-20x55b6dd4903d0_pos" unit="mm" x="-200" y="-450" z="550"/>
+      </physvol>
+      <physvol copynumber="21" name="PhysicalPsBar-3-20x55b6dd48f640">
+        <volumeref ref="LogicalPsBar0x55b6dd461dc0"/>
+        <position name="PhysicalPsBar-3-20x55b6dd48f640_pos" unit="mm" x="-100" y="-450" z="0"/>
+      </physvol>
+      <physvol copynumber="21" name="PhysicalScint-3-20x55b6dd48fb30">
+        <volumeref ref="LogicalScint0x55b6dd4431e0"/>
+        <position name="PhysicalScint-3-20x55b6dd48fb30_pos" unit="mm" x="-100" y="-450" z="-550"/>
+      </physvol>
+      <physvol copynumber="21" name="PhysicalScint-3-20x55b6dd456700">
+        <volumeref ref="LogicalScint0x55b6dd4431e0"/>
+        <position name="PhysicalScint-3-20x55b6dd456700_pos" unit="mm" x="-100" y="-450" z="550"/>
+      </physvol>
+      <physvol copynumber="22" name="PhysicalPsBar-4-20x55b6dd457200">
+        <volumeref ref="LogicalPsBar0x55b6dd461dc0"/>
+        <position name="PhysicalPsBar-4-20x55b6dd457200_pos" unit="mm" x="0" y="-450" z="0"/>
+      </physvol>
+      <physvol copynumber="22" name="PhysicalScint-4-20x55b6dd456920">
+        <volumeref ref="LogicalScint0x55b6dd4431e0"/>
+        <position name="PhysicalScint-4-20x55b6dd456920_pos" unit="mm" x="0" y="-450" z="-550"/>
+      </physvol>
+      <physvol copynumber="22" name="PhysicalScint-4-20x55b6dd456e10">
+        <volumeref ref="LogicalScint0x55b6dd4431e0"/>
+        <position name="PhysicalScint-4-20x55b6dd456e10_pos" unit="mm" x="0" y="-450" z="550"/>
+      </physvol>
+      <physvol copynumber="23" name="PhysicalPsBar-5-20x55b6dd456f80">
+        <volumeref ref="LogicalPsBar0x55b6dd461dc0"/>
+        <position name="PhysicalPsBar-5-20x55b6dd456f80_pos" unit="mm" x="100" y="-450" z="0"/>
+      </physvol>
+      <physvol copynumber="23" name="PhysicalScint-5-20x55b6dd490090">
+        <volumeref ref="LogicalScint0x55b6dd4431e0"/>
+        <position name="PhysicalScint-5-20x55b6dd490090_pos" unit="mm" x="100" y="-450" z="-550"/>
+      </physvol>
+      <physvol copynumber="23" name="PhysicalScint-5-20x55b6dd457d40">
+        <volumeref ref="LogicalScint0x55b6dd4431e0"/>
+        <position name="PhysicalScint-5-20x55b6dd457d40_pos" unit="mm" x="100" y="-450" z="550"/>
+      </physvol>
+      <physvol copynumber="24" name="PhysicalPsBar-6-20x55b6dd490430">
+        <volumeref ref="LogicalPsBar0x55b6dd461dc0"/>
+        <position name="PhysicalPsBar-6-20x55b6dd490430_pos" unit="mm" x="200" y="-450" z="0"/>
+      </physvol>
+      <physvol copynumber="24" name="PhysicalScint-6-20x55b6dd456c60">
+        <volumeref ref="LogicalScint0x55b6dd4431e0"/>
+        <position name="PhysicalScint-6-20x55b6dd456c60_pos" unit="mm" x="200" y="-450" z="-550"/>
+      </physvol>
+      <physvol copynumber="24" name="PhysicalScint-6-20x55b6dd4586b0">
+        <volumeref ref="LogicalScint0x55b6dd4431e0"/>
+        <position name="PhysicalScint-6-20x55b6dd4586b0_pos" unit="mm" x="200" y="-450" z="550"/>
+      </physvol>
+      <physvol copynumber="25" name="PhysicalPsBar-7-20x55b6dd45a650">
+        <volumeref ref="LogicalPsBar0x55b6dd461dc0"/>
+        <position name="PhysicalPsBar-7-20x55b6dd45a650_pos" unit="mm" x="300" y="-450" z="0"/>
+      </physvol>
+      <physvol copynumber="25" name="PhysicalScint-7-20x55b6dd459600">
+        <volumeref ref="LogicalScint0x55b6dd4431e0"/>
+        <position name="PhysicalScint-7-20x55b6dd459600_pos" unit="mm" x="300" y="-450" z="-550"/>
+      </physvol>
+      <physvol copynumber="25" name="PhysicalScint-7-20x55b6dd459960">
+        <volumeref ref="LogicalScint0x55b6dd4431e0"/>
+        <position name="PhysicalScint-7-20x55b6dd459960_pos" unit="mm" x="300" y="-450" z="550"/>
+      </physvol>
+      <physvol copynumber="26" name="PhysicalPsBar-8-20x55b6dd499570">
+        <volumeref ref="LogicalPsBar0x55b6dd461dc0"/>
+        <position name="PhysicalPsBar-8-20x55b6dd499570_pos" unit="mm" x="400" y="-450" z="0"/>
+      </physvol>
+      <physvol copynumber="26" name="PhysicalScint-8-20x55b6dd499870">
+        <volumeref ref="LogicalScint0x55b6dd4431e0"/>
+        <position name="PhysicalScint-8-20x55b6dd499870_pos" unit="mm" x="400" y="-450" z="-550"/>
+      </physvol>
+      <physvol copynumber="26" name="PhysicalScint-8-20x55b6dd499a90">
+        <volumeref ref="LogicalScint0x55b6dd4431e0"/>
+        <position name="PhysicalScint-8-20x55b6dd499a90_pos" unit="mm" x="400" y="-450" z="550"/>
+      </physvol>
+      <physvol copynumber="27" name="PhysicalPsBar-0-30x55b6dd49b050">
+        <volumeref ref="LogicalPsBar0x55b6dd461dc0"/>
+        <position name="PhysicalPsBar-0-30x55b6dd49b050_pos" unit="mm" x="0" y="-350" z="-400"/>
+        <rotation name="PhysicalPsBar-0-30x55b6dd49b050_rot" unit="deg" x="0" y="90" z="0"/>
+      </physvol>
+      <physvol copynumber="27" name="PhysicalScint-0-30x55b6dd499e10">
+        <volumeref ref="LogicalScint0x55b6dd4431e0"/>
+        <position name="PhysicalScint-0-30x55b6dd499e10_pos" unit="mm" x="-550" y="-350" z="-400"/>
+        <rotation name="PhysicalScint-0-30x55b6dd499e10_rot" unit="deg" x="0" y="90" z="0"/>
+      </physvol>
+      <physvol copynumber="27" name="PhysicalScint-0-30x55b6dd49a530">
+        <volumeref ref="LogicalScint0x55b6dd4431e0"/>
+        <position name="PhysicalScint-0-30x55b6dd49a530_pos" unit="mm" x="550" y="-350" z="-400"/>
+        <rotation name="PhysicalScint-0-30x55b6dd49a530_rot" unit="deg" x="0" y="90" z="0"/>
+      </physvol>
+      <physvol copynumber="28" name="PhysicalPsBar-1-30x55b6dd459830">
+        <volumeref ref="LogicalPsBar0x55b6dd461dc0"/>
+        <position name="PhysicalPsBar-1-30x55b6dd459830_pos" unit="mm" x="0" y="-350" z="-300"/>
+        <rotation name="PhysicalPsBar-1-30x55b6dd459830_rot" unit="deg" x="0" y="90" z="0"/>
+      </physvol>
+      <physvol copynumber="28" name="PhysicalScint-1-30x55b6dd49b5d0">
+        <volumeref ref="LogicalScint0x55b6dd4431e0"/>
+        <position name="PhysicalScint-1-30x55b6dd49b5d0_pos" unit="mm" x="-550" y="-350" z="-300"/>
+        <rotation name="PhysicalScint-1-30x55b6dd49b5d0_rot" unit="deg" x="0" y="90" z="0"/>
+      </physvol>
+      <physvol copynumber="28" name="PhysicalScint-1-30x55b6dd49b7f0">
+        <volumeref ref="LogicalScint0x55b6dd4431e0"/>
+        <position name="PhysicalScint-1-30x55b6dd49b7f0_pos" unit="mm" x="550" y="-350" z="-300"/>
+        <rotation name="PhysicalScint-1-30x55b6dd49b7f0_rot" unit="deg" x="0" y="90" z="0"/>
+      </physvol>
+      <physvol copynumber="29" name="PhysicalPsBar-2-30x55b6dd49d000">
+        <volumeref ref="LogicalPsBar0x55b6dd461dc0"/>
+        <position name="PhysicalPsBar-2-30x55b6dd49d000_pos" unit="mm" x="0" y="-350" z="-200"/>
+        <rotation name="PhysicalPsBar-2-30x55b6dd49d000_rot" unit="deg" x="0" y="90" z="0"/>
+      </physvol>
+      <physvol copynumber="29" name="PhysicalScint-2-30x55b6dd49cad0">
+        <volumeref ref="LogicalScint0x55b6dd4431e0"/>
+        <position name="PhysicalScint-2-30x55b6dd49cad0_pos" unit="mm" x="-550" y="-350" z="-200"/>
+        <rotation name="PhysicalScint-2-30x55b6dd49cad0_rot" unit="deg" x="0" y="90" z="0"/>
+      </physvol>
+      <physvol copynumber="29" name="PhysicalScint-2-30x55b6dd49c160">
+        <volumeref ref="LogicalScint0x55b6dd4431e0"/>
+        <position name="PhysicalScint-2-30x55b6dd49c160_pos" unit="mm" x="550" y="-350" z="-200"/>
+        <rotation name="PhysicalScint-2-30x55b6dd49c160_rot" unit="deg" x="0" y="90" z="0"/>
+      </physvol>
+      <physvol copynumber="30" name="PhysicalPsBar-3-30x55b6dd49c7a0">
+        <volumeref ref="LogicalPsBar0x55b6dd461dc0"/>
+        <position name="PhysicalPsBar-3-30x55b6dd49c7a0_pos" unit="mm" x="0" y="-350" z="-100"/>
+        <rotation name="PhysicalPsBar-3-30x55b6dd49c7a0_rot" unit="deg" x="0" y="90" z="0"/>
+      </physvol>
+      <physvol copynumber="30" name="PhysicalScint-3-30x55b6dd49ddf0">
+        <volumeref ref="LogicalScint0x55b6dd4431e0"/>
+        <position name="PhysicalScint-3-30x55b6dd49ddf0_pos" unit="mm" x="-550" y="-350" z="-100"/>
+        <rotation name="PhysicalScint-3-30x55b6dd49ddf0_rot" unit="deg" x="0" y="90" z="0"/>
+      </physvol>
+      <physvol copynumber="30" name="PhysicalScint-3-30x55b6dd49e3d0">
+        <volumeref ref="LogicalScint0x55b6dd4431e0"/>
+        <position name="PhysicalScint-3-30x55b6dd49e3d0_pos" unit="mm" x="550" y="-350" z="-100"/>
+        <rotation name="PhysicalScint-3-30x55b6dd49e3d0_rot" unit="deg" x="0" y="90" z="0"/>
+      </physvol>
+      <physvol copynumber="31" name="PhysicalPsBar-4-30x55b6dd49e300">
+        <volumeref ref="LogicalPsBar0x55b6dd461dc0"/>
+        <position name="PhysicalPsBar-4-30x55b6dd49e300_pos" unit="mm" x="0" y="-350" z="0"/>
+        <rotation name="PhysicalPsBar-4-30x55b6dd49e300_rot" unit="deg" x="0" y="90" z="0"/>
+      </physvol>
+      <physvol copynumber="31" name="PhysicalScint-4-30x55b6dd49d8b0">
+        <volumeref ref="LogicalScint0x55b6dd4431e0"/>
+        <position name="PhysicalScint-4-30x55b6dd49d8b0_pos" unit="mm" x="-550" y="-350" z="0"/>
+        <rotation name="PhysicalScint-4-30x55b6dd49d8b0_rot" unit="deg" x="0" y="90" z="0"/>
+      </physvol>
+      <physvol copynumber="31" name="PhysicalScint-4-30x55b6dd49e6e0">
+        <volumeref ref="LogicalScint0x55b6dd4431e0"/>
+        <position name="PhysicalScint-4-30x55b6dd49e6e0_pos" unit="mm" x="550" y="-350" z="0"/>
+        <rotation name="PhysicalScint-4-30x55b6dd49e6e0_rot" unit="deg" x="0" y="90" z="0"/>
+      </physvol>
+      <physvol copynumber="32" name="PhysicalPsBar-5-30x55b6dd49f490">
+        <volumeref ref="LogicalPsBar0x55b6dd461dc0"/>
+        <position name="PhysicalPsBar-5-30x55b6dd49f490_pos" unit="mm" x="0" y="-350" z="100"/>
+        <rotation name="PhysicalPsBar-5-30x55b6dd49f490_rot" unit="deg" x="0" y="90" z="0"/>
+      </physvol>
+      <physvol copynumber="32" name="PhysicalScint-5-30x55b6dd49f1b0">
+        <volumeref ref="LogicalScint0x55b6dd4431e0"/>
+        <position name="PhysicalScint-5-30x55b6dd49f1b0_pos" unit="mm" x="-550" y="-350" z="100"/>
+        <rotation name="PhysicalScint-5-30x55b6dd49f1b0_rot" unit="deg" x="0" y="90" z="0"/>
+      </physvol>
+      <physvol copynumber="32" name="PhysicalScint-5-30x55b6dd49e900">
+        <volumeref ref="LogicalScint0x55b6dd4431e0"/>
+        <position name="PhysicalScint-5-30x55b6dd49e900_pos" unit="mm" x="550" y="-350" z="100"/>
+        <rotation name="PhysicalScint-5-30x55b6dd49e900_rot" unit="deg" x="0" y="90" z="0"/>
+      </physvol>
+      <physvol copynumber="33" name="PhysicalPsBar-6-30x55b6dd49aa40">
+        <volumeref ref="LogicalPsBar0x55b6dd461dc0"/>
+        <position name="PhysicalPsBar-6-30x55b6dd49aa40_pos" unit="mm" x="0" y="-350" z="200"/>
+        <rotation name="PhysicalPsBar-6-30x55b6dd49aa40_rot" unit="deg" x="0" y="90" z="0"/>
+      </physvol>
+      <physvol copynumber="33" name="PhysicalScint-6-30x55b6dd4a0830">
+        <volumeref ref="LogicalScint0x55b6dd4431e0"/>
+        <position name="PhysicalScint-6-30x55b6dd4a0830_pos" unit="mm" x="-550" y="-350" z="200"/>
+        <rotation name="PhysicalScint-6-30x55b6dd4a0830_rot" unit="deg" x="0" y="90" z="0"/>
+      </physvol>
+      <physvol copynumber="33" name="PhysicalScint-6-30x55b6dd484850">
+        <volumeref ref="LogicalScint0x55b6dd4431e0"/>
+        <position name="PhysicalScint-6-30x55b6dd484850_pos" unit="mm" x="550" y="-350" z="200"/>
+        <rotation name="PhysicalScint-6-30x55b6dd484850_rot" unit="deg" x="0" y="90" z="0"/>
+      </physvol>
+      <physvol copynumber="34" name="PhysicalPsBar-7-30x55b6dd484db0">
+        <volumeref ref="LogicalPsBar0x55b6dd461dc0"/>
+        <position name="PhysicalPsBar-7-30x55b6dd484db0_pos" unit="mm" x="0" y="-350" z="300"/>
+        <rotation name="PhysicalPsBar-7-30x55b6dd484db0_rot" unit="deg" x="0" y="90" z="0"/>
+      </physvol>
+      <physvol copynumber="34" name="PhysicalScint-7-30x55b6dd4851c0">
+        <volumeref ref="LogicalScint0x55b6dd4431e0"/>
+        <position name="PhysicalScint-7-30x55b6dd4851c0_pos" unit="mm" x="-550" y="-350" z="300"/>
+        <rotation name="PhysicalScint-7-30x55b6dd4851c0_rot" unit="deg" x="0" y="90" z="0"/>
+      </physvol>
+      <physvol copynumber="34" name="PhysicalScint-7-30x55b6dd4884c0">
+        <volumeref ref="LogicalScint0x55b6dd4431e0"/>
+        <position name="PhysicalScint-7-30x55b6dd4884c0_pos" unit="mm" x="550" y="-350" z="300"/>
+        <rotation name="PhysicalScint-7-30x55b6dd4884c0_rot" unit="deg" x="0" y="90" z="0"/>
+      </physvol>
+      <physvol copynumber="35" name="PhysicalPsBar-8-30x55b6dd4856a0">
+        <volumeref ref="LogicalPsBar0x55b6dd461dc0"/>
+        <position name="PhysicalPsBar-8-30x55b6dd4856a0_pos" unit="mm" x="0" y="-350" z="400"/>
+        <rotation name="PhysicalPsBar-8-30x55b6dd4856a0_rot" unit="deg" x="0" y="90" z="0"/>
+      </physvol>
+      <physvol copynumber="35" name="PhysicalScint-8-30x55b6dd487150">
+        <volumeref ref="LogicalScint0x55b6dd4431e0"/>
+        <position name="PhysicalScint-8-30x55b6dd487150_pos" unit="mm" x="-550" y="-350" z="400"/>
+        <rotation name="PhysicalScint-8-30x55b6dd487150_rot" unit="deg" x="0" y="90" z="0"/>
+      </physvol>
+      <physvol copynumber="35" name="PhysicalScint-8-30x55b6dd4881b0">
+        <volumeref ref="LogicalScint0x55b6dd4431e0"/>
+        <position name="PhysicalScint-8-30x55b6dd4881b0_pos" unit="mm" x="550" y="-350" z="400"/>
+        <rotation name="PhysicalScint-8-30x55b6dd4881b0_rot" unit="deg" x="0" y="90" z="0"/>
+      </physvol>
+      <physvol copynumber="36" name="PhysicalPsBar-0-40x55b6dd487410">
+        <volumeref ref="LogicalPsBar0x55b6dd461dc0"/>
+        <position name="PhysicalPsBar-0-40x55b6dd487410_pos" unit="mm" x="-400" y="-250" z="0"/>
+      </physvol>
+      <physvol copynumber="36" name="PhysicalScint-0-40x55b6dd487a60">
+        <volumeref ref="LogicalScint0x55b6dd4431e0"/>
+        <position name="PhysicalScint-0-40x55b6dd487a60_pos" unit="mm" x="-400" y="-250" z="-550"/>
+      </physvol>
+      <physvol copynumber="36" name="PhysicalScint-0-40x55b6dd487ed0">
+        <volumeref ref="LogicalScint0x55b6dd4431e0"/>
+        <position name="PhysicalScint-0-40x55b6dd487ed0_pos" unit="mm" x="-400" y="-250" z="550"/>
+      </physvol>
+      <physvol copynumber="37" name="PhysicalPsBar-1-40x55b6dd486de0">
+        <volumeref ref="LogicalPsBar0x55b6dd461dc0"/>
+        <position name="PhysicalPsBar-1-40x55b6dd486de0_pos" unit="mm" x="-300" y="-250" z="0"/>
+      </physvol>
+      <physvol copynumber="37" name="PhysicalScint-1-40x55b6dd485d80">
+        <volumeref ref="LogicalScint0x55b6dd4431e0"/>
+        <position name="PhysicalScint-1-40x55b6dd485d80_pos" unit="mm" x="-300" y="-250" z="-550"/>
+      </physvol>
+      <physvol copynumber="37" name="PhysicalScint-1-40x55b6dd486690">
+        <volumeref ref="LogicalScint0x55b6dd4431e0"/>
+        <position name="PhysicalScint-1-40x55b6dd486690_pos" unit="mm" x="-300" y="-250" z="550"/>
+      </physvol>
+      <physvol copynumber="38" name="PhysicalPsBar-2-40x55b6dd4a07a0">
+        <volumeref ref="LogicalPsBar0x55b6dd461dc0"/>
+        <position name="PhysicalPsBar-2-40x55b6dd4a07a0_pos" unit="mm" x="-200" y="-250" z="0"/>
+      </physvol>
+      <physvol copynumber="38" name="PhysicalScint-2-40x55b6dd47e060">
+        <volumeref ref="LogicalScint0x55b6dd4431e0"/>
+        <position name="PhysicalScint-2-40x55b6dd47e060_pos" unit="mm" x="-200" y="-250" z="-550"/>
+      </physvol>
+      <physvol copynumber="38" name="PhysicalScint-2-40x55b6dd4811b0">
+        <volumeref ref="LogicalScint0x55b6dd4431e0"/>
+        <position name="PhysicalScint-2-40x55b6dd4811b0_pos" unit="mm" x="-200" y="-250" z="550"/>
+      </physvol>
+      <physvol copynumber="39" name="PhysicalPsBar-3-40x55b6dd47f8b0">
+        <volumeref ref="LogicalPsBar0x55b6dd461dc0"/>
+        <position name="PhysicalPsBar-3-40x55b6dd47f8b0_pos" unit="mm" x="-100" y="-250" z="0"/>
+      </physvol>
+      <physvol copynumber="39" name="PhysicalScint-3-40x55b6dd481590">
+        <volumeref ref="LogicalScint0x55b6dd4431e0"/>
+        <position name="PhysicalScint-3-40x55b6dd481590_pos" unit="mm" x="-100" y="-250" z="-550"/>
+      </physvol>
+      <physvol copynumber="39" name="PhysicalScint-3-40x55b6dd4818f0">
+        <volumeref ref="LogicalScint0x55b6dd4431e0"/>
+        <position name="PhysicalScint-3-40x55b6dd4818f0_pos" unit="mm" x="-100" y="-250" z="550"/>
+      </physvol>
+      <physvol copynumber="40" name="PhysicalPsBar-4-40x55b6dd480790">
+        <volumeref ref="LogicalPsBar0x55b6dd461dc0"/>
+        <position name="PhysicalPsBar-4-40x55b6dd480790_pos" unit="mm" x="0" y="-250" z="0"/>
+      </physvol>
+      <physvol copynumber="40" name="PhysicalScint-4-40x55b6dd480bb0">
+        <volumeref ref="LogicalScint0x55b6dd4431e0"/>
+        <position name="PhysicalScint-4-40x55b6dd480bb0_pos" unit="mm" x="0" y="-250" z="-550"/>
+      </physvol>
+      <physvol copynumber="40" name="PhysicalScint-4-40x55b6dd480d40">
+        <volumeref ref="LogicalScint0x55b6dd4431e0"/>
+        <position name="PhysicalScint-4-40x55b6dd480d40_pos" unit="mm" x="0" y="-250" z="550"/>
+      </physvol>
+      <physvol copynumber="41" name="PhysicalPsBar-5-40x55b6dd47fce0">
+        <volumeref ref="LogicalPsBar0x55b6dd461dc0"/>
+        <position name="PhysicalPsBar-5-40x55b6dd47fce0_pos" unit="mm" x="100" y="-250" z="0"/>
+      </physvol>
+      <physvol copynumber="41" name="PhysicalScint-5-40x55b6dd47ecc0">
+        <volumeref ref="LogicalScint0x55b6dd4431e0"/>
+        <position name="PhysicalScint-5-40x55b6dd47ecc0_pos" unit="mm" x="100" y="-250" z="-550"/>
+      </physvol>
+      <physvol copynumber="41" name="PhysicalScint-5-40x55b6dd47ee40">
+        <volumeref ref="LogicalScint0x55b6dd4431e0"/>
+        <position name="PhysicalScint-5-40x55b6dd47ee40_pos" unit="mm" x="100" y="-250" z="550"/>
+      </physvol>
+      <physvol copynumber="42" name="PhysicalPsBar-6-40x55b6dd47f040">
+        <volumeref ref="LogicalPsBar0x55b6dd461dc0"/>
+        <position name="PhysicalPsBar-6-40x55b6dd47f040_pos" unit="mm" x="200" y="-250" z="0"/>
+      </physvol>
+      <physvol copynumber="42" name="PhysicalScint-6-40x55b6dd47e7e0">
+        <volumeref ref="LogicalScint0x55b6dd4431e0"/>
+        <position name="PhysicalScint-6-40x55b6dd47e7e0_pos" unit="mm" x="200" y="-250" z="-550"/>
+      </physvol>
+      <physvol copynumber="42" name="PhysicalScint-6-40x55b6dd4b0ef0">
+        <volumeref ref="LogicalScint0x55b6dd4431e0"/>
+        <position name="PhysicalScint-6-40x55b6dd4b0ef0_pos" unit="mm" x="200" y="-250" z="550"/>
+      </physvol>
+      <physvol copynumber="43" name="PhysicalPsBar-7-40x55b6dd4b1c10">
+        <volumeref ref="LogicalPsBar0x55b6dd461dc0"/>
+        <position name="PhysicalPsBar-7-40x55b6dd4b1c10_pos" unit="mm" x="300" y="-250" z="0"/>
+      </physvol>
+      <physvol copynumber="43" name="PhysicalScint-7-40x55b6dd47e970">
+        <volumeref ref="LogicalScint0x55b6dd4431e0"/>
+        <position name="PhysicalScint-7-40x55b6dd47e970_pos" unit="mm" x="300" y="-250" z="-550"/>
+      </physvol>
+      <physvol copynumber="43" name="PhysicalScint-7-40x55b6dd4b2440">
+        <volumeref ref="LogicalScint0x55b6dd4431e0"/>
+        <position name="PhysicalScint-7-40x55b6dd4b2440_pos" unit="mm" x="300" y="-250" z="550"/>
+      </physvol>
+      <physvol copynumber="44" name="PhysicalPsBar-8-40x55b6dd4b3c80">
+        <volumeref ref="LogicalPsBar0x55b6dd461dc0"/>
+        <position name="PhysicalPsBar-8-40x55b6dd4b3c80_pos" unit="mm" x="400" y="-250" z="0"/>
+      </physvol>
+      <physvol copynumber="44" name="PhysicalScint-8-40x55b6dd4b2b40">
+        <volumeref ref="LogicalScint0x55b6dd4431e0"/>
+        <position name="PhysicalScint-8-40x55b6dd4b2b40_pos" unit="mm" x="400" y="-250" z="-550"/>
+      </physvol>
+      <physvol copynumber="44" name="PhysicalScint-8-40x55b6dd4b3130">
+        <volumeref ref="LogicalScint0x55b6dd4431e0"/>
+        <position name="PhysicalScint-8-40x55b6dd4b3130_pos" unit="mm" x="400" y="-250" z="550"/>
+      </physvol>
+      <physvol copynumber="45" name="PhysicalPsBar-0-50x55b6dd4b2830">
+        <volumeref ref="LogicalPsBar0x55b6dd461dc0"/>
+        <position name="PhysicalPsBar-0-50x55b6dd4b2830_pos" unit="mm" x="0" y="-150" z="-400"/>
+        <rotation name="PhysicalPsBar-0-50x55b6dd4b2830_rot" unit="deg" x="0" y="90" z="0"/>
+      </physvol>
+      <physvol copynumber="45" name="PhysicalScint-0-50x55b6dd4b4930">
+        <volumeref ref="LogicalScint0x55b6dd4431e0"/>
+        <position name="PhysicalScint-0-50x55b6dd4b4930_pos" unit="mm" x="-550" y="-150" z="-400"/>
+        <rotation name="PhysicalScint-0-50x55b6dd4b4930_rot" unit="deg" x="0" y="90" z="0"/>
+      </physvol>
+      <physvol copynumber="45" name="PhysicalScint-0-50x55b6dd4b4d10">
+        <volumeref ref="LogicalScint0x55b6dd4431e0"/>
+        <position name="PhysicalScint-0-50x55b6dd4b4d10_pos" unit="mm" x="550" y="-150" z="-400"/>
+        <rotation name="PhysicalScint-0-50x55b6dd4b4d10_rot" unit="deg" x="0" y="90" z="0"/>
+      </physvol>
+      <physvol copynumber="46" name="PhysicalPsBar-1-50x55b6dd4b4f70">
+        <volumeref ref="LogicalPsBar0x55b6dd461dc0"/>
+        <position name="PhysicalPsBar-1-50x55b6dd4b4f70_pos" unit="mm" x="0" y="-150" z="-300"/>
+        <rotation name="PhysicalPsBar-1-50x55b6dd4b4f70_rot" unit="deg" x="0" y="90" z="0"/>
+      </physvol>
+      <physvol copynumber="46" name="PhysicalScint-1-50x55b6dd4b4330">
+        <volumeref ref="LogicalScint0x55b6dd4431e0"/>
+        <position name="PhysicalScint-1-50x55b6dd4b4330_pos" unit="mm" x="-550" y="-150" z="-300"/>
+        <rotation name="PhysicalScint-1-50x55b6dd4b4330_rot" unit="deg" x="0" y="90" z="0"/>
+      </physvol>
+      <physvol copynumber="46" name="PhysicalScint-1-50x55b6dd4b5170">
+        <volumeref ref="LogicalScint0x55b6dd4431e0"/>
+        <position name="PhysicalScint-1-50x55b6dd4b5170_pos" unit="mm" x="550" y="-150" z="-300"/>
+        <rotation name="PhysicalScint-1-50x55b6dd4b5170_rot" unit="deg" x="0" y="90" z="0"/>
+      </physvol>
+      <physvol copynumber="47" name="PhysicalPsBar-2-50x55b6dd4b5ee0">
+        <volumeref ref="LogicalPsBar0x55b6dd461dc0"/>
+        <position name="PhysicalPsBar-2-50x55b6dd4b5ee0_pos" unit="mm" x="0" y="-150" z="-200"/>
+        <rotation name="PhysicalPsBar-2-50x55b6dd4b5ee0_rot" unit="deg" x="0" y="90" z="0"/>
+      </physvol>
+      <physvol copynumber="47" name="PhysicalScint-2-50x55b6dd4b5390">
+        <volumeref ref="LogicalScint0x55b6dd4431e0"/>
+        <position name="PhysicalScint-2-50x55b6dd4b5390_pos" unit="mm" x="-550" y="-150" z="-200"/>
+        <rotation name="PhysicalScint-2-50x55b6dd4b5390_rot" unit="deg" x="0" y="90" z="0"/>
+      </physvol>
+      <physvol copynumber="47" name="PhysicalScint-2-50x55b6dd4b56f0">
+        <volumeref ref="LogicalScint0x55b6dd4431e0"/>
+        <position name="PhysicalScint-2-50x55b6dd4b56f0_pos" unit="mm" x="550" y="-150" z="-200"/>
+        <rotation name="PhysicalScint-2-50x55b6dd4b56f0_rot" unit="deg" x="0" y="90" z="0"/>
+      </physvol>
+      <physvol copynumber="48" name="PhysicalPsBar-3-50x55b6dd4b59f0">
+        <volumeref ref="LogicalPsBar0x55b6dd461dc0"/>
+        <position name="PhysicalPsBar-3-50x55b6dd4b59f0_pos" unit="mm" x="0" y="-150" z="-100"/>
+        <rotation name="PhysicalPsBar-3-50x55b6dd4b59f0_rot" unit="deg" x="0" y="90" z="0"/>
+      </physvol>
+      <physvol copynumber="48" name="PhysicalScint-3-50x55b6dd4b64e0">
+        <volumeref ref="LogicalScint0x55b6dd4431e0"/>
+        <position name="PhysicalScint-3-50x55b6dd4b64e0_pos" unit="mm" x="-550" y="-150" z="-100"/>
+        <rotation name="PhysicalScint-3-50x55b6dd4b64e0_rot" unit="deg" x="0" y="90" z="0"/>
+      </physvol>
+      <physvol copynumber="48" name="PhysicalScint-3-50x55b6dd4b7b60">
+        <volumeref ref="LogicalScint0x55b6dd4431e0"/>
+        <position name="PhysicalScint-3-50x55b6dd4b7b60_pos" unit="mm" x="550" y="-150" z="-100"/>
+        <rotation name="PhysicalScint-3-50x55b6dd4b7b60_rot" unit="deg" x="0" y="90" z="0"/>
+      </physvol>
+      <physvol copynumber="49" name="PhysicalPsBar-4-50x55b6dd4b6a50">
+        <volumeref ref="LogicalPsBar0x55b6dd461dc0"/>
+        <position name="PhysicalPsBar-4-50x55b6dd4b6a50_pos" unit="mm" x="0" y="-150" z="0"/>
+        <rotation name="PhysicalPsBar-4-50x55b6dd4b6a50_rot" unit="deg" x="0" y="90" z="0"/>
+      </physvol>
+      <physvol copynumber="49" name="PhysicalScint-4-50x55b6dd4b71a0">
+        <volumeref ref="LogicalScint0x55b6dd4431e0"/>
+        <position name="PhysicalScint-4-50x55b6dd4b71a0_pos" unit="mm" x="-550" y="-150" z="0"/>
+        <rotation name="PhysicalScint-4-50x55b6dd4b71a0_rot" unit="deg" x="0" y="90" z="0"/>
+      </physvol>
+      <physvol copynumber="49" name="PhysicalScint-4-50x55b6dd4b7550">
+        <volumeref ref="LogicalScint0x55b6dd4431e0"/>
+        <position name="PhysicalScint-4-50x55b6dd4b7550_pos" unit="mm" x="550" y="-150" z="0"/>
+        <rotation name="PhysicalScint-4-50x55b6dd4b7550_rot" unit="deg" x="0" y="90" z="0"/>
+      </physvol>
+      <physvol copynumber="50" name="PhysicalPsBar-5-50x55b6dd4b7fb0">
+        <volumeref ref="LogicalPsBar0x55b6dd461dc0"/>
+        <position name="PhysicalPsBar-5-50x55b6dd4b7fb0_pos" unit="mm" x="0" y="-150" z="100"/>
+        <rotation name="PhysicalPsBar-5-50x55b6dd4b7fb0_rot" unit="deg" x="0" y="90" z="0"/>
+      </physvol>
+      <physvol copynumber="50" name="PhysicalScint-5-50x55b6dd4b81d0">
+        <volumeref ref="LogicalScint0x55b6dd4431e0"/>
+        <position name="PhysicalScint-5-50x55b6dd4b81d0_pos" unit="mm" x="-550" y="-150" z="100"/>
+        <rotation name="PhysicalScint-5-50x55b6dd4b81d0_rot" unit="deg" x="0" y="90" z="0"/>
+      </physvol>
+      <physvol copynumber="50" name="PhysicalScint-5-50x55b6dd4b96d0">
+        <volumeref ref="LogicalScint0x55b6dd4431e0"/>
+        <position name="PhysicalScint-5-50x55b6dd4b96d0_pos" unit="mm" x="550" y="-150" z="100"/>
+        <rotation name="PhysicalScint-5-50x55b6dd4b96d0_rot" unit="deg" x="0" y="90" z="0"/>
+      </physvol>
+      <physvol copynumber="51" name="PhysicalPsBar-6-50x55b6dd4b8690">
+        <volumeref ref="LogicalPsBar0x55b6dd461dc0"/>
+        <position name="PhysicalPsBar-6-50x55b6dd4b8690_pos" unit="mm" x="0" y="-150" z="200"/>
+        <rotation name="PhysicalPsBar-6-50x55b6dd4b8690_rot" unit="deg" x="0" y="90" z="0"/>
+      </physvol>
+      <physvol copynumber="51" name="PhysicalScint-6-50x55b6dd4b8d00">
+        <volumeref ref="LogicalScint0x55b6dd4431e0"/>
+        <position name="PhysicalScint-6-50x55b6dd4b8d00_pos" unit="mm" x="-550" y="-150" z="200"/>
+        <rotation name="PhysicalScint-6-50x55b6dd4b8d00_rot" unit="deg" x="0" y="90" z="0"/>
+      </physvol>
+      <physvol copynumber="51" name="PhysicalScint-6-50x55b6dd4b90e0">
+        <volumeref ref="LogicalScint0x55b6dd4431e0"/>
+        <position name="PhysicalScint-6-50x55b6dd4b90e0_pos" unit="mm" x="550" y="-150" z="200"/>
+        <rotation name="PhysicalScint-6-50x55b6dd4b90e0_rot" unit="deg" x="0" y="90" z="0"/>
+      </physvol>
+      <physvol copynumber="52" name="PhysicalPsBar-7-50x55b6dd4b9ab0">
+        <volumeref ref="LogicalPsBar0x55b6dd461dc0"/>
+        <position name="PhysicalPsBar-7-50x55b6dd4b9ab0_pos" unit="mm" x="0" y="-150" z="300"/>
+        <rotation name="PhysicalPsBar-7-50x55b6dd4b9ab0_rot" unit="deg" x="0" y="90" z="0"/>
+      </physvol>
+      <physvol copynumber="52" name="PhysicalScint-7-50x55b6dd4b9520">
+        <volumeref ref="LogicalScint0x55b6dd4431e0"/>
+        <position name="PhysicalScint-7-50x55b6dd4b9520_pos" unit="mm" x="-550" y="-150" z="300"/>
+        <rotation name="PhysicalScint-7-50x55b6dd4b9520_rot" unit="deg" x="0" y="90" z="0"/>
+      </physvol>
+      <physvol copynumber="52" name="PhysicalScint-7-50x55b6dd4b9c30">
+        <volumeref ref="LogicalScint0x55b6dd4431e0"/>
+        <position name="PhysicalScint-7-50x55b6dd4b9c30_pos" unit="mm" x="550" y="-150" z="300"/>
+        <rotation name="PhysicalScint-7-50x55b6dd4b9c30_rot" unit="deg" x="0" y="90" z="0"/>
+      </physvol>
+      <physvol copynumber="53" name="PhysicalPsBar-8-50x55b6dd4ba3a0">
+        <volumeref ref="LogicalPsBar0x55b6dd461dc0"/>
+        <position name="PhysicalPsBar-8-50x55b6dd4ba3a0_pos" unit="mm" x="0" y="-150" z="400"/>
+        <rotation name="PhysicalPsBar-8-50x55b6dd4ba3a0_rot" unit="deg" x="0" y="90" z="0"/>
+      </physvol>
+      <physvol copynumber="53" name="PhysicalScint-8-50x55b6dd4b8f30">
+        <volumeref ref="LogicalScint0x55b6dd4431e0"/>
+        <position name="PhysicalScint-8-50x55b6dd4b8f30_pos" unit="mm" x="-550" y="-150" z="400"/>
+        <rotation name="PhysicalScint-8-50x55b6dd4b8f30_rot" unit="deg" x="0" y="90" z="0"/>
+      </physvol>
+      <physvol copynumber="53" name="PhysicalScint-8-50x55b6dd4baf30">
+        <volumeref ref="LogicalScint0x55b6dd4431e0"/>
+        <position name="PhysicalScint-8-50x55b6dd4baf30_pos" unit="mm" x="550" y="-150" z="400"/>
+        <rotation name="PhysicalScint-8-50x55b6dd4baf30_rot" unit="deg" x="0" y="90" z="0"/>
+      </physvol>
+      <physvol copynumber="54" name="PhysicalPsBar-0-60x55b6dd4bb440">
+        <volumeref ref="LogicalPsBar0x55b6dd461dc0"/>
+        <position name="PhysicalPsBar-0-60x55b6dd4bb440_pos" unit="mm" x="-400" y="-50" z="0"/>
+      </physvol>
+      <physvol copynumber="54" name="PhysicalScint-0-60x55b6dd4bc430">
+        <volumeref ref="LogicalScint0x55b6dd4431e0"/>
+        <position name="PhysicalScint-0-60x55b6dd4bc430_pos" unit="mm" x="-400" y="-50" z="-550"/>
+      </physvol>
+      <physvol copynumber="54" name="PhysicalScint-0-60x55b6dd4bb9a0">
+        <volumeref ref="LogicalScint0x55b6dd4431e0"/>
+        <position name="PhysicalScint-0-60x55b6dd4bb9a0_pos" unit="mm" x="-400" y="-50" z="550"/>
+      </physvol>
+      <physvol copynumber="55" name="PhysicalPsBar-1-60x55b6dd4b37f0">
+        <volumeref ref="LogicalPsBar0x55b6dd461dc0"/>
+        <position name="PhysicalPsBar-1-60x55b6dd4b37f0_pos" unit="mm" x="-300" y="-50" z="0"/>
+      </physvol>
+      <physvol copynumber="55" name="PhysicalScint-1-60x55b6dd489d30">
+        <volumeref ref="LogicalScint0x55b6dd4431e0"/>
+        <position name="PhysicalScint-1-60x55b6dd489d30_pos" unit="mm" x="-300" y="-50" z="-550"/>
+      </physvol>
+      <physvol copynumber="55" name="PhysicalScint-1-60x55b6dd48cea0">
+        <volumeref ref="LogicalScint0x55b6dd4431e0"/>
+        <position name="PhysicalScint-1-60x55b6dd48cea0_pos" unit="mm" x="-300" y="-50" z="550"/>
+      </physvol>
+      <physvol copynumber="56" name="PhysicalPsBar-2-60x55b6dd48d0c0">
+        <volumeref ref="LogicalPsBar0x55b6dd461dc0"/>
+        <position name="PhysicalPsBar-2-60x55b6dd48d0c0_pos" unit="mm" x="-200" y="-50" z="0"/>
+      </physvol>
+      <physvol copynumber="56" name="PhysicalScint-2-60x55b6dd49f630">
+        <volumeref ref="LogicalScint0x55b6dd4431e0"/>
+        <position name="PhysicalScint-2-60x55b6dd49f630_pos" unit="mm" x="-200" y="-50" z="-550"/>
+      </physvol>
+      <physvol copynumber="56" name="PhysicalScint-2-60x55b6dd48b2c0">
+        <volumeref ref="LogicalScint0x55b6dd4431e0"/>
+        <position name="PhysicalScint-2-60x55b6dd48b2c0_pos" unit="mm" x="-200" y="-50" z="550"/>
+      </physvol>
+      <physvol copynumber="57" name="PhysicalPsBar-3-60x55b6dd48b9c0">
+        <volumeref ref="LogicalPsBar0x55b6dd461dc0"/>
+        <position name="PhysicalPsBar-3-60x55b6dd48b9c0_pos" unit="mm" x="-100" y="-50" z="0"/>
+      </physvol>
+      <physvol copynumber="57" name="PhysicalScint-3-60x55b6dd48c6c0">
+        <volumeref ref="LogicalScint0x55b6dd4431e0"/>
+        <position name="PhysicalScint-3-60x55b6dd48c6c0_pos" unit="mm" x="-100" y="-50" z="-550"/>
+      </physvol>
+      <physvol copynumber="57" name="PhysicalScint-3-60x55b6dd48c8e0">
+        <volumeref ref="LogicalScint0x55b6dd4431e0"/>
+        <position name="PhysicalScint-3-60x55b6dd48c8e0_pos" unit="mm" x="-100" y="-50" z="550"/>
+      </physvol>
+      <physvol copynumber="58" name="PhysicalPsBar-4-60x55b6dd48ca20">
+        <volumeref ref="LogicalPsBar0x55b6dd461dc0"/>
+        <position name="PhysicalPsBar-4-60x55b6dd48ca20_pos" unit="mm" x="0" y="-50" z="0"/>
+      </physvol>
+      <physvol copynumber="58" name="PhysicalScint-4-60x55b6dd48bbe0">
+        <volumeref ref="LogicalScint0x55b6dd4431e0"/>
+        <position name="PhysicalScint-4-60x55b6dd48bbe0_pos" unit="mm" x="0" y="-50" z="-550"/>
+      </physvol>
+      <physvol copynumber="58" name="PhysicalScint-4-60x55b6dd489f50">
+        <volumeref ref="LogicalScint0x55b6dd4431e0"/>
+        <position name="PhysicalScint-4-60x55b6dd489f50_pos" unit="mm" x="0" y="-50" z="550"/>
+      </physvol>
+      <physvol copynumber="59" name="PhysicalPsBar-5-60x55b6dd48a410">
+        <volumeref ref="LogicalPsBar0x55b6dd461dc0"/>
+        <position name="PhysicalPsBar-5-60x55b6dd48a410_pos" unit="mm" x="100" y="-50" z="0"/>
+      </physvol>
+      <physvol copynumber="59" name="PhysicalScint-5-60x55b6dd48a630">
+        <volumeref ref="LogicalScint0x55b6dd4431e0"/>
+        <position name="PhysicalScint-5-60x55b6dd48a630_pos" unit="mm" x="100" y="-50" z="-550"/>
+      </physvol>
+      <physvol copynumber="59" name="PhysicalScint-5-60x55b6dd48ab10">
+        <volumeref ref="LogicalScint0x55b6dd4431e0"/>
+        <position name="PhysicalScint-5-60x55b6dd48ab10_pos" unit="mm" x="100" y="-50" z="550"/>
+      </physvol>
+      <physvol copynumber="60" name="PhysicalPsBar-6-60x55b6dd4c4ce0">
+        <volumeref ref="LogicalPsBar0x55b6dd461dc0"/>
+        <position name="PhysicalPsBar-6-60x55b6dd4c4ce0_pos" unit="mm" x="200" y="-50" z="0"/>
+      </physvol>
+      <physvol copynumber="60" name="PhysicalScint-6-60x55b6dd4c50c0">
+        <volumeref ref="LogicalScint0x55b6dd4431e0"/>
+        <position name="PhysicalScint-6-60x55b6dd4c50c0_pos" unit="mm" x="200" y="-50" z="-550"/>
+      </physvol>
+      <physvol copynumber="60" name="PhysicalScint-6-60x55b6dd4c5cb0">
+        <volumeref ref="LogicalScint0x55b6dd4431e0"/>
+        <position name="PhysicalScint-6-60x55b6dd4c5cb0_pos" unit="mm" x="200" y="-50" z="550"/>
+      </physvol>
+      <physvol copynumber="61" name="PhysicalPsBar-7-60x55b6dd4b97f0">
+        <volumeref ref="LogicalPsBar0x55b6dd461dc0"/>
+        <position name="PhysicalPsBar-7-60x55b6dd4b97f0_pos" unit="mm" x="300" y="-50" z="0"/>
+      </physvol>
+      <physvol copynumber="61" name="PhysicalScint-7-60x55b6dd4c59c0">
+        <volumeref ref="LogicalScint0x55b6dd4431e0"/>
+        <position name="PhysicalScint-7-60x55b6dd4c59c0_pos" unit="mm" x="300" y="-50" z="-550"/>
+      </physvol>
+      <physvol copynumber="61" name="PhysicalScint-7-60x55b6dd4c5fc0">
+        <volumeref ref="LogicalScint0x55b6dd4431e0"/>
+        <position name="PhysicalScint-7-60x55b6dd4c5fc0_pos" unit="mm" x="300" y="-50" z="550"/>
+      </physvol>
+      <physvol copynumber="62" name="PhysicalPsBar-8-60x55b6dd4c6a50">
+        <volumeref ref="LogicalPsBar0x55b6dd461dc0"/>
+        <position name="PhysicalPsBar-8-60x55b6dd4c6a50_pos" unit="mm" x="400" y="-50" z="0"/>
+      </physvol>
+      <physvol copynumber="62" name="PhysicalScint-8-60x55b6dd4c6170">
+        <volumeref ref="LogicalScint0x55b6dd4431e0"/>
+        <position name="PhysicalScint-8-60x55b6dd4c6170_pos" unit="mm" x="400" y="-50" z="-550"/>
+      </physvol>
+      <physvol copynumber="62" name="PhysicalScint-8-60x55b6dd4c6390">
+        <volumeref ref="LogicalScint0x55b6dd4431e0"/>
+        <position name="PhysicalScint-8-60x55b6dd4c6390_pos" unit="mm" x="400" y="-50" z="550"/>
+      </physvol>
+      <physvol copynumber="63" name="PhysicalPsBar-0-70x55b6dd4c7630">
+        <volumeref ref="LogicalPsBar0x55b6dd461dc0"/>
+        <position name="PhysicalPsBar-0-70x55b6dd4c7630_pos" unit="mm" x="0" y="50" z="-400"/>
+        <rotation name="PhysicalPsBar-0-70x55b6dd4c7630_rot" unit="deg" x="0" y="90" z="0"/>
+      </physvol>
+      <physvol copynumber="63" name="PhysicalScint-0-70x55b6dd4c7850">
+        <volumeref ref="LogicalScint0x55b6dd4431e0"/>
+        <position name="PhysicalScint-0-70x55b6dd4c7850_pos" unit="mm" x="-550" y="50" z="-400"/>
+        <rotation name="PhysicalScint-0-70x55b6dd4c7850_rot" unit="deg" x="0" y="90" z="0"/>
+      </physvol>
+      <physvol copynumber="63" name="PhysicalScint-0-70x55b6dd4c7020">
+        <volumeref ref="LogicalScint0x55b6dd4431e0"/>
+        <position name="PhysicalScint-0-70x55b6dd4c7020_pos" unit="mm" x="550" y="50" z="-400"/>
+        <rotation name="PhysicalScint-0-70x55b6dd4c7020_rot" unit="deg" x="0" y="90" z="0"/>
+      </physvol>
+      <physvol copynumber="64" name="PhysicalPsBar-1-70x55b6dd4c7cf0">
+        <volumeref ref="LogicalPsBar0x55b6dd461dc0"/>
+        <position name="PhysicalPsBar-1-70x55b6dd4c7cf0_pos" unit="mm" x="0" y="50" z="-300"/>
+        <rotation name="PhysicalPsBar-1-70x55b6dd4c7cf0_rot" unit="deg" x="0" y="90" z="0"/>
+      </physvol>
+      <physvol copynumber="64" name="PhysicalScint-1-70x55b6dd4c82a0">
+        <volumeref ref="LogicalScint0x55b6dd4431e0"/>
+        <position name="PhysicalScint-1-70x55b6dd4c82a0_pos" unit="mm" x="-550" y="50" z="-300"/>
+        <rotation name="PhysicalScint-1-70x55b6dd4c82a0_rot" unit="deg" x="0" y="90" z="0"/>
+      </physvol>
+      <physvol copynumber="64" name="PhysicalScint-1-70x55b6dd4c78b0">
+        <volumeref ref="LogicalScint0x55b6dd4431e0"/>
+        <position name="PhysicalScint-1-70x55b6dd4c78b0_pos" unit="mm" x="550" y="50" z="-300"/>
+        <rotation name="PhysicalScint-1-70x55b6dd4c78b0_rot" unit="deg" x="0" y="90" z="0"/>
+      </physvol>
+      <physvol copynumber="65" name="PhysicalPsBar-2-70x55b6dd491890">
+        <volumeref ref="LogicalPsBar0x55b6dd461dc0"/>
+        <position name="PhysicalPsBar-2-70x55b6dd491890_pos" unit="mm" x="0" y="50" z="-200"/>
+        <rotation name="PhysicalPsBar-2-70x55b6dd491890_rot" unit="deg" x="0" y="90" z="0"/>
+      </physvol>
+      <physvol copynumber="65" name="PhysicalScint-2-70x55b6dd491cf0">
+        <volumeref ref="LogicalScint0x55b6dd4431e0"/>
+        <position name="PhysicalScint-2-70x55b6dd491cf0_pos" unit="mm" x="-550" y="50" z="-200"/>
+        <rotation name="PhysicalScint-2-70x55b6dd491cf0_rot" unit="deg" x="0" y="90" z="0"/>
+      </physvol>
+      <physvol copynumber="65" name="PhysicalScint-2-70x55b6dd490d10">
+        <volumeref ref="LogicalScint0x55b6dd4431e0"/>
+        <position name="PhysicalScint-2-70x55b6dd490d10_pos" unit="mm" x="550" y="50" z="-200"/>
+        <rotation name="PhysicalScint-2-70x55b6dd490d10_rot" unit="deg" x="0" y="90" z="0"/>
+      </physvol>
+      <physvol copynumber="66" name="PhysicalPsBar-3-70x55b6dd491d50">
+        <volumeref ref="LogicalPsBar0x55b6dd461dc0"/>
+        <position name="PhysicalPsBar-3-70x55b6dd491d50_pos" unit="mm" x="0" y="50" z="-100"/>
+        <rotation name="PhysicalPsBar-3-70x55b6dd491d50_rot" unit="deg" x="0" y="90" z="0"/>
+      </physvol>
+      <physvol copynumber="66" name="PhysicalScint-3-70x55b6dd492a90">
+        <volumeref ref="LogicalScint0x55b6dd4431e0"/>
+        <position name="PhysicalScint-3-70x55b6dd492a90_pos" unit="mm" x="-550" y="50" z="-100"/>
+        <rotation name="PhysicalScint-3-70x55b6dd492a90_rot" unit="deg" x="0" y="90" z="0"/>
+      </physvol>
+      <physvol copynumber="66" name="PhysicalScint-3-70x55b6dd492e60">
+        <volumeref ref="LogicalScint0x55b6dd4431e0"/>
+        <position name="PhysicalScint-3-70x55b6dd492e60_pos" unit="mm" x="550" y="50" z="-100"/>
+        <rotation name="PhysicalScint-3-70x55b6dd492e60_rot" unit="deg" x="0" y="90" z="0"/>
+      </physvol>
+      <physvol copynumber="67" name="PhysicalPsBar-4-70x55b6dd491350">
+        <volumeref ref="LogicalPsBar0x55b6dd461dc0"/>
+        <position name="PhysicalPsBar-4-70x55b6dd491350_pos" unit="mm" x="0" y="50" z="0"/>
+        <rotation name="PhysicalPsBar-4-70x55b6dd491350_rot" unit="deg" x="0" y="90" z="0"/>
+      </physvol>
+      <physvol copynumber="67" name="PhysicalScint-4-70x55b6dd49ff60">
+        <volumeref ref="LogicalScint0x55b6dd4431e0"/>
+        <position name="PhysicalScint-4-70x55b6dd49ff60_pos" unit="mm" x="-550" y="50" z="0"/>
+        <rotation name="PhysicalScint-4-70x55b6dd49ff60_rot" unit="deg" x="0" y="90" z="0"/>
+      </physvol>
+      <physvol copynumber="67" name="PhysicalScint-4-70x55b6dd491fd0">
+        <volumeref ref="LogicalScint0x55b6dd4431e0"/>
+        <position name="PhysicalScint-4-70x55b6dd491fd0_pos" unit="mm" x="550" y="50" z="0"/>
+        <rotation name="PhysicalScint-4-70x55b6dd491fd0_rot" unit="deg" x="0" y="90" z="0"/>
+      </physvol>
+      <physvol copynumber="68" name="PhysicalPsBar-5-70x55b6dd4a0060">
+        <volumeref ref="LogicalPsBar0x55b6dd461dc0"/>
+        <position name="PhysicalPsBar-5-70x55b6dd4a0060_pos" unit="mm" x="0" y="50" z="100"/>
+        <rotation name="PhysicalPsBar-5-70x55b6dd4a0060_rot" unit="deg" x="0" y="90" z="0"/>
+      </physvol>
+      <physvol copynumber="68" name="PhysicalScint-5-70x55b6dd471210">
+        <volumeref ref="LogicalScint0x55b6dd4431e0"/>
+        <position name="PhysicalScint-5-70x55b6dd471210_pos" unit="mm" x="-550" y="50" z="100"/>
+        <rotation name="PhysicalScint-5-70x55b6dd471210_rot" unit="deg" x="0" y="90" z="0"/>
+      </physvol>
+      <physvol copynumber="68" name="PhysicalScint-5-70x55b6dd4c8450">
+        <volumeref ref="LogicalScint0x55b6dd4431e0"/>
+        <position name="PhysicalScint-5-70x55b6dd4c8450_pos" unit="mm" x="550" y="50" z="100"/>
+        <rotation name="PhysicalScint-5-70x55b6dd4c8450_rot" unit="deg" x="0" y="90" z="0"/>
+      </physvol>
+      <physvol copynumber="69" name="PhysicalPsBar-6-70x55b6dd472910">
+        <volumeref ref="LogicalPsBar0x55b6dd461dc0"/>
+        <position name="PhysicalPsBar-6-70x55b6dd472910_pos" unit="mm" x="0" y="50" z="200"/>
+        <rotation name="PhysicalPsBar-6-70x55b6dd472910_rot" unit="deg" x="0" y="90" z="0"/>
+      </physvol>
+      <physvol copynumber="69" name="PhysicalScint-6-70x55b6dd4717f0">
+        <volumeref ref="LogicalScint0x55b6dd4431e0"/>
+        <position name="PhysicalScint-6-70x55b6dd4717f0_pos" unit="mm" x="-550" y="50" z="200"/>
+        <rotation name="PhysicalScint-6-70x55b6dd4717f0_rot" unit="deg" x="0" y="90" z="0"/>
+      </physvol>
+      <physvol copynumber="69" name="PhysicalScint-6-70x55b6dd4990d0">
+        <volumeref ref="LogicalScint0x55b6dd4431e0"/>
+        <position name="PhysicalScint-6-70x55b6dd4990d0_pos" unit="mm" x="550" y="50" z="200"/>
+        <rotation name="PhysicalScint-6-70x55b6dd4990d0_rot" unit="deg" x="0" y="90" z="0"/>
+      </physvol>
+      <physvol copynumber="70" name="PhysicalPsBar-7-70x55b6dd471f50">
+        <volumeref ref="LogicalPsBar0x55b6dd461dc0"/>
+        <position name="PhysicalPsBar-7-70x55b6dd471f50_pos" unit="mm" x="0" y="50" z="300"/>
+        <rotation name="PhysicalPsBar-7-70x55b6dd471f50_rot" unit="deg" x="0" y="90" z="0"/>
+      </physvol>
+      <physvol copynumber="70" name="PhysicalScint-7-70x55b6dd4724c0">
+        <volumeref ref="LogicalScint0x55b6dd4431e0"/>
+        <position name="PhysicalScint-7-70x55b6dd4724c0_pos" unit="mm" x="-550" y="50" z="300"/>
+        <rotation name="PhysicalScint-7-70x55b6dd4724c0_rot" unit="deg" x="0" y="90" z="0"/>
+      </physvol>
+      <physvol copynumber="70" name="PhysicalScint-7-70x55b6dd472e40">
+        <volumeref ref="LogicalScint0x55b6dd4431e0"/>
+        <position name="PhysicalScint-7-70x55b6dd472e40_pos" unit="mm" x="550" y="50" z="300"/>
+        <rotation name="PhysicalScint-7-70x55b6dd472e40_rot" unit="deg" x="0" y="90" z="0"/>
+      </physvol>
+      <physvol copynumber="71" name="PhysicalPsBar-8-70x55b6dd473c90">
+        <volumeref ref="LogicalPsBar0x55b6dd461dc0"/>
+        <position name="PhysicalPsBar-8-70x55b6dd473c90_pos" unit="mm" x="0" y="50" z="400"/>
+        <rotation name="PhysicalPsBar-8-70x55b6dd473c90_rot" unit="deg" x="0" y="90" z="0"/>
+      </physvol>
+      <physvol copynumber="71" name="PhysicalScint-8-70x55b6dd473060">
+        <volumeref ref="LogicalScint0x55b6dd4431e0"/>
+        <position name="PhysicalScint-8-70x55b6dd473060_pos" unit="mm" x="-550" y="50" z="400"/>
+        <rotation name="PhysicalScint-8-70x55b6dd473060_rot" unit="deg" x="0" y="90" z="0"/>
+      </physvol>
+      <physvol copynumber="71" name="PhysicalScint-8-70x55b6dd473280">
+        <volumeref ref="LogicalScint0x55b6dd4431e0"/>
+        <position name="PhysicalScint-8-70x55b6dd473280_pos" unit="mm" x="550" y="50" z="400"/>
+        <rotation name="PhysicalScint-8-70x55b6dd473280_rot" unit="deg" x="0" y="90" z="0"/>
+      </physvol>
+      <physvol copynumber="72" name="PhysicalPsBar-0-80x55b6dd473690">
+        <volumeref ref="LogicalPsBar0x55b6dd461dc0"/>
+        <position name="PhysicalPsBar-0-80x55b6dd473690_pos" unit="mm" x="-400" y="150" z="0"/>
+      </physvol>
+      <physvol copynumber="72" name="PhysicalScint-0-80x55b6dd473430">
+        <volumeref ref="LogicalScint0x55b6dd4431e0"/>
+        <position name="PhysicalScint-0-80x55b6dd473430_pos" unit="mm" x="-400" y="150" z="-550"/>
+      </physvol>
+      <physvol copynumber="72" name="PhysicalScint-0-80x55b6dd475c30">
+        <volumeref ref="LogicalScint0x55b6dd4431e0"/>
+        <position name="PhysicalScint-0-80x55b6dd475c30_pos" unit="mm" x="-400" y="150" z="550"/>
+      </physvol>
+      <physvol copynumber="73" name="PhysicalPsBar-1-80x55b6dd4744b0">
+        <volumeref ref="LogicalPsBar0x55b6dd461dc0"/>
+        <position name="PhysicalPsBar-1-80x55b6dd4744b0_pos" unit="mm" x="-300" y="150" z="0"/>
+      </physvol>
+      <physvol copynumber="73" name="PhysicalScint-1-80x55b6dd474910">
+        <volumeref ref="LogicalScint0x55b6dd4431e0"/>
+        <position name="PhysicalScint-1-80x55b6dd474910_pos" unit="mm" x="-300" y="150" z="-550"/>
+      </physvol>
+      <physvol copynumber="73" name="PhysicalScint-1-80x55b6dd474e70">
+        <volumeref ref="LogicalScint0x55b6dd4431e0"/>
+        <position name="PhysicalScint-1-80x55b6dd474e70_pos" unit="mm" x="-300" y="150" z="550"/>
+      </physvol>
+      <physvol copynumber="74" name="PhysicalPsBar-2-80x55b6dd4753a0">
+        <volumeref ref="LogicalPsBar0x55b6dd461dc0"/>
+        <position name="PhysicalPsBar-2-80x55b6dd4753a0_pos" unit="mm" x="-200" y="150" z="0"/>
+      </physvol>
+      <physvol copynumber="74" name="PhysicalScint-2-80x55b6dd475a80">
+        <volumeref ref="LogicalScint0x55b6dd4431e0"/>
+        <position name="PhysicalScint-2-80x55b6dd475a80_pos" unit="mm" x="-200" y="150" z="-550"/>
+      </physvol>
+      <physvol copynumber="74" name="PhysicalScint-2-80x55b6dd4da840">
+        <volumeref ref="LogicalScint0x55b6dd4431e0"/>
+        <position name="PhysicalScint-2-80x55b6dd4da840_pos" unit="mm" x="-200" y="150" z="550"/>
+      </physvol>
+      <physvol copynumber="75" name="PhysicalPsBar-3-80x55b6dd4dad80">
+        <volumeref ref="LogicalPsBar0x55b6dd461dc0"/>
+        <position name="PhysicalPsBar-3-80x55b6dd4dad80_pos" unit="mm" x="-100" y="150" z="0"/>
+      </physvol>
+      <physvol copynumber="75" name="PhysicalScint-3-80x55b6dd4dbd10">
+        <volumeref ref="LogicalScint0x55b6dd4431e0"/>
+        <position name="PhysicalScint-3-80x55b6dd4dbd10_pos" unit="mm" x="-100" y="150" z="-550"/>
+      </physvol>
+      <physvol copynumber="75" name="PhysicalScint-3-80x55b6dd4dab20">
+        <volumeref ref="LogicalScint0x55b6dd4431e0"/>
+        <position name="PhysicalScint-3-80x55b6dd4dab20_pos" unit="mm" x="-100" y="150" z="550"/>
+      </physvol>
+      <physvol copynumber="76" name="PhysicalPsBar-4-80x55b6dd4db6a0">
+        <volumeref ref="LogicalPsBar0x55b6dd461dc0"/>
+        <position name="PhysicalPsBar-4-80x55b6dd4db6a0_pos" unit="mm" x="0" y="150" z="0"/>
+      </physvol>
+      <physvol copynumber="76" name="PhysicalScint-4-80x55b6dd4a0ed0">
+        <volumeref ref="LogicalScint0x55b6dd4431e0"/>
+        <position name="PhysicalScint-4-80x55b6dd4a0ed0_pos" unit="mm" x="0" y="150" z="-550"/>
+      </physvol>
+      <physvol copynumber="76" name="PhysicalScint-4-80x55b6dd4a10f0">
+        <volumeref ref="LogicalScint0x55b6dd4431e0"/>
+        <position name="PhysicalScint-4-80x55b6dd4a10f0_pos" unit="mm" x="0" y="150" z="550"/>
+      </physvol>
+      <physvol copynumber="77" name="PhysicalPsBar-5-80x55b6dd4733a0">
+        <volumeref ref="LogicalPsBar0x55b6dd461dc0"/>
+        <position name="PhysicalPsBar-5-80x55b6dd4733a0_pos" unit="mm" x="100" y="150" z="0"/>
+      </physvol>
+      <physvol copynumber="77" name="PhysicalScint-5-80x55b6dd4a16d0">
+        <volumeref ref="LogicalScint0x55b6dd4431e0"/>
+        <position name="PhysicalScint-5-80x55b6dd4a16d0_pos" unit="mm" x="100" y="150" z="-550"/>
+      </physvol>
+      <physvol copynumber="77" name="PhysicalScint-5-80x55b6dd4a1f70">
+        <volumeref ref="LogicalScint0x55b6dd4431e0"/>
+        <position name="PhysicalScint-5-80x55b6dd4a1f70_pos" unit="mm" x="100" y="150" z="550"/>
+      </physvol>
+      <physvol copynumber="78" name="PhysicalPsBar-6-80x55b6dd4a2350">
+        <volumeref ref="LogicalPsBar0x55b6dd461dc0"/>
+        <position name="PhysicalPsBar-6-80x55b6dd4a2350_pos" unit="mm" x="200" y="150" z="0"/>
+      </physvol>
+      <physvol copynumber="78" name="PhysicalScint-6-80x55b6dd4a2c90">
+        <volumeref ref="LogicalScint0x55b6dd4431e0"/>
+        <position name="PhysicalScint-6-80x55b6dd4a2c90_pos" unit="mm" x="200" y="150" z="-550"/>
+      </physvol>
+      <physvol copynumber="78" name="PhysicalScint-6-80x55b6dd4a2eb0">
+        <volumeref ref="LogicalScint0x55b6dd4431e0"/>
+        <position name="PhysicalScint-6-80x55b6dd4a2eb0_pos" unit="mm" x="200" y="150" z="550"/>
+      </physvol>
+      <physvol copynumber="79" name="PhysicalPsBar-7-80x55b6dd4a4470">
+        <volumeref ref="LogicalPsBar0x55b6dd461dc0"/>
+        <position name="PhysicalPsBar-7-80x55b6dd4a4470_pos" unit="mm" x="300" y="150" z="0"/>
+      </physvol>
+      <physvol copynumber="79" name="PhysicalScint-7-80x55b6dd4a3230">
+        <volumeref ref="LogicalScint0x55b6dd4431e0"/>
+        <position name="PhysicalScint-7-80x55b6dd4a3230_pos" unit="mm" x="300" y="150" z="-550"/>
+      </physvol>
+      <physvol copynumber="79" name="PhysicalScint-7-80x55b6dd4a3950">
+        <volumeref ref="LogicalScint0x55b6dd4431e0"/>
+        <position name="PhysicalScint-7-80x55b6dd4a3950_pos" unit="mm" x="300" y="150" z="550"/>
+      </physvol>
+      <physvol copynumber="80" name="PhysicalPsBar-8-80x55b6dd4740f0">
+        <volumeref ref="LogicalPsBar0x55b6dd461dc0"/>
+        <position name="PhysicalPsBar-8-80x55b6dd4740f0_pos" unit="mm" x="400" y="150" z="0"/>
+      </physvol>
+      <physvol copynumber="80" name="PhysicalScint-8-80x55b6dd4a4a20">
+        <volumeref ref="LogicalScint0x55b6dd4431e0"/>
+        <position name="PhysicalScint-8-80x55b6dd4a4a20_pos" unit="mm" x="400" y="150" z="-550"/>
+      </physvol>
+      <physvol copynumber="80" name="PhysicalScint-8-80x55b6dd4a4c40">
+        <volumeref ref="LogicalScint0x55b6dd4431e0"/>
+        <position name="PhysicalScint-8-80x55b6dd4a4c40_pos" unit="mm" x="400" y="150" z="550"/>
+      </physvol>
+      <physvol copynumber="81" name="PhysicalPsBar-0-90x55b6dd4a6200">
+        <volumeref ref="LogicalPsBar0x55b6dd461dc0"/>
+        <position name="PhysicalPsBar-0-90x55b6dd4a6200_pos" unit="mm" x="0" y="250" z="-400"/>
+        <rotation name="PhysicalPsBar-0-90x55b6dd4a6200_rot" unit="deg" x="0" y="90" z="0"/>
+      </physvol>
+      <physvol copynumber="81" name="PhysicalScint-0-90x55b6dd4a4fc0">
+        <volumeref ref="LogicalScint0x55b6dd4431e0"/>
+        <position name="PhysicalScint-0-90x55b6dd4a4fc0_pos" unit="mm" x="-550" y="250" z="-400"/>
+        <rotation name="PhysicalScint-0-90x55b6dd4a4fc0_rot" unit="deg" x="0" y="90" z="0"/>
+      </physvol>
+      <physvol copynumber="81" name="PhysicalScint-0-90x55b6dd4a56e0">
+        <volumeref ref="LogicalScint0x55b6dd4431e0"/>
+        <position name="PhysicalScint-0-90x55b6dd4a56e0_pos" unit="mm" x="550" y="250" z="-400"/>
+        <rotation name="PhysicalScint-0-90x55b6dd4a56e0_rot" unit="deg" x="0" y="90" z="0"/>
+      </physvol>
+      <physvol copynumber="82" name="PhysicalPsBar-1-90x55b6dd4a8d10">
+        <volumeref ref="LogicalPsBar0x55b6dd461dc0"/>
+        <position name="PhysicalPsBar-1-90x55b6dd4a8d10_pos" unit="mm" x="0" y="250" z="-300"/>
+        <rotation name="PhysicalPsBar-1-90x55b6dd4a8d10_rot" unit="deg" x="0" y="90" z="0"/>
+      </physvol>
+      <physvol copynumber="82" name="PhysicalScint-1-90x55b6dd4a84f0">
+        <volumeref ref="LogicalScint0x55b6dd4431e0"/>
+        <position name="PhysicalScint-1-90x55b6dd4a84f0_pos" unit="mm" x="-550" y="250" z="-300"/>
+        <rotation name="PhysicalScint-1-90x55b6dd4a84f0_rot" unit="deg" x="0" y="90" z="0"/>
+      </physvol>
+      <physvol copynumber="82" name="PhysicalScint-1-90x55b6dd4a89d0">
+        <volumeref ref="LogicalScint0x55b6dd4431e0"/>
+        <position name="PhysicalScint-1-90x55b6dd4a89d0_pos" unit="mm" x="550" y="250" z="-300"/>
+        <rotation name="PhysicalScint-1-90x55b6dd4a89d0_rot" unit="deg" x="0" y="90" z="0"/>
+      </physvol>
+      <physvol copynumber="83" name="PhysicalPsBar-2-90x55b6dd4a6780">
+        <volumeref ref="LogicalPsBar0x55b6dd461dc0"/>
+        <position name="PhysicalPsBar-2-90x55b6dd4a6780_pos" unit="mm" x="0" y="250" z="-200"/>
+        <rotation name="PhysicalPsBar-2-90x55b6dd4a6780_rot" unit="deg" x="0" y="90" z="0"/>
+      </physvol>
+      <physvol copynumber="83" name="PhysicalScint-2-90x55b6dd4a69a0">
+        <volumeref ref="LogicalScint0x55b6dd4431e0"/>
+        <position name="PhysicalScint-2-90x55b6dd4a69a0_pos" unit="mm" x="-550" y="250" z="-200"/>
+        <rotation name="PhysicalScint-2-90x55b6dd4a69a0_rot" unit="deg" x="0" y="90" z="0"/>
+      </physvol>
+      <physvol copynumber="83" name="PhysicalScint-2-90x55b6dd4a7dd0">
+        <volumeref ref="LogicalScint0x55b6dd4431e0"/>
+        <position name="PhysicalScint-2-90x55b6dd4a7dd0_pos" unit="mm" x="550" y="250" z="-200"/>
+        <rotation name="PhysicalScint-2-90x55b6dd4a7dd0_rot" unit="deg" x="0" y="90" z="0"/>
+      </physvol>
+      <physvol copynumber="84" name="PhysicalPsBar-3-90x55b6dd4a46c0">
+        <volumeref ref="LogicalPsBar0x55b6dd461dc0"/>
+        <position name="PhysicalPsBar-3-90x55b6dd4a46c0_pos" unit="mm" x="0" y="250" z="-100"/>
+        <rotation name="PhysicalPsBar-3-90x55b6dd4a46c0_rot" unit="deg" x="0" y="90" z="0"/>
+      </physvol>
+      <physvol copynumber="84" name="PhysicalScint-3-90x55b6dd4a7410">
+        <volumeref ref="LogicalScint0x55b6dd4431e0"/>
+        <position name="PhysicalScint-3-90x55b6dd4a7410_pos" unit="mm" x="-550" y="250" z="-100"/>
+        <rotation name="PhysicalScint-3-90x55b6dd4a7410_rot" unit="deg" x="0" y="90" z="0"/>
+      </physvol>
+      <physvol copynumber="84" name="PhysicalScint-3-90x55b6dd4a5b30">
+        <volumeref ref="LogicalScint0x55b6dd4431e0"/>
+        <position name="PhysicalScint-3-90x55b6dd4a5b30_pos" unit="mm" x="550" y="250" z="-100"/>
+        <rotation name="PhysicalScint-3-90x55b6dd4a5b30_rot" unit="deg" x="0" y="90" z="0"/>
+      </physvol>
+      <physvol copynumber="85" name="PhysicalPsBar-4-90x55b6dd4ed020">
+        <volumeref ref="LogicalPsBar0x55b6dd461dc0"/>
+        <position name="PhysicalPsBar-4-90x55b6dd4ed020_pos" unit="mm" x="0" y="250" z="0"/>
+        <rotation name="PhysicalPsBar-4-90x55b6dd4ed020_rot" unit="deg" x="0" y="90" z="0"/>
+      </physvol>
+      <physvol copynumber="85" name="PhysicalScint-4-90x55b6dd4ec400">
+        <volumeref ref="LogicalScint0x55b6dd4431e0"/>
+        <position name="PhysicalScint-4-90x55b6dd4ec400_pos" unit="mm" x="-550" y="250" z="0"/>
+        <rotation name="PhysicalScint-4-90x55b6dd4ec400_rot" unit="deg" x="0" y="90" z="0"/>
+      </physvol>
+      <physvol copynumber="85" name="PhysicalScint-4-90x55b6dd4ec620">
+        <volumeref ref="LogicalScint0x55b6dd4431e0"/>
+        <position name="PhysicalScint-4-90x55b6dd4ec620_pos" unit="mm" x="550" y="250" z="0"/>
+        <rotation name="PhysicalScint-4-90x55b6dd4ec620_rot" unit="deg" x="0" y="90" z="0"/>
+      </physvol>
+      <physvol copynumber="86" name="PhysicalPsBar-5-90x55b6dd4b1400">
+        <volumeref ref="LogicalPsBar0x55b6dd461dc0"/>
+        <position name="PhysicalPsBar-5-90x55b6dd4b1400_pos" unit="mm" x="0" y="250" z="100"/>
+        <rotation name="PhysicalPsBar-5-90x55b6dd4b1400_rot" unit="deg" x="0" y="90" z="0"/>
+      </physvol>
+      <physvol copynumber="86" name="PhysicalScint-5-90x55b6dd4b1860">
+        <volumeref ref="LogicalScint0x55b6dd4431e0"/>
+        <position name="PhysicalScint-5-90x55b6dd4b1860_pos" unit="mm" x="-550" y="250" z="100"/>
+        <rotation name="PhysicalScint-5-90x55b6dd4b1860_rot" unit="deg" x="0" y="90" z="0"/>
+      </physvol>
+      <physvol copynumber="86" name="PhysicalScint-5-90x55b6dd4942b0">
+        <volumeref ref="LogicalScint0x55b6dd4431e0"/>
+        <position name="PhysicalScint-5-90x55b6dd4942b0_pos" unit="mm" x="550" y="250" z="100"/>
+        <rotation name="PhysicalScint-5-90x55b6dd4942b0_rot" unit="deg" x="0" y="90" z="0"/>
+      </physvol>
+      <physvol copynumber="87" name="PhysicalPsBar-6-90x55b6dd4944d0">
+        <volumeref ref="LogicalPsBar0x55b6dd461dc0"/>
+        <position name="PhysicalPsBar-6-90x55b6dd4944d0_pos" unit="mm" x="0" y="250" z="200"/>
+        <rotation name="PhysicalPsBar-6-90x55b6dd4944d0_rot" unit="deg" x="0" y="90" z="0"/>
+      </physvol>
+      <physvol copynumber="87" name="PhysicalScint-6-90x55b6dd494a40">
+        <volumeref ref="LogicalScint0x55b6dd4431e0"/>
+        <position name="PhysicalScint-6-90x55b6dd494a40_pos" unit="mm" x="-550" y="250" z="200"/>
+        <rotation name="PhysicalScint-6-90x55b6dd494a40_rot" unit="deg" x="0" y="90" z="0"/>
+      </physvol>
+      <physvol copynumber="87" name="PhysicalScint-6-90x55b6dd495010">
+        <volumeref ref="LogicalScint0x55b6dd4431e0"/>
+        <position name="PhysicalScint-6-90x55b6dd495010_pos" unit="mm" x="550" y="250" z="200"/>
+        <rotation name="PhysicalScint-6-90x55b6dd495010_rot" unit="deg" x="0" y="90" z="0"/>
+      </physvol>
+      <physvol copynumber="88" name="PhysicalPsBar-7-90x55b6dd4951c0">
+        <volumeref ref="LogicalPsBar0x55b6dd461dc0"/>
+        <position name="PhysicalPsBar-7-90x55b6dd4951c0_pos" unit="mm" x="0" y="250" z="300"/>
+        <rotation name="PhysicalPsBar-7-90x55b6dd4951c0_rot" unit="deg" x="0" y="90" z="0"/>
+      </physvol>
+      <physvol copynumber="88" name="PhysicalScint-7-90x55b6dd498490">
+        <volumeref ref="LogicalScint0x55b6dd4431e0"/>
+        <position name="PhysicalScint-7-90x55b6dd498490_pos" unit="mm" x="-550" y="250" z="300"/>
+        <rotation name="PhysicalScint-7-90x55b6dd498490_rot" unit="deg" x="0" y="90" z="0"/>
+      </physvol>
+      <physvol copynumber="88" name="PhysicalScint-7-90x55b6dd4986b0">
+        <volumeref ref="LogicalScint0x55b6dd4431e0"/>
+        <position name="PhysicalScint-7-90x55b6dd4986b0_pos" unit="mm" x="550" y="250" z="300"/>
+        <rotation name="PhysicalScint-7-90x55b6dd4986b0_rot" unit="deg" x="0" y="90" z="0"/>
+      </physvol>
+      <physvol copynumber="89" name="PhysicalPsBar-8-90x55b6dd496900">
+        <volumeref ref="LogicalPsBar0x55b6dd461dc0"/>
+        <position name="PhysicalPsBar-8-90x55b6dd496900_pos" unit="mm" x="0" y="250" z="400"/>
+        <rotation name="PhysicalPsBar-8-90x55b6dd496900_rot" unit="deg" x="0" y="90" z="0"/>
+      </physvol>
+      <physvol copynumber="89" name="PhysicalScint-8-90x55b6dd498980">
+        <volumeref ref="LogicalScint0x55b6dd4431e0"/>
+        <position name="PhysicalScint-8-90x55b6dd498980_pos" unit="mm" x="-550" y="250" z="400"/>
+        <rotation name="PhysicalScint-8-90x55b6dd498980_rot" unit="deg" x="0" y="90" z="0"/>
+      </physvol>
+      <physvol copynumber="89" name="PhysicalScint-8-90x55b6dd498d10">
+        <volumeref ref="LogicalScint0x55b6dd4431e0"/>
+        <position name="PhysicalScint-8-90x55b6dd498d10_pos" unit="mm" x="550" y="250" z="400"/>
+        <rotation name="PhysicalScint-8-90x55b6dd498d10_rot" unit="deg" x="0" y="90" z="0"/>
+      </physvol>
+    </volume>
+  </structure>
+
+  <setup name="Default" version="1.0">
+    <world ref="World0x55b6db019060"/>
+  </setup>
+
+</gdml>
