@@ -104,6 +104,7 @@ public:
   bool CheckTrackForScintillator(unsigned int barIndex);
   bool IfPassThroughOneOrMoreOfScintillators(std::vector<unsigned int> vecOfScintBarIndex);
   std::vector<unsigned int> CheckTrackForRequiredLayers(std::vector<unsigned int> vecOfLayerIndex);
+  std::vector<lite_interface::ScintillatorBar_V2*> CheckTrackForRequiredLayers_V2(std::vector<unsigned int> vecOfLayerIndex);
   bool CheckTrackForLayerNum(unsigned int layerIndex, unsigned int &hittedBarIndex);
   int GetTraversalTime();
   unsigned int NumOfHitsInLayer(unsigned int layerNum);
@@ -118,8 +119,11 @@ public:
   bool HitInAllLayers();
   bool HitInRequiredLayers();
   bool HitInRequiredLayers(std::vector<unsigned int> reqLayersVec);
+  bool MuonPassingThroughLayer(unsigned int layerIndex);
   SingleMuonTrack* GetTrackSubset(std::vector<unsigned int> reqLayersVec);
   double GetChisquareByNDF(std::vector<unsigned int> reqLayersVec,bool xy=true);
+  std::vector<double> GetChisquareAndNDF(std::vector<unsigned int> reqLayersVec,bool xy=true);
+  std::vector<TF1*> GetFittedFormula_XY_ZY(std::vector<unsigned int> reqLayersVec);
   /*
    * Function to detect the number of Hitted Scintillators in the specified layer
    */

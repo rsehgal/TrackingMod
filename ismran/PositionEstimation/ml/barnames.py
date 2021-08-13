@@ -35,5 +35,7 @@ layer[8]=["PS73_SF878",    "PS74_SF891",    "PS75_SF887",    "PS76_SF888",    "P
     "PS79_SF883",    "PS80_SF877",    "PS81_SF879"]
 layer[9]=["PS82_SF885",    "PS83_SF890",    "PS84_SF882",
     "PS85_SF881",    "PS86_SF884",    "PS87_SF876",    "PS88_SF880",    "PS89_SF873",    "PS90_SF875"]
+
+vecOfLayersOrientation=[True,False,True,False,True,False,True,True,False,True]
 #print(barNamesList[5])
-print(layer[5])
+#print(layer[5])

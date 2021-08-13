@@ -140,6 +140,9 @@ lite_interface::Point3D *ScintillatorBar_V2::EstimateHitPosition_Param()
   double zval    = 0.;
   double xOrZval = 0.;
 
+  //Just for debugging, should be commented later 
+  //std::cout << RED << "BarIndex : " << fBarIndex <<" : LayerIndex : " << GetLayerIndex() << RESET << std::endl;
+
   if (IsSimulation)
     xOrZval = param->Eval(GetDelTCorrected() / 1000.);
   else
@@ -210,7 +213,7 @@ void ScintillatorBar_V2::Print()
 {
   std::cout << "-----------------------------------------------" << std::endl;
   std::cout << "BarIndex : " << fBarIndex << " : LayerIndex : " << GetLayerIndex() <<" : BAR Name : " << vecOfBarsNamess[fBarIndex]
-            << " :  Energy :  " << GetQMeanCorrected() << " : DelT : " << GetDelT() << std::endl;
+            << " :  Energy :  " << GetQMeanCorrected() << " : DelT : " << GetDelT() << " : " ;//std::endl;
 #ifdef USE_FOR_SIMULATION
   std::cout << "Mean Hit Position : " << hitX << " , " << hitY << " , " << hitZ << std::endl;
   std::cout << "Exact Hit Position individual : " << exactHitX << " , " << exactHitY << " , " << exactHitZ << std::endl;
@@ -223,6 +226,8 @@ void ScintillatorBar_V2::Print()
   fMeanHitPosition->Print();
   std::cout << "Exact Hit Position : ";
   fExactHitPosition->Print();
+#else
+  std::cout << GetTAverage() << std::endl;
 #endif
 
 #endif

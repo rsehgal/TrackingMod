@@ -8,7 +8,7 @@ from helpers import *
 from helpersClassifier import *
 
 df = pd.read_csv(sys.argv[1],names=['Q','DelT','zQ','actz'])
-x=df[['Q','DelT','zQ']]
+x=df[['Q','DelT']]
 y=df['actz']
 
 #dftest = pd.read_csv(sys.argv[2],names=['Q','DelT','zQ','actz'])

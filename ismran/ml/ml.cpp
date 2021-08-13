@@ -411,18 +411,19 @@ void GenerateMuonTestData(std::string filename, unsigned int inspectedLayerIndex
       {
 #ifdef USE_FOR_SIMULATION
 
-if (scint->GetBarIndex() == 13) {
+        if (scint->GetBarIndex() == 13) {
           if (!(scint->GetLayerIndex() % 2))
             outfile << scint->GetLayerIndex() << "," << scint->GetBarIndex() << "," << scint->GetLogQNearByQFar() << ","
                     << scint->GetDelTCorrected() << "," << scint->EstimateHitPosition_QParam()->GetZ() << ","
                     << GetClass(scintStart->GetBarIndexInLayer()) << std::endl;
           else
-//if (GetClass(scintStart->GetBarIndexInLayer()) == 0) 
-        {
-	    std::cout << RED << __FILE__ << " : " << __LINE__ << std::endl;	
-            outfile << scint->GetLayerIndex() << "," << scint->GetBarIndex() << "," << scint->GetLogQNearByQFar_ForSimulation() << ","
-                    << scint->GetDelTCorrected() << "," << scint->EstimateHitPosition_QParam()->GetX() << ","
-                    << GetClass(scintStart->GetBarIndexInLayer()) << std::endl;
+          // if (GetClass(scintStart->GetBarIndexInLayer()) == 0)
+          {
+            std::cout << RED << __FILE__ << " : " << __LINE__ << std::endl;
+            outfile << scint->GetLayerIndex() << "," << scint->GetBarIndex() << ","
+                    << scint->GetLogQNearByQFar_ForSimulation() << "," << scint->GetDelTCorrected() << ","
+                    << scint->EstimateHitPosition_QParam()->GetX() << "," << GetClass(scintStart->GetBarIndexInLayer())
+                    << std::endl;
           }
         }
 
@@ -433,9 +434,9 @@ if (scint->GetBarIndex() == 13) {
             outfile << scint->GetLayerIndex() << "," << scint->GetBarIndex() << "," << scint->GetLogQNearByQFar() << ","
                     << scint->GetDelTCorrected() << "," << scint->EstimateHitPosition_QParam()->GetZ() << ","
                     << GetClass(scintStart->GetBarIndexInLayer()) << std::endl;
-          else 
-//if (GetClass(scintStart->GetBarIndexInLayer()) == 0) 
-	{
+          else
+          // if (GetClass(scintStart->GetBarIndexInLayer()) == 0)
+          {
             outfile << scint->GetLayerIndex() << "," << scint->GetBarIndex() << "," << scint->GetLogQNearByQFar() << ","
                     << scint->GetDelTCorrected() << "," << scint->EstimateHitPosition_QParam()->GetX() << ","
                     << GetClass(scintStart->GetBarIndexInLayer()) << std::endl;
@@ -529,14 +530,22 @@ void GenerateTrainingData_All(std::string filename, unsigned int inspectedLayerI
                 outfile << scintStart->EstimateHitPosition_Param()->GetZ() << "," <<
            scint->EstimateHitPosition_Param()->GetZ()
                         << "," << scintEnd->EstimateHitPosition_Param()->GetZ() << std::endl;*/
-        if (qparam)
-          outfile << scintStart->EstimateHitPosition_QParam()->GetZ() << ","
-                  << scint->EstimateHitPosition_QParam()->GetZ() << ","
-                  << scintEnd->EstimateHitPosition_QParam()->GetZ() << std::endl;
-        else
+        if (qparam) {
+          if (!vecOfLayersOrientation[inspectedLayerIndex]) {
+            outfile << scintStart->EstimateHitPosition_QParam()->GetZ() << ","
+                    << scint->EstimateHitPosition_QParam()->GetX() << ","
+                    << scintEnd->EstimateHitPosition_QParam()->GetZ() << std::endl;
+          } else {
+            outfile << scintStart->EstimateHitPosition_QParam()->GetX() << ","
+                    << scint->EstimateHitPosition_QParam()->GetZ() << ","
+                    << scintEnd->EstimateHitPosition_QParam()->GetX() << std::endl;
+          }
+
+        } else {
           outfile << scintStart->EstimateHitPosition_Param()->GetZ() << ","
                   << scint->EstimateHitPosition_Param()->GetZ() << "," << scintEnd->EstimateHitPosition_Param()->GetZ()
                   << std::endl;
+        }
         /*if(qparam)
                 outfile << scintStart->EstimateHitPosition_Param()->GetZ() << ","
                         << scintEnd->EstimateHitPosition_Param()->GetZ() << "," <<

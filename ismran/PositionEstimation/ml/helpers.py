@@ -89,7 +89,13 @@ def create_polynomial_regression_model_2(x,y,xtest,ytest,degree):
 	print("-------------------------------------------")
 	print("RMSE of test set is {}".format(rmse_test))
 	print("R2 score of test set is {}".format(r2_test))
+	print("=============== Mu : Sigma : Predicted=====================")
+	from scipy.stats import norm
+	(mu,sigma) = norm.fit(y_test_predict)
+	print(mu,sigma)
+	print("===========================================================")
 	PlotDiffHist(xtest,ytest,y_test_predict)
+	return y_test_predict
 
 def save_regression_model(x,y,barName,location,degree=4):
 	modelName="model_Regression_"+barName+"_"+str(location)+".sav"
@@ -269,6 +275,9 @@ def LinearSVR(x,y):
 	ProcessIt(regr,x,y)
 
 def PlotConfusionMatrix(model,x_test,y_test):
+	print("===== From Confusion Matrix =====")
+	print("Shape of xtest : "+str(x_test.shape))
+	print("Shape of ytest : "+str(y_test.shape))
 	score = model.score(x_test, y_test)
 	print(score)
 	plot_confusion_matrix(model, x_test, y_test,normalize='true')

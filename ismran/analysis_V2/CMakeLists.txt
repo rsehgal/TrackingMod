@@ -27,6 +27,12 @@ option(STAGGERED_GEOM "Use Scattered geometry configurtion" OFF)
 option(SINGLE_POINT_CALIBRATION "Use Single Point Muon Calibration" ON)
 option(WITH_GEANT4_UIVIS "Build example with Geant4 UI and Vis drivers" ON)
 option(FINGER_PATTERN_CONDITION "Flag to see the finger plot of layers" OFF)
+option(VERTICAL_SIGNAL_CABLE "Flag to use the code for Vertical arrangement" OFF)
+
+if(VERTICAL_SIGNAL_CABLE)
+add_definitions(-DVERTICAL_ARRANGEMENT)
+endif(VERTICAL_SIGNAL_CABLE)
+
 
 if(FINGER_PATTERN_CONDITION)
 add_definitions(-DUSE_CRITICAL_COND)
@@ -75,6 +81,17 @@ include_directories(../..)
 include_directories(../inc)
 include_directories(../../base)
 include_directories(../ml)
+include_directories(../../CoordinateGenerator/inc)
+include_directories(../../TemplatizedInterface/inc)
+
+#Block to generate visualizer library
+include_directories(../visualizer/Eve/inc)
+include_directories(../visualizer)
+include_directories(../../Helpers/inc)
+file(GLOB visualizerSources ../visualizer/Eve/src/*.cpp ../visualizer/*.cpp ../../Helpers/src/CommonFunc.cpp ../../Helpers/src/Track.cpp)
+add_library(Visualizer SHARED ${visualizerSources})
+target_link_libraries(Visualizer ${ROOT_LIBRARIES} Eve Geom)
+
 
 #ROOT_GENERATE_DICTIONARY(G__Tomo ../inc/Point3D.h LINKDEF ../inc/DictLinkDef.h)
 ROOT_GENERATE_DICTIONARY(G__Tomo ../inc/Point3D.h ../inc/ScintillatorBar_V2.h ../inc/SingleMuonTrack.h LINKDEF ../inc/DictLinkDef.h)
@@ -154,6 +171,9 @@ target_link_libraries(TestMuonEnergyCalib ${ROOT_LIBRARIES} Tracklib)
 
 add_executable(MuonTrackAnalysis test/MuonTrackAnalysis.cpp ${sources} ${headers})
 target_link_libraries(MuonTrackAnalysis ${ROOT_LIBRARIES} Tracklib)
+
+add_executable(MuonTrackAnalysis_TestMuonTrackTimeEstimation test/MuonTrackAnalysis_TestMuonTrackTimeEstimation.cpp ${sources} ${headers})
+target_link_libraries(MuonTrackAnalysis_TestMuonTrackTimeEstimation ${ROOT_LIBRARIES} Tracklib)
 
 add_executable(TestMuonTrackTimeEstimation test/TestMuonTrackTimeEstimation.cpp ${sources} ${headers})
 target_link_libraries(TestMuonTrackTimeEstimation ${ROOT_LIBRARIES} Tracklib)
@@ -329,4 +349,36 @@ target_link_libraries(MuonTrackAnalysis_Dissection ${ROOT_LIBRARIES} Tracklib)
 add_executable(MuonTrackAnalysis_For_Chi2_Test test/MuonTrackAnalysis_For_Chi2_Test.cpp ${sources} ${headers})
 target_link_libraries(MuonTrackAnalysis_For_Chi2_Test ${ROOT_LIBRARIES} Tracklib)
 
+add_executable(MuonTrackAnalysis_HitMultiplicity test/MuonTrackAnalysis_HitMultiplicity.cpp ${sources} ${headers})
+target_link_libraries(MuonTrackAnalysis_HitMultiplicity ${ROOT_LIBRARIES} Tracklib)
+
+add_executable(MuonTrackAnalysis_HitMultiplicityDebug test/MuonTrackAnalysis_HitMultiplicityDebug.cpp ${sources} ${headers})
+target_link_libraries(MuonTrackAnalysis_HitMultiplicityDebug ${ROOT_LIBRARIES} Tracklib)
+
+add_executable(MuonTrackAnalysis_MuonLifeTime test/MuonTrackAnalysis_MuonLifeTime.cpp ${sources} ${headers})
+target_link_libraries(MuonTrackAnalysis_MuonLifeTime ${ROOT_LIBRARIES} Tracklib)
+
+add_executable(MuonTrackAnalysis_EnergySum test/MuonTrackAnalysis_EnergySum.cpp ${sources} ${headers})
+target_link_libraries(MuonTrackAnalysis_EnergySum ${ROOT_LIBRARIES} Tracklib)
+
+add_executable(MuonTrackAnalysis_MuonRate test/MuonTrackAnalysis_MuonRate.cpp ${sources} ${headers})
+target_link_libraries(MuonTrackAnalysis_MuonRate ${ROOT_LIBRARIES} Tracklib)
+
+add_executable(debugTest test/debugTest.cpp ${sources} ${headers})
+target_link_libraries(debugTest ${ROOT_LIBRARIES} Tracklib)
+
+add_executable(TestQMean_CalibAndUnCalib test/TestQMean_CalibAndUnCalib.cpp ${sources} ${headers})
+target_link_libraries(TestQMean_CalibAndUnCalib ${ROOT_LIBRARIES} Tracklib)
+
+add_executable(MuonTrackAnalysis_VisualizeTracks test/MuonTrackAnalysis_VisualizeTracks.cpp ${sources} ${headers})
+target_link_libraries(MuonTrackAnalysis_VisualizeTracks ${root_libraries} tracklib visualizer)
+
+add_executable(TestVisualizationFromROOTFile test/TestVisualizationFromROOTFile.cpp ${sources} ${headers})
+target_link_libraries(TestVisualizationFromROOTFile ${ROOT_LIBRARIES} Tracklib Visualizer)
+
+add_executable(MuonTrackAnalysis_AngularDistributionVerticalMuons test/MuonTrackAnalysis_AngularDistributionVerticalMuons.cpp ${sources} ${headers})
+target_link_libraries(MuonTrackAnalysis_AngularDistributionVerticalMuons ${ROOT_LIBRARIES} Tracklib)
+
+#add_executable(VisualizeTracksFromIsmran test/VisualizeTracksFromIsmran.cpp ${sources} ${headers})
+#target_link_libraries(VisualizeTracksFromIsmran ${ROOT_LIBRARIES} Tracklib)
 

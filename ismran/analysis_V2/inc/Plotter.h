@@ -111,6 +111,7 @@ extern std::vector<TH1D *> PlotEnergyDistributionWithMultiplicity(std::vector<un
  *
  */
 extern std::vector<lite_interface::Point3D *> CreateFittedTrack(std::vector<lite_interface::Point3D *> vecOfPoint3D);
+//extern double GetChisquareNDF(std::vector<lite_interface::Point3D *> vecOfPoint3D);
 extern TF1* GetFitFormula(std::vector<lite_interface::Point3D*> vecOfPoint3D,unsigned int trackType, bool planeType);
 extern std::vector<double> GetFittedXorZ(TGraphErrors *gr, std::vector<lite_interface::Point3D *> vecOfPoint3D);
 
@@ -131,6 +132,7 @@ extern int GetBinNumber(int nbins, double start, double end);
  * ~20ns
  */
 extern ULong64_t GetMuonTrackTimeWindow(std::vector<lite_interface::ScintillatorBar_V2 *> scintBarVec);
+extern ULong64_t GetMuonTrackTimeWindow(std::vector<lite_interface::SingleMuonTrack *> smtVec);
 
 extern TH1F *GetSolidAngleCorrectedHist(TH1F *solidAngleHist);
 

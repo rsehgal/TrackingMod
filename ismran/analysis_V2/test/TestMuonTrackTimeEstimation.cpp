@@ -14,15 +14,16 @@
 #include "includes.hh"
 #include "HardwareNomenclature.h"
 
+int main(int argc, char *argv[])
+{
+  lite_interface::Calibration *calib = lite_interface::Calibration::instance("completeCalib2.root");
+  gStyle->SetOptStat(0);
+  TApplication *fApp = new TApplication("Test", NULL, NULL);
+//  lite_interface::Analyzer analyzerObj(argv[1],true,20000);
+  lite_interface::Analyzer analyzerObj(argv[1],true,0);
+  std::vector<lite_interface::ScintillatorBar_V2 *> scintBarVec = analyzerObj.GetVectorOfScintillators();
+  ULong64_t timeWindow                                          = GetMuonTrackTimeWindow(scintBarVec);
+  fApp->Run();
 
-
-int main(int argc, char *argv[]){
-	TApplication *fApp = new TApplication("Test", NULL, NULL);
-	lite_interface::Analyzer analyzerObj(argv[1]);
-	std::vector<lite_interface::ScintillatorBar_V2*> scintBarVec = analyzerObj.GetVectorOfScintillators();
-	ULong64_t timeWindow = GetMuonTrackTimeWindow(scintBarVec);
-	fApp->Run();
-
-	return 0;
-
+  return 0;
 }

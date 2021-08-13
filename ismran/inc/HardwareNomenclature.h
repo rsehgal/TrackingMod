@@ -36,7 +36,11 @@ extern std::vector<double> vecOfLayersYPos;
 extern std::vector<bool> vecOfLayersOrientation;
 extern double GetYOfLayer(unsigned int layerIndex);
 extern std::vector<double> vecOfAttenCoeff;
+extern std::vector<bool> vecOfMuonCalibIndex_Muon;
+extern std::vector<bool> vecOfMuonCalibIndex_Source;
 extern std::vector<bool> vecOfMuonCalibIndex;
+extern std::vector<unsigned int> barsVerticalIndex;
+extern bool useMuoncalib;
 struct Point2D{
 	double x;
 	double y;

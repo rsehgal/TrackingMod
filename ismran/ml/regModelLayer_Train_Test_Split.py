@@ -6,6 +6,7 @@ import sys
 from matplotlib import pyplot as plt
 from sklearn.neural_network import MLPRegressor
 from sklearn.datasets import make_regression
+from scipy.stats import norm
 
 #df = pd.read_csv(sys.argv[1],names=['layer9_z','layer8_x','layer7_z','layer8_z'])
 df = pd.read_csv(sys.argv[1],names=['layerIndex','barIndex','Q','delT','x','z'])
@@ -24,7 +25,8 @@ print(x.head(10))
 
 #model = MLPRegressor(hidden_layer_sizes=(10,5),random_state=45, max_iter=1000,tol=0.001)
 #from mymlp import *
-model = MLPRegressor(hidden_layer_sizes=(150,100,20),random_state=45, max_iter=1000,tol=0.001)
+model = MLPRegressor(hidden_layer_sizes=(5,10,5),random_state=45, max_iter=1000,tol=0.001)
+#model = MLPRegressor(hidden_layer_sizes=(150,100,20),random_state=45, max_iter=1000,tol=0.001)
 #Inspect(model,x,y,numOfEpochs=50)
 
 from sklearn.neighbors import KNeighborsRegressor
@@ -68,6 +70,8 @@ axs[0].set_title('Hist DiffX')
 axs[0].hist(diffX,color='r',bins=bins)
 axs[1].set_title('Hist DiffZ')
 axs[1].hist(diffZ,color='g',bins=bins)
+print("Mean and SD of DiffX : "+str(norm.fit(diffX)))
+print("Mean and SD of DiffZ : "+str(norm.fit(diffZ)))
 
 
 #plt.hist(diffX)

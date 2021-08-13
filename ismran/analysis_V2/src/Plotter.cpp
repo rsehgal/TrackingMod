@@ -7,26 +7,26 @@
 #include "SingleMuonTrack.h"
 #include <TGraph.h>
 #include <TVector3.h>
-
+#include "colors.h"
 namespace lite_interface {
 
-TF1* GetFitFormula(std::vector<lite_interface::Point3D*> vecOfPoint3D, unsigned int trackType, bool planeType){
-TF1 *formula;
-    if (trackType == exactTrack) {
+TF1 *GetFitFormula(std::vector<lite_interface::Point3D *> vecOfPoint3D, unsigned int trackType, bool planeType)
+{
+  TF1 *formula;
+  if (trackType == exactTrack) {
+    if (planeType)
+      formula = lite_interface::GetFittedMuonTrackFormulaXY(vecOfPoint3D, true);
+    else
+      formula = lite_interface::GetFittedMuonTrackFormulaZY(vecOfPoint3D, true);
+  } else {
+    if (trackType == smearedTrack) {
       if (planeType)
-        formula = lite_interface::GetFittedMuonTrackFormulaXY(vecOfPoint3D, true);
+        formula = lite_interface::GetFittedMuonTrackFormulaXY(vecOfPoint3D, false);
       else
-        formula = lite_interface::GetFittedMuonTrackFormulaZY(vecOfPoint3D, true);
-    } else {
-      if (trackType == smearedTrack) {
-        if (planeType)
-          formula = lite_interface::GetFittedMuonTrackFormulaXY(vecOfPoint3D, false);
-        else
-          formula = lite_interface::GetFittedMuonTrackFormulaZY(vecOfPoint3D, false);
-      }
+        formula = lite_interface::GetFittedMuonTrackFormulaZY(vecOfPoint3D, false);
     }
-    return formula;
-
+  }
+  return formula;
 }
 
 TH1F *PlotZenithAngle(std::vector<std::vector<lite_interface::Point3D *>> vecOfVecOfPoint3D)
@@ -40,6 +40,95 @@ TH1F *PlotZenithAngle(std::vector<std::vector<lite_interface::Point3D *>> vecOfV
 
   return PlotZenithAngle(vecOfZenithAngle, 5);
 }
+ULong64_t GetMuonTrackTimeWindow(std::vector<lite_interface::SingleMuonTrack *> smtVec)
+{
+  ULong64_t timeWindow = 20000;
+  ULong64_t startTime  = 0;
+  ULong64_t endTime    = 0;
+  std::vector<lite_interface::SingleMuonTrack *>::iterator itr;
+  bool startFound = false;
+  bool endFound   = false;
+  // TH1F *timeWindowHist = new TH1F("Time Window Estimation", "", 1000, 0, 35000);
+  TH1F *timeWindowHist = new TH1F("Time Window Estimation", "", 35, 0, 35);
+  int counter          = 0;
+
+  TLegend *legendTimingWindow = new TLegend(0.2, 0.2, .8, .8);
+
+  for (itr = smtVec.begin(); itr != smtVec.end(); itr++) {
+    // if((*itr)->GetLayerIndex() == 0){
+    //    if (((*itr)->GetQMeanCorrected() > 15.) && ((*itr)->GetQMeanCorrected() < 35.))
+    {
+      std::vector<lite_interface::ScintillatorBar_V2 *> scintVec = (*itr)->GetMuonTrack();
+
+      if (scintVec[0]->GetLayerIndex() == (numOfLayers - 1)) {
+        startFound = true;
+        // endTime = (*itr)->GetTSmallTimestamp();
+        startTime = scintVec[0]->GetTSmallTimestamp();
+        // startTime = (*itr)->GetTAverage();
+      }
+
+      // if((*itr)->GetLayerIndex() == (numOfLayers-1)){
+      if (scintVec[scintVec.size() - 1]->GetLayerIndex() == 0) {
+        endFound = true;
+        // startTime = (*itr)->GetTSmallTimestamp();
+        endTime = scintVec[scintVec.size() - 1]->GetTSmallTimestamp();
+        // endTime = (*itr)->GetTAverage();
+      }
+
+      if (startFound && endFound) {
+        startFound = false;
+        endFound   = false;
+        counter++;
+        Long64_t delt = (endTime - startTime);
+        std::cout << "STart Time : " << startTime << " : EndTime : " << endTime
+                  << " :  (EndTime - StartTime) : " << delt << std::endl;
+
+        timeWindow = delt / 1000.;
+        timeWindowHist->Fill(timeWindow);
+      }
+    }
+  }
+  // GetTSmallTimestamp
+
+  TFile *fp = new TFile("PassageTime.root", "RECREATE");
+  fp->cd();
+  timeWindowHist->Write();
+  fp->Close();
+  TF1 *formula = new TF1("Formula", "gaus", 0., 25000.);
+  timeWindowHist->Fit(formula, "qn");
+  formula->SetLineWidth(4);
+  double mean  = formula->GetParameter(1);
+  double sigma = formula->GetParameter(2);
+
+  float meanF  = roundoff(mean);
+  float sigmaF = roundoff(sigma);
+  std::cout << MAGENTA << "MeanF : " << meanF << " : sigmaF : " << sigmaF << std::endl;
+  std::string meanStr  = "#mu = " + std::to_string(meanF);
+  std::string sigmaStr = "#sigma = " + std::to_string(sigmaF);
+  std::cout << RED << meanStr << " : " << sigmaStr << RESET << std::endl;
+  legendTimingWindow->AddEntry(timeWindowHist, "Data", "p");
+  legendTimingWindow->AddEntry(formula, "Fit", "l");
+  //  legendTimingWindow->AddEntry((TObject*)0, meanStr.c_str(), "l");
+  // legendTimingWindow->AddEntry((TObject*)0, sigmaStr.c_str(), "l");
+  float meanErr  = formula->GetParError(1);
+  float sigmaErr = formula->GetParError(2);
+  // legendTimingWindow->AddEntry((TObject*)0, Form("#chi^{2}/ndf = %d / %d",formula->GetChisquare(),formula->GetNDF()),
+  // "l");
+  legendTimingWindow->AddEntry((TObject *)0, Form("#mu = %0.2f #pm %0.2f", meanF, meanErr), "");
+  legendTimingWindow->AddEntry((TObject *)0, Form("#sigma = %0.2f #pm %0.2f", sigmaF, sigmaErr), "");
+
+  new TCanvas("TimeWindowHist", "TimeWindowHist");
+  timeWindowHist->Draw("p");
+  timeWindowHist->SetMarkerStyle(8);
+  timeWindowHist->SetMarkerSize(1);
+
+  formula->Draw("same");
+  legendTimingWindow->Draw("same");
+
+  std::cout << "@@@@@@@@ COUNTER Val : " << counter << " @@@@@@@@" << std::endl;
+
+  return timeWindow;
+}
 
 ULong64_t GetMuonTrackTimeWindow(std::vector<lite_interface::ScintillatorBar_V2 *> scintBarVec)
 {
@@ -49,36 +138,154 @@ ULong64_t GetMuonTrackTimeWindow(std::vector<lite_interface::ScintillatorBar_V2 
   std::vector<lite_interface::ScintillatorBar_V2 *>::iterator itr;
   bool startFound      = false;
   bool endFound        = false;
-  TH1F *timeWindowHist = new TH1F("TimeWindowHist", "TimeWindowHist", 50, 0, 30);
+  TH1F *timeWindowHist = new TH1F("Time Window Estimation", "", 1000, 0, 35000);
   int counter          = 0;
+
+  TLegend *legendTimingWindow = new TLegend(0.2, 0.2, .8, .8);
+
+  for (itr = scintBarVec.begin(); itr != scintBarVec.end(); itr++) {
+    // if((*itr)->GetLayerIndex() == 0){
+    if (((*itr)->GetQMeanCorrected() > 15.) && ((*itr)->GetQMeanCorrected() < 35.)) {
+      if ((*itr)->GetLayerIndex() == (numOfLayers - 1)) {
+        startFound = true;
+        // endTime = (*itr)->GetTSmallTimestamp();
+        startTime = (*itr)->GetTSmallTimestamp();
+        // startTime = (*itr)->GetTAverage();
+      }
+
+      // if((*itr)->GetLayerIndex() == (numOfLayers-1)){
+      if ((*itr)->GetLayerIndex() == 0) {
+        endFound = true;
+        // startTime = (*itr)->GetTSmallTimestamp();
+        endTime = (*itr)->GetTSmallTimestamp();
+        // endTime = (*itr)->GetTAverage();
+      }
+
+      if (startFound && endFound) {
+        startFound = false;
+        endFound   = false;
+        counter++;
+        Long64_t delt = (endTime - startTime);
+        std::cout << "STart Time : " << startTime << " : EndTime : " << endTime
+                  << " :  (EndTime - StartTime) : " << delt << std::endl;
+
+        timeWindow = delt; // / 1000.;
+        timeWindowHist->Fill(timeWindow);
+      }
+    }
+  }
+  // GetTSmallTimestamp
+
+  TFile *fp = new TFile("PassageTime.root", "RECREATE");
+  fp->cd();
+  timeWindowHist->Write();
+  fp->Close();
+  TF1 *formula = new TF1("Formula", "gaus", 0., 25000.);
+  timeWindowHist->Fit(formula, "qn");
+  formula->SetLineWidth(4);
+  double mean  = formula->GetParameter(1);
+  double sigma = formula->GetParameter(2);
+
+  float meanF  = roundoff(mean);
+  float sigmaF = roundoff(sigma);
+  std::cout << MAGENTA << "MeanF : " << meanF << " : sigmaF : " << sigmaF << std::endl;
+  std::string meanStr  = "#mu = " + std::to_string(meanF);
+  std::string sigmaStr = "#sigma = " + std::to_string(sigmaF);
+  std::cout << RED << meanStr << " : " << sigmaStr << RESET << std::endl;
+  legendTimingWindow->AddEntry(timeWindowHist, "Data", "p");
+  legendTimingWindow->AddEntry(formula, "Fit", "l");
+  //  legendTimingWindow->AddEntry((TObject*)0, meanStr.c_str(), "l");
+  // legendTimingWindow->AddEntry((TObject*)0, sigmaStr.c_str(), "l");
+  float meanErr  = formula->GetParError(1);
+  float sigmaErr = formula->GetParError(2);
+  // legendTimingWindow->AddEntry((TObject*)0, Form("#chi^{2}/ndf = %d / %d",formula->GetChisquare(),formula->GetNDF()),
+  // "l");
+  legendTimingWindow->AddEntry((TObject *)0, Form("#mu = %0.2f #pm %0.2f", meanF, meanErr), "");
+  legendTimingWindow->AddEntry((TObject *)0, Form("#sigma = %0.2f #pm %0.2f", sigmaF, sigmaErr), "");
+
+  new TCanvas("TimeWindowHist", "TimeWindowHist");
+  timeWindowHist->Draw("p");
+  timeWindowHist->SetMarkerStyle(8);
+  timeWindowHist->SetMarkerSize(1);
+
+  formula->Draw("same");
+  legendTimingWindow->Draw("same");
+
+  std::cout << "@@@@@@@@ COUNTER Val : " << counter << " @@@@@@@@" << std::endl;
+
+  return timeWindow;
+}
+#if (0)
+ULong64_t GetMuonTrackTimeWindow(std::vector<lite_interface::ScintillatorBar_V2 *> scintBarVec)
+{
+  ULong64_t timeWindow = 20000;
+  ULong64_t startTime  = 0;
+  ULong64_t endTime    = 0;
+  std::vector<lite_interface::ScintillatorBar_V2 *>::iterator itr;
+  bool startFound               = false;
+  bool endFound                 = false;
+  TH1F *timeWindowHist          = new TH1F("TimeWindowHist", "TimeWindowHist", 100, 0, 30000);
+  int counter                   = 0;
+  std::vector<bool> hitInLayer  = {false, false, false, false, false, false, false, false, false, false};
+  std::vector<ULong64_t> tstamp = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+  std::cout << "======================================" << std::endl;
   for (itr = scintBarVec.begin(); itr != scintBarVec.end(); itr++) {
     /*if(!startFound && !endFound)
       std::cout << "@@@@ Correctly set to False values @@@@" << std::endl;*/
 
     // if((*itr)->GetLayerIndex() == 0){
-    if ((*itr)->GetLayerIndex() == (numOfLayers - 1)) {
-      startFound = true;
-      // endTime = (*itr)->GetTSmallTimestamp();
-      startTime = (*itr)->GetTSmallTimestamp();
-    }
+    if (((*itr)->GetQMeanCorrected() > 15.) && ((*itr)->GetQMeanCorrected() < 35.)) {
 
-    // if((*itr)->GetLayerIndex() == (numOfLayers-1)){
-    if ((*itr)->GetLayerIndex() == 0) {
-      endFound = true;
-      // startTime = (*itr)->GetTSmallTimestamp();
-      endTime = (*itr)->GetTSmallTimestamp();
-    }
+      (*itr)->Print();
 
-    if (startFound && endFound) {
-      startFound = false;
-      endFound   = false;
-      counter++;
-      Long64_t delt = (endTime - startTime);
-      std::cout << "STart Time : " << startTime << " : EndTime : " << endTime << " :  (EndTime - StartTime) : " << delt
-                << std::endl;
+      for (unsigned int i = 0; i < hitInLayer.size(); i++) {
+        if ((*itr)->GetLayerIndex() == i) {
+          hitInLayer[i] = true;
+          tstamp[i]     = (*itr)->GetTAverage();
+        }
+      }
+      bool muonFound = true;
 
-      timeWindow = delt / 1000.;
-      timeWindowHist->Fill(timeWindow);
+      for (unsigned int i = 0; i < hitInLayer.size(); i++) {
+        muonFound &= hitInLayer[i];
+      }
+
+      if (muonFound) {
+
+        std::cout << "======================================" << std::endl;
+        Long64_t diff = tstamp[9] - tstamp[0];
+        std::cout << RED << "DIFF : " << diff << RESET << std::endl;
+        timeWindowHist->Fill(diff);
+        hitInLayer = {false, false, false, false, false, false, false, false, false, false};
+        tstamp     = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+      }
+
+      /*if ((*itr)->GetLayerIndex() == (numOfLayers - 1)) {
+        startFound = true;
+        // endTime = (*itr)->GetTSmallTimestamp();
+        // startTime = (*itr)->GetTSmallTimestamp();
+        startTime = (*itr)->GetTAverage();
+      }
+
+      // if((*itr)->GetLayerIndex() == (numOfLayers-1)){
+      if ((*itr)->GetLayerIndex() == 0) {
+        endFound = true;
+        // startTime = (*itr)->GetTSmallTimestamp();
+        // endTime = (*itr)->GetTSmallTimestamp();
+        endTime = (*itr)->GetTAverage();
+      }
+
+      if (startFound && endFound) {
+        startFound = false;
+        endFound   = false;
+        counter++;
+        Long64_t delt = (endTime - startTime);
+        std::cout << "STart Time : " << startTime << " : EndTime : " << endTime
+                  << " :  (EndTime - StartTime) : " << delt << std::endl;
+
+        timeWindow = delt; // / 1000.;
+        timeWindowHist->Fill(timeWindow);
+      }*/
     }
   }
   // GetTSmallTimestamp
@@ -107,6 +314,7 @@ TH1F *PlotQ(std::vector<lite_interface::ScintillatorBar_V2 *> scintBarVec, ushor
   }
   return hist;
 }
+#endif
 
 TH1F *PlotQ_0123(std::vector<lite_interface::ScintillatorBar_V2 *> scintBarVec, ushort barIndex, ushort opt,
                  bool energKev)
@@ -777,10 +985,13 @@ TH1F *PlotStripProfileOfLayer(std::vector<lite_interface::SingleMuonTrack *> smt
 
 TH1F *PlotHitMultiplicityOfLayer(std::vector<lite_interface::SingleMuonTrack *> smtVec, ushort layerIndex)
 {
-  std::string layerName = "HitMultiplicity_Layer_" + std::to_string(layerIndex);
-  TH1F *hist = new TH1F(layerName.c_str(), layerName.c_str(), numOfBarsInEachLayer, 1, numOfBarsInEachLayer + 1);
+  std::string layerName = "Strip Multiplicity: Layer " + std::to_string(layerIndex);
+  TH1F *hist            = new TH1F(layerName.c_str(), "", numOfBarsInEachLayer, 1, numOfBarsInEachLayer + 1);
   for (unsigned int i = 0; i < smtVec.size(); i++) {
-    hist->Fill(smtVec[i]->GetNumOfHittedScintillatorsInLayer(layerIndex));
+    if (smtVec[i]->HitInRequiredLayers()) {
+      unsigned int numOfHittedScints = smtVec[i]->GetNumOfHittedScintillatorsInLayer(layerIndex);
+      if (numOfHittedScints > 0) hist->Fill(smtVec[i]->GetNumOfHittedScintillatorsInLayer(layerIndex));
+    }
   }
   return hist;
 }
@@ -1244,6 +1455,35 @@ std::vector<lite_interface::Point3D *> CreateFittedTrack(std::vector<lite_interf
   return fittedMuonTrack;
 }
 
+#if (0)
+double GetChisquareNDF(std::vector<lite_interface::Point3D *> vecOfPoint3D)
+{
+  std::vector<Double_t> xVec, yVec, zVec;
+  std::vector<Double_t> xVecErr, yVecErr, zVecErr;
+  std::vector<lite_interface::Point3D *>::iterator itr;
+  for (itr = vecOfPoint3D.begin(); itr != vecOfPoint3D.end(); itr++) {
+    // std::cout <<"=================" << std::endl;
+    //(*itr)->Print();
+    xVec.push_back((*itr)->GetX());
+    xVecErr.push_back(errorX);
+    yVec.push_back((*itr)->GetY());
+    yVecErr.push_back(errorY);
+    zVec.push_back((*itr)->GetZ());
+    zVecErr.push_back(10.);
+  }
+  TGraphErrors *grxy = new TGraphErrors(xVec.size(), &xVec[0], &yVec[0], &xVecErr[0], &yVecErr[0]);
+  // std::vector<double> fittedX = GetFittedXorZ(grxy, vecOfPoint3D);
+  TGraphErrors *grzy = new TGraphErrors(zVec.size(), &zVec[0], &yVec[0], &zVecErr[0], &yVecErr[0]);
+  // std::vector<double> fittedZ = GetFittedXorZ(grzy, vecOfPoint3D);
+  /*std::vector<Point3D *> fittedMuonTrack;
+  for (unsigned int i = 0; i < xVec.size(); i++) {
+      fittedMuonTrack.push_back(new Point3D(fittedX[i], yVec[i], fittedZ[i]));
+  }
+  return fittedMuonTrack;*/
+}
+#endif
+
+// double GetChisquareNDF(std::vector<lite_interface::Point3D *> vecOfPoint3D);
 std::vector<double> GetFittedXorZ(TGraphErrors *gr, std::vector<lite_interface::Point3D *> vecOfPoint3D)
 {
   std::vector<Double_t> xVec, yVec, zVec;

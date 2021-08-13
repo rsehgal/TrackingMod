@@ -23,12 +23,12 @@ print(x.head(10))
 #x = np.array([5, 15, 25, 35, 45, 55]).reshape((-1, 1))
 #y = np.array([5, 20, 14, 32, 22, 38])
 
-#model = LinearRegression().fit(x, y)
+model = LinearRegression().fit(x, y)
 #r_sq = model.score(x, y)
 #print('coefficient of determination:', r_sq)
 
 #model = LinearRegression()
-model = MLPRegressor(hidden_layer_sizes=(10,10,10,5,10,7),random_state=1, max_iter=1000,tol=0.001)
+#model = MLPRegressor(hidden_layer_sizes=(10,10,10,5,10,7),random_state=1, max_iter=1000,tol=0.001)
 #from mymlp import *
 #Inspect(model,x,y,numOfEpochs=25)
 model.fit(x,y)
@@ -66,8 +66,8 @@ for i in range(len(x_test)):
     #print(i)
     subList=[]
     #print(x_test[i])
-    subList.append(x_test[i][1])
     subList.append(y_predict[i])
+    subList.append(x_test[i][1])
     supList.append(subList)
 
 supListArray = np.array(supList)

@@ -17,6 +17,7 @@ class Point2D;
 
 extern void AutoCallers();
 extern Tracking::Vector3D<double> ConvertToTomoVector3D(Point3D pt);
+extern Tracking::Vector3D<double>* ConvertToTomoVector3D(lite_interface::Point3D *pt);
 
 template <typename T>
 void ResetVector(std::vector<T *> vecToReset)
@@ -131,6 +132,12 @@ extern std::vector<TF1 *> GenerateParameterizationUsingMuons_2(std::string filen
 extern std::vector<TH1F *> EvaluateMuonParameterization(std::string filename, unsigned int pixelNo = 10000,
                                                         unsigned int barIndex = 13, unsigned int numOfEv = 0);
 extern void GenerateTrainingDataUsingCosmicMuon(std::string filename, unsigned int barIndex = 13);
+extern float roundoff(float value, unsigned char prec);
+extern float roundoff(float value);
+extern int GetMuonRateAt(std::vector<lite_interface::SingleMuonTrack*> smtVec,unsigned int layerIndex);
+//extern TH1F* GetReweightedHist(TH1F *hist );
+extern TH1F *NormalWithMaxBinCount(TH1F *hist);
+std::vector<int> GetMuonRateAtLayers(std::vector<lite_interface::SingleMuonTrack*> smtVec);
 class OfStream {
 public:
   std::ofstream fOutfile;

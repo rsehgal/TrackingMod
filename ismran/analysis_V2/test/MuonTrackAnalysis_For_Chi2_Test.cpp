@@ -18,10 +18,14 @@
 #include "Histograms.h"
 #include <TH2F.h>
 #include "colors.h"
+#include <TMath.h>
 int main(int argc, char *argv[])
 {
   TApplication *fApp = new TApplication("Test", NULL, NULL);
-  TH1F *histChi2 = new TH1F("Chi2Hist","Chi2Hist",100,-10,10.);
+  std::string calibType = "Source"; 
+  TFile *fp = new TFile(("Chi2"+calibType+".root").c_str(),"RECREATE");
+  TH1F *histChi2 = new TH1F(("Chi2Hist_"+calibType).c_str(),("Chi2Hist_"+calibType).c_str(),50,0,10.);
+  TH1F *histChi2Prob = new TH1F(("Chi2ProbHist_"+calibType).c_str(),("Chi2ProbHist_"+calibType).c_str(),50,0,1.);
   GenerateScintMatrixXYCenters();
   lite_interface::Calibration *calib                    = lite_interface::Calibration::instance("completeCalib2.root");
   std::string filename                                  = argv[1];
@@ -49,13 +53,21 @@ std::cout << "Processed : " << i << " tracks......" << std::endl;
 
 	//std::vector<lite_interface::Point3D*> vecOfPoint3D = smt->Get3dHitPointVector_QParam();
 	double chi2byNdf = smt->GetChisquareByNDF(subsetLayer,false);
+ 	std::vector<double> chi2ndf=smt->GetChisquareAndNDF(subsetLayer,false);
 	histChi2->Fill(chi2byNdf);
+ 	double prob=TMath::Prob(chi2ndf[0],(int)chi2ndf[1]);
+	//std::cout<< BLUE << "Chi2Prob : " << prob << RESET << std::endl;
+	histChi2Prob->Fill(prob);
 //	std::cout << "Chi2ByNDF : " << chi2byNdf << std::endl;
 	counter++;	
       }
     }
   }
 histChi2->Draw();
+fp->cd();
+histChi2->Write();
+histChi2Prob->Write();
+fp->Close();
 fApp->Run();
 return 0;
 }

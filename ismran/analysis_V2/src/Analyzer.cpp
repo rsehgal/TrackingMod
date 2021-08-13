@@ -35,7 +35,8 @@ Analyzer::Analyzer(std::string datafileName, const char *outputfileName)
 {
 }
 
-Analyzer::Analyzer(std::string datafileName, bool thresholdCheck) : fDatafileName(datafileName)
+Analyzer::Analyzer(std::string datafileName, bool thresholdCheck, unsigned int numOfEv )
+    : fDatafileName(datafileName)
 {
 
   std::cout << "@@@@@@@@2 WRONG CONTRUCTOR CALLED @@@@@@@@@@@@.............." << std::endl;
@@ -45,7 +46,7 @@ Analyzer::Analyzer(std::string datafileName, bool thresholdCheck) : fDatafileNam
   CreateScintillatorVector_FromSimulation();
 #else
   fPairFinder = new PairFinder(fDatafileName);
-  CreateScintillatorVector(thresholdCheck);
+  CreateScintillatorVector(thresholdCheck, numOfEv);
 #endif
   // ReconstructMuonTrack();
 }
@@ -84,14 +85,19 @@ std::vector<ScintillatorBar_V2 *> Analyzer::GetVectorOfScintillators() const
   return fVecOfScintillatorBar;
 }
 
-void Analyzer::CreateScintillatorVector(bool thresholdCheck)
+void Analyzer::CreateScintillatorVector(bool thresholdCheck, unsigned int numOfEv )
 {
   std::vector<TreeEntry *> vectorOfPairedTreeEntries = fPairFinder->GetVectorOfPairedTreeEntries();
   // unsigned long int numOfPairsInOneShot = vectorOfPairedTreeEntries.size()/numOfShots;
   std::cout << "TRYING TO CREATE VECTOR OF SCINTILLATORS>>......................... : Size : "
             << vectorOfPairedTreeEntries.size() << std::endl;
 #if (1)
-  for (unsigned long int i = 0; i < vectorOfPairedTreeEntries.size();) {
+  unsigned int numOfEvToRead = 0;
+  if (numOfEv == 0)
+    numOfEvToRead = vectorOfPairedTreeEntries.size();
+  else
+    numOfEvToRead = numOfEv;
+  for (unsigned long int i = 0; i < numOfEvToRead;) {
     // for(unsigned long int i = (shotNo-1)*numOfPairsInOneShot ; i < shotNo*numOfPairsInOneShot; ){
     Double_t qmean        = sqrt(vectorOfPairedTreeEntries[i]->qlong * vectorOfPairedTreeEntries[i + 1]->qlong);
     ULong64_t tstampSmall = (vectorOfPairedTreeEntries[i]->tstamp < vectorOfPairedTreeEntries[i + 1]->tstamp)
@@ -108,15 +114,38 @@ void Analyzer::CreateScintillatorVector(bool thresholdCheck)
 
         ScintillatorBar_V2 *scint;
         if (vectorOfPairedTreeEntries[i]->brch < vectorOfPairedTreeEntries[i + 1]->brch) {
+          unsigned int horizontalIndex = vectorOfPairedTreeEntries[i]->brch / 2;
+#ifdef VERTICAL_ARRANGEMENT
+          unsigned int barIndex = barsVerticalIndex[horizontalIndex];
+#else
+          unsigned int barIndex = horizontalIndex;
+#endif
 
-          scint = new ScintillatorBar_V2(
+          /*   //Before introducing vertical arrangement
+    scint = new ScintillatorBar_V2(
               vectorOfPairedTreeEntries[i]->brch / 2, vectorOfPairedTreeEntries[i]->qlong, qmean, tstampSmall,
-              (vectorOfPairedTreeEntries[i]->tstamp - vectorOfPairedTreeEntries[i + 1]->tstamp));
+              (vectorOfPairedTreeEntries[i]->tstamp - vectorOfPairedTreeEntries[i + 1]->tstamp));*/
+          scint =
+              new ScintillatorBar_V2(barIndex, vectorOfPairedTreeEntries[i]->qlong, qmean, tstampSmall,
+                                     (vectorOfPairedTreeEntries[i]->tstamp - vectorOfPairedTreeEntries[i + 1]->tstamp));
 
         } else {
-          scint = new ScintillatorBar_V2(
-              vectorOfPairedTreeEntries[i + 1]->brch / 2, vectorOfPairedTreeEntries[i + 1]->qlong, qmean, tstampSmall,
-              (vectorOfPairedTreeEntries[i + 1]->tstamp - vectorOfPairedTreeEntries[i]->tstamp));
+
+          unsigned int horizontalIndex = vectorOfPairedTreeEntries[i + 1]->brch / 2;
+#ifdef VERTICAL_ARRANGEMENT
+          unsigned int barIndex = barsVerticalIndex[horizontalIndex];
+#else
+          unsigned int barIndex = horizontalIndex;
+#endif
+
+          /*
+      // Before introducing vertical arrangement
+       scint = new ScintillatorBar_V2(
+                vectorOfPairedTreeEntries[i + 1]->brch / 2, vectorOfPairedTreeEntries[i + 1]->qlong, qmean, tstampSmall,
+                (vectorOfPairedTreeEntries[i + 1]->tstamp - vectorOfPairedTreeEntries[i]->tstamp));*/
+          scint =
+              new ScintillatorBar_V2(barIndex, vectorOfPairedTreeEntries[i + 1]->qlong, qmean, tstampSmall,
+                                     (vectorOfPairedTreeEntries[i + 1]->tstamp - vectorOfPairedTreeEntries[i]->tstamp));
         }
         /*
          * Doing DelT correction if within the energy range
@@ -130,8 +159,10 @@ void Analyzer::CreateScintillatorVector(bool thresholdCheck)
         // scint->EstimateHitPosition(fCalib);
 
         // if(scint->GetQMeanCorrected() > 15.)
+	double hardCodedThresholdValue=4.5;
         if (thresholdCheck) {
-          if (scint->GetQMeanCorrected() > qmeanCorrThreshold) fVecOfScintillatorBar.push_back(scint);
+          //if (scint->GetQMeanCorrected() > qmeanCorrThreshold && scint->GetQMeanCorrected() < qmeanCorrThresholdUpper) fVecOfScintillatorBar.push_back(scint);
+          if (scint->GetQMeanCorrected() > hardCodedThresholdValue ) fVecOfScintillatorBar.push_back(scint);
         } else {
           fVecOfScintillatorBar.push_back(scint);
         }
@@ -217,9 +248,11 @@ void Analyzer::CreateScintillatorVector_FromSimulation()
     // hitX, hitY, hitZ); std::cout << " exactHitX,exactHitY,exactHitZ : " << exactHitX << "," << exactHitY << "," <<
     // exactHitZ << std::endl;
     if (qlongMean > 10 && qlongMean < 35) {
-	//std::cout << RED<< "PRINTING FROM : " << __FILE__ <<" : " << __LINE__ <<" : " << logQFarByQNear << RESET<< std::endl;
-      ScintillatorBar_V2 *scint = new ScintillatorBar_V2(barIndex, qlongNear, qlongMean, tsmallTimeStamp, deltaTstamp,
-                                                         hitX, hitY, hitZ, exactHitX, exactHitY, exactHitZ,logQFarByQNear);
+      // std::cout << RED<< "PRINTING FROM : " << __FILE__ <<" : " << __LINE__ <<" : " << logQFarByQNear << RESET<<
+      // std::endl;
+      ScintillatorBar_V2 *scint =
+          new ScintillatorBar_V2(barIndex, qlongNear, qlongMean, tsmallTimeStamp, deltaTstamp, hitX, hitY, hitZ,
+                                 exactHitX, exactHitY, exactHitZ, logQFarByQNear);
       fVecOfScintillatorBar.push_back(scint);
     }
     // fVecOfScintillatorBar[i]->Print();

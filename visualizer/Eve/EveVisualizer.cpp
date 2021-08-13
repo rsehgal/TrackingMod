@@ -25,6 +25,7 @@
 #include "TColor.h"
 #include "CommonFunc.h"
 //#include "TEvePointSetArray.h"
+#include "TROOT.h"
 namespace Tracking {
 
 //TEveElementList* EveVisualizer::fEveGeomList = 0;

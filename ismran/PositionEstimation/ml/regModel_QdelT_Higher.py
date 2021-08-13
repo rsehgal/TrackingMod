@@ -6,7 +6,7 @@ import sys
 from matplotlib import pyplot as plt
 from helpers import *
 
-df = pd.read_csv(sys.argv[1],names=['Q','DelT','zQ'])
+df = pd.read_csv(sys.argv[1],names=['Q','DelT','zQ','pos'])
 x=df[['Q','DelT']]
 y=df['zQ']
 

@@ -16,6 +16,7 @@
 #include <algorithm>
 #include <TF1.h>
 #include "HelperFunctions.h"
+#include "colors.h"
 #ifndef FOR_SIMULATION
 ClassImp(lite_interface::SingleMuonTrack)
 #endif
@@ -203,6 +204,20 @@ ClassImp(lite_interface::SingleMuonTrack)
     return hitInRequiredLayers;
   }
 #endif
+
+  bool SingleMuonTrack::MuonPassingThroughLayer(unsigned int layerIndex)
+  {
+    std::vector<unsigned int> layerIndexVec;
+    if (layerIndex == 9) {
+      layerIndexVec.push_back(9);
+      layerIndexVec.push_back(8);
+      layerIndexVec.push_back(7);
+      layerIndexVec.push_back(6);
+    }
+
+    return HitInRequiredLayers(layerIndexVec);
+  }
+
   bool SingleMuonTrack::HitInRequiredLayers(std::vector<unsigned int> reqLayersVec)
   {
     bool hitInRequiredLayers = true;
@@ -646,9 +661,34 @@ ClassImp(lite_interface::SingleMuonTrack)
     hittedBarIndex = 10000;
     return exist;
   }
-
   /*
    * Return vector of hitted Scintillators IF muon is detected by specified layers
+   *
+   * The calling function should check the size of returned vector.
+   * IF size is not equal to size specified scintillator layers then it means
+   * some of the layers has not detected the muon.
+   */
+  std::vector<lite_interface::ScintillatorBar_V2 *> SingleMuonTrack::CheckTrackForRequiredLayers_V2(
+      std::vector<unsigned int> vecOfLayerIndex)
+  {
+
+    std::vector<lite_interface::ScintillatorBar_V2 *> vecOfHittedBars;
+    bool hitted = true;
+    for (unsigned int i = 0; i < vecOfLayerIndex.size(); i++) {
+      unsigned int hittedBarIndex = 10000;
+      bool hittedLocal            = false;
+      hittedLocal                 = CheckTrackForLayerNum(vecOfLayerIndex[i], hittedBarIndex);
+      if (hittedLocal) {
+        vecOfHittedBars.push_back(GetScintillator(hittedBarIndex));
+      }
+      hitted &= hittedLocal;
+      if (!hitted) break;
+    }
+    return vecOfHittedBars;
+  }
+
+  /*
+   * Return vector of hitted Scintillators indices IF muon is detected by specified layers
    *
    * The calling function should check the size of returned vector.
    * IF size is not equal to size specified scintillator layers then it means
@@ -718,11 +758,11 @@ ClassImp(lite_interface::SingleMuonTrack)
     else
       return NULL;
   }
-
-  double SingleMuonTrack::GetChisquareByNDF(std::vector<unsigned int> reqLayersVec,bool xy)
+  std::vector<double> SingleMuonTrack::GetChisquareAndNDF(std::vector<unsigned int> reqLayersVec, bool xy)
   {
-    SingleMuonTrack *smt       = GetTrackSubset(reqLayersVec);
-    std::vector<double> yerror;// = {0., 0., 0., 0.};
+    std::vector<double> chi2ndf;
+    SingleMuonTrack *smt = GetTrackSubset(reqLayersVec);
+    std::vector<double> yerror; // = {0., 0., 0., 0.};
     std::vector<double> xerror;
     std::vector<double> zerror;
     std::vector<double> xval;
@@ -747,21 +787,122 @@ ClassImp(lite_interface::SingleMuonTrack)
       auto grZY = new TGraphErrors(reqLayersVec.size(), &zval[0], &yval[0], &zerror[0], &yerror[0]);
       auto grXY = new TGraphErrors(reqLayersVec.size(), &xval[0], &yval[0], &xerror[0], &yerror[0]);
 
-      //new TCanvas();
+      // new TCanvas();
       grZY->SetMarkerStyle(8);
-      //grZY->Draw("ap");
-	TF1 *formula = new TF1("Formula_Linear", LinearFit, -80, 80, 2);
-  	if(xy){
-		grXY->Fit(formula,"qn");
-	}else{
-		grZY->Fit(formula,"qn");
-	}
+      // grZY->Draw("ap");
+      TF1 *formula = new TF1("Formula_Linear", LinearFit, -80, 80, 2);
+      if (xy) {
+        grXY->Fit(formula, "qn");
+      } else {
+        grZY->Fit(formula, "qn");
+      }
       formula->Draw("same");
-	return (formula->GetChisquare()/formula->GetNDF());
+      chi2ndf.push_back(formula->GetChisquare());
+      chi2ndf.push_back(formula->GetNDF());
+      // return (formula->GetChisquare()/formula->GetNDF());
+      return chi2ndf;
     }
-	return -10000;
+    return chi2ndf;
   }
 
+  double SingleMuonTrack::GetChisquareByNDF(std::vector<unsigned int> reqLayersVec, bool xy)
+  {
+    SingleMuonTrack *smt = GetTrackSubset(reqLayersVec);
+    std::vector<double> yerror; // = {0., 0., 0., 0.};
+    std::vector<double> xerror;
+    std::vector<double> zerror;
+    std::vector<double> xval;
+    std::vector<double> yval;
+    std::vector<double> zval;
+
+    if (smt != NULL) {
+      std::vector<lite_interface::Point3D *> vecOf3DPoint = smt->Get3DHitPointVector_QParam();
+      for (unsigned int i = 0; i < reqLayersVec.size(); i++) {
+        xval.push_back(vecOf3DPoint[i]->GetX());
+        yval.push_back(vecOf3DPoint[i]->GetY());
+        zval.push_back(vecOf3DPoint[i]->GetZ());
+        yerror.push_back(5.);
+        if (vecOfLayersOrientation[reqLayersVec[i]]) {
+          xerror.push_back(5.);
+          zerror.push_back(0.);
+        } else {
+          xerror.push_back(0.);
+          zerror.push_back(5.);
+        }
+      }
+      auto grZY = new TGraphErrors(reqLayersVec.size(), &zval[0], &yval[0], &zerror[0], &yerror[0]);
+      auto grXY = new TGraphErrors(reqLayersVec.size(), &xval[0], &yval[0], &xerror[0], &yerror[0]);
+
+      // new TCanvas();
+      grZY->SetMarkerStyle(8);
+      // grZY->Draw("ap");
+      TF1 *formula = new TF1("Formula_Linear", LinearFit, -80, 80, 2);
+      if (xy) {
+        grXY->Fit(formula, "qn");
+      } else {
+        grZY->Fit(formula, "qn");
+      }
+      formula->Draw("same");
+      return (formula->GetChisquare() / formula->GetNDF());
+    }
+    return -10000;
+  }
+
+  std::vector<TF1 *> SingleMuonTrack::GetFittedFormula_XY_ZY(std::vector<unsigned int> reqLayersVec)
+  {
+    SingleMuonTrack *smt = GetTrackSubset(reqLayersVec);
+    std::vector<double> yerror; // = {0., 0., 0., 0.};
+    std::vector<double> xerror;
+    std::vector<double> zerror;
+    std::vector<double> xval;
+    std::vector<double> yval;
+    std::vector<double> zval;
+
+    if (smt != NULL) {
+      std::vector<lite_interface::Point3D *> vecOf3DPoint = smt->Get3DHitPointVector_QParam();
+      for (unsigned int i = 0; i < reqLayersVec.size(); i++) {
+        xval.push_back(vecOf3DPoint[i]->GetX());
+        yval.push_back(vecOf3DPoint[i]->GetY());
+        zval.push_back(vecOf3DPoint[i]->GetZ());
+        yerror.push_back(5.);
+        if (vecOfLayersOrientation[reqLayersVec[i]]) {
+          xerror.push_back(5.);
+          zerror.push_back(0.);
+        } else {
+          xerror.push_back(0.);
+          zerror.push_back(5.);
+        }
+      }
+      auto grZY = new TGraphErrors(reqLayersVec.size(), &zval[0], &yval[0], &zerror[0], &yerror[0]);
+      // auto grZY      = new TGraphErrors(reqLayersVec.size(), &yval[0], &zval[0], &yerror[0], &zerror[0]);
+      auto grXY = new TGraphErrors(reqLayersVec.size(), &xval[0], &yval[0], &xerror[0], &yerror[0]);
+      // auto grXY      = new TGraphErrors(reqLayersVec.size(),  &yval[0], &xval[0], &yerror[0],&xerror[0]);
+      TF1 *formulaXY = new TF1("Formula_LinearXY", "pol1", -80, 80); //, 2);
+      TF1 *formulaZY = new TF1("Formula_LinearZY", LinearFit, -80, 80, 2);
+      grXY->Fit(formulaXY, "qn");
+      grZY->Fit(formulaZY, "qn");
+      std::vector<TF1 *> vecOfFormula;
+      vecOfFormula.push_back(formulaXY);
+      vecOfFormula.push_back(formulaZY);
+
+      /*Printing values estimated from formula*/
+#if (0)
+      for (unsigned int j = 0; j < vecOf3DPoint.size(); j++) {
+        double xval = vecOfFormula[0]->GetX(vecOf3DPoint[j]->GetY());
+        // double xval = vecOfFormula_XY_ZY[0]->Eval(vecOfMyY[j]);
+        double zval = vecOfFormula[1]->GetX(vecOf3DPoint[j]->GetY());
+        // double zval = vecOfFormula_XY_ZY[1]->Eval(vecOfMyY[j]);
+        std::cout << BLUE << "YVal : " << vecOf3DPoint[j]->GetY() << " : XVal : " << xval << " : ZVal : " << zval
+                  << RESET << std::endl;
+        /*if (xval > -48. && xval < 48. && zval > -48. && zval < 48.) {
+          sizeCounter++;
+          vecOfPt.push_back(Tracking::Vector3D<double>(xval, vecOfMyY[j], zval));
+        }*/
+      }
+#endif
+      return vecOfFormula;
+    }
+  }
 //#ifdef USE_FOR_SIMULATION
 #if defined(USE_FOR_SIMULATION) || defined(FOR_SIMULATION)
   double SingleMuonTrack::GetZenithAngle_MeanHitPoint() { return GetZenithAngle(3); }

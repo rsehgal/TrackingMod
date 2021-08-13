@@ -29,6 +29,14 @@ void CharacterizationFileReader::ResetWith(std::string filename)
   // RandomizeIt(); //Not required coz the  source emits random event and there is not correlation between.
 }
 
+TF1* CharacterizationFileReader::GetSourceEnergyCalibFormula(){
+  std::string barName    = GetBarName();
+  TFile *fp              = new TFile("FinalCorrectionFactors_70bars.root", "r");
+  std::string formString  = "fecalib_"+barName;
+  TF1 *energyFormula = (TF1*)fp->Get(formString.c_str()); 
+  return energyFormula;
+}
+
 TF1* CharacterizationFileReader::GetEnergyCalibFormula(){
   std::string barName    = GetBarName();
   TFile *fp              = new TFile("completeCalib2.root", "r");

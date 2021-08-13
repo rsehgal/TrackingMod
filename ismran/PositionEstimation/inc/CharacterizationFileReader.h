@@ -134,6 +134,7 @@ public:
   double GetMeanAttenuationCoeff(unsigned int numOfEvents = 0);
   double GetMeanOfQValues(unsigned int numOfEvents = 0);
   TF1* GetEnergyCalibFormula();
+  TF1* GetSourceEnergyCalibFormula();
 
   /*Functions related to Training and Testing*/
   float fTestProportion;

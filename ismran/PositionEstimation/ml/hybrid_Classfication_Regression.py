@@ -34,7 +34,10 @@ for posValue in posList:
 	modelList.append(LoadRegressionModel(regModelPath))
 
 dftest = pd.read_csv(sys.argv[2],names=['Q','DelT','zQ','actz'])
-xtestClassifcation=dftest[['Q','DelT','zQ']]
+dftest = dftest.sample(frac=1).reset_index(drop=True)
+
+#xtestClassifcation=dftest[['Q','DelT','zQ']]
+xtestClassifcation=dftest[['Q','DelT']]
 ytest=dftest['actz']
 xtestRegression=dftest[['Q','DelT']]
 
@@ -72,6 +75,9 @@ for i in range(len(xtestClassifcation)):
 	predictedZ.append(y_test_predict[0])
 	subList=[xtestRegressionVal[0][0],xtestRegressionVal[0][1],y_test_predict[0]]
 	supList.append(subList)
+	
+	if i > 100000 :
+		break;
 	
 np.savetxt("output.csv",np.array(supList),delimiter=" ")
 print("All the predictions done...")

@@ -38,6 +38,7 @@ extern std::vector<unsigned int> vecOfdeltaTMax;
 
 // energy range to select the particle
 extern double qmeanCorrThreshold;
+extern double qmeanCorrThresholdUpper;
 extern int qstart; // = 4000;
 extern int qend;   // = 18000;
 // time difference between Far and Near PMT of a PsBar

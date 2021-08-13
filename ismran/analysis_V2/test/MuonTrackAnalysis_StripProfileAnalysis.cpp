@@ -23,8 +23,8 @@ int main(int argc, char *argv[]){
 	GenerateScintMatrixXYCenters();
 	lite_interface::Calibration *calib = lite_interface::Calibration::instance("completeCalib2.root");
 	std::string filename = argv[1];
-	std::vector<lite_interface::SingleMuonTrack*> smtVec = GetMuonTracksVector(filename);
-	std::vector<unsigned short> layerIndexVector={0,1,2,3,4,7,8,9};
+	std::vector<lite_interface::SingleMuonTrack*> smtVec = GetMuonTracksVector(filename,100000);
+	std::vector<unsigned short> layerIndexVector={0,1,2,3};
 
 	/*for(unsigned int i = 0 ; i < layerIndexVector.size() ; i++){
 		std::string canName = "Can_Layer_"+std::to_string(layerIndexVector[i]);

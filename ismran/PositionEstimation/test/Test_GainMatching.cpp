@@ -15,27 +15,27 @@
 #include <TH1F.h>
 #include <TApplication.h>
 #include <vector>
-
+#include <TStyle.h>
 int main(int argc, char *argv[])
 {
+  gStyle->SetOptStat(0);
   TApplication *fApp   = new TApplication("Test", NULL, NULL);
   std::string filename = argv[1];
   CharacterizationFileReader cfReader(filename);
   FillAttenCoeffVec();
   std::vector<Event *> eventsVec = cfReader.GetAllEvents(std::atoi(argv[2]));
-  TH1F *hist                     = new TH1F("HistLogQNearByQFar", "HistLogQNearByQFar", 100, -5., 5.);
-  TH1F *histQNear                = new TH1F("Hist_QNear", "HistQNear", 15000, 0., 15000);
+  TH1F *hist                     = new TH1F("HistLogQNearByQFar", "^{137}Cs", 100, -5., 5.);
+  TH1F *histQNear                = new TH1F("Hist_QNear", "^{137}Cs", 15000, 0., 15000);
   TH1F *histQFar                 = new TH1F("Hist_QFar", "HistQFar", 15000, 0., 15000);
-  TH1F *histQGM                  = new TH1F("Hist_QGM", "Hist_QGM", 15000, 0., 15000);
-  TH1F *histDelT                 = new TH1F("Hist_DelT", "Hist_DelT", 100, -20., 20.);
-  TH1F *histEnergy                 = new TH1F("Hist_Energy", "Hist_Energy", 1000, 0., 50.);
+  TH1F *histQGM                  = new TH1F("Hist_QGM", "^{137}Cs", 15000, 0., 15000);
+  TH1F *histDelT                 = new TH1F("Hist_DelT", "^{137}Cs", 100, -20., 20.);
+  TH1F *histEnergy               = new TH1F("Hist_Energy", "Hist_Energy", 1000, 0., 2.);
 
   // Energy Calibration
-  std::string barName = cfReader.GetBarName();
-  TF1 *energyCalibFormula = cfReader.GetEnergyCalibFormula();
+  std::string barName     = cfReader.GetBarName();
+  TF1 *energyCalibFormula = cfReader.GetSourceEnergyCalibFormula();
 
-      for (unsigned int i = 0; i < eventsVec.size(); i++)
-  {
+  for (unsigned int i = 0; i < eventsVec.size(); i++) {
     // std::cout << eventsVec[i]->GetLogQNearByQFar() << std::endl;
     hist->Fill(eventsVec[i]->GetLogQNearByQFar());
     histQNear->Fill(eventsVec[i]->GetQNear());
@@ -43,7 +43,6 @@ int main(int argc, char *argv[])
     histQGM->Fill(eventsVec[i]->GetQMean());
     histDelT->Fill(eventsVec[i]->GetDelT() / 1000.);
     histEnergy->Fill(energyCalibFormula->Eval(eventsVec[i]->GetQMean()));
-   
   }
 
   histQNear->SetLineColor(4);
@@ -51,31 +50,42 @@ int main(int argc, char *argv[])
 
   new TCanvas("Q", "Q");
   hist->Draw();
+
+  TLegend *legendGainMatched = new TLegend(0.2, 0.2, .8, .8);
+  legendGainMatched->AddEntry(histQNear, "Left PMT", "l");
+  legendGainMatched->AddEntry(histQFar, "Right PMT", "l");
   new TCanvas("GainMatched", "GainMatched");
+  histQNear->Scale(1 / histQNear->Integral());
+  histQFar->Scale(1 / histQFar->Integral());
   histQNear->Draw();
   histQFar->Draw("same");
+  legendGainMatched->Draw("same");
+
+  histQGM->Scale(1/histQGM->Integral());
   new TCanvas("QGeomMean", "QGeomMean");
   histQGM->Draw();
   new TCanvas("DelT", "DelT");
   histDelT->Draw();
 
-  new TCanvas("CalibratedEnergy","CalibratedEnergy");
+  new TCanvas("CalibratedEnergy", "CalibratedEnergy");
+  histEnergy->Scale(1./histEnergy->Integral());
   histEnergy->Draw();
-
+#if(0)
   {
     std::string dir                          = "/home/rsehgal/DevShare/CalibrationFiles/PS01_S2AB1017";
-    std::vector<std::string> filenamesVector = {"Cs137_PS01_S2AB1017_Couples_N1164V_Th10_F1160V_Th12_-45cm.root",
-                                                "Cs137_PS01_S2AB1017_Couples_N1164V_Th10_F1160V_Th12_-40cm.root",
-                                                "Cs137_PS01_S2AB1017_Couples_N1164V_Th10_F1160V_Th12_-30cm.root",
-                                                "Cs137_PS01_S2AB1017_Couples_N1164V_Th10_F1160V_Th12_-20cm.root",
-                                                "Cs137_PS01_S2AB1017_Couples_N1164V_Th10_F1160V_Th12_-10cm.root",
-                                                "Cs137_PS01_S2AB1017_Couples_N1164V_Th10_F1160V_Th12_+0cm.root",
-                                                //"Cs137_PS01_S2AB1017_Couples_N1164V_Th10_F1160V_Th12_+0cm.root",
-                                                "Cs137_PS01_S2AB1017_Couples_N1164V_Th10_F1160V_Th12_+10cm.root",
-                                                "Cs137_PS01_S2AB1017_Couples_N1164V_Th10_F1160V_Th12_+20cm.root",
-                                                "Cs137_PS01_S2AB1017_Couples_N1164V_Th10_F1160V_Th12_+30cm.root",
-                                                "Cs137_PS01_S2AB1017_Couples_N1164V_Th10_F1160V_Th12_+40cm.root",
-                                                "Cs137_PS01_S2AB1017_Couples_N1164V_Th10_F1160V_Th12_+45cm.root"};
+    std::vector<std::string> filenamesVector = {
+        //"Cs137_PS01_S2AB1017_Couples_N1164V_Th10_F1160V_Th12_-45cm.root",
+        "Cs137_PS01_S2AB1017_Couples_N1164V_Th10_F1160V_Th12_-40cm.root",
+        "Cs137_PS01_S2AB1017_Couples_N1164V_Th10_F1160V_Th12_-30cm.root",
+        "Cs137_PS01_S2AB1017_Couples_N1164V_Th10_F1160V_Th12_-20cm.root",
+        "Cs137_PS01_S2AB1017_Couples_N1164V_Th10_F1160V_Th12_-10cm.root",
+        "Cs137_PS01_S2AB1017_Couples_N1164V_Th10_F1160V_Th12_+0cm.root",
+        "Cs137_PS01_S2AB1017_Couples_N1164V_Th10_F1160V_Th12_+10cm.root",
+        "Cs137_PS01_S2AB1017_Couples_N1164V_Th10_F1160V_Th12_+20cm.root",
+        "Cs137_PS01_S2AB1017_Couples_N1164V_Th10_F1160V_Th12_+30cm.root",
+        "Cs137_PS01_S2AB1017_Couples_N1164V_Th10_F1160V_Th12_+40cm.root"
+        //,"Cs137_PS01_S2AB1017_Couples_N1164V_Th10_F1160V_Th12_+45cm.root"
+    };
 
     std::vector<double> vecOfPixelPos;
 
@@ -99,30 +109,46 @@ int main(int argc, char *argv[])
     }
 
     vecOfHistQ[0]->SetMarkerStyle(53);
-    vecOfHistQ[0]->SetMarkerSize(0.8);
+    vecOfHistQ[0]->SetMarkerSize(1.0);
     vecOfHistQ[1]->SetMarkerStyle(8);
-    vecOfHistQ[1]->SetMarkerSize(0.8);
+    vecOfHistQ[1]->SetMarkerSize(1.0);
     vecOfHistQ[2]->SetMarkerStyle(28);
     vecOfHistQ[2]->SetMarkerSize(1.0);
     vecOfHistQ[3]->SetMarkerStyle(26);
-    vecOfHistQ[3]->SetMarkerSize(0.9);
-    /*vecOfHistQ[4]->SetMarkerStyle(29);
-    vecOfHistQ[4]->SetMarkerSize(1.1);
-    vecOfHistQ[5]->SetMarkerStyle(56);
+    vecOfHistQ[3]->SetMarkerSize(1.0);
+    vecOfHistQ[4]->SetMarkerStyle(29);
+    vecOfHistQ[4]->SetMarkerSize(1.2);
+    /*vecOfHistQ[5]->SetMarkerStyle(56);
     vecOfHistQ[5]->SetMarkerSize(1.2);*/
 
     vecOfHist[0]->SetMarkerStyle(53);
-    vecOfHist[0]->SetMarkerSize(0.8);
+    vecOfHist[0]->SetMarkerSize(1.0);
     vecOfHist[1]->SetMarkerStyle(8);
-    vecOfHist[1]->SetMarkerSize(0.8);
+    vecOfHist[1]->SetMarkerSize(1.0);
     vecOfHist[2]->SetMarkerStyle(28);
     vecOfHist[2]->SetMarkerSize(1.0);
     vecOfHist[3]->SetMarkerStyle(26);
-    vecOfHist[3]->SetMarkerSize(0.9);
-    /*vecOfHist[4]->SetMarkerStyle(29);
-    vecOfHist[4]->SetMarkerSize(1.1);
-    vecOfHist[5]->SetMarkerStyle(56);
+    vecOfHist[3]->SetMarkerSize(1.0);
+    vecOfHist[4]->SetMarkerStyle(29);
+    vecOfHist[4]->SetMarkerSize(1.2);
+    /*vecOfHist[5]->SetMarkerStyle(56);
     vecOfHist[5]->SetMarkerSize(1.2);*/
+
+    TLegend *legendDelT = new TLegend(0.2, 0.2, .8, .8);
+    legendDelT->SetHeader("Source Position", "C");
+    legendDelT->AddEntry(vecOfHist[0], "-40 cm", "p");
+    legendDelT->AddEntry(vecOfHist[1], "-20 cm", "p");
+    legendDelT->AddEntry(vecOfHist[2], "0 cm", "p");
+    legendDelT->AddEntry(vecOfHist[3], "+20 cm", "p");
+    legendDelT->AddEntry(vecOfHist[4], "+40 cm", "p");
+
+    TLegend *legendQ = new TLegend(0.2, 0.2, .8, .8);
+    legendQ->SetHeader("Source Position", "C");
+    legendQ->AddEntry(vecOfHistQ[0], "-40 cm", "p");
+    legendQ->AddEntry(vecOfHistQ[1], "-20 cm", "p");
+    legendQ->AddEntry(vecOfHistQ[2], "0 cm", "p");
+    legendQ->AddEntry(vecOfHistQ[3], "+20 cm", "p");
+    legendQ->AddEntry(vecOfHistQ[4], "+40 cm", "p");
 
     for (unsigned int j = 0; j < filenamesVector.size(); j++) {
       cfReader.ResetWith(dir + "/" + filenamesVector[j]);
@@ -155,11 +181,13 @@ int main(int argc, char *argv[])
     for (unsigned int j = 0; j < filenamesVector.size(); j++) {
       vecOfHist[j]->Draw("same");
     }
+    legendDelT->Draw("same");
 
     new TCanvas("Q_At_Diff_Pos", "Q_At_Diff_Pos");
     for (unsigned int j = 0; j < filenamesVector.size(); j++) {
       vecOfHistQ[j]->Draw("same");
     }
+    legendQ->Draw("same");
 
     auto grDelT =
         new TGraphErrors(vecOfHist.size(), &vecOfDelTMean[0], &vecOfPixelPos[0], &vecOfDelTError[0], &vecOfZError[0]);
@@ -168,15 +196,15 @@ int main(int argc, char *argv[])
     TLegend *legendTZ = new TLegend(0.1, 0.7, 0.24, 0.5);
     new TCanvas("Graph of DelT vs Z", "Graph of DelT vs Z");
     grDelT->Draw("ap");
-    grDelT->SetMarkerStyle(53);
+    grDelT->SetMarkerStyle(8);
     TF1 *formulaTZ = new TF1("FormulaTZ", Pol3, -10, 10, 4);
     formulaTZ->SetLineColor(2);
     formulaTZ->SetLineWidth(3);
-    formulaTZ->Draw("same");
     grDelT->Fit(formulaTZ, "qn");
+    formulaTZ->Draw("same");
 
-    legendTZ->AddEntry("grDelT", "Data Point", "p");
-    legendTZ->AddEntry("formulaTZ", "Fit", "l");
+    legendTZ->AddEntry(grDelT, "Data Point", "p");
+    legendTZ->AddEntry(formulaTZ, "Fit", "l");
     legendTZ->Draw("same");
 
     TLegend *legendQZ = new TLegend(0.1, 0.7, 0.24, 0.5);
@@ -185,11 +213,11 @@ int main(int argc, char *argv[])
     TF1 *formulaQZ = new TF1("FormulaQZ", Pol3, -3, 3, 4);
     grQ->Fit(formulaQZ, "qn");
     formulaQZ->SetLineWidth(3);
-    grQ->SetMarkerStyle(53);
+    grQ->SetMarkerStyle(8);
     formulaQZ->Draw("same");
 
-    legendQZ->AddEntry("grQ", "Data Point", "p");
-    legendQZ->AddEntry("formulaQZ", "Fit", "l");
+    legendQZ->AddEntry(grQ, "Data Point", "p");
+    legendQZ->AddEntry(formulaQZ, "Fit", "l");
     legendQZ->Draw("same");
 
     /*gr->SetTitle("TGraphErrors Example");
@@ -197,6 +225,6 @@ int main(int argc, char *argv[])
     gr->SetMarkerStyle(21);
     gr->Draw("ALP");*/
   }
-
+#endif
   fApp->Run();
 }

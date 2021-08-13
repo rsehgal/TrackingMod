@@ -246,24 +246,49 @@ std::vector<double> vecOfAttenCoeff = {
     0.0138521,  0.0111161,  0.0118085,  0.0124936,  0.0106633,  0.0129433,  0.0126373,  0.0110458,  0.0105746,
     0.0112549,  0.0121836,  0.012613,   0.0123335,  0.0143947,  0.0148561,  0.012949,   0.0125504,  0.0121067};
 
+bool useMuonCalib = false;
+std::vector<bool> vecOfMuonCalibIndex_Muon;
+std::vector<bool> vecOfMuonCalibIndex_Source;
+//#if (1)
+#ifndef VERTICAL_ARRANGEMENT
+// For Muon Calibration
 std::vector<bool> vecOfMuonCalibIndex = {
-					 false,false,false,false,false,false,false,false,false,
-					 //true,true,true,true,true,true,true,true,true,
-		  			 true,true,true,true,true,true,true,true,true,
-		  			 true,true,true,true,true,true,true,true,true,
-					 //false,false,false,false,false,false,false,false,false,
-		  			 //true,true,true,true,true,true,true,true,true,
-		  			 true,true,true,true,true,true,true,true,true,
-					 //false,false,false,false,false,false,false,false,false,
-					 false,false,false,false,false,false,false,false,false,
-					 false,false,false,false,false,false,false,false,false,
-					 false,false,false,false,false,false,false,false,false,
-					 false,false,false,false,false,false,false,false,false,
-					 false,false,false,false,false,false,false,false,false,
-					 false,false,false,false,false,false,false,false,false
-					};
+     //false,false,false,false,false,false,false,false,false,
+    true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,
+    //false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
+    true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,
+    //false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
+    true,  true,  true,  true,  true,  true,  false, false, false, false, false, false, false, false, false,
+    //false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
+    false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
+    false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
+    false, false, false, false, false, false, false, false, false, false, false, false, false, false, false};
+//#endif
+#else
+//#if (0)
+// For Source Calibration
+std::vector<bool> vecOfMuonCalibIndex = {
+    // true,true,true,true,true,true,true,true,true,
+    false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
+    false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
+    false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
+    false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
+    false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
+    false, false, false, false, false, false, false, false, false, false, false, false, false, false, false};
 
-std::vector<Point2D> vecOfScintXYCenter;
+#endif
+
+/*
+** Vector to map the horizontal channel numbers to vertical
+*/
+std::vector<unsigned int> barsVerticalIndex = {0,  9,  18, 27, 36, 45, 54, 63, 72, 81, 1,  10, 19, 28, 37, 46, 55, 64,
+                                               73, 82, 2,  11, 20, 29, 38, 47, 56, 65, 74, 83, 3,  12, 21, 30, 39, 48,
+                                               57, 66, 75, 84, 4,  13, 22, 31, 40, 49, 58, 67, 76, 85, 5,  14, 23, 32,
+                                               41, 50, 59, 68, 77, 86, 6,  15, 24, 33, 42, 51, 60, 69, 78, 87, 7,  16,
+                                               25, 34, 43, 52, 61, 70, 79, 88, 8,  17, 26, 35, 44, 53, 62, 71, 80, 89};
+
+std::vector<Point2D>
+    vecOfScintXYCenter;
 std::vector<double> vecOfLayersYPos;
 /*
 ** Vector of orientation of different layers

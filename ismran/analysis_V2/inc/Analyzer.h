@@ -31,8 +31,8 @@ public:
 	Analyzer(std::string datafileName,std::string outputfileName);
 	Analyzer(std::string datafileName,const char *outputfileName);
 	//Analyzer(std::string datafileName);
-	Analyzer(std::string datafileName, bool thresholdCheck=true );
-	void CreateScintillatorVector(bool thresholdCheck=true);
+	Analyzer(std::string datafileName, bool thresholdCheck=true,unsigned int numOfEv = 0 );
+	void CreateScintillatorVector(bool thresholdCheck=true, unsigned int numOfEv=0);
 #ifdef USE_FOR_SIMULATION
 	void CreateScintillatorVector_FromSimulation();
 #endif
