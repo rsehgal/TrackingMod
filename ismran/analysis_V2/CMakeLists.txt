@@ -340,6 +340,9 @@ target_link_libraries(MuonTrackAnalysis_ParameterizationUsingMuon ${ROOT_LIBRARI
 add_executable(MuonTrackAnalysis_TestMuonParam test/MuonTrackAnalysis_TestMuonParam.cpp ${sources} ${headers})
 target_link_libraries(MuonTrackAnalysis_TestMuonParam ${ROOT_LIBRARIES} Tracklib)
 
+add_executable(MuonTrackAnalysis_TestMuonParamDebug test/MuonTrackAnalysis_TestMuonParamDebug.cpp ${sources} ${headers})
+target_link_libraries(MuonTrackAnalysis_TestMuonParamDebug ${ROOT_LIBRARIES} Tracklib)
+
 add_executable(MuonTrackAnalysis_Generate_ML_Data_UsingCosmicMuons test/MuonTrackAnalysis_Generate_ML_Data_UsingCosmicMuons.cpp ${sources} ${headers})
 target_link_libraries(MuonTrackAnalysis_Generate_ML_Data_UsingCosmicMuons ${ROOT_LIBRARIES} Tracklib)
 

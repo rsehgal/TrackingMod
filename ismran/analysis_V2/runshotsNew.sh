@@ -32,4 +32,4 @@ do
 	rm -rf $allFileNames
 done
 hadd -f $finalProcessedFile $allProcessedFileNames
-rm -rf $allProcessedFileNames
+#rm -rf $allProcessedFileNames

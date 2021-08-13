@@ -252,19 +252,32 @@ std::vector<bool> vecOfMuonCalibIndex_Source;
 //#if (1)
 #ifndef VERTICAL_ARRANGEMENT
 // For Muon Calibration
+#ifndef MODIFY_SOURCE_PARAM_FOR_MUON 
 std::vector<bool> vecOfMuonCalibIndex = {
-     //false,false,false,false,false,false,false,false,false,
-    true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,
-    //false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
-    true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,
-    //false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
-    true,  true,  true,  true,  true,  true,  false, false, false, false, false, false, false, false, false,
+     false,false,false,false,false,false,false,false,false,
+    //true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,
+    false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
+    //true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,
+    false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
+    //true,  true,  true,  true,  true,  true,  false, false, false, false, false, false, false, false, false,
     //false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
     false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
     false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
     false, false, false, false, false, false, false, false, false, false, false, false, false, false, false};
 //#endif
-#else
+
+#else //MODIFY_SOURCE_PARAM_FOR_MUON
+std::vector<bool> vecOfMuonCalibIndex = {
+    // true,true,true,true,true,true,true,true,true,
+    false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
+    false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
+    false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
+    false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
+    false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
+    false, false, false, false, false, false, false, false, false, false, false, false, false, false, false};
+#endif //MODIFY_SOURCE_PARAM_FOR_MUON
+
+#else //VERTICAL_ARRANGEMENT
 //#if (0)
 // For Source Calibration
 std::vector<bool> vecOfMuonCalibIndex = {
