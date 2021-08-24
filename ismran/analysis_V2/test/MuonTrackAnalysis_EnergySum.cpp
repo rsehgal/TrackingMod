@@ -16,22 +16,26 @@
 #include <TSpectrum.h>
 #include "Histograms.h"
 #include <TH2F.h>
-
+#include "langaus.h"
+#include "PsBar.h"
 int main(int argc, char *argv[])
 {
   gStyle->SetOptStat(0);
+#ifdef USE_FOR_SIMULATION
+  IsSimulation = true;
+#endif
   TApplication *fApp = new TApplication("Test", NULL, NULL);
   GenerateScintMatrixXYCenters();
   lite_interface::Calibration *calib                    = lite_interface::Calibration::instance("completeCalib2.root");
   std::string filename                                  = argv[1];
   std::vector<lite_interface::SingleMuonTrack *> smtVec = GetMuonTracksVector(filename, 0);
-  std::vector<TH1D *> vecOfEnergySumHist                = PlotEnergyDistributionWithMultiplicity(smtVec);
+  std::vector<TH1F *> vecOfEnergySumHist                = PlotEnergyDistributionWithMultiplicity(smtVec);
   TH2D *energySumWithMultiplicity                       = new TH2D("EnergySum2", "EnergySum2", 11, 0, 11, 11, 0., 250);
   TCanvas *can                                          = new TCanvas("Energy sum");
   TLegend *legendEnergySum                              = new TLegend(0.2, 0.2, .8, .8);
-legendEnergySum->SetHeader("#splitline{Layer}{Multiplicity}","C");
+  legendEnergySum->SetHeader("#splitline{Layer}{Multiplicity}", "C");
   for (unsigned int i = 0; i < vecOfEnergySumHist.size(); i++) {
-	
+
     vecOfEnergySumHist[i]->SetLineWidth(3);
     new TCanvas;
     vecOfEnergySumHist[i]->Draw();
@@ -44,6 +48,7 @@ legendEnergySum->SetHeader("#splitline{Layer}{Multiplicity}","C");
 
       vecOfEnergySumHist[i]->Scale(1 / vecOfEnergySumHist[i]->Integral());
       vecOfEnergySumHist[i]->Draw("same");
+      if (i == 3) langaus(vecOfEnergySumHist[i]);
     }
   }
   legendEnergySum->Draw("same");

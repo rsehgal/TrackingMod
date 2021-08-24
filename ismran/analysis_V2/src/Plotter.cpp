@@ -1114,6 +1114,39 @@ TGraph *PlotDelTvsZ(std::vector<lite_interface::ScintillatorBar_V2 *> scintBarVe
 }
 #endif
 //#endif
+TH1F *PlotHistZ(std::vector<lite_interface::ScintillatorBar_V2 *> scintBarVec, ushort barIndex, bool linear)
+{
+  ushort nbinsx = 9;
+  ushort nbinsz = 10;
+  // std::string name = "DelT Vs Z : "+vecOfBarsNamess[barIndex];
+  std::string barName = vecOfBarsNamess[barIndex].substr(0, 4) + "_HistZ";
+  std::vector<lite_interface::ScintillatorBar_V2 *>::iterator itr;
+  std::vector<double> zVec;
+  std::vector<double> delTVec;
+
+  // TH2F *delTvsZ = new TH2F("DeltVsZ","DeltVsZ",1000,-30,30,1000,-500,500);
+  TH1F *histZ = new TH1F("HistZ", "HistZ", 200, -100,100 );
+  for (itr = scintBarVec.begin(); itr != scintBarVec.end(); itr++) {
+    if ((*itr)->fBarIndex == barIndex) {
+//#ifdef USE_FOR_SIMULATION
+//      zVec.push_back((*itr)->hitZ);
+//#else
+      if (linear)
+        zVec.push_back((*itr)->EstimateHitPosition()->GetZ());
+      else
+        zVec.push_back((*itr)->EstimateHitPosition_Param()->GetZ());
+//#endif
+      delTVec.push_back((*itr)->fDelTstamp / 1000.);
+
+      float zval = (*itr)->EstimateHitPosition_Param()->GetZ();
+      //if (zval > -50 && zval < 50) delTvsZ->Fill((*itr)->GetDelTCorrected() / 1000., zval);
+	histZ->Fill(zval);
+    }
+  }
+  // TGraph *delTvsZ = new TGraph(delTVec.size(),&delTVec[0],&zVec[0]);
+  // delTvsZ->SetTitle(barName.c_str());
+  return histZ;
+}
 
 TH2F *PlotDelTvsZ(std::vector<lite_interface::ScintillatorBar_V2 *> scintBarVec, ushort barIndex, bool linear)
 {
@@ -1265,14 +1298,14 @@ std::vector<TH1D *> PlotEnergyDistributionWithMultiplicity(std::vector<unsigned 
   return vecOfHists;
 }
 
-std::vector<TH1D *> PlotEnergyDistributionWithMultiplicity(std::vector<SingleMuonTrack *> muonTrackVec)
+std::vector<TH1F *> PlotEnergyDistributionWithMultiplicity(std::vector<SingleMuonTrack *> muonTrackVec)
 {
 
-  std::vector<TH1D *> vecOfHists;
+  std::vector<TH1F *> vecOfHists;
   for (unsigned int i = 0; i < numOfLayers; i++) {
     std::cout << "Inserting histogram for layer : " << i << std::endl;
     std::string title = "layer-" + std::to_string(i);
-    vecOfHists.push_back(new TH1D(title.c_str(), title.c_str(), 500, 10, 250));
+    vecOfHists.push_back(new TH1F(title.c_str(), title.c_str(), 500, 10, 250));
     vecOfHists[i]->SetLineColor(i + 1);
   }
 

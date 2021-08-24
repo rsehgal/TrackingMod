@@ -141,12 +141,14 @@ lite_interface::Point3D *ScintillatorBar_V2::EstimateHitPosition_Param()
   double xOrZval = 0.;
 
   //Just for debugging, should be commented later 
-  //std::cout << RED << "BarIndex : " << fBarIndex <<" : LayerIndex : " << GetLayerIndex() << RESET << std::endl;
+  //std::cout << RED << "BarIndex : " << fBarIndex <<" : LayerIndex : " << GetLayerIndex() << " : BARName : " << vecOfBarsNamess[fBarIndex] << RESET << std::endl;
 
   if (IsSimulation)
     xOrZval = param->Eval(GetDelTCorrected() / 1000.);
   else
     xOrZval = param->Eval(GetDelTCorrected() / 1000.);
+
+  //std::cout << BLUE << "Z Val : " << xOrZval << RESET << std::endl;
 
 #ifdef STAGGERED_GEOM
   if (GetLayerIndex() % 2) {
@@ -359,8 +361,38 @@ Double_t ScintillatorBar_V2::GetQMeanCorrected()
 {
   // return (fQlongMean + Calibration::instance()->GetCalibrationDataOf(fBarIndex)->fEnergyCalibrationFactor);
 
-  if (IsSimulation)
-    return fQlongMean;
+  if (IsSimulation){
+return gRandom->Gaus(fQlongMean,4.468);
+
+/*    if(fQlongMean < 20.0 || fQlongMean > 30.0 )return -1;
+    //return fQlongMean;
+    return gRandom->Gaus(fQlongMean,2.2);*/
+
+/*   if(fQlongMean > 15. && fQlongMean < 20);//qmeanCorrThreshold)
+    return gRandom->Gaus(fQlongMean,5.3);
+    if(fQlongMean >= 20. && fQlongMean < 50);//qmeanCorrThreshold)
+    return gRandom->Gaus(fQlongMean,18.3);
+*/
+/*	if(fQlongMean >= 10 && fQlongMean < 25)
+return gRandom->Gaus(fQlongMean,4.22);
+	if(fQlongMean >= 25)
+return fQlongMean/gRandom->Exp(-0.1243);*/
+
+    //std::cout << RED << "QLongMean : " << fQlongMean << RESET<< std::endl;
+    //if(fQlongMean > 15 && fQlongMean < 30)
+//    if(fQlongMean > 10. && fQlongMean < 15.)//qmeanCorrThreshold)
+//	return fQlongMean;
+//    return gRandom->Gaus(fQlongMean,15.);
+/*    if(fQlongMean >= qmeanCorrThreshold && fQlongMean < 25.)//qmeanCorrThreshold)
+    return gRandom->Gaus(fQlongMean,4.);
+    if(fQlongMean >= 25. && fQlongMean< 30)//qmeanCorrThreshold)
+    return gRandom->Gaus(fQlongMean,20.);
+    if(fQlongMean >= 30. )//qmeanCorrThreshold)
+    return gRandom->Gaus(fQlongMean,25.);*/
+
+//else
+//	return fQlongMean;
+}
   else {
     Double_t ener = 0.;
 #ifndef SINGLE_POINT_CALIBRATION
@@ -466,20 +498,22 @@ void ScintillatorBar_V2::CalculateVariousPhysicalParameters(unsigned long muonNu
     double smeared            = 510.;
     if (vecOfLayersOrientation[GetLayerIndex()]) {
       smeared = 510;
-      while (smeared > 500. || smeared < -500) {
+      while (smeared > 650. || smeared < -650) {
         // Should be GAUSSIAN SAMPLING
-        smeared = GetGaussianRandomSample(fExactHitPosition->GetZ(), 50);
+        smeared = GetGaussianRandomSample(fExactHitPosition->GetZ(), 220);
       }
-      // std::cout << RED << "Smeared Value of Z : " << smeared << RESET << std::endl;
+      //std::cout << RED << "Smeared Value of Z : " << smeared << RESET << std::endl;
       fDelTstamp = formulaFor->GetX(smeared / 10.) * 1000.;
+      //std::cout << BLUE << "Smeared Value of DelT : " << fDelTstamp << RESET << std::endl;
+      //std::cout << "BAR INDEX : " << fBarIndex << std::endl;
       // fDelTstamp = formulaFor->GetX(fMeanHitPosition->GetZ() / 10.) * 1000.;
     } else {
       double smeared_DelT = 510;
       double smeared_Q = 510;
       // fDelTstamp = formulaFor->GetX(fMeanHitPosition->GetX() / 10.) * 1000.;
-      while (smeared_DelT > 500. || smeared_DelT < -500.) {
+      while (smeared_DelT > 650. || smeared_DelT < -650.) {
         // Should be GAUSSIAN SAMPLING
-        smeared_DelT = GetGaussianRandomSample(fExactHitPosition->GetX(), 68);
+        smeared_DelT = GetGaussianRandomSample(fExactHitPosition->GetX(), 220);
       }
 
 	while (smeared_Q > 500. || smeared_Q < -500.) {

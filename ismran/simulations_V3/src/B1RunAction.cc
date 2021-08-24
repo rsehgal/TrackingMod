@@ -133,7 +133,7 @@ void B1RunAction::EndOfRunAction(const G4Run *run)
   new TCanvas();
   energySum->Draw();
 
-  std::vector<TH1D *> vecHist = lite_interface::PlotEnergyDistributionWithMultiplicity(MySD::muonTrackVec);
+  std::vector<TH1F *> vecHist = lite_interface::PlotEnergyDistributionWithMultiplicity(MySD::muonTrackVec);
   new TCanvas("Energy with multiplicity..", "Energy with multiplicity..");
   for (unsigned int i = 0; i < vecHist.size(); i++) {
 

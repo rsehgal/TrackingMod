@@ -28,6 +28,11 @@ option(SINGLE_POINT_CALIBRATION "Use Single Point Muon Calibration" ON)
 option(WITH_GEANT4_UIVIS "Build example with Geant4 UI and Vis drivers" ON)
 option(FINGER_PATTERN_CONDITION "Flag to see the finger plot of layers" OFF)
 option(VERTICAL_SIGNAL_CABLE "Flag to use the code for Vertical arrangement" OFF)
+option(USE_MUON_CALIB "Flag to use Muon based calibration" OFF)
+
+if(USE_MUON_CALIB)
+add_definitions(-DUSE_MUON_CALIB)
+endif(USE_MUON_CALIB)
 
 if(VERTICAL_SIGNAL_CABLE)
 add_definitions(-DVERTICAL_ARRANGEMENT)
@@ -373,6 +378,9 @@ target_link_libraries(debugTest ${ROOT_LIBRARIES} Tracklib)
 add_executable(TestQMean_CalibAndUnCalib test/TestQMean_CalibAndUnCalib.cpp ${sources} ${headers})
 target_link_libraries(TestQMean_CalibAndUnCalib ${ROOT_LIBRARIES} Tracklib)
 
+add_executable(Test_BarInspection test/Test_BarInspection.cpp ${sources} ${headers})
+target_link_libraries(Test_BarInspection ${ROOT_LIBRARIES} Tracklib)
+
 add_executable(MuonTrackAnalysis_VisualizeTracks test/MuonTrackAnalysis_VisualizeTracks.cpp ${sources} ${headers})
 target_link_libraries(MuonTrackAnalysis_VisualizeTracks ${root_libraries} tracklib visualizer)
 
@@ -381,6 +389,18 @@ target_link_libraries(TestVisualizationFromROOTFile ${ROOT_LIBRARIES} Tracklib V
 
 add_executable(MuonTrackAnalysis_AngularDistributionVerticalMuons test/MuonTrackAnalysis_AngularDistributionVerticalMuons.cpp ${sources} ${headers})
 target_link_libraries(MuonTrackAnalysis_AngularDistributionVerticalMuons ${ROOT_LIBRARIES} Tracklib)
+
+add_executable(MuonTrackAnalysis_LanGaus test/MuonTrackAnalysis_LanGaus.cpp ${sources} ${headers})
+target_link_libraries(MuonTrackAnalysis_LanGaus ${ROOT_LIBRARIES} Tracklib)
+
+add_executable(MuonTrackAnalysis_LanGausSingleBar test/MuonTrackAnalysis_LanGausSingleBar.cpp ${sources} ${headers})
+target_link_libraries(MuonTrackAnalysis_LanGausSingleBar ${ROOT_LIBRARIES} Tracklib)
+
+add_executable(Test_LanGausSampling test/Test_LanGausSampling.cpp ${sources} ${headers})
+target_link_libraries(Test_LanGausSampling ${ROOT_LIBRARIES} Tracklib)
+
+add_executable(Test_EnergyDepComparison test/Test_EnergyDepComparison.cpp ${sources} ${headers})
+target_link_libraries(Test_EnergyDepComparison ${ROOT_LIBRARIES} Tracklib)
 
 #add_executable(VisualizeTracksFromIsmran test/VisualizeTracksFromIsmran.cpp ${sources} ${headers})
 #target_link_libraries(VisualizeTracksFromIsmran ${ROOT_LIBRARIES} Tracklib)

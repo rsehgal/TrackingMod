@@ -56,6 +56,7 @@ extern TH1F *PlotPixelDelTBetweenBars(std::vector<lite_interface::SingleMuonTrac
 // linear=false);
 extern TH2F *PlotDelTvsZ(std::vector<lite_interface::ScintillatorBar_V2 *> scintBarVec, ushort barIndex,
                          bool linear = false);
+TH1F *PlotHistZ(std::vector<lite_interface::ScintillatorBar_V2 *> scintBarVec, ushort barIndex, bool linear=false);
 extern TGraph *PlotDelTvsZ(unsigned int barIndex, std::vector<float> delTVec, std::vector<float> zVec);
 //#endif
 
@@ -101,7 +102,7 @@ extern TF1 *GetFittedMuonTrackFormulaZY(std::vector<lite_interface::Point3D *> v
 extern TH1F *PlotEnergySum(std::vector<lite_interface::SingleMuonTrack *> smtVec);
 // extern TCanvas* PlotEnergyDistributionWithMultiplicity(std::vector<SingleMuonTrack*> muonTrackVec, unsigned int
 // multiplicity = numOfLayers);
-extern std::vector<TH1D *> PlotEnergyDistributionWithMultiplicity(std::vector<SingleMuonTrack *> muonTrackVec);
+extern std::vector<TH1F *> PlotEnergyDistributionWithMultiplicity(std::vector<SingleMuonTrack *> muonTrackVec);
 extern std::vector<TH1D *> PlotEnergyDistributionWithMultiplicity_Old(std::vector<SingleMuonTrack *> muonTrackVec,
                                                                       unsigned int multiplicity = numOfLayers);
 extern std::vector<TH1D *> PlotEnergyDistributionWithMultiplicity(std::vector<unsigned int> sizeVector,

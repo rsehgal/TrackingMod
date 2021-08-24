@@ -17,6 +17,7 @@
 #include <TSpectrum.h>
 #include "Histograms.h"
 #include <TLatex.h>
+#include "langaus.h"
 int main(int argc, char *argv[])
 {
 /*  TLatex latex;
@@ -27,6 +28,9 @@ int main(int argc, char *argv[])
   latex.DrawLatex(10,12000,"#^{40}K");
   latex.DrawLatex(10,14000,"#^{208}Tl");
 */
+#ifdef USE_FOR_SIMULATION
+IsSimulation=true;
+#endif
   gStyle->SetOptStat(0);
   TApplication *fApp = new TApplication("Test", NULL, NULL);
 
@@ -46,7 +50,10 @@ int main(int argc, char *argv[])
 
   std::vector<lite_interface::ScintillatorBar_V2 *>::iterator itr;
   for (itr = scintBarVec.begin(); itr != scintBarVec.end(); itr++) {
-    if ((*itr)->GetBarIndex() == index) {
+#ifndef USE_FOR_SIMULATION
+    if ((*itr)->GetBarIndex() == index) 
+#endif
+{
       vecOfHists[0]->Fill((*itr)->GetQLongNear());
       vecOfHists[1]->Fill((*itr)->GetQLongFar());
       vecOfHists[2]->Fill((*itr)->GetQLongMean());
@@ -78,6 +85,7 @@ TCanvas *canCalib =  (new TCanvas("QMean_Calibrated", "QMean_Calibrated"));
   latex.DrawLatex(10,12000,"#^{40}K");
   latex.DrawLatex(10,14000,"#^{208}Tl");*/
   vecOfHists[3]->Draw();
+  //langaus(vecOfHists[3]);
 
   fp->cd();
 /*  vecOfHists[0]->Scale(1/vecOfHists[0]->Integral());

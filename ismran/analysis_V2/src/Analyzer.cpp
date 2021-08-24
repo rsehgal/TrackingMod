@@ -35,8 +35,7 @@ Analyzer::Analyzer(std::string datafileName, const char *outputfileName)
 {
 }
 
-Analyzer::Analyzer(std::string datafileName, bool thresholdCheck, unsigned int numOfEv )
-    : fDatafileName(datafileName)
+Analyzer::Analyzer(std::string datafileName, bool thresholdCheck, unsigned int numOfEv) : fDatafileName(datafileName)
 {
 
   std::cout << "@@@@@@@@2 WRONG CONTRUCTOR CALLED @@@@@@@@@@@@.............." << std::endl;
@@ -85,7 +84,7 @@ std::vector<ScintillatorBar_V2 *> Analyzer::GetVectorOfScintillators() const
   return fVecOfScintillatorBar;
 }
 
-void Analyzer::CreateScintillatorVector(bool thresholdCheck, unsigned int numOfEv )
+void Analyzer::CreateScintillatorVector(bool thresholdCheck, unsigned int numOfEv)
 {
   std::vector<TreeEntry *> vectorOfPairedTreeEntries = fPairFinder->GetVectorOfPairedTreeEntries();
   // unsigned long int numOfPairsInOneShot = vectorOfPairedTreeEntries.size()/numOfShots;
@@ -159,10 +158,11 @@ void Analyzer::CreateScintillatorVector(bool thresholdCheck, unsigned int numOfE
         // scint->EstimateHitPosition(fCalib);
 
         // if(scint->GetQMeanCorrected() > 15.)
-	double hardCodedThresholdValue=4.5;
+        double hardCodedThresholdValue = 4.5;
         if (thresholdCheck) {
-          //if (scint->GetQMeanCorrected() > qmeanCorrThreshold && scint->GetQMeanCorrected() < qmeanCorrThresholdUpper) fVecOfScintillatorBar.push_back(scint);
-          if (scint->GetQMeanCorrected() > hardCodedThresholdValue ) fVecOfScintillatorBar.push_back(scint);
+          if (scint->GetQMeanCorrected() > qmeanCorrThreshold && scint->GetQMeanCorrected() < qmeanCorrThresholdUpper)
+            fVecOfScintillatorBar.push_back(scint);
+          // if (scint->GetQMeanCorrected() > hardCodedThresholdValue ) fVecOfScintillatorBar.push_back(scint);
         } else {
           fVecOfScintillatorBar.push_back(scint);
         }
@@ -247,7 +247,9 @@ void Analyzer::CreateScintillatorVector_FromSimulation()
     // ScintillatorBar_V2 *scint = new ScintillatorBar_V2(barIndex,qlongNear,qlongMean,tsmallTimeStamp,deltaTstamp,
     // hitX, hitY, hitZ); std::cout << " exactHitX,exactHitY,exactHitZ : " << exactHitX << "," << exactHitY << "," <<
     // exactHitZ << std::endl;
-    if (qlongMean > 10 && qlongMean < 35) {
+    // if (qlongMean > 10 && qlongMean < 35) {
+    if (qlongMean > qmeanCorrThreshold){ // && qlongMean < qmeanCorrThresholdUpper) {
+
       // std::cout << RED<< "PRINTING FROM : " << __FILE__ <<" : " << __LINE__ <<" : " << logQFarByQNear << RESET<<
       // std::endl;
       ScintillatorBar_V2 *scint =
