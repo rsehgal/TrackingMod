@@ -137,26 +137,39 @@ Calibration::Calibration(std::string fileName)
 
 Calibration::Calibration(std::string fileName)
 {
-  fFileName              = fileName;
-  TFile *fp              = new TFile(fileName.c_str(), "r");
-  TFile *fpMuon              = new TFile("muonParam.root", "r");
+  fFileName      = fileName;
+  TFile *fp      = new TFile(fileName.c_str(), "r");
+  TFile *fpMuon  = new TFile("muonParam.root", "r");
+  TFile *fpPixel = new TFile("pixels.root", "r");
+  std::vector<TF1 *> vecOfPixels_T;
+  std::vector<TF1 *> vecOfPixels_Q;
+
   unsigned int numOfBars = vecOfBarsNamess.size(); // vecOfBarsName.size();
   for (unsigned int barIndex = 0; barIndex < numOfBars; barIndex++) {
 
-    TF1 *delTShift_F           = (TF1 *)fp->Get(Form("fdelt_shift_Cs137_%s_0cm", vecOfBarsNamess[barIndex].c_str()));
-   TF1 *paramertization_F;
-   TF1 *q_paramertization_F; 
-if(!vecOfMuonCalibIndex[barIndex]) {
-    //Source based stuff
-    paramertization_F     = (TF1 *)fp->Get(Form("fzparam_%s", vecOfBarsNamess[barIndex].c_str()));
-    q_paramertization_F   = (TF1 *)fp->Get(Form("fQparam_%s", vecOfBarsNamess[barIndex].c_str()));
-}else{
+    TF1 *delTShift_F = (TF1 *)fp->Get(Form("fdelt_shift_Cs137_%s_0cm", vecOfBarsNamess[barIndex].c_str()));
+    TF1 *paramertization_F;
+    TF1 *q_paramertization_F;
 
-    std::cout << RED << "Read Muon Calibration for Barindex : " << barIndex << " : BarName : " << vecOfBarsNamess[barIndex] << RESET << std::endl;
-    //Muon based stuff
-    paramertization_F     = (TF1 *)fpMuon->Get(("fzparam_Muon_DelT_"+vecOfBarsNamess[barIndex]).c_str());
-    q_paramertization_F   = (TF1 *)fpMuon->Get(("fzparam_Muon_Q_"+vecOfBarsNamess[barIndex]).c_str());
-}
+    std::vector<double> vecOfPixelLoc = {-40., -30., -20, -10., 0., 10., 20., 30., 40.};
+
+    for (unsigned int i = 0; i < vecOfPixelLoc.size(); i++) {
+      vecOfPixels_T.push_back((TF1 *)fpPixel->Get(Form("Pixel_DelT_%d", i)));
+      vecOfPixels_Q.push_back((TF1 *)fpPixel->Get(Form("Pixel_Q_%d", i)));
+    }
+
+    if (!vecOfMuonCalibIndex[barIndex]) {
+      // Source based stuff
+      paramertization_F   = (TF1 *)fp->Get(Form("fzparam_%s", vecOfBarsNamess[barIndex].c_str()));
+      q_paramertization_F = (TF1 *)fp->Get(Form("fQparam_%s", vecOfBarsNamess[barIndex].c_str()));
+    } else {
+
+      std::cout << RED << "Read Muon Calibration for Barindex : " << barIndex
+                << " : BarName : " << vecOfBarsNamess[barIndex] << RESET << std::endl;
+      // Muon based stuff
+      paramertization_F   = (TF1 *)fpMuon->Get(("fzparam_Muon_DelT_" + vecOfBarsNamess[barIndex]).c_str());
+      q_paramertization_F = (TF1 *)fpMuon->Get(("fzparam_Muon_Q_" + vecOfBarsNamess[barIndex]).c_str());
+    }
 
     TF1 *paramertization_F_Rev = (TF1 *)fp->Get(Form("fzparam_Rev_%s", vecOfBarsNamess[barIndex].c_str()));
     // TF1 *enerCalibFormula = (TF1*)fp->Get(Form("%s_Energy_F",vecOfBarsNamess[barIndex].c_str()));
@@ -179,8 +192,10 @@ if(!vecOfMuonCalibIndex[barIndex]) {
     // fVecOfCalibrationData.push_back(new CalibrationData( delTShift_F, paramertization_F ,enerCalibFormula));
     // fVecOfCalibrationData.push_back(new CalibrationData( delTShift_F, paramertization_F , paramertization_F_Rev,
     // enerCalibFormula));
+    //fVecOfCalibrationData.push_back(new CalibrationData(delTShift_F, paramertization_F, paramertization_F_Rev,
+                                                        //q_paramertization_F, enerCalibFormula));
     fVecOfCalibrationData.push_back(new CalibrationData(delTShift_F, paramertization_F, paramertization_F_Rev,
-                                                        q_paramertization_F, enerCalibFormula));
+                                                        q_paramertization_F, enerCalibFormula,vecOfPixels_T,vecOfPixels_Q));
   }
 }
 

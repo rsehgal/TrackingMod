@@ -137,7 +137,9 @@ extern float roundoff(float value);
 extern int GetMuonRateAt(std::vector<lite_interface::SingleMuonTrack*> smtVec,unsigned int layerIndex);
 //extern TH1F* GetReweightedHist(TH1F *hist );
 extern TH1F *NormalWithMaxBinCount(TH1F *hist);
-std::vector<int> GetMuonRateAtLayers(std::vector<lite_interface::SingleMuonTrack*> smtVec);
+extern std::vector<int> GetMuonRateAtLayers(std::vector<lite_interface::SingleMuonTrack*> smtVec);
+extern void NormalizeHistUsingMaxCount(TH1F *hist);
+extern unsigned int GetPixelIndexFromValue(double val);
 class OfStream {
 public:
   std::ofstream fOutfile;

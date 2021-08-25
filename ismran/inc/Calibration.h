@@ -39,6 +39,10 @@ struct CalibrationData {
    */
   std::vector<TF1 *> fVectorOfDelT_F;
 
+  /*Vectors to TF1, holding the formula for gaussian of 9 pixels*/
+  std::vector<TF1*> fVecOfPixel_T_F;
+  std::vector<TF1*> fVecOfPixel_Q_F;
+
   CalibrationData() {}
   CalibrationData(TF1 *delTCorr, TF1 *parameterization, float energyCalibrationFactor = 1)
   {
@@ -77,6 +81,20 @@ struct CalibrationData {
     fDeltaTCorr             = fDelTCorr_F->GetParameter(1);
     // fEnergyCalibrationFactor = energyCalibrationFactor;
     fEnergyCalibration_F = energyCalib_F;
+  }
+
+CalibrationData(TF1 *delTCorr_F, TF1 *parameterization_F, TF1 *parameterization_F_Rev, TF1 *q_parameterization_F,
+                  TF1 *energyCalib_F,std::vector<TF1*> vecOfPixels_T, std::vector<TF1*> vecOfPixels_Q)
+  {
+    fDelTCorr_F             = delTCorr_F;
+    fParameterization_F     = parameterization_F;
+    fQParameterization_F    = q_parameterization_F;
+    fParameterization_F_Rev = parameterization_F_Rev;
+    fDeltaTCorr             = fDelTCorr_F->GetParameter(1);
+    // fEnergyCalibrationFactor = energyCalibrationFactor;
+    fEnergyCalibration_F = energyCalib_F;
+    fVecOfPixel_T_F = vecOfPixels_T; 
+    fVecOfPixel_Q_F = vecOfPixels_Q; 
   }
 
   CalibrationData(TF1 *delTCorr, TF1 *parameterization, TGraph *parameterization_g, float energyCalibrationFactor = 1)

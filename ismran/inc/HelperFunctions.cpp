@@ -1538,11 +1538,11 @@ std::vector<TH1F *> EvaluateMuonParameterization(std::string filename, unsigned 
 
   TH1F *histDiff = new TH1F("Diff_Hist", "Diff_Hist", 100, -20., 20.);
 
-  TH1F *histZ_Mean = new TH1F("ZUsingMean", "ZUsingMean", 200, -100., 100.);
-  TH1F *histZ_Q    = new TH1F("ZUsingQ", "ZUsingQ", 200, -100., 100.);
-  TH1F *histZ_Q_Reweighted    = new TH1F("ZUsingQ_Reweighted", "ZUsingQ_Reweighted", 200, -100., 100.);
-  TH1F *histZ_DelT = new TH1F("ZUsingDelT", "ZUsingDelT", 200, -100., 100.);
-  TH1F *histQ      = new TH1F("HistQ", "HistQ", 500, -5., 5.);
+  TH1F *histZ_Mean         = new TH1F("ZUsingMean", "ZUsingMean", 200, -100., 100.);
+  TH1F *histZ_Q            = new TH1F("ZUsingQ", "ZUsingQ", 200, -100., 100.);
+  TH1F *histZ_Q_Reweighted = new TH1F("ZUsingQ_Reweighted", "ZUsingQ_Reweighted", 200, -100., 100.);
+  TH1F *histZ_DelT         = new TH1F("ZUsingDelT", "ZUsingDelT", 200, -100., 100.);
+  TH1F *histQ              = new TH1F("HistQ", "HistQ", 500, -5., 5.);
   GenerateScintMatrixXYCenters();
 
   // Histograms for nine pixels
@@ -1687,14 +1687,15 @@ std::vector<TH1F *> EvaluateMuonParameterization(std::string filename, unsigned 
             histZ_Q->Fill(qFormula->Eval(scint->GetLogQNearByQFar_ForSimulation()));
             histQ->Fill(scint->GetLogQNearByQFar_ForSimulation());
 #else
-	    double evaluatedZVal = qFormula->Eval(scint->GetLogQNearByQFar());
+            double evaluatedZVal = qFormula->Eval(scint->GetLogQNearByQFar());
             histZ_Q->Fill(evaluatedZVal);
-	    TH1F *histNormalizedWithMaxVal = NormalWithMaxBinCount(histZ_Q);
-	    //unsigned int numOfBins         = hist->GetNbinsX();
-	    //double weightFactor = histNormalizedWithMaxVal->GetBinContent(histNormalizedWithMaxVal->GetXaxis()->FindFixBin(evaluatedZVal));
-	    double weightFactor = histNormalizedWithMaxVal->GetBinContent(histNormalizedWithMaxVal->GetXaxis()->FindBin(evaluatedZVal));
-	    histZ_Q_Reweighted->Fill(evaluatedZVal,1/weightFactor);
-
+            TH1F *histNormalizedWithMaxVal = NormalWithMaxBinCount(histZ_Q);
+            // unsigned int numOfBins         = hist->GetNbinsX();
+            // double weightFactor =
+            // histNormalizedWithMaxVal->GetBinContent(histNormalizedWithMaxVal->GetXaxis()->FindFixBin(evaluatedZVal));
+            double weightFactor =
+                histNormalizedWithMaxVal->GetBinContent(histNormalizedWithMaxVal->GetXaxis()->FindBin(evaluatedZVal));
+            histZ_Q_Reweighted->Fill(evaluatedZVal, 1 / weightFactor);
 
             // histZ_Q->Fill(qFormula->Eval(scint->GetLogQNearByQFar())-zCorrOffsetVector[pixelIndex]);
             histQ->Fill(scint->GetLogQNearByQFar());
@@ -1734,7 +1735,7 @@ std::vector<TH1F *> EvaluateMuonParameterization(std::string filename, unsigned 
       }
     }
   }
-  std::vector<TH1F *> vecOfHist = {histZ_Q, histZ_DelT, histQ, histZ_Mean, histDiff,histZ_Q_Reweighted};
+  std::vector<TH1F *> vecOfHist = {histZ_Q, histZ_DelT, histQ, histZ_Mean, histDiff, histZ_Q_Reweighted};
   /*#ifdef USE_FOR_SIMULATION
     std::vector<TH1F *> vecOfHist = {histZ_Q, histZ_DelT, histQ};
   #else
@@ -1835,6 +1836,26 @@ TH1F *NormalWithMaxBinCount(TH1F *hist)
   return normalizedHist;
 }
 
+unsigned int GetPixelIndexFromValue(double val)
+{
+  unsigned int pixelIndex = 10000;
+  if (val >= -50 && val < -35)
+    pixelIndex = 0;
+  else {
+    if (val >= 35 && val <= 50)
+      pixelIndex = 8;
+    else {
+
+      for (unsigned int i = 0; i < 7; i++) {
+        double start = -35 + (i * 10);
+        double end   = -35 + ((i + 1) * 10);
+        if (val >= start && val < end) pixelIndex = (i + 1);
+      }
+    }
+  }
+  return pixelIndex;
+}
+
 float roundoff(float value, unsigned char prec)
 {
   float pow_10 = pow(10.0f, (float)prec);
@@ -1854,7 +1875,15 @@ float roundoff(float inputValue)
 
   return value; //(float)value / 100;
 }
+void NormalizeHistUsingMaxCount(TH1F *hist)
+{
+  double maxVal = hist->GetMaximum();
+  double nbins  = hist->GetNbinsX();
 
+  for (unsigned int i = 1; i <= nbins; i++) {
+    hist->SetBinContent(i, hist->GetBinContent(i) / maxVal);
+  }
+}
 HelperFunctions::HelperFunctions()
 {
   // TODO Auto-generated constructor stub

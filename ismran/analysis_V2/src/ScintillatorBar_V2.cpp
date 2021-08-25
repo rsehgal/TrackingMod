@@ -140,15 +140,16 @@ lite_interface::Point3D *ScintillatorBar_V2::EstimateHitPosition_Param()
   double zval    = 0.;
   double xOrZval = 0.;
 
-  //Just for debugging, should be commented later 
-  //std::cout << RED << "BarIndex : " << fBarIndex <<" : LayerIndex : " << GetLayerIndex() << " : BARName : " << vecOfBarsNamess[fBarIndex] << RESET << std::endl;
+  // Just for debugging, should be commented later
+  // std::cout << RED << "BarIndex : " << fBarIndex <<" : LayerIndex : " << GetLayerIndex() << " : BARName : " <<
+  // vecOfBarsNamess[fBarIndex] << RESET << std::endl;
 
   if (IsSimulation)
     xOrZval = param->Eval(GetDelTCorrected() / 1000.);
   else
     xOrZval = param->Eval(GetDelTCorrected() / 1000.);
 
-  //std::cout << BLUE << "Z Val : " << xOrZval << RESET << std::endl;
+    // std::cout << BLUE << "Z Val : " << xOrZval << RESET << std::endl;
 
 #ifdef STAGGERED_GEOM
   if (GetLayerIndex() % 2) {
@@ -214,8 +215,9 @@ void ScintillatorBar_V2::EstimateHitPositionAlongY(Point3D *temp, Point3D *tempE
 void ScintillatorBar_V2::Print()
 {
   std::cout << "-----------------------------------------------" << std::endl;
-  std::cout << "BarIndex : " << fBarIndex << " : LayerIndex : " << GetLayerIndex() <<" : BAR Name : " << vecOfBarsNamess[fBarIndex]
-            << " :  Energy :  " << GetQMeanCorrected() << " : DelT : " << GetDelT() << " : " ;//std::endl;
+  std::cout << "BarIndex : " << fBarIndex << " : LayerIndex : " << GetLayerIndex()
+            << " : BAR Name : " << vecOfBarsNamess[fBarIndex] << " :  Energy :  " << GetQMeanCorrected()
+            << " : DelT : " << GetDelT() << " : "; // std::endl;
 #ifdef USE_FOR_SIMULATION
   std::cout << "Mean Hit Position : " << hitX << " , " << hitY << " , " << hitZ << std::endl;
   std::cout << "Exact Hit Position individual : " << exactHitX << " , " << exactHitY << " , " << exactHitZ << std::endl;
@@ -336,64 +338,35 @@ double ScintillatorBar_V2::GetOffsetCorrection()
 
 Long_t ScintillatorBar_V2::GetDelTCorrected()
 {
-/*  if (IsSimulation) {
-    // std::cout << "FROM IF : IS_SIMULATION SET TO TRUE : " << __FILE__ << " : " << __LINE__ << std::endl;
-#ifdef USE_CALIBRATION
-    // return (fDelTstamp - Calibration::instance()->GetCalibrationDataOf(fBarIndex)->fDeltaTCorr * 1000);
-    return fDelTstamp;
-#else
-    return fDelTstamp;
-#endif
-  } else {
-     std::cout << "FROM ELSE : " << Calibration::instance()->GetCalibrationDataOf(fBarIndex)->fDeltaTCorr * 1000 << " : "
-            << __FILE__ << " : " << __LINE__ << std::endl;
-    return (fDelTstamp - Calibration::instance()->GetCalibrationDataOf(fBarIndex)->fDeltaTCorr * 1000);
-  }*/
+  /*  if (IsSimulation) {
+      // std::cout << "FROM IF : IS_SIMULATION SET TO TRUE : " << __FILE__ << " : " << __LINE__ << std::endl;
+  #ifdef USE_CALIBRATION
+      // return (fDelTstamp - Calibration::instance()->GetCalibrationDataOf(fBarIndex)->fDeltaTCorr * 1000);
+      return fDelTstamp;
+  #else
+      return fDelTstamp;
+  #endif
+    } else {
+       std::cout << "FROM ELSE : " << Calibration::instance()->GetCalibrationDataOf(fBarIndex)->fDeltaTCorr * 1000 << "
+  : "
+              << __FILE__ << " : " << __LINE__ << std::endl;
+      return (fDelTstamp - Calibration::instance()->GetCalibrationDataOf(fBarIndex)->fDeltaTCorr * 1000);
+    }*/
 
 #ifdef USE_FOR_SIMULATION
-return fDelTstamp;
+  return fDelTstamp;
 #else
 
-    return (fDelTstamp - Calibration::instance()->GetCalibrationDataOf(fBarIndex)->fDeltaTCorr * 1000);
+  return (fDelTstamp - Calibration::instance()->GetCalibrationDataOf(fBarIndex)->fDeltaTCorr * 1000);
 #endif
 }
 Double_t ScintillatorBar_V2::GetQMeanCorrected()
 {
   // return (fQlongMean + Calibration::instance()->GetCalibrationDataOf(fBarIndex)->fEnergyCalibrationFactor);
 
-  if (IsSimulation){
-return gRandom->Gaus(fQlongMean,4.468);
-
-/*    if(fQlongMean < 20.0 || fQlongMean > 30.0 )return -1;
-    //return fQlongMean;
-    return gRandom->Gaus(fQlongMean,2.2);*/
-
-/*   if(fQlongMean > 15. && fQlongMean < 20);//qmeanCorrThreshold)
-    return gRandom->Gaus(fQlongMean,5.3);
-    if(fQlongMean >= 20. && fQlongMean < 50);//qmeanCorrThreshold)
-    return gRandom->Gaus(fQlongMean,18.3);
-*/
-/*	if(fQlongMean >= 10 && fQlongMean < 25)
-return gRandom->Gaus(fQlongMean,4.22);
-	if(fQlongMean >= 25)
-return fQlongMean/gRandom->Exp(-0.1243);*/
-
-    //std::cout << RED << "QLongMean : " << fQlongMean << RESET<< std::endl;
-    //if(fQlongMean > 15 && fQlongMean < 30)
-//    if(fQlongMean > 10. && fQlongMean < 15.)//qmeanCorrThreshold)
-//	return fQlongMean;
-//    return gRandom->Gaus(fQlongMean,15.);
-/*    if(fQlongMean >= qmeanCorrThreshold && fQlongMean < 25.)//qmeanCorrThreshold)
-    return gRandom->Gaus(fQlongMean,4.);
-    if(fQlongMean >= 25. && fQlongMean< 30)//qmeanCorrThreshold)
-    return gRandom->Gaus(fQlongMean,20.);
-    if(fQlongMean >= 30. )//qmeanCorrThreshold)
-    return gRandom->Gaus(fQlongMean,25.);*/
-
-//else
-//	return fQlongMean;
-}
-  else {
+  if (IsSimulation) {
+    return gRandom->Gaus(fQlongMean, 4.468);
+  } else {
     Double_t ener = 0.;
 #ifndef SINGLE_POINT_CALIBRATION
     // std::cout << "ENTERED GetQMeanCorrected : " << __FILE__ <<" : " << __LINE__ << std::endl;
@@ -447,6 +420,56 @@ lite_interface::Point3D *ScintillatorBar_V2::GetExactHitPosition()
 //#endif
 
 #ifdef USE_CALIBRATION
+void ScintillatorBar_V2::SmearHitPosition(unsigned long muonNum, lite_interface::Calibration *calib)
+{
+  fMeanHitPosition = new Point3D();
+  fMeanHitPosition->SetZero();
+
+  // std::cout << "############# Hits Vector in Bar : " << fBarIndex << " #################" << std::endl;
+  for (unsigned int i = 0; i < hitsVectorInAnEventInABar.size(); i++) {
+    lite_interface::Point3D *hitpt = hitsVectorInAnEventInABar[i];
+    // hitpt->Print();
+    fMeanHitPosition->SetXYZ((fMeanHitPosition->GetX() + hitpt->GetX()), (fMeanHitPosition->GetY() + hitpt->GetY()),
+                             fMeanHitPosition->GetZ() + hitpt->GetZ());
+  }
+  int n = hitsVectorInAnEventInABar.size();
+  fMeanHitPosition->Divide(n);
+
+  lite_interface::CalibrationData *calibDataOfScint = calib->GetCalibrationDataVector()[fBarIndex];
+    TF1 *formulaFor  = calibDataOfScint->fParameterization_F; //Parameterization formula using DelT
+    TF1 *formulaForQ = calibDataOfScint->fQParameterization_F;//Parameterization formula using Charge
+    TF1 *formulaPixel = calibDataOfScint->fParameterization_F;//Parameterization formula using Charge
+
+   double smeared            = 510.;
+    if (vecOfLayersOrientation[GetLayerIndex()]) {
+      smeared = 510;
+      while (smeared > 650. || smeared < -650) {
+	unsigned int pixelIndex = GetPixelIndexFromValue(fMeanHitPosition->GetZ());
+        //smeared = GetGaussianRandomSample(fExactHitPosition->GetZ(), 220);
+	double pixelSigma = formulaPixel->GetParameter(2);
+	smeared = GetGaussianRandomSample(fMeanHitPosition->GetZ(),pixelSigma*10.);
+      }
+      fDelTstamp = formulaFor->GetX(smeared / 10.) * 1000.;
+   } else {
+      double smeared_DelT = 510;
+      double smeared_Q    = 510;
+      // fDelTstamp = formulaFor->GetX(fMeanHitPosition->GetX() / 10.) * 1000.;
+      while (smeared_DelT > 650. || smeared_DelT < -650.) {
+	unsigned int pixelIndex = GetPixelIndexFromValue(fMeanHitPosition->GetX());
+        //smeared_DelT = GetGaussianRandomSample(fExactHitPosition->GetX(), 220);
+        double pixelSigma = formulaPixel->GetParameter(2);
+        smeared_DelT = GetGaussianRandomSample(fMeanHitPosition->GetX(),pixelSigma*10.);
+
+      }
+
+      while (smeared_Q > 500. || smeared_Q < -500.) {
+        smeared_Q = GetGaussianRandomSample(fExactHitPosition->GetX(), 39.8);
+      }
+
+      fLogQFarByQNear = formulaForQ->GetX(smeared_Q / 10.);
+      fDelTstamp      = formulaFor->GetX(smeared_DelT / 10.) * 1000.;
+    }
+}
 
 void ScintillatorBar_V2::CalculateVariousPhysicalParameters(unsigned long muonNum, lite_interface::Calibration *calib)
 {
@@ -502,27 +525,27 @@ void ScintillatorBar_V2::CalculateVariousPhysicalParameters(unsigned long muonNu
         // Should be GAUSSIAN SAMPLING
         smeared = GetGaussianRandomSample(fExactHitPosition->GetZ(), 220);
       }
-      //std::cout << RED << "Smeared Value of Z : " << smeared << RESET << std::endl;
+      // std::cout << RED << "Smeared Value of Z : " << smeared << RESET << std::endl;
       fDelTstamp = formulaFor->GetX(smeared / 10.) * 1000.;
-      //std::cout << BLUE << "Smeared Value of DelT : " << fDelTstamp << RESET << std::endl;
-      //std::cout << "BAR INDEX : " << fBarIndex << std::endl;
+      // std::cout << BLUE << "Smeared Value of DelT : " << fDelTstamp << RESET << std::endl;
+      // std::cout << "BAR INDEX : " << fBarIndex << std::endl;
       // fDelTstamp = formulaFor->GetX(fMeanHitPosition->GetZ() / 10.) * 1000.;
     } else {
       double smeared_DelT = 510;
-      double smeared_Q = 510;
+      double smeared_Q    = 510;
       // fDelTstamp = formulaFor->GetX(fMeanHitPosition->GetX() / 10.) * 1000.;
       while (smeared_DelT > 650. || smeared_DelT < -650.) {
         // Should be GAUSSIAN SAMPLING
         smeared_DelT = GetGaussianRandomSample(fExactHitPosition->GetX(), 220);
       }
 
-	while (smeared_Q > 500. || smeared_Q < -500.) {
+      while (smeared_Q > 500. || smeared_Q < -500.) {
         // Should be GAUSSIAN SAMPLING
         smeared_Q = GetGaussianRandomSample(fExactHitPosition->GetX(), 39.8);
       }
 
       fLogQFarByQNear = formulaForQ->GetX(smeared_Q / 10.);
-      fDelTstamp = formulaFor->GetX(smeared_DelT / 10.) * 1000.;
+      fDelTstamp      = formulaFor->GetX(smeared_DelT / 10.) * 1000.;
     }
   }
   fTSmallTimeStamp = (tstampNear < tstampFar) ? tstampNear : tstampFar;
